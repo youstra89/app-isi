@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+{% set dir = '' %}
+{% set dir2 = '' %}
+{% if app.request.locale == 'fr' %}
+  {% set dir = 'ltr' %}
+  {% set dir2 = 'right' %}
+{% else %}
+  {% set dir = 'rtl' %}
+  {% set dir2 = 'left' %}
+{% endif %}
+<html dir="{{ dir }}">
+  <head>
+    <meta charset="UTF-8" />
+    <title>
+      {% block title %}
+      {% endblock %}
+    </title>
+    {% block stylesheets %}
+      <link rel="stylesheet" type="text/css" href="{{ asset('../vendor/semantic/ui/dist/semantic.min.css') }}" /> {# Site CSS #}
+      <lin rel="stylesheet" href="{{ asset('../vendor/twbs/bootstrap/dist/css/bootstrap.min.css') }}" />
+      <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" />
+    {% endblock %}
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+  </head>
+  <body>
+    <div class="ui fixed borderless main menu">
+      <div class="ui container">
+        <a class="item" href="{{ path('etude_home', {'as': asec}) }}">
+          <h4 class="ui header"><span class="style-main-menu"><i class="home icon"></i> {{ 'Accueil'|trans }}</span></h4>
+        </a>
+        <div class="ui input">
+          <div class="ui simple dropdown item">
+            <a>
+              <h4 class="ui header"><span class="style-main-menu"><i class="users icon"></i>{{ 'Progression'|trans }}</span></h4>
+            </a>
+            <i class="dropdown icon"></i>
+            <div class="menu">
+              <span class="sub-menu">
+                <a class="item" href="{{ path('etude_progression_home', {'as': asec, 'regime': 'A'}) }}">
+                  {{ 'Academie'|trans }}
+                </a>
+                <a class="item" href="{{ path('etude_progression_home', {'as': asec, 'regime': 'F'}) }}">
+                  {{ 'Centre de formation'|trans }}
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+        <a class="item" href="{{ path('etude_home', {'as': asec}) }}">
+          <h4 class="ui header"><span class="style-main-menu"><i class="book icon"></i> {{ 'Mémorisation de coran'|trans }}</span></h4>
+        </a>
+        <a class="item" href="{{ path('etude_examen', {'as': asec}) }}">
+          <h4 class="ui header"><span class="style-main-menu"><i class="settings icon"></i> {{ 'Examens'|trans }}</span></h4>
+        </a>
+        <a class="item" href="{{ path('etude_parametres', {'as': asec}) }}">
+          <h4 class="ui header"><span class="style-main-menu"><i class="settings icon"></i> {{ 'Paramètres'|trans }}</span></h4>
+        </a>
+        <div class="{{ dir2 }} item">
+          <div class="ui input">
+            <div class="ui simple dropdown item">
+              <span class="style-main-menu">{{ 'Mon compte perso'|trans }}
+                <i class="dropdown icon"></i>
+              </span>
+              <div class="menu">
+                <a class="item" href="{{ path('isi_account', {'as': asec}) }}">
+                  <i class="edit icon"></i> {{ 'Modifier mon profil'|trans }}
+                </a>
+                <a class="item" href="{{ path('msg_homepage') }}"><i class="envelope outline icon"></i> {{ 'Messages'|trans }}</a>
+                <a class="item" href="{{ path('isi_change_langue', {'as': asec, 'route': app.request.get('_route'), 'route_params': app.request.get('_route_params')}) }}">
+                  <i class="globe icon"></i> {{ 'Changer la langue'|trans }}</a>
+                <a class="item" href="{{ path('fos_user_security_logout') }}">
+                  <i class="sign out icon"></i> {{ 'Déconnexion'|trans }}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="main container">
+      <div class="ui hidden divider"></div>
+      <div class="ui internally celled grid">
+        <div class="row">
+          <div class="three wide column">
+            <div class="ui tertiary segment">
+              <p>{{ 'Année scolaire'|trans }}: <strong>{{ annee.libelleAnneeScolaire }}</strong></p>
+            </div>
+            <p>
+              {% if is_granted('ROLE_SUPER_ADMIN') %}
+                {{ 'Admin'|trans }}:
+              {% else %}
+                {{ 'Utilisateur'|trans }} :
+              {% endif %}
+              <a class="ui basic image label">
+                <img src="/markaz/web/images/elliot.jpg">
+                <strong>{{ app.user.username }}</strong>
+              </a>
+            </p>
+            {% block contextual_menu %}
+              
+            {% endblock %}
+          </div>
+          <div class="thirteen wide column">
+            <div class="ui container">
+              
+            </div>
+            {% block corps %}
+              {% block body %}
+              {% endblock %}
+            {% endblock %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+      col_0: 'none',
+      col_4: 'select',
+      col_6: 'none',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string',
+        'string', 'string', 'string',
+      ],
+      col_widths: [
+        '15px', '130px', '270px', , , '100px'
+      ],
+      extensions: [{ name: 'sort' }]
+    };
+
+    var tf = new TableFilter('table-ens', filtersConfig);
+    tf.init();
+  </script>
+  <script src="{{ asset('js/jquery-3.3.1.js') }}"></script>
+  <script src="{{ asset('../vendor/semantic/ui/dist/semantic.min.js') }}"></script>
+  <script>
+    $('document').ready(function(){
+      var id_livre;
+      $('.add-livre').on('click', function(){
+        id_livre = $(this).find(".id").val();
+        document.getElementById('form_livre').value = id_livre;
+        $('.ui.modal')
+          .modal({
+            blurring: true
+          })
+          .modal('show')
+        ;
+      });
+    });
+
+    $('document').ready(function(){
+      $('#isibundle_enseignement_matiere').on('change', function(){
+        console.log("C'est bon");
+        var matiere = 0; // initialisation de l'objet data
+        matiere  = $(this).val();
+        console.log(matiere)
+        var select = document.getElementById("isibundle_enseignement_livre");
+        select.length = 0;
+
+        $.ajax({
+          //url: lien,
+          url: Routing.generate('livres_de_la_matiere', { matiereId : matiere}),
+          type: 'GET',
+          success: function (result) {
+            if(result.length == 0)
+            {
+              var init = document.createElement("option");
+              init.value = 0;
+              init.text = 'Pas de livre';
+              select.add(init);
+            }
+            else{
+              var init = document.createElement("option");
+              init.value = 0;
+              init.text = 'Sélectionner un livre';
+              select.add(init);
+              for(var k in result) {
+                var option = document.createElement("option");
+                option.value = result[k].id;
+                option.text = result[k].name;
+                select.add(option, select[k]);
+              }
+            }
+          },
+          error: function (xhr, status, error) {
+            console.log(error)
+            var init = document.createElement("option");
+            init.value = 0;
+            init.text = 'Pas de livre disponible';
+            select.add(init);
+          }
+        });
+      });
+    });
+  </script>
+</html>

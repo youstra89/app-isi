@@ -1,0 +1,27 @@
+{# Page d'ajout d'un nouvel examen #}
+{% extends "ISIBundle:Examen:index.html.twig" %}
+{% block pageTitle %}
+    Tirer une fiche de note
+{% endblock %}
+
+{% block content %}
+<h3>{{ 'Impression des fiches de notes de'|trans }} {{ classe.libelleClasseFr }}</h3>
+
+<div class="well">
+    <div class="ui six cards">
+    {% for matiere in matieres %}
+        <div class="card">
+            <div class="content">
+                <div class="header">{{ matiere.libelleMatiere }}</div>
+                <div class="meta"></div>
+                <a href="{{path('isi_fiche_de_notes_d_une_matiere', {'as': asec, 'regime': regime, 'classeId': classe.classeId, 'matiereId': matiere.matiereId})}}">
+                  <div class="description">{{ 'Imprimer la fiche de notes'|trans }}</div>
+                </a>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+    {# {%  %} #}
+</div>
+
+{% endblock %}

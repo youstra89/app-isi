@@ -1,0 +1,50 @@
+{# Page d'édition de classe #}
+
+{% extends "ISIBundle:Parametres:index.html.twig" %}
+
+{% block pageTitle %}
+	Editer classe
+{% endblock %}
+
+{% block content %}
+	<h3>{{ 'Edition d\'une classe'|trans }}</h3>
+
+	<div class="ui form">
+		{{ form_start(form, {'attr': {'class': ''}}) }}
+			<div class="three fields">
+				<div class="field">
+					<label for="">
+						{{ form_label(form.libelleclassefr, "Libelle (en français)", {'label_attr': {'class': ''}}) }}
+						{{ form_errors(form.libelleclassefr) }}
+					</label>
+					<div class="">
+						{{ form_widget(form.libelleclassefr, {'attr': {'class': ''}}) }}
+					</div>
+				</div>
+				<div class="field">
+					<label for="">
+						{{ form_label(form.libelleclassear, "Libelle (en arabe)", {'label_attr': {'class': ''}}) }}
+						{{ form_errors(form.libelleclassear) }}
+					</label>
+					<div class="">
+						{{ form_widget(form.libelleclassear, {'attr': {'class': ''}}) }}
+					</div>
+				</div>
+				<div class="field">
+					<label for="">
+						{{ form_label(form.genre, "Genre", {'label_attr': {'class': ''}}) }}
+						{{ form_errors(form.genre) }}
+					</label>
+					<div class="">
+						{{ form_widget(form.genre, {'attr': {'class': ''}}) }}
+					</div>
+				</div>
+		    </div>
+
+		    {{ form_widget(form.update, {'attr': {'class': 'ui positive button'}}) }}
+
+	  	{{ form_end(form) }}
+      {{ form(form) }}
+	</div>
+
+{% endblock %}

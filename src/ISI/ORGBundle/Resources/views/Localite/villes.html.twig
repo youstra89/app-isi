@@ -1,0 +1,96 @@
+{% extends 'ORGBundle:Localite:index.html.twig'%}
+
+
+{% block stylesheets %}
+{% endblock %}
+
+
+{% block title 'Villes enregistrées' %}
+
+
+{% block notification %}
+  {% for message in app.session.flashbag.get('error') %}
+  <div class="ui red message">
+    <div class="header">{{ 'Attention'|trans }} !!! </div>
+    <ul class="list">
+      <li>{{ message }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+  {% for message in app.session.flashbag.get('info') %}
+  <div class="ui green message">
+    <div class="header">{{ 'Notification'|trans }}: </div>
+    <ul class="list">
+      <li>{{ message }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+{% endblock %}
+
+
+{% block body %}
+  <h2>Villes enregistrées</h2>
+  <div class="uk-hidden@s">
+    <p uk-margin>
+      <a class="uk-button uk-button-default" href="{{ path('ville.add', {'as': asec}) }}">Ajouter</a>
+    </p>
+  </div>
+  <table class="uk-table uk-table-small uk-table-divider" id="villes">
+    <thead>
+      <tr>
+        <th>N°</th>
+        <th>Nom</th>
+        <th>Région</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% set i = 0 %}
+      {% for ville in villes %}
+        {% set i = i + 1 %}
+        <tr>
+          <td>{{ i }}</td>
+          <td>{{ ville.nom }}</td>
+          <td>{{ ville.region.nom }}</td>
+          <td>
+            <a href="{{ path('ville.edit', {as: asec, id: ville.id}) }}" data-tooltip="Editer la ville"><i class="edit icon"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="{{ path('commune.add', {as: asec, villeId: ville.id}) }}"  data-tooltip="Ajouter une commune à cette ville"><i class="plus icon"></i></a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+
+
+{% block javascript %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+      col_0: 'none',
+      col_2: 'select',
+      col_3: 'none',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string',
+        'string', 'string', 'string',
+      ],
+      col_widths: [
+        '25px', '330px', '270px'
+      ],
+      extensions: [{ name: 'sort' }]
+    };
+
+    var tf = new TableFilter('villes', filtersConfig);
+    tf.init();
+  </script>
+{% endblock %}

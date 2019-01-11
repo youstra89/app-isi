@@ -1,0 +1,70 @@
+{% extends "ENSBundle:Enseignant:layout.html.twig" %}
+
+{% block title %}
+  Index Discipline
+{% endblock %}
+
+{% block contextual_menu %}
+  {% if is_granted('ROLE_SUPER_ADMIN') %}
+      {# {{ include("ISIBundle:Discipline:contextual-menu-panel-admin.html.twig") }} #}
+  {% elseif is_granted('ROLE_ADMIN_ANNEXE') %}
+      <div class="ui vertical menu">
+        <div class="item">
+          <div class="header">{{ 'Gestion des élèves'|trans }}</div>
+          <div class="menu">
+            {# Cette partie permet de voir la liste de tous les élèves de la l'institut #}
+            <a class="item" href="{{path('isi_homepage')}}">{{ 'Elèves'|trans }}</a>
+          </div>
+        </div>
+      </div>
+  {% else %}
+    {{ include("ISIBundle::contextual-menu-user.html.twig") }}
+  {% endif %}
+{% endblock %}
+
+{% block titre_page %}
+  <i class="american sign language interpreting icon"></i>{{ 'Discipline - Conduites'|trans }}
+{% endblock %}
+
+{% block corps %}
+    <h2>{{ 'Enregistrement de conduite pour un enseignant'|trans }}</h2><br />
+    {% if anneeContrats is not defined %}
+        <p>{{ 'Aucun enseignant n\'a encore été inscrit'|trans }}</p>
+    {% else %}
+        <div class="ui four cards">
+          {% set i = 0 %}
+          {% for contrat in anneeContrats %}
+            {% set image = "" %}
+            {% set i = i + 1 %}
+            {% if contrat.getContrat.getEnseignant.getSexe == 1 %}
+              {% set image = "/markaz/web/images/mark.png" %}
+            {% else %}
+              {% set image = "/markaz/web/images/molly.png" %}
+            {% endif %}
+            <div class="card">
+              <div class="content">
+                <img class="right floated mini ui image" src="{{ image }}">
+                <div class="header">
+                  {{ contrat.getContrat.getEnseignant.getNomFr }} {{ contrat.getContrat.getEnseignant.getPnomFr }}
+                </div>
+                <div class="meta">
+                  {{ contrat.getContrat.getEnseignant.getMatricule }}
+                </div>
+                <div class="description">
+                  Elliot requested permission to view your contact details
+                </div>
+              </div>
+              <div class="extra content">
+                <div class="ui two buttons">
+                  <a class="ui basic green button" href="{{ path('ens_voir_conduite',{'as': asec, 'contratId': contrat.getContrat.getId} ) }}">{{ 'Voir'|trans }}</a>
+                  <a class="ui basic red button" href="{{ path('ens_enregistrement_conduite',{'as': asec, 'contratId': contrat.getContrat.getId} ) }}">{{ 'Ajouter'|trans }}</a>
+                </div>
+              </div>
+            </div>
+          {% endfor %}<!-- Fin for enseignant in enseignants -->
+        </div>
+    {% endif %}
+    <div class="ui cards">
+      
+    </div>
+{% endblock %}

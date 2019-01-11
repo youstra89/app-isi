@@ -1,0 +1,74 @@
+{# On affiche toues les classes d'un niveau de formation. On sélectionne alors une classe pour aller saisir les notes #}
+
+{% extends 'ISIBundle:Scolarite:index.html.twig' %}
+
+{% block pageTitle %}
+  Heures enregistrées | Home
+{% endblock %}
+
+
+{% block content %}
+  {% set grp = '' %}
+  {% if regime is same as('A') %}
+    {% set grp = 'Académie' %}
+  {% else %}
+    {% set grp = 'Formation' %}
+  {% endif %}
+  <h3>{{ 'Voir les heures d\'absence enregistrées'|trans }} : {{grp}}</h3>
+  {# Cas de fiches de notes déjà éditées #}
+    {% for message in app.session.flashbag.get('error') %}
+      <div class="ui red message">
+        <div class="header">{{ 'Attention'|trans }} !!! </div>
+        <ul class="list">
+          <li>{{ message }}</li>
+        </ul>
+      </div>
+    {% endfor %}
+    {% for message in app.session.flashbag.get('info') %}
+      <div class="ui green message">
+        <div class="header">{{ 'Notification'|trans }}: </div>
+        <ul class="list">
+          <li>{{ message }}.</li>
+        </ul>
+      </div>
+    {% endfor %}
+  {# Fin des notifications #}
+{% if classes is empty %}
+  <p>{{ 'Pas de classes pour le moment'|trans }}</p>
+{% else %}
+  {% for niveau in niveaux %}
+  <h4>{{niveau.getLibelleFr}}</h4>
+    <div class="ui four cards">
+      {% for classe in classes %}
+        {% if classe.getNiveau.getGroupeFormation.getReferenceGrp is same as(regime) and niveau.id == classe.niveau.id %}
+          <div class="card">
+            <div class="content">
+              <img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
+              <div class="header">{{ classe.getLibelleClasseFr }}</div>
+              <div class="meta">{{ classe.getNiveau.getGroupeFormation.getLibelleFr }}</div>
+              <div class="description"></div>
+            </div>
+            <div class="extra content">
+              {% if regime == 'A' %}
+                <div class="ui two buttons">
+                  <a href="{{path('isi_heures_absences_enregistrees', {'as': asec, 'regime': regime, 'classeId': classe.classeId, 'absence': 'Cours'})}}">
+                    <div class="ui basic green button">{{ 'Cours'|trans }}</div>
+                  </a>
+                  <a href="{{path('isi_heures_absences_enregistrees', {'as': asec, 'regime': regime, 'classeId': classe.classeId, 'absence': 'Coran'})}}">
+                    <div class="ui basic blue button">{{ 'Qur\'an'|trans }}</div>
+                  </a>
+                </div>
+              {% else %}
+                <a href="{{path('isi_heures_absences_enregistrees', {'as': asec, 'regime': regime, 'classeId': classe.classeId, 'absence': 'Cours'})}}">
+                  <div class="ui basic green button">{{ 'Cours'|trans }}</div>
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}<!-- Fin for classe in classes -->
+    </div>
+    <br />
+  {% endfor %}<!-- Fin for niveau in niveuax -->
+{% endif %}
+{% endblock %}

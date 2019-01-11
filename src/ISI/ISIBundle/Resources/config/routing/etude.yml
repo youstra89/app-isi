@@ -1,0 +1,135 @@
+#------------------------------- DEBUT DES ROUTES ETUDE -----------------------------------
+etude_home:
+    path:     /etude-{as}.html
+    defaults: { _controller: ISIBundle:Etude:index }
+    requirements:
+        as: \d+
+
+
+etude_progression_home:
+    path:     /accueil-des-progressions-de-l-annee-{as}-{regime}.html
+    defaults: { _controller: ISIBundle:Etude:progressionAccueil }
+    requirements:
+        as:     \d+
+        regime: A|F
+
+etude_niveaux_matieres:
+    path:     /les-matieres-des-differents-niveaux-{as}-{regime}.html
+    defaults: { _controller: ISIBundle:Etude:niveauxMatieres }
+    requirements:
+        as:     \d+
+        regime: A|F
+
+# Liaison des matières aux niveaux de formation
+etude_lier_niveaux_matieres:
+    path:     /lier-les-matieres-aux-niveaux-de-formation-{as}-{regime}-{niveauId}.html
+    defaults: { _controller: ISIBundle:Etude:lierNiveauxMatieres }
+    requirements:
+        as:       \d+
+        regime:   A|F
+        niveauId: \d+
+
+etude_parametres:
+    path:     /parametres-{as}.html
+    defaults: { _controller: ISIBundle:Etude:parametres }
+    requirements:
+        as: \d+
+
+# Accueil des niveaux
+etude_gestion_niveaux:
+    path:     /gestion-des-niveaux-de-formation-{as}-{regime}.html
+    defaults: { _controller: ISIBundle:Etude:lesNiveaux }
+    requirements:
+        as:     \d+
+        regime: A|F
+
+#Ajout de niveau de formation
+etude_nouveau_niveau:
+    path:     /ajout-de-niveau-{as}-{regime}.html
+    defaults: { _controller: ISIBundle:Etude:addNiveau }
+    requirements:
+        as:     \d+
+        regime: A|F
+
+# Edition de niveau
+etude_edit_niveau:
+    path:     /edition-de-niveau-{as}-{niveauId}-{regime}.html
+    defaults: { _controller: ISIBundle:Etude:editNiveau }
+    requirements:
+        as:     \d+
+        niveau: \d+
+        regime: A|F
+
+#
+etude_livres_etudies:
+    path:     /les-livres-etudies-{as}.html
+    defaults: { _controller: ISIBundle:Etude:indexLivres }
+    requirements:
+        as: \d+
+
+#
+etude_nouveau_livre:
+    path:     /ajout-d-un-nouveau-livre-a-etudier-{as}.html
+    defaults: { _controller: ISIBundle:Etude:addLivre }
+    requirements:
+        as: \d+
+
+#
+etude_editer_livre:
+    path:     /edition-d-un-livre-{as}-{livreId}.html
+    defaults: { _controller: ISIBundle:Etude:editLivre }
+    requirements:
+        as:      \d+
+        livreId: \d+
+
+
+# Pour voir les matières d'un niveau
+etude_liste_niveaux_matieres:
+    path:     /voir-liste-des-matieres-du-niveaux-{as}-{niveauId}-{regime}.html
+    defaults: { _controller: ISIBundle:Etude:listeMatieresNiveaux }
+    requirements:
+        as:       \d+
+        niveauId: \d+
+        regime:   A|F
+
+#(((((((((((((((( MATIERES ))))))))))))))))
+etude_gestion_matieres:
+    path:     /gestion-des-matieres/{as}.html
+    defaults: { _controller: ISIBundle:Etude:lesMatieres }
+    requirements:
+        as:     \d+
+
+etude_nouvelle_matiere:
+    path:     /ajout-de-matiere/{as}.html
+    defaults: { _controller: ISIBundle:Etude:addMatiere }
+    requirements:
+        as: \d+
+
+etude_edit_matiere:
+    path:     /edition-de-matiere-{as}-{matiereId}.html
+    defaults: { _controller: ISIBundle:Etude:editMatiere }
+    requirements:
+        as: \d+
+
+# Accueil
+etude_examen:
+    path:     /examen-{as}.html
+    defaults: { _controller: ISIBundle:Etude:examen }
+    requirements:
+        as: \d+
+
+# Ajout d'examen
+etude_add_examen:
+    path:     /parametres/add-new-examen-{as}.html
+    defaults: { _controller: ISIBundle:Etude:addExamen }
+    requirements:
+        as: \d+
+
+livres_de_la_matiere:
+    path:     /les-livres-de-la-matiere-{matiereId}.html
+    defaults: { _controller: ISIBundle:Etude:lesLivresDeLaMatiere }
+    requirements:
+        matiereId: \d+
+    options:
+        expose: true
+#-------------------------------- FIN DES ROUTES ETUDE -----------------------------------

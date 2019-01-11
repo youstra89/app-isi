@@ -1,0 +1,90 @@
+{# On affiche toues les classes d'un niveau de formation. On sélectionne alors une classe pour aller saisir les notes #}
+
+{% extends 'ISIBundle:Scolarite:index.html.twig' %}
+
+{% block pageTitle %}
+  Résultats annuels {{ classe.libelleClasseFr }}
+{% endblock %}
+
+{% block content %}
+  {% set grp = '' %}
+  {% if regime is same as('A') %}
+    {% set grp = 'Académie' %}
+  {% else %}
+    {% set grp = 'Formation' %}
+  {% endif %}
+  <h3>{{ 'Résultats annuels de'|trans }} {{ classe.libelleClasseFr }}</h3>
+    {% for message in app.session.flashbag.get('error') %}
+      <div class="ui red message">
+        <div class="header">{{ 'Attention'|trans }} !!! </div>
+        <ul class="list">
+          <li>{{ message }}</li>
+        </ul>
+      </div>
+    {% endfor %} 
+    {% for message in app.session.flashbag.get('error') %}
+      <div class="ui red message">
+        <div class="header">{{ 'Attention'|trans }} !!! </div>
+        <ul class="list">
+          <li>{{ message }}</li>
+        </ul>
+      </div>
+    {% endfor %}
+    <div class="ui cards">
+      {% if moyennesPretes == FALSE %}
+        <a class="ui card" href="{{ path('isi_classement_annuel', {'as': asec, 'regime': regime, 'classeId': classe.classeId}) }}">
+          <div class="content">
+            <div class="header">{{ 'Calcul des résultats annuels'|trans }}</div>
+            <div class="meta">
+              <span class="category">{{ 'Cliquez ici d\'abord pour calculer les moyennes annuels et faire le classement annuel'|trans }}</span>
+            </div>
+          </div>
+          <div class="extra content">
+            <div class="right floated author">
+              <img class="ui avatar image" src="/markaz/web/images/logoISI-x.png">
+            </div>
+          </div>
+        </a>
+      {% else %}
+        <a class="ui card" href="{{ path('isi_notes_des_deux_examens', {'as': asec, 'regime': regime, 'classeId': classe.classeId}) }}">
+          <div class="content">
+            <div class="header">{{ 'Les notes des examens'|trans }}</div>
+            <div class="meta">
+              <span class="category">{{ 'Vous verez le cumul (la somme) des notes des deux examens'|trans }}</span>
+            </div>
+          </div>
+          <div class="extra content">
+            <div class="right floated author">
+              <img class="ui avatar image" src="/markaz/web/images/logoISI-x.png">
+            </div>
+          </div>
+        </a>
+        <a class="ui card" href="{{ path('isi_classement_annuel', {'as': asec, 'regime': regime, 'classeId': classe.classeId}) }}">
+          <div class="content">
+            <div class="header">{{ 'Classement annuel'|trans }}</div>
+            <div class="meta">
+              <span class="category">{{ 'Ici, les résultats des deux examens sont pris en compte'|trans }}</span>
+            </div>
+          </div>
+          <div class="extra content">
+            <div class="right floated author">
+              <img class="ui avatar image" src="/markaz/web/images/logoISI-x.png">
+            </div>
+          </div>
+        </a>
+        <a class="ui card" href="{{ path('isi_statistiques_annuelles', {'as': asec, 'regime': regime, 'classeId': classe.classeId}) }}">
+          <div class="content">
+            <div class="header">{{ 'Les statistiques'|trans }}</div>
+            <div class="meta">
+              <span class="category">{{ 'Avoir un aperçu des données statistiques'|trans }}</span>
+            </div>
+          </div>
+          <div class="extra content">
+            <div class="right floated author">
+              <img class="ui avatar image" src="/markaz/web/images/logoISI-x.png">
+            </div>
+          </div>
+        </a>
+      {% endif %}
+    </div>
+{% endblock %}

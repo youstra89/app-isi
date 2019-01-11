@@ -1,0 +1,18 @@
+home_imams:
+    path:     /index-{as}
+    defaults: { _controller: ORGBundle:Imam:index }
+    requirements:
+        as: \d+
+
+imam.add:
+    path:     /ajouter-un-nouvel-imam-{as}
+    defaults: { _controller: ORGBundle:Imam:add }
+    requirements:
+        as: \d+
+
+imam.edit:
+    path:     /editer-informations-imam-{as}-{id}
+    defaults: { _controller: ORGBundle:Imam:edit }
+    requirements:
+        as: \d+
+        id: \d+

@@ -1,0 +1,31 @@
+Languematiere:
+    type: entity
+    table: languematiere
+    id:
+        referenceLangue:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            id: true
+            column: reference_langue
+            generator:
+                strategy: IDENTITY
+    fields:
+        libelleLangue:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: libelle_langue
+        dateSave:
+            type: datetime
+            nullable: false
+            column: date_save
+        dateUpdate:
+            type: datetime
+            nullable: false
+            column: date_update
+    lifecycleCallbacks: {  }

@@ -1,0 +1,47 @@
+{# Page d'ajout d'une nouvelle classe #}
+
+{% extends "ISIBundle:Parametres:index.html.twig" %}
+
+{% block pageTitle %}
+	Enregistrer classe
+{% endblock %}
+
+{% block content %}
+	<h3>{{ 'Enregistrement d\'une nouvelle classe'|trans }}</h3>
+
+	<div class="form-group">
+		{{ form_start(form, {'attr': {'class': 'ui form'}}) }}
+			<div class="two fields">
+				<div class="field">
+					<label for="">
+						{{ form_label(form.niveau, "Niveau", {'label_attr': {'class': ''}}) }}
+						{{ form_errors(form.niveau) }}
+					</label> {{ form_widget(form.niveau, {'attr': {'class': ''}}) }}
+				</div>
+				<div class="field">
+					<label for="">
+						{{ form_label(form.genre, "Genre", {'label_attr': {'class': ''}}) }}
+						{{ form_errors(form.genre) }}
+					</label> {{ form_widget(form.genre, {'attr': {'class': ''}}) }}
+				</div>
+			</div>
+			<div class="two fields">
+				<div class="field">
+					<label for="">
+						{{ form_label(form.libelleclassefr, "Libelle de la classe (en français)", {'label_attr': {'class': ''}}) }}
+						{{ form_errors(form.libelleclassefr) }}
+					</label> {{ form_widget(form.libelleclassefr, {'attr': {'class': '', 'placeholder': 'Libelle de la classe (en français)'}}) }}
+				</div>
+				<div class="field">
+					<label for="">
+						{{ form_label(form.libelleclassear, "Libelle de la classe (en arabe)", {'label_attr': {'class': ''}}) }}
+						{{ form_errors(form.libelleclassear) }}
+					</label> {{ form_widget(form.libelleclassear, {'attr': {'class': '', 'placeholder': 'Libelle de la classe (en arabe)'}}) }}
+				</div>
+			</div>
+
+			{{ form_widget(form.save, {'attr': {'class': 'ui primary button'}}) }}
+		{{ form_end(form) }}
+	</div>
+
+{% endblock %}

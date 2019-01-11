@@ -1,0 +1,60 @@
+{% extends "ENSBundle:Enseignant:layout.html.twig" %}
+
+{% block title %}
+  Enregistrement d'une convocation
+{% endblock %}
+
+{% block contextual_menu %}
+  {{ include("ENSBundle:Discipline:contextual-menu-convocation.html.twig") }}
+{% endblock %}
+
+{% block titre_page %}
+  <i class="american sign language interpreting icon"></i>{{ 'Discipline - Convocation'|trans }}
+{% endblock %}
+
+{% block corps %}
+  <h2>{{ 'Enregistrement d\'une nouvelle convocation'|trans }}</h2><br />
+  <div class="ui ordered horizontal list">
+    {% for contrat in contrats %}
+      {% if contrat.getEnseignant.getSexe == 1 %}
+        {% set image = "/markaz/web/images/mark.png" %}
+      {% else %}
+        {% set image = "/markaz/web/images/molly.png" %}
+      {% endif %}
+      <div class="item">
+        <img class="ui avatar image" src="{{ image }}">
+        <div class="content">
+          <div class="header">{{ contrat.getEnseignant.getNomFr }} {{ contrat.getEnseignant.getPnomFr }}</div>
+          {{ contrat.getEnseignant.getMatricule }}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  <br />
+  <br />
+  <div class="form-group">
+    {{ form_start(form, {'attr': {'class': 'ui form'}}) }}
+		<div class="two fields">
+			<div class="field">
+				<label for="">
+					 Date
+				</label>
+				<input type="date" name="date" required="required" />
+			</div>
+      <div class="field">
+				<label for="">
+					 {{ form_label(form.instance, "Description de la conduite", {'label_attr': {'class': ''}}) }}
+					 {{ form_errors(form.instance) }}
+				</label> {{ form_widget(form.instance, {'attr': {'class': 'description', 'placeholder': 'Choisir l\'instance',}}) }}
+			</div>
+		</div>
+		<div class="field">
+      <label for="">
+					 {{ form_label(form.motif, "Pour", {'label_attr': {'class': ''}}) }}
+					 {{ form_errors(form.motif) }}
+				</label> {{ form_widget(form.motif, {'attr': {'class': 'description', 'placeholder': 'Motif de la convocation'}}) }}
+		</div>
+    {{ form_widget(form.save, {'attr': {'class': 'ui primary button'}}) }}
+    {{ form_end(form) }}
+  </div>
+{% endblock %}

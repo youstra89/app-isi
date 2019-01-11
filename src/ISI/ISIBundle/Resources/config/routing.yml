@@ -1,0 +1,89 @@
+isi_homepage:
+    path:     /
+    defaults: { _controller: ISIBundle:Default:index }
+
+espace_eleve:
+    resource: "@ISIBundle/Resources/config/routing/espace-eleve.yml"
+    prefix:   /espace-eleve
+
+affaires_scolaires:
+    resource: "@ISIBundle/Resources/config/routing/affaires-scolaires.yml"
+    prefix:   /affaires-scolaires
+
+parametres:
+    resource: "@ISIBundle/Resources/config/routing/parametres.yml"
+    prefix:   /parametres
+
+internat:
+    resource: "@ISIBundle/Resources/config/routing/internat.yml"
+    prefix:   /internat
+
+etude:
+    resource: "@ISIBundle/Resources/config/routing/etude.yml"
+    prefix:   /etude
+
+#------------------------------------ ESPACE CORAN ---------------------------------------
+# Page d'accueil des l'espace coran, ceux qui ne font que mémoriser le coran
+isi_espace_coran_home:
+    path:     /espace-coran/home-{as}-{regime}.html
+    defaults: { _controller: ISIBundle:Coran:index }
+    requirements:
+        as: \d+
+        regime: C
+    
+#------------------------------ FIN DES ROUTES ESPACE CORAN ---------------------------------
+
+
+#--------------------------------------- GESTION DU PROFIL ---------------------------------------
+#Routes pour la gestion de son profil
+isi_account:
+    path:     /account/{as}/profile.html
+    defaults: { _controller: ISIBundle:Account:index }
+    requirements:
+        as: \d+
+
+#
+isi_change_langue:
+    path:     /changer-de-langue-{as}.html
+    defaults: { _controller: ISIBundle:Account:changerLangue }
+    requirements:
+        as: \d+
+
+#--------------------------------- FIN DES ROUTES GESTION DU PROFIL -----------------------------------
+
+
+
+#---------------------------------- COMPTE D'UTILISATEURE ----------------------------------
+isi_user:
+    path:     /admin/user/index-management/{as}
+    defaults: { _controller: ISIBundle:Admin:indexUsers }
+    requirements:
+        as: \d+
+
+add_roles_user:
+    path:     /admin/user/{as}/{userId}/add-roles-user.html
+    defaults: { _controller: ISIBundle:Admin:addRolesUser }
+    requirements:
+        as:     \d+
+        userId: \d+
+
+#---------------------- FIN DES ROUTES POUR LES COMPTES D'UTILISATEURE ---------------------
+
+#--------------------------------------- PANEL ADMIN ---------------------------------------
+#Routes pour la gestion de son profil
+admin_home:
+    path:     /admin-{as}.html
+    defaults: { _controller: ISIBundle:Admin:index }
+    requirements:
+        as: \d+
+#--------------------------------- FIN DES ROUTES PANEL ADMIN -----------------------------------
+
+
+
+#------------------------------- DEBUT DES ROUTES DIVERS -----------------------------------
+isi_home_note:
+    path:     /saisie-des-notes-{as}.html
+    defaults: { _controller: ISIBundle:Divers:index }
+    requirements:
+        as: \d+
+#-------------------------------- FIN DES ROUTES DIVERS -----------------------------------

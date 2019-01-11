@@ -1,0 +1,34 @@
+{# Page de gestion des classes #}
+
+{% extends "ISIBundle:Eleve:index.html.twig" %}
+
+{% block pageTitle %}
+  Changement de classe
+{% endblock %}
+
+{% block content %}
+  <h3>{{ 'Modifier l\'inscription d\'un élève dans une classe'|trans }}</h3>
+  <div class="ui hidden divider"></div>
+  {% if classes is empty %}
+    <p>{{ 'Aucune classe n\'a encore été enregistrée'|trans }}</p>
+  {% else %}
+    {% for niveau in niveaux %}
+    <h4>{{ niveau.getLibelleFr }} </h4>
+      <div class="ui five cards">
+        {% for classe in classes %}
+          {% if niveau.getId == classe.getNiveau.getId %}
+            <div class="card">
+                <div class="content">
+                    <div class="header">{{ classe.getLibelleClasseFr }}</div>
+                    <div class="meta"></div>
+                    <a href="{{path('isi_modifier_inscription_d_un_eleve', {'as': asec, 'regime': regime, 'classeId': classe.getClasseId})}}">
+                      <div class="description">{{ 'Accéder à la liste des élèves'|trans }}</div>
+                    </a>
+                </div>
+            </div>
+          {% endif %}
+        {% endfor %}<!-- Fin for classe in classes -->
+      </div>
+    {% endfor %}<!-- Fin for niveau in niveaux -->
+  {% endif %}<!-- Fin f=if classes empty -->
+{% endblock %}

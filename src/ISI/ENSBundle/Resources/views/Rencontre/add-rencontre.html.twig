@@ -1,0 +1,54 @@
+{% extends "ENSBundle:Enseignant:layout.html.twig" %}
+
+{% block title %}
+  Enregistrement de rencontre
+{% endblock %}
+
+{% block contextual_menu %}
+  {{ include("ENSBundle:Rencontre:contextual-menu-rencontre.html.twig") }}
+{% endblock %}
+
+{% block titre_page %}
+  <i class="handshake icon"></i>{{ 'Rencontres'|trans }}
+{% endblock %}
+
+{% block corps %}
+  <h2>{{ 'Enregistrement d\'une nouvelle rencontre'|trans }}</h2>
+  <div class="form-group">
+    {{ form_start(form, { 'attr': { 'class': 'ui form' }})}}
+      <div class="four fields">
+        <div class="field">
+          <label for="">
+            Date de la rencontre
+          </label>
+          <input type="date" name="date" />
+        </div>
+        <div class="field">
+          <label for="">
+            {{ form_label(form.type, "Type", {'label_attr': {'class': ''}}) }}
+            {{ form_errors(form.type) }}
+          </label> {{ form_widget(form.type, {'attr': {'class': ''}}) }}
+        </div>
+        <div class="field">
+          <label for="">
+            {{ form_label(form.lieu, "Lieu de la rencontre", {'label_attr': {'class': ''}}) }}
+            {{ form_errors(form.lieu) }}
+          </label> {{ form_widget(form.lieu, {'attr': {'class': ''}}) }}
+        </div>
+        <div class="field">
+          <label for="">
+            {{ form_label(form.duree, "Durée", {'label_attr': {'class': ''}}) }}
+            {{ form_errors(form.duree) }}
+          </label> {{ form_widget(form.duree, {'attr': {'class': ''}}) }}
+        </div>
+      </div>
+      <div class="field">
+        <label for="">
+          {{ form_label(form.theme, "Thème de la rencontre", {'label_attr': {'class': ''}}) }}
+          {{ form_errors(form.theme) }}
+        </label> {{ form_widget(form.theme, {'attr': {'class': ''}}) }}
+      </div>
+      {{ form_widget(form.save, {'attr': {'class': 'ui positive button'}}) }}
+    {{ form_end(form)}}
+  </div>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends 'ORGBundle:Converti:index.html.twig'%}
+
+
+{% block stylesheets %}
+{% endblock %}
+
+
+{% block title %}
+  Informations du converti {{ converti.nom }} {{ converti.pnom }}
+{% endblock %}
+
+
+
+{% block body %}
+  <h2>Informations du converti {{ converti.nom }} {{ converti.pnom }}</h2>
+  <form class="ui form">
+      <div class="three fields">
+        <div class="field">
+            <label for="">Nom</label>
+            {{ converti.nom }}
+        </div>
+        <div class="field">
+            <label for="">Prénom</label>
+            {{ converti.pnom }}
+        </div>
+        <div class="field">
+          <label for="">Sexe</label>
+          {{ converti.sexe }}
+        </div>
+      </div>
+      <div class="three fields">
+        <div class="field">
+            <label for="">Age à la conversion</label>
+            {% if converti.age is not empty %}
+              {{ converti.age }} ans
+            {% else %}
+              Inconnu
+            {% endif %}
+        </div>
+        <div class="field">
+            <label for="">Numéro de téléphone</label>
+            {{ converti.numero }}
+        </div>
+        <div class="field">
+          <label for="">Lieu de résidence</label>
+          {{ converti.residence }}
+        </div>
+      </div>
+      <div class="three fields">
+        <div class="field">
+            <label for="">Ancienne confession</label>
+            {{ converti.ancienneConfession }}
+        </div>
+        <div class="field">
+            <label for="">Profession</label>
+            {{ converti.profession }}
+        </div>
+        <div class="field">
+            <label for="">Date de conversion</label>
+            {{ converti.dateConversion|date('d-m-Y')}}
+        </div>
+      </div>
+      <div class="field">
+          <label for="">Commentaire sur la conversion</label>
+        {{ converti.commentaire }}
+      </div>
+  </form>
+{% endblock %}
+
+
+{% block javascripts %}
+{% endblock %}

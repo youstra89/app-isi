@@ -1,0 +1,48 @@
+{# Accueil pour l'édition des listes de classe' #}
+
+{% extends 'ISIBundle:Eleve:index.html.twig' %}
+
+{% block title %}
+  Changer regime | Home
+{% endblock %}
+
+{% block content %}
+  {% set grp = '' %}
+  {% if regime is same as('A') %}
+    {% set grp = 'Académie' %}
+  {% else %}
+    {% set grp = 'Centre de formation' %}
+  {% endif %}
+  {% for message in app.session.flashbag.get('info') %}
+    <div class="ui green message">
+      <div class="header">{{ 'Notification'|trans }}: </div>
+      <ul class="list">
+        <li>{{ message }}</li>
+      </ul>
+    </div>
+  {% endfor %} {% for message in app.session.flashbag.get('error') %}
+    <div class="ui red message">
+      <div class="header">{{ 'Attention'|trans }} !!! </div>
+      <ul class="list">
+        <li>{{ message }}</li>
+      </ul>
+    </div>
+  {% endfor %}
+  <h3>{{ 'Regime de formation'|trans }} : {{ grp }}</h3>
+  <a href="{{ path('isi_eleves_renvoyes', { 'as': asec, 'regime': regime }) }}">{{ 'Liste des élèves ayant changé de regime'|trans }}</a>
+  <div class="ui raised very padded text container segment">
+    <center>
+      <h3>{{ 'Entrez le matricule de l\'élève dont vous voulez changer le regime et appuyez sur la touche "Entrée"'|trans }}</h3>
+      <form action="" method="post">
+        <input type="text" name="matricule" id="tags" placeholder="ISI-0555KG-17" style="font-size: 3em; text-align: center; border-radius: 5px" />
+        <input type="hidden" id="regime" value="{{ regime }}">
+      </form>
+    </center>
+  </div>
+  <div id="DivInfo" style="display: none;">
+    DivInfo
+  </div>
+  {% if (js is defined) %}
+    {{ js|raw }}
+  {% endif %}
+{% endblock %}

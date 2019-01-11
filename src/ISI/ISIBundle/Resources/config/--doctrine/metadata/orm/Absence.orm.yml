@@ -1,0 +1,69 @@
+Absence:
+    type: entity
+    table: absence
+    indexes:
+        eleve_id:
+            columns:
+                - eleve_id
+        annee_scolaire_id:
+            columns:
+                - annee_scolaire_id
+        reference_mois:
+            columns:
+                - reference_mois
+    uniqueConstraints:
+        absence:
+            columns:
+                - reference_mois
+                - eleve_id
+                - annee_scolaire_id
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        referenceMois:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: reference_mois
+        eleveId:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            column: eleve_id
+        heureAbsence:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: heure_absence
+        dateSave:
+            type: datetime
+            nullable: false
+            column: date_save
+        dateUpdate:
+            type: datetime
+            nullable: false
+            column: date_update
+    manyToOne:
+        anneeScolaire:
+            targetEntity: Anneescolaire
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                annee_scolaire_id:
+                    referencedColumnName: annee_scolaire_id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

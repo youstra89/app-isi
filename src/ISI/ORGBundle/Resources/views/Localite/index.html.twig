@@ -1,0 +1,44 @@
+{# templates/lucky/number.html.twig #}
+{% extends 'ORGBundle::layout.html.twig'%}
+
+
+{% block title 'Administration des localités' %}
+
+
+{% block contextual_menu %}
+  <div class="ui vertical menu">
+    <div class="item">
+      <div class="header">{{ 'Régions'|trans }}</div>
+      <div class="menu">
+        <a class="item" href="{{ path('regions', {'as': asec}) }}">Liste</a>
+        <a class="item" href="{{ path('region.add', {'as': asec}) }}">Ajouter</a>
+      </div>
+    </div>
+    <div class="item">
+      <div class="header">{{ 'Villes'|trans }}</div>
+      <div class="menu">
+        <a class="item" href="{{ path('villes', {'as': asec}) }}">Liste</a>
+        <a class="item" href="{{ path('ville.add', {'as': asec}) }}">Ajouter</a>
+      </div>
+    </div>
+    <div class="item">
+      <div class="header">{{ 'Communes'|trans }}</div>
+      <div class="menu">
+        <a class="item" href="{{ path('communes', {'as': asec}) }}">Liste</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+
+{% block titre_page %}
+  <i class="location arrow icon"></i>{{ 'Localités'|trans }}
+{% endblock %}
+
+
+{% block body %}
+{% endblock %}
+
+
+{% block javascripts %}
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends 'ORGBundle:Mosquee:index.html.twig'%}
+
+
+{% block stylesheets %}
+{% endblock %}
+
+
+{% block title %}
+  Informations sur la mosquée {{ mosquee.nom }} à {{ mosquee.commune.nom }}
+{% endblock %}
+
+
+
+{% block body %}
+  <h2>Informations sur la mosquée {{ mosquee.nom }} à {{ mosquee.commune.nom }}</h2>
+  <form class="ui form">
+      <div class="four fields">
+        <div class="field">
+            <label for="">Nom de la mosquée</label>
+            {{ mosquee.nom }}
+        </div>
+        <div class="field">
+            <label for="">Commune</label>
+            {{ mosquee.commune.nom }}
+        </div>
+        <div class="field">
+            <label for="">Quartier</label>
+            {{ mosquee.quartier }}
+        </div>
+        <div class="field">
+            <label for="">Année de construction</label>
+            {% if mosquee.djoumoua is not empty %}
+              {{ mosquee.anneeConstruction }}
+            {% else %}
+              Inconnue
+            {% endif %}
+        </div>
+      </div>
+      <div class="four fields">
+        <div class="field">
+            <label for="">Nom de l'imam</label>
+            {{ mosquee.imam.nom }} {{ mosquee.imam.pnom }}
+        </div>
+        <div class="field">
+            <label for="">Nom de responsable</label>
+            {% if mosquee.responsable is not empty %}
+              {{ mosquee.responsable }}
+            {% else %}
+              Pas de responsable
+            {% endif %}
+        </div>
+        <div class="field">
+            <label for="">Numéro du responsable</label>
+            {{ mosquee.numeroResponsable }}
+        </div>
+        <div class="field">
+            <label for="">Office du vendredi</label>
+            {% if mosquee.djoumoua == true %}
+              Oui
+            {% else %}
+              Non
+            {% endif %}
+        </div>
+      </div>
+      <div class="field">
+          <label for="">Description</label>
+          {% if mosquee.description is not empty %}
+            {{ mosquee.description }}
+          {% else %}
+            Pas de description
+          {% endif %}
+      </div>
+    </div><br>
+  </form>
+{% endblock %}
+
+
+{% block javascripts %}
+{% endblock %}

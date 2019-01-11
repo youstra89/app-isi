@@ -1,0 +1,10 @@
+services:
+#    user.example:
+#        class: UserBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]
+
+    # user.registration.form.type:
+    #     class: UserBundle\Form\RegistrationFormType
+    #     arguments: [% fos_user.model.user.class %]
+    #     tags:
+    #         - { nomUser: form.type, alias: user_registration }

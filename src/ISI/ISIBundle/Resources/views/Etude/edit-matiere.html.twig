@@ -1,0 +1,44 @@
+{# Page d'édition d'une matière #}
+
+{% extends "ISIBundle:Etude:index.html.twig" %}
+
+{% block pageTitle %}
+	Editer matière
+{% endblock %}
+
+{% block contextual_menu %}  
+    {% include('ISIBundle:Etude:contextual-menu-parametres.html.twig') %}
+{% endblock %}
+
+{% block head %}
+	<div class="ui {{ dir2 }} aligned segment">
+		<h1 class="ui header">
+			<i class="student icon"></i>{{ 'Matières'|trans }}
+		</h1>
+	</div>
+{% endblock %}
+
+{% block content %}
+	<h3>{{ 'Edition de matière'|trans }}</h3>
+
+	<div class="well">
+		{{ form_start(form, {'attr': {'class': 'ui form'}}) }}
+			<div class="form-group">
+				<div class="two fields">
+					<div class="field">
+						<label>
+							{{ form_label(form.libelleMatiere, "Libellé de la matière", {'label_attr': {'class': ''}}) }}
+							{{ form_errors(form.libelleMatiere) }}
+						</label>
+						<div class="">
+							{{ form_widget(form.libelleMatiere, {'attr': {'class': ''}}) }}
+						</div>
+					</div>
+				</div>
+		    </div>
+
+		    {{ form_widget(form.update, {'attr': {'class': 'ui primary button'}}) }}
+	  	{{ form_end(form) }}
+	</div>
+
+{% endblock %}

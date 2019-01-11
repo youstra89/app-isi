@@ -1,0 +1,61 @@
+{# On affiche toues les classes d'un niveau de formation. On sélectionne alors une classe pour aller saisir les notes #}
+{% extends 'ISIBundle:Scolarite:index.html.twig' %}
+
+{% block pageTitle %}
+  Accueil Statistiques
+{% endblock %}
+
+
+{% block content %}
+  {% set grp = '' %}
+  {% if regime is same as('A') %}
+    {% set grp = 'Académie' %}
+  {% else %}
+    {% set grp = 'Formation' %}
+  {% endif %}
+  <h3>{{ 'Données statistiques d\'examen'|trans }} : {{grp}}</h3>
+    {% for message in app.session.flashbag.get('error') %}
+      <div class="ui red message">
+        <div class="header">{{ 'Attention'|trans }} !!! </div>
+        <ul class="list">
+          <li>{{ message }}</li>
+        </ul>
+      </div>
+    {% endfor %}
+    {% for message in app.session.flashbag.get('info') %}
+      <div class="ui green message">
+        <div class="header">{{ 'Notification'|trans }}: </div>
+        <ul class="list">
+          <li>{{ message }}.</li>
+        </ul>
+      </div>
+    {% endfor %}
+    {# Fin des notifications #}
+
+    <form action="" class="ui form" method="post">
+      {# <div class="field">
+        <label for="">
+           {{ form_label(form.niveau, "Niveau", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.niveau) }}
+        </label>{{ form_widget(form.niveau, {'attr' : {'class' : 'niveauclass'}}) }}
+      </div> #}
+      <div class="two fields">
+        <div class="field">
+          <label for="examen">{{ 'Examen'|trans }}</label>
+          <select name="examen" id="examen">
+            <option value="">{{ 'Sélectionner un examen'|trans }}</option>
+            {% for examen in examens %}
+              <option value="{{ examen.examenId }}">{{examen.libelleFr}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        {# <div class="field">
+          <label for="">
+           {{ form_label(form.examen, "Examen") }}
+           {{ form_errors(form.examen) }}
+        </label>{{ form_widget(form.examen) }}
+        </div> #}
+      </div>
+      <input type="submit" class="ui primary button" value="    Voir les données statistiques    " name="submit">
+    </form>
+{% endblock %}

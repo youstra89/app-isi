@@ -1,0 +1,160 @@
+{# Accueil pour l'édition des listes de classe' #}
+
+{% extends 'ISIBundle:Eleve:index.html.twig' %}
+
+{% block title %}
+  Home renvoi
+{% endblock %}
+
+{% block content %}
+  {% set grp = '' %}
+  {% if regime is same as('A') %}
+    {% set grp = 'Académie' %}
+  {% else %}
+    {% set grp = 'Centre de formation' %}
+  {% endif %}
+  {% for message in app.session.flashbag.get('info') %}
+    <div class="ui green message">
+      <div class="header">{{ 'Notification'|trans }}: </div>
+      <ul class="list">
+        <li>{{ message }}</li>
+      </ul>
+    </div>
+  {% endfor %}
+  {% for message in app.session.flashbag.get('error') %}
+    <div class="ui red message">
+      <div class="header">{{ 'Attention'|trans }} !!! </div>
+      <ul class="list">
+        <li>{{ message }}</li>
+      </ul>
+    </div>
+  {% endfor %}
+  <center>
+    <form class="ui form" action="{{ path('isi_renvoi', { 'as': asec, 'regime': regime, 'eleveId': eleve.eleveId }) }}" method="post">
+      <button class="negative ui button">
+        <i class="minus icon"></i>
+        {{ 'Renvoyer'|trans }} {{ eleve.nomFr }} {{ eleve.pnomFr }}
+      </button><br />
+      <label for="">{{ 'Motif du renvoi'|trans }}</label>
+      <textarea name="motifRenvoi" rows="2" cols="30"></textarea>
+    </form>
+  </center><br>
+  <div>
+    <h2 class="ui horizontal divider header">
+      <i class="tag icon"></i>
+      {{ 'Identification personnelle'|trans }}
+    </h2>
+    <center>
+      <h2>
+        <font color="red">{{ eleve.matricule }}</font>
+      </h2>
+    </center>
+    <br>
+    <div class="ui two column doubling stackable grid container">
+      <div class="column">
+        <table>
+          <tr>
+            <td>
+              <strong>{{ 'Nom'|trans }} : </strong>
+            </td>
+            <td>{{ eleve.nomFr }}</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>{{ 'Prénom'|trans }} : </strong>
+            </td>
+            <td>{{ eleve.pnomFr }}</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>{{ 'Sexe'|trans }} : </strong>
+            </td>
+            {% if eleve.sexeFr == 1 %}
+            <td>{{ 'Homme'|trans }}</td>
+            {% else %}
+            <td>{{ 'Femme'|trans }}</td>
+            {% endif %}
+          </tr>
+          <tr>
+            <td>
+              <strong>{{ 'Date de naissance'|trans }} : </strong>
+            </td>
+            <td>{{ eleve.dateNaissance|date("d-m-Y") }} à {{ eleve.lieuNaissance }} </td>
+          </tr>
+          <tr>
+            <td>
+              <strong>{{ 'Référence extrait de naissance'|trans }} : </strong>
+            </td>
+            <td>{{ eleve.refExtrait }} </td>
+          </tr>
+        </table>
+      </div>
+      <div class="column">
+        <table>
+          <tr>
+            <td>
+              <strong>{{ 'Nationalité'|trans }} : </strong>
+            </td>
+            <td>{{ eleve.nationalite }}</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>{{ 'Résidence'|trans }} : </strong>
+            </td>
+            <td>{{ eleve.commune }} {{ eleve.residence }}</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>{{ 'Etablissement d\'origine'|trans }} : </strong>
+            </td>
+            <td>{{ eleve.etsOrigine }}</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>{{ 'Contact'|trans }} : </strong>
+            </td>
+            <td>{{ eleve.contact }} </td>
+          </tr>
+          <tr>
+            <td>
+              <strong></strong>
+            </td>
+            <td></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <h2 class="ui horizontal divider header">
+      <i class="student icon"></i>
+      {{ 'Scolarité'|trans }}
+    </h2>
+    <div>
+      <table align="center" width="25%">
+        <tr>
+          <td>
+            <strong>{{ 'Classe'|trans }} : </strong>
+          </td>
+          <td>
+            {% if fq is not empty %}
+              {{ fq.classe.libelleClasseFr }}
+            {% else %}
+              Pas inscrit(e)
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>{{ 'Contact'|trans }}</strong>
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            <strong>{{ 'Profession'|trans }}</strong>
+          </td>
+          <td></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+{% endblock %}

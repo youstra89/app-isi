@@ -1,0 +1,20 @@
+{{ form_start(form, { 'attr': {'class': 'ui form'} }) }}
+      <div class="two fields">
+        <div class="field">
+          <label for="">
+             {{ form_label(form.nom, "Nom de la région", {'label_attr': {'class': ''}}) }}
+             {{ form_errors(form.nom) }}
+          </label>
+           {{ form_widget(form.nom, {'attr': {'class': '', 'placeholder': 'Le nom de la région'}}) }}
+        </div>
+        <div class="field">
+          <label for="">
+             {{ form_label(form.localisation, "Localisation", {'label_attr': {'class': ''}}) }}
+             {{ form_errors(form.localisation) }}
+          </label>
+           {{ form_widget(form.localisation) }}
+        </div>
+      </div>
+  {{ form_rest(form) }}
+  <button class="ui primary button">{{ button|default('Enregistrer') }}</button>
+{{ form_end(form) }}

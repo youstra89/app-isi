@@ -1,0 +1,75 @@
+{# Page de gestion des niveaux #}
+
+{% extends "ISIBundle:Etude:index.html.twig" %}
+
+{% block pageTitle %}
+	Gestion des niveaux
+{% endblock %}
+
+{% block contextual_menu %}  
+    {% include('ISIBundle:Etude:contextual-menu-parametres.html.twig') %}
+{% endblock %}
+
+{% block head %}
+	<div class="ui {{ dir2 }} aligned segment">
+		<h1 class="ui header">
+			<i class="settings icon"></i>{{ 'PARAMETRES'|trans }}
+		</h1>
+	</div> 
+{% endblock %}
+
+{% block content %}
+	{% set grp = '' %}
+	{% if regime is same as ('A') %}
+			{% set grp = 'Academie' %}
+	{% else %}
+			{% set grp = 'Formation' %}
+	{% endif %}
+	<h3>{{ 'Gestion des niveaux'|trans }} - {{ grp }} </h3>
+  <a href="{{ path('etude_nouveau_niveau', {'as': asec,  'regime': regime}) }}">
+    <button class="positive ui button">
+      <i class="plus icon"></i>
+      {{ 'Ajouter un niveau'|trans }}
+    </button>
+  </a>
+	{% if niveaux is empty %}
+		<p>{{ 'Aucun niveau n\'a encore été enregistré'|trans }}</p>
+	{% else %}
+	<br><br>
+	<div style="width:70%">
+		<center>
+			<table class="ui selectable very basic table">
+				<thead>
+					<tr>
+						<th>Niveaux</th>
+						<th>المستوى</th>
+						<th class="two wide">{{ 'Actions'|trans }}</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for niveau in niveaux %}
+						<tr>
+							<td>
+								<h4 class="ui image header">{{ niveau.libelleFr }}</h4>
+							</td>
+							<td>
+								<h4 class="ui image header">{{ niveau.libelleAr }}</h4>
+							</td>
+							<td>
+								
+									<a href="{{ path('etude_edit_niveau', {'as': asec, 'niveauId': niveau.id, 'regime': regime}) }}">
+										<i class="edit icon"></i>
+									</a>
+									<a>
+										<i class="delete icon"></i>
+									</a>
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</center>
+	</div>
+	{% endif %}
+
+{% endblock %}

@@ -1,0 +1,13 @@
+{{ form_start(form, { 'attr': {'class': 'ui form'} }) }}
+    <div class="two fields">
+      <div class="field">
+          {{ form_row(form.nom, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+
+      <div class="field">
+        {{ form_row(form.region, { 'attr': {'class': 'uk-select'} }) }}
+      </div>
+    </div>
+  {{ form_rest(form) }}
+  <button class="ui primary button">{{ button|default('Enregistrer') }}</button>
+{{ form_end(form) }}

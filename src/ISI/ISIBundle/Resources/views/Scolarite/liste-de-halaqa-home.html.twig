@@ -1,0 +1,89 @@
+{# Page de gestion des classes #}
+{% set template = "" %}
+{% if regime == 'C' %}
+  {% set template = 'ISIBundle:Coran:index.html.twig' %}
+{% else %}
+  {% set template = 'ISIBundle:Eleve:index.html.twig' %}
+{% endif %}
+{% extends template %}
+
+{% block pageTitle %}
+  Gestion des halaqa
+{% endblock %}
+
+{% block content %}
+  <h3>{{ 'Gestion des halaqas'|trans }}</h3>
+  <div class="ui hidden divider"></div>
+  {% if halaqas is empty %}
+    <p>{{ 'Aucune classe n\'a encore été enregistrée'|trans }}</p>
+  {% else %}
+    <div class="column" style="width:75%">
+      <table class="ui selectable very basic table" id="halaqas">
+        <thead>
+          <tr>
+            <th width="10%">N°</th>
+            <th>Halaqa</th>
+            <th>Genre</th>
+            <th class="two wide">{{ 'Actions'|trans }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% set numero = 0 %}
+          {% for halaqa in halaqas %}
+            {% set numero = numero + 1 %}
+            <tr>
+              <td>
+                <h4 class="ui image header">{{ numero }}</h4>
+              </td>
+              <td>
+                <h4 class="ui image header">{{ halaqa.getLibelleHalaqa }}</h4>
+              </td>
+              <td>
+                {% set genre = '' %}
+                {% if halaqa.getGenre == 'H' %}
+                  {% set genre = 'Homme' %}
+                {% else %}
+                  {% set genre = 'Femme' %}
+                {% endif %}
+                <h4 class="ui image header">{{ genre }}</h4>
+              </td>
+              <td>
+                <a href="{{ path('isi_liste_d_une_halaqa', {'as': asec, 'regime': regime, 'halaqaId': halaqa.getId}) }}" data-tooltip="Imprimer la liste des élèves">
+                  <i class="print icon"></i>
+                </a>
+              </td>
+            </tr> 
+          {% endfor %}
+        </tbody>
+      </table>
+      <hr width="75%">
+      <script data-config>
+        var filtersConfig = {
+          base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+          col_0: "none",
+          col_2: 'select',
+          col_3: 'none',
+          alternate_rows: true,
+          rows_counter: true,
+          btn_reset: true,
+          loader: true,
+          status_bar: true,
+          mark_active_columns: true,
+          highlight_keywords: true,
+          no_results_message: true,
+          col_types: [
+            'number', 'string', 'string'
+          ],
+          col_widths: [
+              '20px'
+          ],
+          extensions: [{ name: 'sort' }]
+        };
+
+        var tf = new TableFilter('halaqas', filtersConfig);
+        tf.init();
+      </script>
+    </div><br><br>
+  {% endif %}
+
+{% endblock %}

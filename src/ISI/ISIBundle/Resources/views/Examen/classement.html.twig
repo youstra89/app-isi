@@ -1,0 +1,119 @@
+{# ISIBundle/Ressources/views/Scolarite #}
+{% extends "::pdf.html.twig" %}
+{% block title %}
+    {% block pageTitle %}
+        Liste de classe | {{ classe.libelleClasseAr }}
+    {% endblock %}
+{% endblock %}
+
+{% block body %}
+
+    {% if moyennes is empty %}
+        <p>{{ 'Inscrivez d\'abord des élèves dans cette classe.'|trans }}</p>
+    {% else %}
+        <div class="titre-document">
+            <center>
+                <h1>الترتيب</h1>
+            </center>
+        </div>
+        <br />
+        <div class="id-fiche">
+            <center>
+                <div class="classe">
+                    <span>الفصل : <span class="libelleClasse">{{ classe.libelleClasseAr }}</span></span>
+                </div>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <div class="classe">
+                    <span>الإختبار : <span class="libelleClasse">{{ examen.libelleAr }}</span></span>
+                </div>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <div class="annee">
+                    <span>السنة الدراسية : <span class="libelleClasse">{{ annee.libelleAnneeScolaire }}</span></span>
+                </div>
+            </center>
+        </div>
+        <br />
+        <table width="100%" class="" align="center">
+            <thead>
+                <tr class="table-header">
+                    <th width="5%" class="nomAr" align="right">الترتيب</th>
+                    <th width="10%" class="nomAr" align="right">المعد</th>
+                    <th width="35%" align="right">Nom & Prénom</th>
+                    <th width="30%" class="nomAr">الاسم و اللقب</th>
+                    <th width="15%" class="matricule-ar" align="right">الرقم التسلسلي</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set numero = 0 %}
+                {% set color = '' %}
+                {% for moyenne in moyennes %}
+                    {# Ce code me permet d'alterner la couleur des lignes du tableau #}
+                    {% if (numero % 2) == 0 %}
+                        {% set color = 'white' %}
+                    {% else %}
+                        {% set color = '#efefef' %}
+                    {% endif %}
+                    {# Pour le sexe #}
+                    {% if moyenne.eleve.sexeFr == 1 %}
+                        {% set sexe = 'ذكر' %}
+                    {% else %}
+                        {% set sexe = 'أنثى' %}
+                    {% endif %}
+                    {% set numero = numero + 1 %}
+                    <tr class="line-table" bgcolor={{color}}>
+                        <td align="right" class="sexe">{{ moyenne.rang }}&nbsp;</td>
+                        <td align="right" class="sexe">{{ moyenne.moyenne }}&nbsp;</td>
+                        <td align="right" class="nomEleveFr">{{ moyenne.eleve.nomFr }} {{ moyenne.eleve.pnomFr }}&nbsp;</td>
+                        <td align="right" class="nomEleveAr">{{ moyenne.eleve.pnomAr }} {{ moyenne.eleve.nomAr }}&nbsp;</td>
+                        <td align="right" class="matricule">{{ moyenne.eleve.matricule }}&nbsp;</td>
+                    </tr>
+                    <!-- On divise le tableau pour mieux afficher la suite de la liste -->
+                    {% if numero == 28 or numero == 62 %}
+                            </tbody>
+                        </table>
+                        <br>
+                        <table width="100%" class="" align="center">
+                            <thead>
+                              <tr class="table-header">
+                                  <th width="5%" class="nomAr" align="right">الترتيب</th>
+                                  <th width="10%" class="nomAr" align="right">المعد</th>
+                                  <th width="35%" align="right">Nom & Prénom</th>
+                                  <th width="30%" class="nomAr">الاسم و اللقب</th>
+                                  <th width="15%" class="matricule-ar" align="right">الرقم التسلسلي</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Pour la couleur de fond des différentes lignes -->
+                                {% if (numero % 2) == 0 %}
+                                    {% set color = 'white' %}
+                                {% else %}
+                                    {% set color = '#efefef' %}
+                                {% endif %}
+                                 <!--Pour le sexe  -->
+                                {% if moyenne.eleve.sexeFr == 1 %}
+                                    {% set sexe = 'Masculin' %}
+                                {% else %}
+                                    {% set sexe = 'Féminin' %}
+                                {% endif %}
+                                {% set numero = numero %}
+                                {% if loop.index == 28 or loop.index == 62 %}
+                                    {% set code = 1 %}
+                                {% else %}
+
+                                <tr class="line-table" bgcolor={{ color }}>
+                                    <td align="right" class="sexe">{{ moyenne.rang }}&nbsp;</td>
+                                    <td align="right" class="sexe">{{ moyenne.moyenne }}&nbsp;</td>
+                                    <td align="right" class="nomEleveFr">{{ moyenne.eleve.nomFr }} {{ moyenne.eleve.pnomFr }}&nbsp;</td>
+                                    <td align="right" class="nomEleveAr">{{ moyenne.eleve.pnomAr }} {{ moyenne.eleve.nomAr }}&nbsp;</td>
+                                    <td align="right" class="matricule">{{ moyenne.eleve.matricule }}&nbsp;</td>
+                                </tr>
+                                {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        <br />
+        <center><span class="effectif">Effectif :  {{ numero }}</span> </center>
+    {% endif %}
+
+{% endblock %}

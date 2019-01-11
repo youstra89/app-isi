@@ -1,0 +1,55 @@
+{% extends "ISIBundle::layout.html.twig" %}
+
+{% block title %}
+  Index
+{% endblock %}
+
+  {% block contextual_menu %}
+    {% if is_granted('ROLE_SUPER_ADMIN') %}
+      {{ include("ISIBundle::contextual-menu-panel-admin.html.twig") }}
+    {% elseif is_granted('ROLE_ADMIN_ANNEXE') %}
+      <div class="ui vertical menu">
+        <div class="item">
+          <div class="header">{{ 'Autres modules'|trans }}</div>
+          <div class="menu">
+            {# Cette partie permet de voir la liste de tous les élèves de la l'institut #}
+            <a class="item" href="{{path('ens_home', {'as': asec})}}">{{ 'Enseignants'|trans }}</a>
+            <a class="item" href="{{path('etude_home', {'as': asec})}}">{{ 'Programmes d\'étude'|trans }}</a>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      {{ include("ISIBundle::contextual-menu-user.html.twig") }}
+    {% endif %}
+  {% endblock %}
+
+{% block body %}
+  {# <div class="ui tertiary segment">
+  </div> #}
+  <h4> {{ 'Année scolaire'|trans }}</h4>
+    <p>{{ annee.libelleAnneeScolaire }}</p>
+    {# <div class="ui segment" id="example1">
+      <div class="left ui rail" style="">
+        <p></p>
+        <p></p>
+        <p></p>
+        <div class="ui sticky" style="width: 272px !important; height: 261.925px !important; left: 82.6px;">
+          <h3 class="ui header">Stuck Content</h3><img>
+        </div>
+      </div>
+      <div class="right ui rail" style="">
+        <div class="ui sticky" style="width: 272px !important; height: 261.925px !important; left: 1164.6px;">
+          <h3 class="ui header">Stuck Content</h3><img>
+        </div>
+      </div>
+      <p></p>
+      <p></p>
+      <p></p>
+      <p></p>
+      <p></p>
+      <p></p>
+      <p></p>
+      <p></p>
+      <p></p>
+    </div> #}
+{% endblock %}

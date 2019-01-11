@@ -1,0 +1,38 @@
+{# Page d'ajout d'une nouvelle année scolaire #} 
+{% extends "ISIBundle:Parametres:index.html.twig" %} 
+{% block pageTitle %} 
+    Accueil bilan annuel 
+{% endblock %}
+{% block content %}
+    <h3>{{ 'Bilan annuel'|trans }}</h3>
+    <div class="ui cards">
+        <div class="card">
+            <div class="content">
+                <img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
+                <div class="header">Academie </div>
+            </div>
+            {% set route_params = "5" %}
+            <div class="extra content">
+                <div class="ui buttons">
+                    <a href="{{ path('isi_bilan_annuel_regime', {'as': asec, 'regime': 'A'}) }}">
+                        <div class="ui basic green button">{{ 'Voir le bilan de l\'Academie '|trans }}</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="content">
+                <img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
+                <div class="header">Centre de formation</div>
+            </div>
+            {% set route_params = "5" %}
+            <div class="extra content">
+                <div class="ui buttons">
+                    <a href="{{ path('isi_bilan_annuel_regime', {'as': asec, 'regime': 'F'}) }}">
+                        <div class="ui basic green button">{{ 'Voir le bilan du centre de formation'|trans }}</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

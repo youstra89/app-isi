@@ -1,0 +1,201 @@
+{# Page de mise à jours des informations d'un élève #}
+{% set template = "" %}
+{% if regime == 'C' %}
+  {% set template = 'ISIBundle:Coran:index.html.twig' %}
+{% else %}
+  {% set template = 'ISIBundle:Eleve:index.html.twig' %}
+{% endif %}
+{% extends template %}
+
+{% block pageTitle %}
+  Edition de l'élève {{ eleve.nomFr }} {{ eleve.pnomFr}}
+{% endblock %}
+
+{% block content %}
+<center><h2><font color="red">{{ eleve.matricule }}</font></h2></center>
+<div class="ui large form">
+  {{form_start(form, {'attr': {'class': 'ui form'}})}}
+  <h3 class="ui dividing header">{{ 'Identification de l\'élève'|trans }}</h3>
+  <div class="two fields">
+    <div class="field">
+      <label for="">
+           {{ form_label(form.nomFr, "Nom (en français)", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.nomFr) }}
+        </label> {{ form_widget(form.nomFr, {'attr': {'class': '', 'placeholder': 'Le nom'}}) }}
+    </div>
+    <div class="field">
+      <label for="">
+           {{ form_label(form.pnomFr, "Prénom (en français)", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.pnomFr) }}
+        </label> {{ form_widget(form.pnomFr, {'attr': {'class': '', 'placeholder': 'Le prénom'}}) }}
+    </div>
+  </div>
+  <div class="two fields">
+    <div class="field">
+      <label for="">
+           {{ form_label(form.nomAr, "اللقب", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.nomAr) }}
+        </label> {{ form_widget(form.nomAr, {'attr': {'class': '', 'placeholder': 'Le nom'}}) }}
+    </div>
+    <div class="field">
+      <label for="">
+           {{ form_label(form.pnomAr, "الاسم", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.pnomAr) }}
+        </label> {{ form_widget(form.pnomAr, {'attr': {'class': '', 'placeholder': 'Le prénom'}}) }}
+    </div>
+  </div>
+  <div class="five fields">
+    <div class="field">
+      <label for="">
+           {{ form_label(form.sexeFr, "Sexe", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.sexeFr) }}
+        </label> {{ form_widget(form.sexeFr, {'attr': {'class': '', 'placeholder': 'sexe'}}) }}
+    </div>
+    <div class="field">
+        <label for="">
+           {# {{ form_label(form.dateNaissance, "Date de naissance", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.dateNaissance) }} #}
+           Date de naissance
+        </label>
+         {# {{ form_widget(form.dateNaissance, {'attr': {'class': 'select-date-naissance'}}) }} #}
+        <input type="date" name="date" required="required" value="{{ eleve.getDateNaissance|date('Y-m-d') }}"/>
+      </div>
+    <div class="field">
+      <label for="">
+           {{ form_label(form.lieuNaissance, "Lieu de naissance", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.lieuNaissance) }}
+        </label> {{ form_widget(form.lieuNaissance, {'attr': {'class': 'select-date-naissance', 'placeholder': 'Où
+      est né l\'élève ?'}}) }}
+    </div>
+    <div class="field">
+      <label for="">
+           {{ form_label(form.refExtrait, "Référence Extr.", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.refExtrait) }}
+        </label> {{ form_widget(form.refExtrait, {'attr': {'class': '', 'placeholder': 'Extrait de naissance'}}) }}
+    </div>
+    <div class="field">
+      <label for="">
+           {{ form_label(form.grpSanguin, "Groupe sanguin", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.grpSanguin) }}
+        </label> {{ form_widget(form.grpSanguin, {'attr': {'class': ''}}) }}
+    </div>
+  </div>
+  <div class="six fields">
+    <div class="field">
+      <label for="">
+           {{ form_label(form.nationalite, "Nationalite", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.nationalite) }}
+        </label> {{ form_widget(form.nationalite, {'attr': {'class': '', 'placeholder': 'Sa nationalité'}}) }}
+    </div>
+    <div class="field">
+      <label for="">
+           {{ form_label(form.commune, "Commune", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.commune) }}
+        </label> {{ form_widget(form.commune, {'attr': {'placeholder': 'Commune'}}) }}
+    </div>
+    <div class="field">
+      <label for="">
+           {{ form_label(form.residence, "Résidence", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.residence) }}
+        </label> {{ form_widget(form.residence, {'attr': {'placeholder': 'Où réside l\'élève ?'}}) }}
+    </div>
+    <div class="field">
+      <label for="">
+           {{ form_label(form.contact, "Contact", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.contact) }}
+        </label> {{ form_widget(form.contact, {'attr': {'class': '', 'placeholder': 'Numéro de téléphone'}}) }}
+    </div>
+    <div class="field">
+      <label for="">
+           {{ form_label(form.etsOrigine, "Ets d'origine", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.etsOrigine) }}
+        </label> {{ form_widget(form.etsOrigine, {'attr': {'class': ''}}) }}
+    </div>
+    <div class="field">
+      <label for="">
+           {{ form_label(form.etatSante, "Etat de santé", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.etatSante) }}
+        </label> {{ form_widget(form.etatSante, {'attr': {'class': ''}}) }}
+    </div>
+  </div>
+  <br />
+  <h3 class="ui dividing header">{{ 'Identification des parents de l\'élève'|trans }}</h3>
+  <div class="four fields">
+    <div class="field">
+      <label for="">
+           {{ form_label(form.nomPere, "Nom du père", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.nomPere) }}
+        </label> {{ form_widget(form.nomPere, {'attr': {'placeholder': 'Nom & Prénom'}}) }}
+    </div>
+    <div class="field">
+      <label for="">
+           {{ form_label(form.contactPere, "Contact", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.contactPere) }}
+        </label> {{ form_widget(form.contactPere, {'attr': {'class': '', 'placeholder': 'Contact du père'}}) }}
+    </div>
+    <div class="field">
+      <label for="">
+           {{ form_label(form.professionPere, "Profession", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.professionPere) }}
+        </label> {{ form_widget(form.professionPere, {'attr': {'class': '', 'placeholder': 'Profession'}}) }}
+    </div>
+    <div class="field">
+      <label for="">
+           {{ form_label(form.situationPere, "Situation", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.situationPere) }}
+        </label> {{ form_widget(form.situationPere, {'attr': {'class': ''}}) }}
+    </div>
+  </div>
+  <div class="four fields">
+    <div class="field">
+      <label for="">
+           {{ form_label(form.nomMere, "Nom de la mère", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.nomMere) }}
+        </label> {{ form_widget(form.nomMere, {'attr': {'placeholder': 'Nom & Prénom'}}) }}
+    </div>
+    <div class="field">
+      <label for="">
+           {{ form_label(form.contactMere, "Contact", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.contactMere) }}
+        </label> {{ form_widget(form.contactMere, {'attr': {'class': '', 'placeholder': 'Contact de la mère'}}) }}
+    </div>
+    <div class="field">
+      <label for="">
+           {{ form_label(form.professionMere, "Profession", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.professionMere) }}
+        </label> {{ form_widget(form.professionMere, {'attr': {'class': '', 'placeholder': 'Profession'}}) }}
+    </div>
+    <div class="field">
+      <label for="">
+           {{ form_label(form.situationMere, "Situation", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.situationMere) }}
+        </label> {{ form_widget(form.situationMere, {'attr': {'class': ''}}) }}
+    </div>
+  </div>
+  <br />
+  <h3 class="ui dividing header">{{ 'Identification du tuteur (s\'il y en a)'|trans }}</h3>
+  <div class="three fields">
+    <div class="field">
+      <label for="">
+           {{ form_label(form.nomTuteur, "Nom du tuteur", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.nomTuteur) }}
+        </label> {{ form_widget(form.nomTuteur, {'attr': {'placeholder': 'Nom & Prénom'}}) }}
+    </div>
+    <div class="field">
+      <label for="">
+           {{ form_label(form.contactTuteur, "Contact", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.contactTuteur) }}
+        </label> {{ form_widget(form.contactTuteur, {'attr': {'class': '', 'placeholder': 'Contact du tuteur'}}) }}
+    </div>
+    <div class="field">
+      <label for="">
+           {{ form_label(form.professionTuteur, "Profession", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.professionTuteur) }}
+        </label> {{ form_widget(form.professionTuteur, {'attr': {'class': ''}}) }}
+    </div>
+  </div>
+  <br />
+  {{ form_widget(form.update, {'attr': {'class': 'ui primary button'}}) }}
+  {{form_end(form)}}
+</div>
+{% endblock %}

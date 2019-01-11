@@ -1,0 +1,37 @@
+{% extends "ISIBundle:Internat:index.html.twig" %}
+
+{% block title %}
+    Ajout des mois de paiement
+{% endblock %}
+
+{% block corps %}
+    <div class="ui container">
+        <h3>{{ 'Sélection des mois de paiement de l\'internat'|trans }}</h3>
+        <div class="ui six cards">
+          {% for m in mois %}
+                <div class="card">
+                  <div class="content">
+                    <div class="header">{{ m.mois }}</div>
+                    <div class="description"></div>
+                  </div>
+                  <!-- Cette variable qui est une booléenne nous permet de savoir s'il faut
+                  afficher le lien pour l'ajout d'un mois ou plutôt dire que le mois a déjà été ajouté -->
+                    {% set ajout = true %}
+                    {% for mdp in moisdepaie %}
+                        {% if mdp.mois.id == m.id %}
+                            {% set ajout = false %}
+                            <a href="">
+                              <div class="ui bottom attached button"><i class="check icon"></i>{{ 'Déjà ajouté'|trans }}</div>
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                    {% if ajout == true %}
+                        <a href="{{ path('internat_add_mois_de_paie', {'as': asec, 'moisId': m.id}) }}">
+                          <div class="ui positive bottom attached button"><i class="plus icon"></i>{{ 'Ajouter'|trans }}</div>
+                        </a>
+                    {% endif %}
+                </div>
+          {% endfor %}
+        </div>
+    </div>
+{% endblock %}

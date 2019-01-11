@@ -1,0 +1,83 @@
+{% extends "ISIBundle:Internat:index.html.twig" %}
+
+{% block title %}
+    Règlement des frais
+{% endblock %}
+
+{% block corps %}
+    <div class="ui container">
+        <h3>{{ 'Règlement des droits d\'un(e) interne'|trans }}</h3>
+        {% if moisdepaie is empty %}
+          <a href="{{ path('internat_add_mois_de_paiement', {'as': asec}) }}" class="ui button">{{ 'Vous devez définir les mois pris en charge pour cette année à l\'internat'|trans }}</a>
+        {% endif %}
+
+        {% if internes is not defined %}
+            <p>{{ 'Aucun élève n\'a encore été inscrits cette année cette année'|trans }}</p>
+        {% else %}
+            <table id="table-internes" cellspacing="0" class="mytable filterable ui very basic table">
+              <thead>
+                <tr>
+                  <th align="center">{{ 'N°'|trans }}</th>
+                  <th align="center">{{ 'Matricule'|trans }}</th>
+                  <th width="23%">{{ 'Nom & Prénom'|trans }}</th>
+                  <th width="7%">{{ 'Sexe'|trans }}</th>
+                  <th align="center">{{ 'Les mois à regler'|trans }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% set n = 0 %}
+                {% for interne in internes %}
+                {% if interne.renvoye == 0 %}
+                  {% set n = n + 1 %}
+                  {% set color = "" %}
+                  {% if (n % 2) == 0 %}
+                      {% set color = "WhiteSmoke" %}
+                  {% endif %}
+                  <tr bgcolor="{{ color }}">
+                    <td>{{ n }}</td>
+                    <td>{{ interne.eleve.matricule }}</td>
+                    <td>{{ interne.eleve.nomFr }} {{ interne.eleve.pnomFr }}</td>
+                    <td>
+                      {% if interne.eleve.sexeFr == 1 %}
+                        Garçon
+                      {% else %}
+                        Fille
+                      {% endif %}
+                    </td>
+                    <td>
+                      <center>
+                        {% for m in moisdepaie %}
+                          {% set pay = TRUE %}
+                          <div class="ui compact menu">
+                            {% for paiement in paiements %}
+                              {% if paiement.interner.id == interne.id and m.id == paiement.moisdepaiement.id %}
+                                {% set pay = FALSE %}
+                                <a href="{{ path('internat_recu_de_paiement', {'as': asec, 'eleveId':interne.eleve.eleveId , 'moisId':m.id , 'paiementId': paiement.id}) }}" class="item">
+                                    {{ m.mois.mois[:3] }}
+                                   <div class="floating ui green label"><i class="check icon"></i></div>
+                                </a>
+                              {% elseif paiement.interner.id == interne.id and m.id == paiement.moisdepaiement.id and pay == TRUE %}
+                                <a href="{{ path('internat_pay_mois', {'as': asec, 'eleveId': interne.eleve.eleveId, 'moisId': m.id}) }}" class="item">
+                                    {{ m.mois.mois[:3] }}
+                                   {#<div class="floating ui positive label"><i class="check icon"></i></div>#}
+                                </a>
+                              {% endif %}
+                            {% endfor %}
+                            {% if pay == TRUE %}
+                              <a href="{{ path('internat_pay_mois', {'as': asec, 'eleveId': interne.eleve.eleveId, 'moisId': m.id}) }}" class="item">
+                                  {{ m.mois.mois[:3] }}
+                                 {#<div class="floating ui positive label"><i class="check icon"></i></div>#}
+                              </a>
+                            {% endif %}
+                          </div>
+                        {% endfor %}
+                      </center>
+                    </td>
+                  </tr>
+                  {% endif %}
+                {% endfor %}
+              </tbody>
+            </table>
+        {% endif %}
+    </div>
+{% endblock %}

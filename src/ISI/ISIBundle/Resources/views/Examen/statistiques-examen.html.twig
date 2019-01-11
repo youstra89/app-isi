@@ -1,0 +1,75 @@
+{# On affiche toues les classes d'un niveau de formation. On sélectionne alors une classe pour aller saisir les notes #}
+
+{% extends 'ISIBundle:Scolarite:index.html.twig' %}
+
+{% block pageTitle %}
+  Données Statistiques
+{% endblock %}
+
+{% block content %}
+  {% set grp = '' %}
+  {% if regime is same as('A') %}
+    {% set grp = 'Académie' %}
+  {% else %}
+    {% set grp = 'Formation' %}
+  {% endif %}
+  <h3>{{ 'Données statistiques d\'examen'|trans }} : {{ grp }}</h3>
+    {% for message in app.session.flashbag.get('error') %}
+      <div class="ui red message">
+        <div class="header">{{ 'Attention'|trans }} !!! </div>
+        <ul class="list">
+          <li>{{ message }}</li>
+        </ul>
+      </div>
+    {% endfor %}
+    {% for message in app.session.flashbag.get('info') %}
+      <div class="ui green message">
+        <div class="header">{{ 'Notification'|trans }}: </div>
+        <ul class="list">
+          <li>{{ message }}.</li>
+        </ul>
+      </div>
+    {% endfor %}
+    {# Fin des notifications #}
+    {% for niveau in niveaux %}
+      <h2>{{niveau.libelleFr}}</h2>
+      <div class="ui four column doubling stackable grid container">
+        {% set admisNiveau = 0 %}
+        {% set recalesNiveau = 0 %}
+        {% for classe in moyennesClasses %}<tr>
+          {% if niveau.id == classe.classe.niveau.id %}
+            {% set admisNiveau = admisNiveau + classe.admis %}
+            {% set recalesNiveau = recalesNiveau + classe.recales %}
+            <div class="column">
+              <h4>{{classe.classe.libelleClasseFr}}</h4>
+              {{ 'Admis'|trans }}: <a class="ui green tag label">{{ classe.admis }}</a> <br>
+              {{ 'Recalés'|trans }}: <a class="ui red tag label">{{ classe.recales }}</a> <br>
+              {% set effectif = classe.admis + classe.recales %}
+              {% set pourcentageAdmis = (classe.admis * 100) / effectif %}
+              {{ 'Pourcentage d\'admis'|trans }}: {{ pourcentageAdmis|number_format(2, ',') }} %
+              <p></p>
+            </div>
+          {% endif %}
+          {# Fin if niveau == classe #}
+        {% endfor %}
+        {# End for classe in classes #}
+      </div>
+      {% set nbrElevesNiveau = admisNiveau + recalesNiveau %}
+      {% set pourcentageAdmission = (admisNiveau * 100) / nbrElevesNiveau %}
+      <table class="ui table">
+        <tr>
+          <th align="center">{{ 'Nombre total d\'élèves'|trans }}</th>
+          <th align="center">{{ 'Nombre d\'admis'|trans }}</th>
+          <th align="center">{{ 'Nombre de recalés'|trans }}</th>
+          <th align="center">{{ 'Pourcentage de réussite à l\'examen'|trans }}</th>
+        </tr>
+        <tr>
+          <td><center>{{ nbrElevesNiveau }}</center></td>
+          <td><center>{{ admisNiveau }}</center></td>
+          <td><center>{{ recalesNiveau }}</center></td>
+          <td><center>{{ pourcentageAdmission|number_format(2, ',') }} %</center></td>
+        </tr>
+      </table>
+      <br>
+    {% endfor %}
+{% endblock %}

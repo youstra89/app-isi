@@ -1,0 +1,97 @@
+{# Page d'ajout d'un nouvel examen #}
+
+{% extends "ISIBundle:Examen:index.html.twig" %}
+
+{% block pageTitle %}
+	Enregistrement des notes
+{% endblock %}
+
+{% block content %}
+	<div class="ui info message" style="width:75%">
+		<center>
+			<h2>{{ 'Enregistrement des notes de'|trans }} {{classe.libelleClasseFr}} en {{matiere.libelleMatiere}}</h2>
+			<h3>{{ 'Session'|trans }} {{ examen.session }} : {{ examen.anneeScolaire.libelleAnneeScolaire }}</h3>
+		</center>
+	</div>
+	<table>
+		<div class="well" style="width:75%">
+			<form action="{{path('isi_saisie_de_notes_de_la_classe_pour_une_matiere', {'as': asec, 'regime': regime, 'classeId': classe.classeId, 'examenId': examen.examenId, 'matiereId': matiere.matiereId, 'note': 1})}}" method="post" name="notes">
+				<div class="ui middle aligned divided list">
+				{# Pour chaque élève #}
+				<div class="item">
+					<div class="right floated content">
+						<div class="">
+							<h3>{{ 'Notes'|trans }}</h3>
+						</div>
+					</div>
+					<div class="content">
+						<h4>
+							{{ 'Matricule'|trans }}
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							{{ 'Nom & prénoms des élèves'|trans }}
+						</h4>
+					</div>
+				</div>
+				{# {{dump(notes)}} #}
+				{% set num = 0 %}
+				{% for eleve in eleves %}
+					{% set image = "" %}
+					{% if eleve.sexeFr == 1 %}
+						{% set image = "/markaz/web/images/mark.png" %}
+					{% else %}
+						{% set image = "/markaz/web/images/molly.png" %}
+					{% endif %}
+					{% for note in notes %}
+						{% if eleve.eleveId is same as(note.eleve.eleveId) %}
+							{% set num = num + 1 %}
+							<div class="item ui selectable">
+								<div class="right floated content">
+									<div class="">
+										<div class="ui right labeled input">
+											<input name="note[{{ eleve.eleveId }}]" type="integer" id="{{ num }}" class="note">
+											<div class="ui basic label">{{ 'points'|trans }}</div>
+										</div>
+									</div>
+								</div>
+								<img class="ui avatar image" src="{{ image }}">
+								<div class="content">{{ eleve.matricule }} <i class="right chevron icon"></i> <strong>{{eleve.nomFr}} {{eleve.pnomFr}}</strong></div>
+							</div>
+						{% endif %}
+					{% endfor %}
+				{% endfor %}
+				</div>
+				<div>
+					<input type="submit" class="ui primary button" value="   Enregistrer les notes   " name="submit">
+				</div>
+			</form>
+		</div>
+	</table>
+	<script>
+		
+		$(document).ready(function(){
+				
+				//$(".item.ui.selectable").on('click', function () {
+				//	$(this).hide(1000);
+				//});
+			 
+		$(".note").focus(function () {
+			current = $(this).attr("id")
+			id = + current
+			console.log(id + 1)
+			$(document).keydown(function (e) {
+				switch (e.which) {
+					case 38: // Flèche haut				
+						id = id - 1					
+						$("#" + id).focus()
+					case 40: // Flèche bas
+						id = id + 1
+						$("#" + id).focus()
+						console.log("#" + id)
+				}
+			})			
+
+		})
+	});
+	</script>
+{% endblock %}

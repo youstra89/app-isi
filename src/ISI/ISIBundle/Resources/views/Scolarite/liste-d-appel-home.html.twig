@@ -1,0 +1,102 @@
+{# Accueil pour l'édition des listes de classe' #}
+
+{% extends 'ISIBundle:Scolarite:index.html.twig' %}
+
+{% block title %}
+  {% block pageTitle %}
+    Liste des classes
+  {% endblock %}
+{% endblock %}
+
+
+{% block content %}
+  {% set grp = '' %}
+  {% if regime is same as('A') %}
+    {% set grp = 'Académie' %}
+  {% else %}
+    {% set grp = 'Formation' %}
+  {% endif %}
+  <h3>{{ 'Edition des listes d\'appel'|trans }} : {{grp}}</h3>
+{% if classes is empty %}
+  <p>{{ 'Pas de classes pour le moment'|trans }}</p>
+{% else %}
+<div class="column" style="width:75%">
+      <table class="ui selectable very basic table" id="classes">
+        <thead>
+          <tr>
+            <th width="10%">N°</th>
+            <th>Niveaux</th>
+            <th>Classses</th>
+            <th>المستويات</th>
+            <th>الفصول</th>
+            <th class="two wide">{{ 'Actions'|trans }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% set numero = 0 %}
+          {% for classe in classes %} 
+            {% if classe.niveau.groupeFormation.referenceGrp is same as(regime) %}
+              {% set numero = numero + 1 %}
+              <tr>
+                <td>
+                  <h4 class="ui image header">{{ numero }}</h4>
+                </td>
+                <td>
+                  <h4 class="ui image header">{{ classe.getNiveau.getLibelleFr }}</h4>
+                </td>
+                <td>
+                  <h4 class="ui image header">{{ classe.libelleclassefr }}</h4>
+                </td>
+                <td>
+                  <h4 class="ui image header">{{ classe.getNiveau.getLibelleAr }}</h4>
+                </td>
+                <td>
+                  <h4 class="ui image header">{{ classe.libelleclassear }}</h4>
+                </td>
+                <td>
+                {% set lien = 'value' %}
+                {% if regime == 'A' %}
+                  {% set lien = path('isi_tirer_liste_d_appel_de_la_classe_academie', {'as': asec, 'regime': regime, 'classeId': classe.classeId}) %}
+                {% else %}
+                  {% set lien = path('isi_tirer_liste_d_appel_de_la_classe_formation', {'as': asec, 'regime': regime, 'classeId': classe.classeId}) %}
+                {% endif %}
+                  <a href="{{ lien }}">
+                    <i class="print icon"></i>
+                  </a>
+                </td>
+              </tr>
+            {% endif %} 
+          {% endfor %}
+        </tbody>
+      </table>
+      <hr width="75%">
+      <script data-config>
+        var filtersConfig = {
+          base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+          col_0: "none",
+          col_1: 'select',
+          col_3: 'select',
+          col_5: 'none',
+          alternate_rows: true,
+          rows_counter: true,
+          btn_reset: true,
+          loader: true,
+          status_bar: true,
+          mark_active_columns: true,
+          highlight_keywords: true,
+          no_results_message: true,
+          col_types: [
+            'number', 'string', 'string', 'string'
+          ],
+          col_widths: [
+              '20px', , , '200px'
+          ],
+          extensions: [{ name: 'sort' }]
+        };
+
+        var tf = new TableFilter('classes', filtersConfig);
+        tf.init();
+      </script>
+    </div><br><br>
+{% endif %}
+{% endblock %}

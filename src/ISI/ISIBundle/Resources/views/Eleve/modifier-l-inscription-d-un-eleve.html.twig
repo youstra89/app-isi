@@ -1,0 +1,64 @@
+{# Page de gestion des classes #}
+
+{% extends "ISIBundle:Eleve:index.html.twig" %}
+
+{% block pageTitle %}
+  Changement de classe | {{ classe.libelleClasseFr }}
+{% endblock %}
+
+{% block content %}
+  <h3>{{ 'Modifier l\'inscription d\'un(e) élève de'|trans }} {{classe.libelleClasseFr}} </h3>
+   {% for message in app.session.flashbag.get('info') %}
+    <div class="ui green message">
+      <div class="header">{{ 'Notification'|trans }}: </div>
+      <ul class="list">
+        <li>{{ message }}</li>
+      </ul>
+    </div>
+  {% endfor %}
+  {% for message in app.session.flashbag.get('error') %}
+    <div class="ui red message">
+      <div class="header">{{ 'Attention'|trans }} !!! </div>
+      <ul class="list">
+        <li>{{ message }}</li>
+      </ul>
+    </div>
+  {% endfor %}
+  <div class="ui hidden divider"></div>
+  {% if elevesClasse is empty %}
+    <p>{{ 'Aucune classe n\'a encore été enregistrée'|trans }}</p>
+  {% else %}
+    <div class="ui special five cards">
+      {% set i = 0 %}
+      {% for eleve in elevesClasse %}
+        {% set image = "" %}
+        {% set i = i + 1 %}
+        {% if eleve.getSexeFr == 1 %}
+          {% set image = "/markaz/web/images/mark.png" %}
+        {% else %}
+          {% set image = "/markaz/web/images/molly.png" %}
+        {% endif %}
+        <div class="card">
+          <div class="blurring dimmable image">
+            <img src="{{image}}">
+          </div>
+          <div class="content">
+            <h4>{{ eleve.getNomFr }} {{ eleve.getPnomFr }}
+            <br />{{ eleve.getMatricule }}</h4>
+            <a class="" href="{{path('isi_modifier_classe_eleve',{'as': asec, 'regime': regime, 'classeId': classe.getClasseId, 'eleveId': eleve.getEleveId})}}">
+              {{ 'Modifier la classe'|trans }}
+            </a>
+            {% if is_granted('ROLE_ADMIN_SCOLARITE') %}
+              <a class="ui button" href="{{path('isi_modifier_niveau_eleve',{'as': asec, 'regime': regime, 'classeId': classe.getClasseId, 'eleveId': eleve.getEleveId})}}">
+                {{ 'Modifier le niveau'|trans }}
+              </a>
+            {% endif %}
+
+            {#<span class="supprimeEleve">Supprimer</span>
+            <a>Supprimer</a>#}
+          </div>
+        </div>
+      {% endfor %}<!-- Fin for eleve in eleves -->
+    </div>
+  {% endif %}<!-- Fin f=if classes empty -->
+{% endblock %}

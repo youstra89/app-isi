@@ -1,0 +1,95 @@
+{# Page d'ajout d'un nouvel examen #}
+{% extends "ISIBundle:Scolarite:index.html.twig" %}
+{% block pageTitle %}
+    Résultats généraux - {{ parent() }}
+{% endblock %}
+
+{% block content %}
+{% if examen.getSession == 1 %}
+    <h3>Résultats de la 1<sup>ère</sup> session de la classe : {{ classe.getLibelleClasseFr }}</h3>
+{% else %}
+    <h3>Résultats de la 2<sup>ème</sup> session de la classe : {{ classe.getLibelleClasseFr }}</h3>
+{% endif %}
+{# {{dump(app)}} #}
+    <div class="">
+        {# Avant toute chose, il faut connaître l'effectif de la classe, le nombre d'admis et le nombre de recalés  #}
+        {% set nbrAdmis = 0 %}
+        {% set nbrRecales = 0 %}
+        {% for moyenne in moyennes %}
+            {% if moyenne.getMoyenne > 5 %}
+                {% set nbrAdmis = nbrAdmis + 1 %}
+            {% endif %}
+        {% endfor %}
+        {% set nbrRecales = moyennes|length - nbrAdmis %}
+        {% set pourcentageAdmis = (nbrAdmis * 100)/moyennes|length %}
+        <div>
+            <a class="ui tag label">
+                <span class="info-stat">
+                    {{ 'Le nombre d\'admis est de '|trans }}<strong>{{ nbrAdmis }} {{ 'élèves'|trans }}</strong>
+                </span>
+            </a>
+            <a class="ui blue tag label">
+                <span class="info-stat">
+                    {{ 'Le nombre de recalés est de'|trans }} <strong>{{nbrRecales}} {{ 'élèves'|trans }}</strong>
+                </span>
+            </a>
+            <a class="ui teal tag label">
+                <span class="info-stat">
+                    {{ 'Pourcentage d\'admis'|trans }}: <strong>{{ pourcentageAdmis|number_format(2, ',') }} %</strong>
+                </span>
+            </a>
+        </div>
+
+        {# <div class="ui compact menu">
+            <i class="icon mail"></i> Messages <div class="floating ui red label">22</div>
+            <i class="icon users"></i>Amis <div class="floating ui teal label">22</div>
+        </div> #}
+
+        <table class="ui celled table">
+            <thead>
+                <tr>
+                    <th>{{ 'Matricule'|trans }}</th>
+                    <th>{{ 'Nom & Prénom'|trans }}</th>
+                    <th>{{ 'Total'|trans }}</th>
+                    <th>{{ 'Moyenne'|trans }}</th>
+                    <th>{{ 'Rang'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {# On va afficher les moyennes #}
+                {% for moyenne in moyennes %}
+                    {# Afficher ème en exposant #}
+                    {% set nieme = '' %}
+                    {% if moyenne.getRang == 1 and moyenne.getEleve.getSexeFr == 1 %}
+                        <!-- Dans ce cas, c'est un homme. Il faudra donc dire: Le premier -->
+                        {% set nieme = 'er' %}
+                    {% elseif moyenne.getRang == 1 and moyenne.getEleve.getSexeFr == 2 %}
+                        <!-- Dans ce cas, c'est une femme. Il faudra donc dire: La première -->
+                        {% set nieme = 'ère' %}
+                    {% else %}
+                        <!-- Pour le reste il n'a pas de différence -->
+                        {% set nieme = 'ème' %}
+                    {% endif %}
+                    {# Fin afficher ème en exposant #}
+                    {% if moyenne.getMoyenne > 5 %}
+                        <tr bgcolor="">
+                            <td>{{ moyenne.getEleve.getMatricule }}</td>
+                            <td>{{ moyenne.getEleve.getNomFr }} {{ moyenne.getEleve.getPnomFr }}</td>
+                            <td>{{ moyenne.getTotalPoints }}</td>
+                            <td>{{ moyenne.getMoyenne }}</td>
+                            <td>{{ moyenne.getRang }}<sup>{{ nieme }}</sup></td>
+                        </tr>
+                    {% else %}
+                        <tr class="error">
+                            <td>{{ moyenne.getEleve.getMatricule }}</td>
+                            <td>{{ moyenne.getEleve.getNomFr }} {{ moyenne.getEleve.getPnomFr }}</td>
+                            <td>{{ moyenne.getTotalPoints }}</td>
+                            <td>{{ moyenne.getMoyenne }}</td>
+                            <td>{{ moyenne.getRang }}<sup>{{ nieme }}</sup></td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

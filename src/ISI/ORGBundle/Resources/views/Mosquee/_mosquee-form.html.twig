@@ -1,0 +1,38 @@
+{{ form_start(form, { 'attr': {'class': 'ui form'} }) }}
+    <div class="three fields">
+      <div class="field">
+          {{ form_row(form.nom, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+      <div class="field">
+          {{ form_row(form.commune, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+      <div class="field">
+          {{ form_row(form.quartier, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+    </div>
+    <div class="three fields">
+      <div class="field">
+          {{ form_row(form.imam, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+      <div class="field">
+          {{ form_row(form.responsable, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+      <div class="field">
+          {{ form_row(form.numero_responsable, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+    </div>
+    <div class="three fields">
+      <div class="field">
+          {{ form_row(form.djoumoua, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+      <div class="field">
+          {{ form_row(form.annee_construction, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+    </div>
+    <div class="field">
+      {{ form_row(form.description, { 'attr': {'class': 'uk-input'} }) }}
+    </div>
+    {{ form_rest(form) }}
+    <button class="ui primary button">{{ button|default('Enregistrer') }}</button>
+  </div><br>
+{{ form_end(form) }}

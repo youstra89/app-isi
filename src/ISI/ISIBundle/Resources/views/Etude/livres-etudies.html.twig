@@ -1,0 +1,145 @@
+{# Accueil pour l'édition des listes de classe' #}
+
+{% extends 'ISIBundle:Etude:index.html.twig' %}
+
+{% block title %}
+  {% block pageTitle %}
+    Livres étudiés
+  {% endblock %}
+{% endblock %}
+
+{% block contextual_menu %}  
+    {% include('ISIBundle:Etude:contextual-menu-parametres.html.twig') %}
+{% endblock %}
+
+{% block head %}
+    <div class="ui {{ dir2 }} aligned segment">
+        <h1 class="ui header">
+            <i class="settings icon"></i>{{ 'PARAMETRES'|trans }}
+        </h1>
+    </div> 
+{% endblock %}
+
+{% block content %}
+  <h3>{{ 'Les livres au programme'|trans }}</h3>
+  <a href="{{ path('etude_nouveau_livre', {'as': asec}) }}">
+    <button class="positive ui button">
+      <i class="plus icon"></i>
+      {{ 'Ajouter un livre'|trans }}
+    </button>
+  </a>
+{% if livres is empty %}
+  <p>{{ 'Pas de livre pour le moment'|trans }}</p>
+{% else %}
+<div class="column" style="width:75%">
+      <table class="ui selectable very basic table" id="livres">
+        <thead>
+          <tr>
+            <th width="10%">N°</th>
+            <th>اسم الكتاب</th>
+            <th>اسم المألف</th>
+            <th>المادة</th>
+            <th class="two wide">{{ 'Actions'|trans }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% set numero = 0 %}
+          {% for livre in livres %} 
+            {% set numero = numero + 1 %}
+            <tr title="{{ livre.description }}">
+              <td>
+                <h4 class="ui image header">{{ numero }}</h4>
+              </td>
+              <td>
+                <h4 class="ui image header">{{ livre.getNom }}</h4>
+              </td>
+              <td>
+                <h4 class="ui image header">{{ livre.getAuteur }}</h4>
+              </td>
+              <td>
+                <h4 class="ui image header">{{ livre.getMatiere.getLibelleMatiere }}</h4>
+              </td>
+              <td>
+                <div class="support">
+                  <a href="{{ path('etude_editer_livre', {'as': asec, 'livreId': livre.id}) }}" data-tooltip="Modifier ce livre"><i class="edit icon"></i></a>
+                  {% if livre.support is not null %}
+                    <a href="{{ asset('uploads/supports/' ~ livre.support) }}" data-tooltip="Voir le livre"><i class="file alternate icon"></i></a>
+                  {% else %}
+                    <a data-tooltip="Ajouter un fichier" class="add-livre"><i class="plus icon" ></i><input type="hidden" value="{{ livre.id }}" class="id"/></a>
+                    {# <div id="id" style="display: none">
+                      {{ livre.id }}
+                    </div> #}
+                  {% endif %}
+                </div>
+              </td>
+            </tr> 
+          {% endfor %}
+        </tbody>
+      </table>
+      <hr width="75%">
+      <div class="ui modal">
+        <div class="header">Ajout d'un fichier</div>
+        <div class="content">
+          {{form_start(form, {'attr': {'class': 'ui form'}})}}
+            <div class="">
+              <div class="field">
+                {{ form_widget(form.support) }}
+                <div class="" style="">
+                  <input type="hidden" name="livre" id="form_livre" value="0">
+                </div>
+              </div>
+              <div class="actions">
+                {{ form_widget(form.save, {'attr': {'class': 'ui primary button'}}) }}
+              </div>
+            </div>
+          {{ form_end(form) }}
+          {{ form(form) }}
+        </div>
+      </div>
+      {# <div class="ui modal">
+        <div class="header">Ajout d'un fichier</div>
+        <div class="content">
+          <form class="ui form" method="post">
+            <div class="">
+              <div class="field">
+                <div class="">
+                  <input type="file" name="support">
+                  <input type="hidden" name="livre" id="form_livre" value="0">
+                </div>
+              </div>
+              <div class="actions">
+                <input type="submit" value="Envoyer le fichier" class="ui primary button">
+              </div>
+            </div>
+          </form>
+        </div>
+      </div> #}
+      <script data-config>
+        var filtersConfig = {
+          base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+          col_0: "none",
+          col_3: 'select',
+          col_4: 'none',
+          alternate_rows: true,
+          rows_counter: true,
+          btn_reset: true,
+          loader: true,
+          status_bar: true,
+          mark_active_columns: true,
+          highlight_keywords: true,
+          no_results_message: true,
+          col_types: [
+            'number', 'string', 'string', 'string'
+          ],
+          col_widths: [
+              '10px', , 
+          ],
+          extensions: [{ name: 'sort' }]
+        };
+
+        var tf = new TableFilter('livres', filtersConfig);
+        tf.init();
+      </script>
+    </div><br><br>
+{% endif %}
+{% endblock %}

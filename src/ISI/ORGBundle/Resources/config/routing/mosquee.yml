@@ -1,0 +1,25 @@
+home_mosquees:
+    path:     /index-{as}
+    defaults: { _controller: ORGBundle:Mosquee:index }
+    requirements:
+        as: \d+
+
+mosquee.add:
+    path:     /ajouter-une-nouvelle-mosquee-{as}
+    defaults: { _controller: ORGBundle:Mosquee:add }
+    requirements:
+        as: \d+
+
+mosquee.edit:
+    path:     /editer-une-mosquee-{as}-{id}
+    defaults: { _controller: ORGBundle:Mosquee:edit }
+    requirements:
+        as: \d+
+        id: \d+
+
+mosquee.info:
+    path:     /informations-mosquee-{as}-{id}
+    defaults: { _controller: ORGBundle:Mosquee:informations }
+    requirements:
+        as: \d+
+        id: \d+

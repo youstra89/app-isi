@@ -1,0 +1,149 @@
+{# Page d'ajout d'un nouvel examen #}
+
+{% extends "ENSBundle:Enseignant:index.html.twig" %}
+
+{% block pageTitle %}
+	Enregistrer un enseignant
+{% endblock %}
+
+{% block corps %}
+	<h2>{{ 'Enregistrement d\'un nouvel enseignant'|trans }}</h2>
+	<p>{{ 'Le matricule'|trans }}: <b>{{matricule}}</b></p>
+	<div class="form-group">
+		{{ form_start(form, {'attr': {'class': 'ui form'}}) }}
+		<div class="two fields">
+			<div class="field">
+				<label for="">
+					 {{ form_label(form.nomFr, "Nom (français)", {'label_attr': {'class': ''}}) }}
+					 {{ form_errors(form.nomFr) }}
+				</label> {{ form_widget(form.nomFr, {'attr': {'class': 'nomFr'}}) }}
+			</div>
+			<div class="field">
+				<label for="">
+					 {{ form_label(form.nomAr, "Nom (arabe)", {'label_attr': {'class': ''}}) }}
+					 {{ form_errors(form.nomAr) }}
+				</label> {{ form_widget(form.nomAr, {'attr': {'class': 'nomAr'}}) }}
+			</div>
+		</div>
+		<div class="two fields">
+			<div class="field">
+				<label for="">
+					 {{ form_label(form.pnomFr, "Prénoms (français)", {'label_attr': {'class': ''}}) }}
+					 {{ form_errors(form.pnomFr) }}
+				</label> {{ form_widget(form.pnomFr, {'attr': {'class': 'nomFr'}}) }}
+			</div>
+			<div class="field">
+				<label for="">
+					 {{ form_label(form.pnomAr, "Prénoms (arabe)", {'label_attr': {'class': ''}}) }}
+					 {{ form_errors(form.pnomAr) }}
+				</label> {{ form_widget(form.pnomAr, {'attr': {'class': 'nomAr'}}) }}
+			</div>
+		</div>
+		<div class="three fields">
+			<div class="field">
+				<label for="">
+					 {{ form_label(form.sexe, "Sexe", {'label_attr': {'class': ''}}) }}
+					 {{ form_errors(form.sexe) }}
+				</label> {{ form_widget(form.sexe, {'attr': {'class': 'sexe'}}) }}
+			</div>
+			<div class="field">
+					<label for="">
+						{# {{ form_label(form.dateNaissance, "Date de naissance", {'label_attr': {'class': ''}}) }}
+						{{ form_errors(form.dateNaissance) }} #}
+						Date de naissance
+					</label> 
+					{# {{ form_widget(form.dateNaissance, {'attr': {'class': 'dateNaissance'}}) }} #}
+					<input type="date" name="date" required="required" />
+				</div>
+			<div class="field">
+				<label for="">
+					 {{ form_label(form.lieuNaissance, "Lieu de naissance", {'label_attr': {'class': ''}}) }}
+					 {{ form_errors(form.lieuNaissance) }}
+				</label> {{ form_widget(form.lieuNaissance, {'attr': {'class': 'lieuNaissance'}}) }}
+			</div>
+		</div>
+		<div class="four fields">
+			<div class="field">
+				<label for="">
+					 {{ form_label(form.nationalite, "Nationalite", {'label_attr': {'class': ''}}) }}
+					 {{ form_errors(form.nationalite) }}
+				</label> {{ form_widget(form.nationalite, {'attr': {'class': 'nationalite'}}) }}
+			</div>
+			<div class="field">
+				<label for="">
+					 {{ form_label(form.referenceCni, "N° de référence de la CNI", {'label_attr': {'class': ''}}) }}
+					 {{ form_errors(form.referenceCni) }}
+				</label> {{ form_widget(form.referenceCni, {'attr': {'class': 'contact'}}) }}
+			</div>
+			<div class="field">
+				<label for="">
+					 {{ form_label(form.residence, "Résidence", {'label_attr': {'class': ''}}) }}
+					 {{ form_errors(form.residence) }}
+				</label> {{ form_widget(form.residence, {'attr': {'class': ''}}) }}
+			</div>
+			<div class="field">
+				<label for="">
+					 {{ form_label(form.situationMatrimoniale, "Situation matrimoniale", {'label_attr': {'class': ''}}) }}
+					 {{ form_errors(form.situationMatrimoniale) }}
+				</label> {{ form_widget(form.situationMatrimoniale, {'attr': {'class': ''}}) }}
+			</div>
+		</div>
+		<div class="two fields">
+			<div class="field">
+				<label for="">
+					 {{ form_label(form.contact, "Contact", {'label_attr': {'class': ''}}) }}
+					 {{ form_errors(form.contact) }}
+				</label> {{ form_widget(form.contact, {'attr': {'class': 'contact'}}) }}
+			</div>
+			<div class="field">
+				<label for="">
+					 {{ form_label(form.email, "E-mail", {'label_attr': {'class': ''}}) }}
+					 {{ form_errors(form.email) }}
+				</label> {{ form_widget(form.email, {'attr': {'class': 'email'}}) }}
+			</div>
+		</div>
+		<div class="three fields">
+			<div class="field">
+				<label for="">
+					 {{ form_label(form.niveauEtude, "Niveau d'étude", {'label_attr': {'class': ''}}) }}
+					 {{ form_errors(form.niveauEtude) }}
+				</label> {{ form_widget(form.niveauEtude, {'attr': {'class': 'niveauEtude'}}) }}
+			</div>
+			<div class="field">
+				<label for="">
+					 {{ form_label(form.diplomeObtenu, "Diplôme obtenu", {'label_attr': {'class': ''}}) }}
+					 {{ form_errors(form.diplomeObtenu) }}
+				</label> {{ form_widget(form.diplomeObtenu, {'attr': {'class': 'diplomeObtenu'}}) }}
+			</div>
+			<div class="field">
+				<label for="">
+					 {{ form_label(form.anneeObtention, "Année d'obtention", {'label_attr': {'class': ''}}) }}
+					 {{ form_errors(form.anneeObtention) }}
+				</label> {{ form_widget(form.anneeObtention, {'attr': {'class': 'anneeObtention'}}) }}
+			</div>
+		</div>
+		<div class="two fields">
+			<div class="field">
+				<label for="">
+					 {{ form_label(form.expProfessionnelle, "Expérience professionnelle", {'label_attr': {'class': ''}}) }}
+					 {{ form_errors(form.expProfessionnelle) }}
+				</label> {{ form_widget(form.expProfessionnelle, {'attr': {'class': 'niveauEtude'}}) }}
+			</div>
+			<div class="field">
+				<label for="">
+					 {{ form_label(form.languesParlees, "Langues parlées", {'label_attr': {'class': ''}}) }}
+					 {{ form_errors(form.languesParlees) }}
+				</label> {{ form_widget(form.languesParlees, {'attr': {'class': 'anneeObtention'}}) }}
+			</div>
+		</div>
+		<div class="field">
+			<label for="">
+					{{ form_label(form.autresCompetences, "Autres compétences", {'label_attr': {'class': ''}}) }}
+					{{ form_errors(form.autresCompetences) }}
+			</label> {{ form_widget(form.autresCompetences, {'attr': {'class': 'diplomeObtenu'}}) }}
+		</div>
+		{{ form_widget(form.save, {'attr': {'class': 'ui primary button'}}) }}
+	  {{ form_end(form) }}
+	</div>
+
+{% endblock %}

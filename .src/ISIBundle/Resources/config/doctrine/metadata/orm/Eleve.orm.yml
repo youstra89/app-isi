@@ -1,0 +1,189 @@
+Eleve:
+    type: entity
+    table: eleve
+    id:
+        eleveId:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: eleve_id
+            generator:
+                strategy: IDENTITY
+    fields:
+        matricule:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+        nomFr:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: nom_fr
+        nomAr:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: nom_ar
+        pnomFr:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: pnom_fr
+        pnomAr:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: pnom_ar
+        sexeFr:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: sexe_fr
+        sexeAr:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: sexe_ar
+        dateNaissance:
+            type: date
+            nullable: false
+            column: date_naissance
+        lieuNaissance:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: lieu_naissance
+        nationalite:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+        residence:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+        contact:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+        etatSante:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+                default: Apte
+            column: etat_sante
+        nomPere:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: nom_pere
+        contactPere:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: contact_pere
+        professionPere:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: profession_pere
+        situationPere:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: situation_pere
+        nomMere:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: nom_mere
+        contactMere:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: contact_mere
+        professionMere:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: profession_mere
+        situationMere:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: situation_mere
+        nomTuteur:
+            type: string
+            nullable: true
+            length: 255
+            options:
+                fixed: false
+                default: 'En famille'
+            column: nom_tuteur
+        contactTuteur:
+            type: string
+            nullable: true
+            length: 255
+            options:
+                fixed: false
+            column: contact_tuteur
+        professionTuteur:
+            type: string
+            nullable: true
+            length: 255
+            options:
+                fixed: false
+            column: profession_tuteur
+        interne:
+            type: boolean
+            nullable: false
+        dateSave:
+            type: datetime
+            nullable: false
+            column: date_save
+        dateUpdate:
+            type: datetime
+            nullable: false
+            column: date_update
+    lifecycleCallbacks: {  }

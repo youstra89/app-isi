@@ -1,0 +1,122 @@
+{# Fiche de renseignement d'un élève #}
+{% extends 'ENSBundle:Enseignant:index.html.twig' %}
+
+{% block title %}
+  Voir les conduites | {{ contrat.getEnseignant.getNomFr }} {{ contrat.getEnseignant.getPnomFr }}
+{% endblock %}
+
+{% block contextual_menu %}
+  {# {{ include("ENSBundle::contextual-menu-fonction.html.twig") }} #}
+{% endblock %}
+
+{% block titre_page %}
+  <i class="american sign language interpreting icon"></i>{{ 'Discipline - Conduites'|trans }}
+{% endblock %}
+
+{% block corps %}
+
+<div class="">
+	<h2>{{ 'Les conduites de '|trans }} <font  class="ui massive orange tag label">{{ contrat.getEnseignant.getNomFr }} {{ contrat.getEnseignant.getPnomFr }}</font></h2>
+	<div>
+    <h2 class="ui horizontal divider header">
+      <i class="tag icon"></i>
+      {{ 'Identification personnelle'|trans }}
+    </h2>
+    <center>
+      <h2>
+        <font color="red">{{ contrat.getEnseignant.matricule }}</font>
+      </h2>
+    </center>
+    <br>
+    <div class="ui two column doubling stackable grid container">
+      <div class="column">
+        <table>
+          <tr>
+            <td>
+              <strong>{{ 'Nom'|trans }} : </strong>
+            </td>
+            <td>{{ contrat.getEnseignant.nomFr }}</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>{{ 'Prénom'|trans }} : </strong>
+            </td>
+            <td>{{ contrat.getEnseignant.pnomFr }}</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>{{ 'Sexe'|trans }} : </strong>
+            </td>
+            {% if contrat.getEnseignant.sexe == 1 %}
+            <td>{{ 'Homme'|trans }}</td>
+            {% else %}
+            <td>{{ 'Femme'|trans }}</td>
+            {% endif %}
+          </tr>
+          <tr>
+            <td>
+              <strong>{{ 'Date de naissance'|trans }} : </strong>
+            </td>
+            <td>{{ contrat.getEnseignant.dateNaissance|date("d-m-Y") }} à {{ contrat.getEnseignant.lieuNaissance }} </td>
+          </tr>
+        </table>
+      </div>
+      <div class="column">
+        <table>
+		      <tr>
+            <td>
+              <strong>{{ 'Référence de la CNI'|trans }} : </strong>
+            </td>
+            <td>{{ contrat.getEnseignant.referenceCni }} </td>
+          </tr>
+          <tr>
+            <td>
+              <strong>{{ 'Nationalité'|trans }} : </strong>
+            </td>
+            <td>{{ contrat.getEnseignant.nationalite }}</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>{{ 'Résidence'|trans }} : </strong>
+            </td>
+            <td>{{ contrat.getEnseignant.residence }}</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>{{ 'Contact'|trans }} : </strong>
+            </td>
+            <td>{{ contrat.getEnseignant.contact }} </td>
+          </tr>
+          <tr>
+            <td>
+              <strong></strong>
+            </td>
+            <td></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <h2 class="ui horizontal divider header">
+      <i class="student icon"></i>
+      {{ 'Scolarité'|trans }}
+    </h2>
+    <div>
+    {% if conduites is not defined %}
+      <center>{{ 'Rien à signaler'|trans }}</center>
+    {% else %}
+      <div class="ui list">
+        {% for conduite in conduites %}
+          <div class="item">
+            <i class="map marker icon"></i>
+            <div class="content">
+              <a class="header">{{ conduite.getAppreciation }}, le {{ conduite.getDate|date("d-m-Y") }} ({{ conduite.getAnnee.getLibelleAnneeScolaire }})</a>
+              <div class="description">{{ conduite.getDescription }}</div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

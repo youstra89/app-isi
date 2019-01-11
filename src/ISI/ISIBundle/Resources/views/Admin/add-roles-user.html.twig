@@ -1,0 +1,30 @@
+{% extends "ISIBundle:Admin:layout.html.twig" %}
+
+{% block title %}
+  Ajouter rôles User
+{% endblock %}
+
+{% block titre %}
+  <i class="users icon"></i>{{ 'AJOUTER ROLES A UN USER'|trans }}
+{% endblock %}
+
+{% block corps %}
+  <div>
+    <p>{{user.username}}</p>
+    <p>{{ 'Les rôles de'|trans }} {{user.username}}:</p>
+    <ul>
+      {% for role in user.roles %}
+        <li>{{role}}</li>
+      {% endfor %}
+    </ul>
+    <form action="" method="post" name="">
+      {% for role in rolesDispo %}
+        <div class="ui toggle checkbox">
+          <input type="checkbox" name="role[]"  value="{{ role }}" id="">
+          <label for="">{{ role }}</label>
+        </div><br /><br />
+      {% endfor %}
+      <input type="submit" class="ui primary button" value="   Ajouter les rôles   ">
+    </form>
+  </div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{# Page d'ajout d'une nouvelle année scolaire #}
+
+{% extends "ISIBundle:Parametres:index.html.twig" %}
+
+{% block pageTitle %}
+	Nouvelle année
+{% endblock %}
+
+{% block content %}
+	<h3>{{ 'Enregistrement d\'une nouvelle année scolaire'|trans }}</h3>
+
+	<div class="well">
+		{{ form_start(form, {'attr': {'class': ''}}) }}
+			<div class="field">
+				<label for="">
+					{# Génération du label. #}
+					{{ form_label(form.libelleanneescolaire, "Année scolaire", {'label_attr': {'class': ''}}) }}
+
+					{# Affichage des erreurs pour ce champ précis. #}
+					{{ form_errors(form.libelleanneescolaire) }}
+				</label>
+
+			    <div class="">
+			        {# Génération de l'input. #}
+			        {{ form_widget(form.libelleanneescolaire, {'attr': {'class': ''}}) }}
+			    </div>
+		    </div>
+
+		    {{ form_widget(form.save, {'attr': {'class': ''}}) }}
+
+	  	{{ form_end(form) }}
+	</div>
+
+{% endblock %}

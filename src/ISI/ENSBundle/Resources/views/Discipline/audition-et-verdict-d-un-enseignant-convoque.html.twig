@@ -1,0 +1,34 @@
+{# Fiche de renseignement d'un élève #}
+{% extends 'ENSBundle:Enseignant:index.html.twig' %}
+
+{% block title %}
+  Audition et verdict | {{ convocation.contrat.getEnseignant.getNomFr }} {{ convocation.contrat.getEnseignant.getPnomFr }}
+{% endblock %}
+
+{% block contextual_menu %}
+  {# {{ include("ENSBundle::contextual-menu-fonction.html.twig") }} #}
+{% endblock %}
+
+{% block titre_page %}
+  <i class="american sign language interpreting icon"></i>{{ 'Discipline - Conduites'|trans }}
+{% endblock %}
+
+{% block corps %}
+<div class="">
+  <h2>{{ 'Audition et Verdict '|trans }} <font class="ui massive green tag label">{{ convocation.contrat.getEnseignant.getNomFr }} {{ convocation.contrat.getEnseignant.getPnomFr }}</font></h2>
+  <form class="ui form" method="post">
+		<div class="two fields">
+			<div class="field">
+				<label for="">{{ 'Audition'|trans }}</label>
+				<textarea name="audition" placeholder="On notera ici ce qu'aura répondu le convoqué" required="required"></textarea>
+			</div>
+			<div class="field">
+				<label for="">{{ 'Verdict'|trans }}</label>
+				<textarea name="verdict" placeholder="Ici, on va dire ce qui a été retenu contre lui" required="required"></textarea>
+			</div>
+		</div>
+		<input type="submit" value="Enregistrer" class="ui primary button" />
+	</form>
+</div>
+
+{% endblock %}

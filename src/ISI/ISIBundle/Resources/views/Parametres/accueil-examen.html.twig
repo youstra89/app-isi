@@ -1,0 +1,53 @@
+{# Page de gestion des examens #}
+
+{% extends "ISIBundle:Parametres:index.html.twig" %}
+
+{% block pageTitle %}
+	Gestion des examens
+{% endblock %}
+
+{% block content %}
+	<h3>{{ 'Gestion des examens'|trans }}</h3>
+  <a href="{{ path('isi_add_examen', {'as': asec}) }}">
+    <button class="positive ui button">
+      <i class="plus icon"></i>
+      {{ 'Ajouter un examen'|trans }}
+    </button>
+  </a>
+	{% if examens is empty %}
+		<p>{{ 'Aucune examen n\'a encore été enregistré'|trans }}</p>
+	{% else %}
+		<table class="ui green sortable celled table">
+			<thead>
+				<tr>
+					<th>Examen</th>
+					<th>الامتحان</th>
+					<th class="two wide">{{ 'Actions'|trans }}</th>
+				</tr>
+			</thead>
+			<tbody>
+		{% for examen in examens %}
+		    <tr>
+		      <td>
+		        <h4 class="ui image header">{{ examen.libelleFr }}</h4>
+					</td>
+		      <td>
+						<h4 class="ui image header">{{ examen.libelleAr }}</h4>
+		      </td>
+		      <td>
+						<div class="ui small basic icon buttons">
+							{#<a href="{{ path('isi_edit_examen', {'as': asec, 'niveauId': niveau.id}) }}">#}
+						  	<button class="ui button"><i class="edit icon"></i></button>
+							</a>
+						</div>
+						<div class="ui small basic icon buttons">
+						  <button class="ui button"><i class="delete icon"></i></button>
+						</div>
+		      </td>
+		    </tr>
+		{% endfor %}
+		</tbody>
+	 </table>
+	{% endif %}
+
+{% endblock %}

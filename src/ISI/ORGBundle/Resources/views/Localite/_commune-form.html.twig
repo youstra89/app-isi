@@ -1,0 +1,16 @@
+{{ form_start(form, { 'attr': {'class': 'ui form'} }) }}
+      <div class="field">
+          {{ form_row(form.nom, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+      <div class="two fields">
+        <div class="field">
+          {{ form_row(form.nombre_habitants, { 'attr': {'class': 'uk-input'} }) }}
+        </div>
+        <div class="field">
+          {{ form_row(form.taux_musulmans, { 'attr': {'class': 'uk-input'} }) }}
+        </div>
+      </div><br>
+      {{ form_rest(form) }}
+      <button class="ui primary button">{{ button|default('Enregistrer') }}</button>
+  </fieldset><br>
+{{ form_end(form) }}

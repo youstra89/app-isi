@@ -1,0 +1,21 @@
+{% extends "ISIBundle:Internat:index.html.twig" %}
+
+{% block title %}
+    Retirer un(e) interne
+{% endblock %}
+
+{% block corps %}
+    <div class="ui container">
+        <h3>{{ 'Retirer un(e) interne'|trans }}</h3>
+        <div class="ui raised very padded text container segment">
+          <center>
+            <h3>{{ 'Entrez le matricule de l\'élève à renvoyer de l\'internat'|trans }}</h3>
+            <form action="" method="post">
+              <input type="text" name="matricule" id="" placeholder="ISI-0555KG-17" style="font-size: 3em; text-align: center; border-radius: 5px" />
+              <br /><br />
+              <button class="ui negative button" type="submit" name="button">{{ 'Valider'|trans }}</button>
+            </form>
+          </center>
+        </div>
+    </div>
+{% endblock %}

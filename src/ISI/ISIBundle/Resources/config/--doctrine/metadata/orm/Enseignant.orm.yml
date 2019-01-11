@@ -1,0 +1,89 @@
+Enseignant:
+    type: entity
+    table: enseignant
+    id:
+        enseignantId:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: enseignant_id
+            generator:
+                strategy: IDENTITY
+    fields:
+        nomFr:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: nom_fr
+        nomAr:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: nom_ar
+        pnomFr:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: pnom_fr
+        pnomAr:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: pnom_ar
+        sexeFr:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: sexe_fr
+        sexeAr:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: sexe_ar
+        dateNaissance:
+            type: date
+            nullable: false
+            column: date_naissance
+        nationalite:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+        niveauEtude:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: niveau_etude
+        diplomeObtenu:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: diplome_obtenu
+        dateSave:
+            type: datetime
+            nullable: false
+            column: date_save
+        dateUpdate:
+            type: datetime
+            nullable: false
+            column: date_update
+    lifecycleCallbacks: {  }

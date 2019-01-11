@@ -1,0 +1,18 @@
+{% extends 'ORGBundle:Localite:index.html.twig'%}
+
+
+{% block stylesheets %}
+{% endblock %}
+
+
+{% block title 'Edition d\'une commune' %}
+
+
+{% block body %}
+  <h2>Edition d'une commune</h2>
+  {{ include('ORGBundle:Localite:_commune-form.html.twig', {button: 'Editer'}) }}
+{% endblock %}
+
+
+{% block javascripts %}
+{% endblock %}

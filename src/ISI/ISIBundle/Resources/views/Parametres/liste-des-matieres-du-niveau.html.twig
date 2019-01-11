@@ -1,0 +1,70 @@
+{# Page pour l'affichage de la liste des matieres d'un niveau de formation #}
+
+{% extends "ISIBundle:Parametres:index.html.twig" %}
+
+{% block pageTitle %}
+  Liste des matieres
+{% endblock %}
+
+{% block content %}
+  <h3>{{ 'Les matières enseignées en'|trans }} {{ niveau.libelleFr }}</h3>
+  <a href="{{path('isi_niveaux_matieres', {'as': asec, 'regime': regime})}}">
+    <div class="ui animated fade button" tabindex="0">
+      <div class="visible content">{{ 'Retour aux niveaux'|trans }}</div>
+      <div class="hidden content"><i class="left arrow icon"></i></div>
+    </div>
+  </a>
+  <div class="ui hidden divider"></div>
+  {% if matieres is empty %}
+    <p>{{ 'Il n y a aucune matière pour ce niveau'|trans }}</p>
+  {% else %}
+    <div class="column">
+      <table class="ui selectable very basic table" align="center">
+        <thead>
+          <tr>
+            <th class="one wide">{{ 'N°'|trans }}</th>
+            <th>{{ 'Matière'|trans }}</th>
+            <th>{{ 'Langue'|trans }}</th>
+            <th>{{ 'Statut'|trans }}</th>
+            <th class="two wide">{{ 'Actions'|trans }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% set numero = 0 %}
+          {% for matiere in matieres %}
+            {% set numero = numero + 1 %}
+            <tr>
+              <td>
+                {{ numero }}
+              </td>
+              <td>
+                <h4 class="ui image header">{{ matiere.libelleMatiere }}</h4>
+              </td>
+              <td>
+                <h4 class="ui image header">{{ matiere.referenceLangue.libelleLangue }}</h4>
+              </td>
+              <td>
+                {% for en in ens %}
+                  {% if en.matiere.matiereId == matiere.matiereId and en.statuMatiere == TRUE %}
+                    <h4 class="ui image header" data-tooltip="{{ matiere.libelleMatiere }} est une matière spécifique au {{ niveau.libelleFr }}"> <i class="star outline icon"></i> </h4>
+                  {% endif %}
+                {% endfor %}
+              </td>
+              <td>
+                <h3>
+                  <a href="">
+                    <i class="edit icon"></i>
+                  </a>
+                  <a href="">
+                    <i class="delete icon"></i>
+                  </a>
+                </h3>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+
+{% endblock %}

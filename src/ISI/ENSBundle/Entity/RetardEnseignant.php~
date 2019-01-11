@@ -1,0 +1,210 @@
+<?php
+
+namespace ISI\ENSBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * EnseignantRetard
+ *
+ * @ORM\Table(name="retard_enseignant")
+ * @ORM\Entity(repositoryClass="ISI\ENSBundle\Repository\RetardEnseignantRepository")
+ */
+class RetardEnseignant
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var \Anneescolaire
+     *
+     * @ORM\ManyToOne(targetEntity="\ISI\ISIBundle\Entity\Anneescolaire")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="annee", referencedColumnName="annee_scolaire_id")
+     * })
+     */
+    private $annee;
+
+    /**
+     * @var \Contrat
+     *
+     * @ORM\ManyToOne(targetEntity="Contrat")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="contrat", referencedColumnName="id")
+     * })
+     */
+    private $contrat;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date", type="date")
+     */
+    private $date;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="duree", type="integer")
+     */
+    private $duree;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="periode", type="string", length=255)
+     */
+    private $periode;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="dateSave", type="datetime")
+     */
+    private $dateSave;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="dateUpdate", type="datetime")
+     */
+    private $dateUpdate;
+
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set date
+     *
+     * @param \DateTime $date
+     *
+     * @return RetardEnseignant
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * Get date
+     *
+     * @return \DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    /**
+     * Set duree
+     *
+     * @param integer $duree
+     *
+     * @return RetardEnseignant
+     */
+    public function setDuree($duree)
+    {
+        $this->duree = $duree;
+
+        return $this;
+    }
+
+    /**
+     * Get duree
+     *
+     * @return int
+     */
+    public function getDuree()
+    {
+        return $this->duree;
+    }
+
+    /**
+     * Set periode
+     *
+     * @param string $periode
+     *
+     * @return RetardEnseignant
+     */
+    public function setPeriode($periode)
+    {
+        $this->periode = $periode;
+
+        return $this;
+    }
+
+    /**
+     * Get periode
+     *
+     * @return string
+     */
+    public function getPeriode()
+    {
+        return $this->periode;
+    }
+
+    /**
+     * Set dateSave
+     *
+     * @param \DateTime $dateSave
+     *
+     * @return RetardEnseignant
+     */
+    public function setDateSave($dateSave)
+    {
+        $this->dateSave = $dateSave;
+
+        return $this;
+    }
+
+    /**
+     * Get dateSave
+     *
+     * @return \DateTime
+     */
+    public function getDateSave()
+    {
+        return $this->dateSave;
+    }
+
+    /**
+     * Set dateUpdate
+     *
+     * @param \DateTime $dateUpdate
+     *
+     * @return RetardEnseignant
+     */
+    public function setDateUpdate($dateUpdate)
+    {
+        $this->dateUpdate = $dateUpdate;
+
+        return $this;
+    }
+
+    /**
+     * Get dateUpdate
+     *
+     * @return \DateTime
+     */
+    public function getDateUpdate()
+    {
+        return $this->dateUpdate;
+    }
+}
+

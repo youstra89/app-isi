@@ -1,0 +1,6 @@
+services:
+#    isi.example:
+#        class: ISI\ISIBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]
+    # isi.beta.html_adder:
+    #     class: ISI\ISIBundle\Evenement\BetaHTMLAdder

@@ -1,0 +1,21 @@
+<div class="ui vertical menu">
+  <div class="item">
+      <div class="header">{{ 'Programme de formation'|trans }}</div>
+      <div class="menu">
+          <a class="item" href="{{ path('etude_gestion_matieres', {'as': asec}) }}">{{ 'Gestion des matières'|trans }}</a>
+      </div>
+  </div>
+  <div class="item">
+    <div class="header">{{ 'Matières au programme'|trans }}</div>
+    <div class="menu">
+      <a class="item" href="{{ path('etude_gestion_niveaux', {'as': asec, 'regime': 'A'}) }}">{{ 'Academie'|trans }}</a>
+      <a class="item" href="{{ path('etude_gestion_niveaux', {'as': asec, 'regime': 'F'}) }}">{{ 'Formation'|trans }}</a>
+    </div>
+  </div>
+  <div class="item">
+    <div class="header">{{ 'Livres étudiés'|trans }}</div>
+    <div class="menu">
+      <a class="item" href="{{ path('etude_livres_etudies', {'as': asec}) }}">{{ 'Gestion des livres'|trans }}</a>
+    </div>
+  </div>
+</div>

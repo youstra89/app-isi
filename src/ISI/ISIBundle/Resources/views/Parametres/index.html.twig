@@ -1,0 +1,39 @@
+{% extends "ISIBundle::layout.html.twig" %}
+
+{% block title %}
+  {% block pageTitle %}
+    Index Paramètres
+  {% endblock %}
+{% endblock %}
+
+{# Ici je récupère l'identifiant de l'année scolaire#}
+
+{% block contextual_menu %}
+   {{ include("ISIBundle::contextual-menu-parameter-exam.html.twig") }}
+{% endblock %}
+
+
+{% block body %}
+  <div class="ui {{ dir2 }} aligned segment">
+    <h1 class="ui header"><i class="settings icon"></i>{{ 'Paramètres'|trans }}</h1>
+  </div>
+  {% for message in app.session.flashbag.get('error') %}
+  <div class="ui red message">
+    <div class="header">{{ 'Attention'|trans }}!!! </div>
+    <ul class="list">
+      <li>{{ message }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+  {% for message in app.session.flashbag.get('info') %}
+  <div class="ui green message">
+    <div class="header">{{ 'Notification'|trans }}: </div>
+    <ul class="list">
+      <li>{{ message }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+  {% block content %}
+  {% endblock %}
+
+{% endblock %}

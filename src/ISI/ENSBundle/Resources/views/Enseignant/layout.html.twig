@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+{% set dir = '' %}
+{% set dir2 = '' %}
+{% if app.request.locale == 'fr' %}
+  {% set dir = 'ltr' %}
+  {% set dir2 = 'right' %}
+{% else %}
+  {% set dir = 'rtl' %}
+  {% set dir2 = 'left' %}
+{% endif %}
+<html dir="{{ dir }}">
+  <head>
+    <meta charset="UTF-8" />
+    <title>
+      {% block title %}
+      {% endblock %}
+    </title>
+    {% block stylesheets %}
+      <link rel="stylesheet" type="text/css" href="{{ asset('../vendor/semantic/ui/dist/semantic.min.css') }}" /> {# Site CSS #}
+      <lin rel="stylesheet" href="{{ asset('../vendor/twbs/bootstrap/dist/css/bootstrap.min.css') }}" />
+      <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" />
+    {% endblock %}
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+  </head>
+  <body>
+    <div class="ui fixed borderless main menu">
+      <div class="ui container">
+        <a class="item" href="{{ path('ens_home', {'as': asec}) }}">
+          <h4 class="ui header"><span class="style-main-menu"><i class="home icon"></i> {{ 'Accueil'|trans }}</span></h4>
+        </a>
+        <div class="ui input">
+          <div class="ui simple dropdown item">
+            <a href="{{ path('ens_fonctions_en_cours', {'as': asec}) }}">
+              <h4 class="ui header"><span class="style-main-menu"><i class="tasks icon"></i>{{ 'Fonctions'|trans }}</span></h4>
+            </a>
+          </div>
+        </div>
+        <div class="ui input">
+          <div class="ui simple dropdown item">
+            <a>
+              <h4 class="ui header"><span class="style-main-menu"><i class="flag checkered icon"></i>{{ 'Contrôle'|trans }}</span></h4>
+            </a>
+            <i class="dropdown icon"></i>
+            <div class="menu">
+              <span class="sub-menu">
+                <a class="item" href="{{ path('ens_absences_home', {'as': asec}) }}">
+                  {{ 'Absences'|trans }}
+                </a>
+                <a class="item" href="{{ path('ens_retards_home', {'as': asec}) }}">
+                  {{ 'Retards'|trans }}
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="ui input">
+          <div class="ui simple dropdown item">
+            <a>
+              <h4 class="ui header"><span class="style-main-menu"><i class="american sign language interpreting icon"></i>{{ 'Discipline'|trans }}</span></h4>
+            </a>
+            <i class="dropdown icon"></i>
+            <div class="menu">
+              <span class="sub-menu">
+                <a class="item" href="{{ path('ens_convocation_home', {'as': asec}) }}">
+                  {{ 'Convocations'|trans }}
+                </a>
+                <a class="item" href="{{ path('ens_conduite_home', {'as': asec}) }}">
+                  {{ 'Conduites'|trans }}
+                </a>
+                <a class="item" href="{{ path('ens_sanction_home', {'as': asec}) }}">
+                  {{ 'Sanctions'|trans }}
+                </a>
+              </span>
+            </div>
+          </div>
+          <a class="item" href="{{ path('ens_rencontre_home', {'as': asec}) }}">
+            <h4 class="ui header"><span class="style-main-menu"><i class="handshake icon"></i> {{ 'Rencontres'|trans }}</span></h4>
+          </a>
+        </div>
+        {# <a class="item" href="{{ path('ens_home', {'as': asec}) }}">
+          <h4 class="ui header"><span class="style-main-menu"><i class="home icon"></i> {{ 'Informations'|trans }}</span></h4>
+        </a> #}
+        <div class="{{ dir2 }} item">
+          <div class="ui input">
+            <div class="ui simple dropdown item">
+              <span class="style-main-menu">{{ 'Mon compte perso'|trans }}
+                <i class="dropdown icon"></i>
+              </span>
+              <div class="menu">
+                <a class="item" href="{{ path('isi_account', {'as': asec}) }}">
+                  <i class="edit icon"></i> {{ 'Modifier mon profil'|trans }}
+                </a>
+                <a class="item" href="{{ path('msg_homepage') }}"><i class="envelope outline icon"></i> {{ 'Messages'|trans }}</a>
+                <a class="item" href="{{ path('isi_change_langue', {'as': asec, 'route': app.request.get('_route'), 'route_params': app.request.get('_route_params')}) }}">
+                  <i class="globe icon"></i> {{ 'Changer la langue'|trans }}</a>
+                <a class="item" href="{{ path('fos_user_security_logout') }}">
+                  <i class="sign out icon"></i> {{ 'Déconnexion'|trans }}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="main container">
+      <div class="ui hidden divider"></div>
+      <div class="ui internally celled grid">
+        <div class="row">
+          <div class="three wide column">
+            <div class="ui tertiary segment">
+              {{ 'Année scolaire'|trans }}: <strong>{{ annee.libelleAnneeScolaire }}</strong>
+            </div>
+            
+              {% if is_granted('ROLE_SUPER_ADMIN') %}
+                {{ 'Admin'|trans }}:
+              {% else %}
+                {{ 'Utilisateur'|trans }} :
+              {% endif %}
+              <a class="ui basic image label">
+                <img src="/markaz/web/images/elliot.jpg">
+                <strong>{{ app.user.username }}</strong>
+              </a>
+            
+            {% block contextual_menu %}
+              
+            {% endblock %}
+          </div>
+          <div class="thirteen wide column">
+            <div class="ui {{ dir2 }} aligned segment">
+              <h1 class="ui header">
+                {% block titre_page %}
+                  <i class="student icon"></i>{{ 'GESTION DES ENSEIGNANTS'|trans }}
+                {% endblock %}
+              </h1>
+            </div>
+            <!-- Début d'affichage des notifications et des messages d'erreur -->
+            {% for message in app.session.flashbag.get('error') %}
+              <div class="ui red message">
+                <div class="header">{{ 'Attention'|trans }} !!! </div>
+                <ul class="list">
+                  <li>{{ message }}.</li>
+                </ul>
+              </div>
+            {% endfor %}
+            {% for message in app.session.flashbag.get('info') %}
+              <div class="ui green message">
+                <div class="header">{{ 'Notification'|trans }}: </div>
+                <ul class="list">
+                  <li>{{ message }}.</li>
+                </ul>
+              </div>
+            {% endfor %}
+            <!-- Fin d'affichage des notifications et des message d'erreur  -->
+            {% block corps %}
+              {% block body %}
+              {% endblock %}
+            {% endblock %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+      col_0: 'none',
+      col_4: 'select',
+      col_6: 'none',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string',
+        'string', 'string', 'string',
+      ],
+      col_widths: [
+        '15px', '130px', '270px', , , '100px'
+      ],
+      extensions: [{ name: 'sort' }]
+    };
+
+    var tf = new TableFilter('table-ens', filtersConfig);
+    tf.init();
+  </script>
+  <script src="{{ asset('js/jquery-3.3.1.js') }}"></script>
+  <script src="{{ asset('../vendor/semantic/ui/dist/semantic.min.js') }}"></script>
+  <script>
+    $('.ui.accordion')
+      .accordion()
+    ;
+  </script>
+</html>

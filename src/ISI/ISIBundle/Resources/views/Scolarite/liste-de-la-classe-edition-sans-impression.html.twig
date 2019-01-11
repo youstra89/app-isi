@@ -1,0 +1,68 @@
+{# ISIBundle/Ressources/views/Scolarite #}
+{% extends "ISIBundle:Scolarite:index.html.twig" %}
+{% block title %}
+    {% block pageTitle %}
+        Liste de classe
+    {% endblock %}
+{% endblock %}
+
+{% block body %}
+
+    {% if eleves is empty %}
+        <p>{{ 'Inscrivez d\'abord des élèves dans cette classe.'|trans }}</p>
+    {% else %}
+        <div class="titre-document">
+            <center>
+                <h1>{{ 'LISTE DE CLASSE'|trans }}</h1>
+            </center>
+        </div>
+        <br />
+        <div class="id-fiche">
+            <div class="classe">
+                <span><span class="libelleClasse">{{ classe.niveau.libelleAr }}</span> : الفصل</span>
+            </div>
+        </div>
+        <br />
+        {# {{dump(eleves)}} #}
+        <table width="100%" class="" align="center">
+            <thead>
+                <tr class="table-header" bgcolor="">
+                    <th align="right" class="nomAr">الجنس</th>
+                    <th align="right">{{ 'Nom & Prénom'|trans }}</th>
+                    <th class="nomAr">الاسم و اللقب</th>
+                    <th align="right" class="nomAr">الرقم التسلسلي</th>
+                    <th align="center">N°</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set numero = 0 %}
+                {% set color = '' %}
+                {% for eleve in eleves %}
+                    {# Ce code me permet d'alterner la couleur des lignes du tableau #}
+                    {% if (numero % 2) == 1 %}
+                        {% set color = 'white' %}
+                    {% else %}
+                        {% set color = '#DCDCDC' %}
+                    {% endif %}
+                    {# Pour le sexe #}
+                    {% if eleve.sexeFr == 1 %}
+                        {% set sexe = 'Masculin' %}
+                    {% else %}
+                        {% set sexe = 'Féminin' %}
+                    {% endif %}
+                    {% set numero = numero + 1 %}
+                    <tr class="line-table" bgcolor={{ color }}>
+                        <td align="right">{{ sexe }}</td>
+                        <td align="right">{{ eleve.nomFr }} {{ eleve.pnomFr }}</td>
+                        <td align="right" width="40%" class="nomEleveAr">{{ eleve.pnomAr }} {{ eleve.nomAr }}</td>
+                        <td align="right" width="15%">{{ eleve.matricule }}</td>
+                        <td align="center">{{ numero }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br />
+        <center><span class="effectif">{{ 'Effectif'|trans }} :  {{ numero }}</span> </center>
+    {% endif %}
+
+{% endblock %}

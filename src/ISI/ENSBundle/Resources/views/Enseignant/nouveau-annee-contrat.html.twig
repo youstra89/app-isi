@@ -1,0 +1,47 @@
+{# Fiche de renseignement d'un élève #}
+{% extends 'ENSBundle:Enseignant:index.html.twig' %}
+
+{% block title %}
+  Enregistrement d'enseignant pour l'année | {{ contrat.getEnseignant.getNomFr }} {{ contrat.getEnseignant.getPnomFr }}
+{% endblock %}
+
+{% block contextual_menu %}
+  {{ include("ENSBundle::contextual-menu-fonction.html.twig") }}
+{% endblock %}
+
+{% block titre_page %}
+  <i class="student icon"></i>{{ 'Fonctions'|trans }}
+{% endblock %}
+
+{% block corps %}
+
+<div class="">
+	<h2>{{ 'Enregistrement pour le programme d\'enseignement '|trans }} <font  class="ui massive green tag label">{{ contrat.getEnseignant.getNomFr }} {{ contrat.getEnseignant.getPnomFr }}</font></h2>
+	<div class="form-group">
+		{{ form_start(form, {'attr': {'class': 'ui form'}}) }}
+			<div class="three fields">
+				<div class="field">
+					<label for="">
+						{{ form_label(form.nombreHeuresCours, "Nombre d'heures de cours dans la semaine", {'label_attr': {'class': ''}}) }}
+						{{ form_errors(form.nombreHeuresCours) }}
+					</label> {{ form_widget(form.nombreHeuresCours, {'attr': {'class': 'nomAr'}}) }}
+				</div>
+				<div class="field">
+					<label for="">
+						{{ form_label(form.nombreHeuresCoran, "Nombre d'heures de coran dans la semaine", {'label_attr': {'class': ''}}) }}
+						{{ form_errors(form.nombreHeuresCoran) }}
+					</label> {{ form_widget(form.nombreHeuresCoran, {'attr': {'class': 'nomAr'}}) }}
+				</div>
+				<div class="field">
+					<label for="">
+						{{ form_label(form.nombreHeuresSamedi, "Nombre d'heures les samedi", {'label_attr': {'class': ''}}) }}
+						{{ form_errors(form.nombreHeuresSamedi) }}
+					</label> {{ form_widget(form.nombreHeuresSamedi, {'attr': {'class': 'nomAr'}}) }}
+				</div>
+			</div>
+			{{ form_widget(form.save, {'attr': {'class': 'ui primary button'}}) }}
+		{{ form_end(form) }}
+	</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,95 @@
+{# ISIBundle/Ressources/views/Scolarite #}
+{% set template = "" %}
+{% if is_granted("ROLE_NOTE") %}
+  {% set template = "::divers-layout.html.twig" %}
+{% else %}
+  {% set template = "ISIBundle::layout.html.twig" %}
+{% endif %}
+{% extends template %}
+
+{% block title %}
+  {% block pageTitle %}
+    Index Scolarité
+  {% endblock %}
+
+{% endblock %}
+
+{% block contextual_menu %}
+  {% if is_granted("ROLE_NOTE") %}
+    <div class="ui vertical menu">
+      <div class="item">
+        <div class="header">{{ 'Edition'|trans }}</div>
+        <div class="menu">
+          <a class="item" href="{{path('isi_home_note', {'as': asec})}}">{{ 'Accueil'|trans }}</a>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="ui vertical menu">
+      <div class="item">
+        <div class="header">{{ 'Edition'|trans }}</div>
+        <div class="menu">
+          <a class="item" href="{{path('isi_statistiques_regime', {'as': asec, 'regime': regime})}}">{{ 'Statistiques'|trans }}</a>
+          <a class="item" href="{{path('isi_liste_de_classe_home', {'as': asec, 'regime': regime})}}">{{ 'Une liste de classe'|trans }}</a>
+          <a class="item" href="{{path('isi_liste_d_appel_home', {'as': asec, 'regime': regime})}}">{{ 'Une liste d\'appel'|trans }}</a>
+          {% if regime == 'A' %}
+            <a class="item" href="{{path('isi_liste_des_halaqas', {'as': asec, 'regime': regime})}}">{{ 'Une liste de halaqa'|trans }}</a>
+          {% endif %}
+        </div>
+      </div>
+      <div class="item">
+        <div class="header">{{ 'Absences'|trans }}</div>
+        <div class="menu">
+          <a class="item" href="{{path('isi_accueil_gestion_absences',{'as': asec, 'regime': regime})}}">{{ 'Enregistrer les absences'|trans }}</a>
+          <a class="item" href="{{path('isi_accueil_heures_enregistrees',{'as': asec, 'regime': regime})}}">{{ 'Voir les heures d\'absences'|trans }}</a>
+        </div>
+      </div>
+      <div class="item">
+        <div class="header">{{ 'Réaménagement'|trans }}</div>
+        <div class="menu">
+          <a class="item" href="{{path('isi_reamenager_classes_home', {'as': asec, 'regime': regime})}}">{{ 'Reorganiser les classes'|trans }}</a>
+        </div>
+      </div>
+      <div class="item">
+        <div class="header">{{ 'Examens'|trans }}</div>
+        <div class="menu">
+          <a class="item" href="{{path('isi_saisie_de_notes', {'as': asec, 'regime': regime})}}">{{ 'Saisie des notes'|trans }}</a>
+          <a class="item" href="{{path('isi_resultats_d_examens', {'as': asec, 'regime': regime})}}">{{ 'Résultats des examens'|trans }}</a>
+          <a class="item" href="{{path('isi_statiqtiques', {'as': asec, 'regime': regime})}}">{{ 'Données statistiques'|trans }}</a>
+          <a class="item" href="{{path('isi_resultats_annuels', {'as': asec, 'regime': regime})}}">{{ 'Résultats annuels'|trans }}</a>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
+{% block body %}
+  <div class="ui {{ dir2 }} aligned segment">
+    <h1 class="ui header">
+      <i class="folder open icon"></i>{{ 'Affaires Scolaires'|trans }}
+       {% if regime is same as ('A') %} {{' - Academie'}} {% else %} {{' - Formation'}} {% endif %}
+    </h1>
+  </div>
+    {% for message in app.session.flashbag.get('error') %}
+      <div class="ui red message">
+        <div class="header">{{ 'Attention'|trans }} !!! </div>
+        <ul class="list">
+          <li>{{ message }}</li>
+        </ul>
+      </div>
+    {% endfor %}
+    {% set notif = app.session.flashbag.get('info') %}
+    {% if notif is not empty %}
+      <div class="ui green message">
+        <div class="header">{{ 'Notification'|trans }}:</div>
+        <ul class="list">
+          {% for message in notif %}
+            <li>{{ message }}.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+      
+  {% block content %}
+  {% endblock %}
+
+{% endblock %}

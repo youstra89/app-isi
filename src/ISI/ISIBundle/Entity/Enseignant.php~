@@ -1,0 +1,659 @@
+<?php
+
+namespace ISIBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Enseignant
+ *
+ * @ORM\Table(name="enseignant")
+ * @ORM\Entity(repositoryClass="ISIBundle\Repository\EnseignantRepository")
+ */
+class Enseignant
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="matricule", type="string", length=255, nullable=false, unique=true)
+     */
+    private $matricule;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nom_fr", type="string", length=255, nullable=false)
+     */
+    private $nomFr;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nom_ar", type="string", length=255, nullable=false)
+     */
+    private $nomAr;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="pnom_fr", type="string", length=255, nullable=false)
+     */
+    private $pnomFr;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="pnom_ar", type="string", length=255, nullable=false)
+     */
+    private $pnomAr;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="sexe", type="string", length=255, nullable=false)
+     */
+    private $sexe;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_naissance", type="date", nullable=false)
+     */
+    private $dateNaissance;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="lieu_naissance", type="string", length=255, nullable=false)
+     */
+    private $lieuNaissance;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="reference_cni", type="string", length=255, nullable=false)
+     */
+    private $referenceCni;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="contact", type="string", length=255, nullable=true)
+     */
+    private $contact;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=255, nullable=true)
+     */
+    private $email;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nationalite", type="string", length=255, nullable=false)
+     */
+    private $nationalite;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="niveau_etude", type="string", length=255, nullable=false)
+     */
+    private $niveauEtude;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="diplome_obtenu", type="string", length=255, nullable=false)
+     */
+    private $diplomeObtenu;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="autres_competences", type="string", length=255, nullable=true)
+     */
+    private $autresCompetences;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="situation_matrimoniale", type="string", length=255, nullable=false)
+     */
+    private $situationMatrimoniale;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="residence", type="string", length=255, nullable=false)
+     */
+    private $residence;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="langues_parlees", type="string", length=255, nullable=false)
+     */
+    private $languesParlees;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="exp_professionnelle", type="integer", length=11, nullable=false)
+     */
+    private $expProfessionnelle;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="annee_obtention", type="string", length=255, nullable=false)
+     */
+    private $anneeObtention;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="rupture", type="boolean", nullable=false)
+     */
+    private $rupture = 0;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_rupture", type="datetime", nullable=false)
+     */
+    private $dateRupture;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_save", type="datetime", nullable=false)
+     */
+    private $dateSave;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_update", type="datetime", nullable=false)
+     */
+    private $dateUpdate;
+
+
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set matricule
+     *
+     * @param string $matricule
+     *
+     * @return Enseignant
+     */
+     public function setMatricule($matricule)
+     {
+         $this->matricule = $matricule;
+ 
+         return $this;
+     }
+ 
+     /**
+      * Get matricule
+      *
+      * @return string
+      */
+     public function getMatricule()
+     {
+         return $this->matricule;
+     }
+
+    /**
+     * Set nomFr
+     *
+     * @param string $nomFr
+     *
+     * @return Enseignant
+     */
+    public function setNomFr($nomFr)
+    {
+        $this->nomFr = $nomFr;
+
+        return $this;
+    }
+
+    /**
+     * Get nomFr
+     *
+     * @return string
+     */
+    public function getNomFr()
+    {
+        return $this->nomFr;
+    }
+
+    /**
+     * Set nomAr
+     *
+     * @param string $nomAr
+     *
+     * @return Enseignant
+     */
+    public function setNomAr($nomAr)
+    {
+        $this->nomAr = $nomAr;
+
+        return $this;
+    }
+
+    /**
+     * Get nomAr
+     *
+     * @return string
+     */
+    public function getNomAr()
+    {
+        return $this->nomAr;
+    }
+
+    /**
+     * Set pnomFr
+     *
+     * @param string $pnomFr
+     *
+     * @return Enseignant
+     */
+    public function setPnomFr($pnomFr)
+    {
+        $this->pnomFr = $pnomFr;
+
+        return $this;
+    }
+
+    /**
+     * Get pnomFr
+     *
+     * @return string
+     */
+    public function getPnomFr()
+    {
+        return $this->pnomFr;
+    }
+
+    /**
+     * Set pnomAr
+     *
+     * @param string $pnomAr
+     *
+     * @return Enseignant
+     */
+    public function setPnomAr($pnomAr)
+    {
+        $this->pnomAr = $pnomAr;
+
+        return $this;
+    }
+
+    /**
+     * Get pnomAr
+     *
+     * @return string
+     */
+    public function getPnomAr()
+    {
+        return $this->pnomAr;
+    }
+
+    /**
+     * Set sexe
+     *
+     * @param string $sexe
+     *
+     * @return Enseignant
+     */
+    public function setSexe($sexe)
+    {
+        $this->sexe = $sexe;
+
+        return $this;
+    }
+
+    /**
+     * Get sexe
+     *
+     * @return string
+     */
+    public function getSexe()
+    {
+        return $this->sexe;
+    }
+
+    /**
+     * Set dateNaissance
+     *
+     * @param \DateTime $dateNaissance
+     *
+     * @return Enseignant
+     */
+    public function setDateNaissance($dateNaissance)
+    {
+        $this->dateNaissance = $dateNaissance;
+
+        return $this;
+    }
+
+    /**
+     * Get dateNaissance
+     *
+     * @return \DateTime
+     */
+    public function getDateNaissance()
+    {
+        return $this->dateNaissance;
+    }
+
+    /**
+     * Set lieuNaissance
+     *
+     * @param string $lieuNaissance
+     *
+     * @return Enseignant
+     */
+    public function setLieuNaissance($lieuNaissance)
+    {
+        $this->lieuNaissance = $lieuNaissance;
+ 
+        return $this;
+    }
+ 
+    /**
+     * Get lieuNaissance
+     *
+     * @return string
+     */
+    public function getLieuNaissance()
+    {
+        return $this->lieuNaissance;
+    }
+
+    /**
+     * Set nationalite
+     *
+     * @param string $nationalite
+     *
+     * @return Enseignant
+     */
+     public function setNationalite($nationalite)
+     {
+         $this->nationalite = $nationalite;
+ 
+         return $this;
+     }
+ 
+     /**
+      * Get nationalite
+      *
+      * @return string
+      */
+     public function getNationalite()
+     {
+         return $this->nationalite;
+     }
+
+    /**
+     * Set referenceCni
+     *
+     * @param string $referenceCni
+     *
+     * @return Enseignant
+     */
+    public function setReferenceCni($referenceCni)
+    {
+        $this->referenceCni = $referenceCni;
+  
+        return $this;
+    }
+  
+    /**
+     * Get referenceCni
+     *
+     * @return string
+     */
+    public function getReferenceCni()
+    {
+        return $this->referenceCni;
+    }
+
+    /**
+     * Set contact
+     *
+     * @param string $contact
+     *
+     * @return Enseignant
+     */
+     public function setContact($contact)
+     {
+         $this->contact = $contact;
+ 
+         return $this;
+     }
+ 
+     /**
+      * Get contact
+      *
+      * @return string
+      */
+     public function getContact()
+     {
+         return $this->contact;
+     }
+
+    /**
+     * Set email
+     *
+     * @param string $email
+     *
+     * @return Enseignant
+     */
+     public function setEmail($email)
+    {
+        $this->email = $email;
+ 
+        return $this;
+    }
+ 
+     /**
+     * Get email
+     *
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * Set niveauEtude
+     *
+     * @param string $niveauEtude
+     *
+     * @return Enseignant
+     */
+    public function setNiveauEtude($niveauEtude)
+    {
+        $this->niveauEtude = $niveauEtude;
+
+        return $this;
+    }
+
+    /**
+     * Get niveauEtude
+     *
+     * @return string
+     */
+    public function getNiveauEtude()
+    {
+        return $this->niveauEtude;
+    }
+
+    /**
+     * Set diplomeObtenu
+     *
+     * @param string $diplomeObtenu
+     *
+     * @return Enseignant
+     */
+    public function setDiplomeObtenu($diplomeObtenu)
+    {
+        $this->diplomeObtenu = $diplomeObtenu;
+
+        return $this;
+    }
+
+    /**
+     * Get diplomeObtenu
+     *
+     * @return string
+     */
+    public function getDiplomeObtenu()
+    {
+        return $this->diplomeObtenu;
+    }
+
+    /**
+     * Set anneeObtention
+     *
+     * @param string $anneeObtention
+     *
+     * @return Enseignant
+     */
+     public function setAnneeObtention($anneeObtention)
+    {
+        $this->anneeObtention = $anneeObtention;
+ 
+        return $this;
+    }
+ 
+    /**
+     * Get anneeObtention
+     *
+     * @return string
+     */
+    public function getAnneeObtention()
+    {
+        return $this->anneeObtention;
+    }
+
+    /**
+     * Set rupture
+     *
+     * @param boolean $rupture
+     *
+     * @return Enseignant
+     */
+     public function setRupture($rupture)
+     {
+         $this->rupture = $rupture;
+ 
+         return $this;
+     }
+ 
+    /**
+     * Get rupture
+     *
+     * @return boolean
+     */
+    public function getRupture()
+    {
+        return $this->rupture;
+    }
+
+    /**
+     * Set dateRupture
+     *
+     * @param \DateTime $dateRupture
+     *
+     * @return Enseignant
+     */
+    public function setDateRupture($dateRupture)
+    {
+        $this->dateRupture = $dateRupture;
+ 
+        return $this;
+    }
+ 
+    /**
+     * Get dateRupture
+     *
+     * @return \DateTime
+     */
+    public function getDateRupture()
+    {
+        return $this->dateRupture;
+    }
+
+    /**
+     * Set dateSave
+     *
+     * @param \DateTime $dateSave
+     *
+     * @return Enseignant
+     */
+    public function setDateSave($dateSave)
+    {
+        $this->dateSave = $dateSave;
+
+        return $this;
+    }
+
+    /**
+     * Get dateSave
+     *
+     * @return \DateTime
+     */
+    public function getDateSave()
+    {
+        return $this->dateSave;
+    }
+
+    /**
+     * Set dateUpdate
+     *
+     * @param \DateTime $dateUpdate
+     *
+     * @return Enseignant
+     */
+    public function setDateUpdate($dateUpdate)
+    {
+        $this->dateUpdate = $dateUpdate;
+
+        return $this;
+    }
+
+    /**
+     * Get dateUpdate
+     *
+     * @return \DateTime
+     */
+    public function getDateUpdate()
+    {
+        return $this->dateUpdate;
+    }
+}

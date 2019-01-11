@@ -1,0 +1,4 @@
+services:
+#    org.example:
+#        class: ORGBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]

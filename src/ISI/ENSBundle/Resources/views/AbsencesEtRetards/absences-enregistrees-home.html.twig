@@ -1,0 +1,59 @@
+{# On affiche toues les classes d'un niveau de formation. On sélectionne alors une classe pour aller saisir les notes #}
+
+{% extends 'ENSBundle:Enseignant:layout.html.twig' %}
+
+{% block pageTitle %}
+  Voir les absences enregistrées
+{% endblock %}
+
+{% block contextual_menu %}
+  {{ include("ENSBundle:AbsencesEtRetards:contextual-menu-retards-et-absences.html.twig") }}
+{% endblock %}
+
+{% block titre_page %}
+  <i class="flag checkered icon"></i>{{ 'Absences'|trans }}
+{% endblock %}
+
+{% block body %}
+  <h3>{{ 'Retards enregistrés'|trans }}</h3>
+  {# Cas de fiches de notes déjà éditées #}
+    {% for message in app.session.flashbag.get('error') %}
+      <div class="ui red message">
+        <div class="header">{{ 'Attention'|trans }} !!! </div>
+        <ul class="list">
+          <li>{{ message }}</li>
+        </ul>
+      </div>
+    {% endfor %}
+    {% for message in app.session.flashbag.get('info') %}
+      <div class="ui green message">
+        <div class="header">{{ 'Notification'|trans }}: </div>
+        <ul class="list">
+          <li>{{ message }}.</li>
+        </ul>
+      </div>
+    {% endfor %}
+  {# Fin des notifications #}
+  <br />
+  {# {{ dump(moisR) }} #}
+  <div class="ui accordion">
+    {% for abs in absencesEns %}
+      <div class="title"><h3><i class="dropdown icon"></i> {{ abs.nomFr }} </h3></div>
+      <div class="content">
+          <p>
+            {% for absence in absences %}
+              {% if abs.id == absence.getContrat.getId %}
+                {% set date = "" %}
+                {% if absence.dateDepart == absence.dateRetour %}
+                  {% set date = "même jour" %}
+                {% else %}
+                  {% set date = absence.dateRetour|date("d-m-Y") %}
+                {% endif %}
+                Parti le {{ absence.dateDepart|date("d-m-Y") }} pour "{{ absence.getMotif }}". Retour prévu pour le {{ date }}. <br />
+              {% endif %}
+            {% endfor %}
+          </p>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

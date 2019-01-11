@@ -1,0 +1,149 @@
+{# Fiche de renseignement d'un élève #}
+{% extends 'ENSBundle:Enseignant:index.html.twig' %}
+
+{% block title %}
+  Arrêt de fonction | {{ contrat.getEnseignant.getNomFr }} {{ contrat.getEnseignant.getPnomFr }}
+{% endblock %}
+
+{% block contextual_menu %}
+  {{ include("ENSBundle::contextual-menu-fonction.html.twig") }}
+{% endblock %}
+
+{% block titre_page %}
+  <i class="student icon"></i>{{ 'Fonctions'|trans }}
+{% endblock %}
+
+{% block corps %}
+<div class="">
+	<h2>{{ 'Arrêt de fonction pour l\'enseignant(e) '|trans }} <font color="green">{{ contrat.getEnseignant.getNomFr }} {{ contrat.getEnseignant.getPnomFr }}</font></h2>
+	<div class="form-group">
+		<center>
+			<form method="post" class="ui form">
+				<button class="negative ui button">
+					<i class="minus icon"></i>
+					{{ 'Arrêter les fonctions de '|trans }} {{ contrat.getEnseignant.nomFr }} {{ contrat.getEnseignant.pnomFr }}
+				</button><br /><br />
+				<div class="field" style="width: 30%">
+					<label>
+						{{ 'Date de fin'|trans }}
+					</label>
+					<input type="date" required="required" name="date"/>
+				</div>
+				<div class="field">
+					<label>
+						{{ 'Motif de fin de contrat'|trans }}
+					</label>
+					<textarea name="motif" required="required">
+					</textarea>
+				</div>
+			</form>
+		</center>
+	</div>
+	<br />
+	<div>
+    <h2 class="ui horizontal divider header">
+      <i class="tag icon"></i>
+      {{ 'Identification personnelle'|trans }}
+    </h2>
+    <center>
+      <h2>
+        <font color="red">{{ contrat.getEnseignant.matricule }}</font>
+      </h2>
+    </center>
+    <br>
+    <div class="ui two column doubling stackable grid container">
+      <div class="column">
+        <table>
+          <tr>
+            <td>
+              <strong>{{ 'Nom'|trans }} : </strong>
+            </td>
+            <td>{{ contrat.getEnseignant.nomFr }}</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>{{ 'Prénom'|trans }} : </strong>
+            </td>
+            <td>{{ contrat.getEnseignant.pnomFr }}</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>{{ 'Sexe'|trans }} : </strong>
+            </td>
+            {% if contrat.getEnseignant.sexe == 1 %}
+            <td>{{ 'Homme'|trans }}</td>
+            {% else %}
+            <td>{{ 'Femme'|trans }}</td>
+            {% endif %}
+          </tr>
+          <tr>
+            <td>
+              <strong>{{ 'Date de naissance'|trans }} : </strong>
+            </td>
+            <td>{{ contrat.getEnseignant.dateNaissance|date("d-m-Y") }} à {{ contrat.getEnseignant.lieuNaissance }} </td>
+          </tr>
+        </table>
+      </div>
+      <div class="column">
+        <table>
+		<tr>
+            <td>
+              <strong>{{ 'Référence de la CNI'|trans }} : </strong>
+            </td>
+            <td>{{ contrat.getEnseignant.referenceCni }} </td>
+          </tr>
+          <tr>
+            <td>
+              <strong>{{ 'Nationalité'|trans }} : </strong>
+            </td>
+            <td>{{ contrat.getEnseignant.nationalite }}</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>{{ 'Résidence'|trans }} : </strong>
+            </td>
+            <td>{{ contrat.getEnseignant.residence }}</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>{{ 'Contact'|trans }} : </strong>
+            </td>
+            <td>{{ contrat.getEnseignant.contact }} </td>
+          </tr>
+          <tr>
+            <td>
+              <strong></strong>
+            </td>
+            <td></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <h2 class="ui horizontal divider header">
+      <i class="student icon"></i>
+      {{ 'Scolarité'|trans }}
+    </h2>
+    <div>
+    <table class="ui very basic table">
+		<thead>
+			<tr>
+				<th>Annee scolaire</th>
+				<th>Cours</th>
+				<th>Coran</th>
+				<th>Samedi</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>John</td>
+				<td>Approuvé</td>
+				<td>None</td>
+				<td>None</td>
+			</tr>
+		</tbody>
+	</table> 
+    </div>
+  </div>
+</div>
+
+{% endblock %}

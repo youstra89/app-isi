@@ -1,0 +1,62 @@
+localite:
+    path:     /index-{as}
+    defaults: { _controller: ORGBundle:Localite:index }
+    requirements:
+        as: \d+
+
+regions:
+    path:     /regions-{as}
+    defaults: { _controller: ORGBundle:Localite:regions }
+    requirements:
+        as: \d+
+
+region.add:
+    path:     /ajout-d-une-nouvelle-region-{as}
+    defaults: { _controller: ORGBundle:Localite:regionAdd }
+    requirements:
+        as: \d+
+
+region.edit:
+    path:     /edition-d-une-region-{as}-{id}
+    defaults: { _controller: ORGBundle:Localite:regionEdit }
+    requirements:
+        as: \d+
+        id: \d+
+
+villes:
+    path:     /villes-{as}
+    defaults: { _controller: ORGBundle:Localite:villes }
+    requirements:
+        as: \d+
+
+ville.add:
+    path:     /ajout-d-une-nouvelle-ville-{as}
+    defaults: { _controller: ORGBundle:Localite:villeAdd }
+    requirements:
+        as: \d+
+
+ville.edit:
+    path:     /edition-d-une-ville-{as}-{id}
+    defaults: { _controller: ORGBundle:Localite:villeEdit }
+    requirements:
+        as: \d+
+        id: \d+
+
+communes:
+    path:     /communes-{as}
+    defaults: { _controller: ORGBundle:Localite:communes }
+    requirements:
+        as: \d+
+
+commune.add:
+    path:     /ajout-d-une-nouvelle-commune-{as}
+    defaults: { _controller: ORGBundle:Localite:communeAdd }
+    requirements:
+        as: \d+
+
+commune.edit:
+    path:     /edition-d-une-commune-{as}-{id}
+    defaults: { _controller: ORGBundle:Localite:communeEdit }
+    requirements:
+        as: \d+
+        id: \d+

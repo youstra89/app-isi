@@ -1,0 +1,30 @@
+Mois:
+    type: entity
+    table: mois
+    id:
+        referenceMois:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            id: true
+            column: reference_mois
+            generator:
+                strategy: IDENTITY
+    fields:
+        mois:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+        dateSave:
+            type: datetime
+            nullable: false
+            column: date_save
+        dateUpdate:
+            type: datetime
+            nullable: false
+            column: date_update
+    lifecycleCallbacks: {  }

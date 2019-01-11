@@ -1,0 +1,34 @@
+Anneescolaire:
+    type: entity
+    table: anneescolaire
+    indexes:
+        libelleAnneeScolaire:
+            columns:
+                - libelleAnneeScolaire
+    id:
+        anneeScolaireId:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: annee_scolaire_id
+            generator:
+                strategy: IDENTITY
+    fields:
+        libelleanneescolaire:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: libelleAnneeScolaire
+        dateSave:
+            type: datetime
+            nullable: false
+            column: date_save
+        dateUpdate:
+            type: datetime
+            nullable: false
+            column: date_update
+    lifecycleCallbacks: {  }

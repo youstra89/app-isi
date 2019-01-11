@@ -1,0 +1,60 @@
+Commettre:
+    type: entity
+    table: commettre
+    indexes:
+        probleme_id:
+            columns:
+                - probleme_id
+        annee_scolaire_id:
+            columns:
+                - annee_scolaire_id
+        eleve_id:
+            columns:
+                - eleve_id
+    uniqueConstraints:
+        commettre:
+            columns:
+                - eleve_id
+                - annee_scolaire_id
+                - probleme_id
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    manyToOne:
+        eleve:
+            targetEntity: Eleve
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                eleve_id:
+                    referencedColumnName: eleve_id
+            orphanRemoval: false
+        probleme:
+            targetEntity: Probleme
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                probleme_id:
+                    referencedColumnName: probleme_id
+            orphanRemoval: false
+        anneeScolaire:
+            targetEntity: Anneescolaire
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                annee_scolaire_id:
+                    referencedColumnName: annee_scolaire_id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

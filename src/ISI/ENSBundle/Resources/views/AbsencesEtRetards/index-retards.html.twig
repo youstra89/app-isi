@@ -1,0 +1,42 @@
+{% extends "ENSBundle:Enseignant:layout.html.twig" %}
+
+{% block title %}
+  Accueil retards enseignants
+{% endblock %}
+
+{% block contextual_menu %}
+  {{ include("ENSBundle:AbsencesEtRetards:contextual-menu-retards-et-absences.html.twig") }}
+{% endblock %}
+
+{% block titre_page %}
+  <i class="flag checkered icon"></i>{{ 'Retards'|trans }}
+{% endblock %}
+
+{% block corps %}
+    <h2>{{ 'Enregistrement des retards des enseignants '|trans }} {{ annee.getLibelleAnneeScolaire }}</h2>
+    <div class="ui raised very padded text container segment">
+      <center>
+      <form class="ui form" action="" method="post">
+        <div class="ui massive form">
+          <div class="">
+            <div class="field">
+              <label>Entrez une date</label>
+              <input type="date" style="text-align: center;" name="date" value="{{ 'now'|date('d/m/Y') }}">
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Choisissez une période</label>
+          <select name="periode">
+            <option value="">Choisir une période</option>
+            <option value="Matin">Matin</option>
+            <option value="Soir">Soir</option>
+          </select>
+        </div>
+        <br/>
+        <input class="ui positive button" type="submit" value="Valider">
+      </form>
+      </center>
+    </div>
+    
+{% endblock %}

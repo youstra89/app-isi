@@ -1,0 +1,288 @@
+{% extends "ISIBundle::layout.html.twig" %}
+
+{% block title %}
+  {% block pageTitle %}
+    {% if regime is same as ('A') %}
+      {{ 'Eleve - Académie'|trans }}
+    {% else %}
+      {{ 'Eleve - Centre de formation'|trans }}
+    {% endif %}
+  {% endblock %}
+{% endblock %}
+
+{% block contextual_menu %}
+  {% if is_granted('ROLE_PREINSCRIPTION') %}
+  
+  {% else %}
+    <div class="ui vertical menu">
+      <div class="item">
+        <div class="header">{{ 'Affectations'|trans }}</div>
+        <div class="menu">
+          {# Cette partie permet de voir la liste de tous les élèves de la l'institut #}
+          <a class="item" href="{{path('isi_eleves_inscrits', {'as': asec, 'regime': regime})}}">{{ 'Elèves inscrits'|trans }}</a>
+          <a class="item" href="{{path('isi_modifier_inscription', {'as': asec, 'regime': regime})}}">{{ 'Modifier inscription'|trans }}</a>
+          <a class="item" href="{{path('isi_inscription', {'as': asec, 'regime': regime})}}">{{ 'Inscription'|trans }}</a>
+          <a class="item" href="{{path('isi_renvoi_home', {'as': asec, 'regime': regime})}}">{{ 'Renvoi'|trans }}</a>
+        </div>
+      </div>
+      <div class="item">
+        <div class="header">{{ 'Infos. Elève'|trans }}</div>
+        <div class="menu">
+          <a class="item" href="{{ path('isi_changer_regime_home', {'as': asec, 'regime': regime}) }}">{{ 'Changer le regime de formation'|trans }}</a>
+          <a class="item">{{ 'Fiche d\'information'|trans }}</a>
+          <a class="item">{{ 'Modifier'|trans }}</a>
+          <a class="item">{{ 'Supprimer'|trans }}</a>
+        </div>
+      </div>
+      <div class="item">
+        <div class="header">{{ 'Divers'|trans }}</div>
+        <div class="menu">
+          <a class="item">{{ 'Permission'|trans }}</a>
+          <a class="item" href="{{ path('isi_problemes_home', { 'as': asec, 'regime': regime }) }}">{{ 'Signaler un problème'|trans }}</a>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block body %}
+  <div class="ui {{ dir2 }} aligned segment">
+    <h1 class="ui header">
+      <i class="student icon"></i>{{ 'Espace élèves'|trans }}
+      {% if regime is same as ('A') %}
+        {{ ' - Academie' }}
+      {% else %}
+        {{' - Formation'}}
+      {% endif %}
+    </h1>
+  </div>
+
+  {% if eleves is not defined %}
+    {% block content %}
+    {% endblock %}
+  {% else %}
+    {% set notif = app.session.flashbag.get('info') %}
+    {% if notif is not empty %}
+      <div class="ui green message">
+        <div class="header">{{ 'Notification'|trans }}:</div>
+        <ul class="list">
+          {% for message in notif %}
+            <li>{{ message }}.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+    {% for message in app.session.flashbag.get('error') %}
+      <div class="ui red message">
+        <div class="header">{{ 'Attention'|trans }} !!! </div>
+        <ul class="list">
+          <li>{{ message }}</li>
+        </ul>
+      </div>
+    {% endfor %}
+    {#<table class="ui very basic table">#}
+    {% if regime is same as('A') %}
+    <a href="{{ path('isi_preinscription', {'as': asec, 'regime': 'A'}) }}">
+    {% else %}
+    <a href="{{ path('isi_preinscription', {'as': asec, 'regime': 'F'}) }}">
+    {% endif %}
+      <button class="positive ui button">
+        <i class="plus icon"></i>
+        {{ 'Préinscrire un nouvel élève'|trans }}
+      </button>
+    </a>
+    <form class="" action="" method="post">
+      <input type="hidden" id="asec" value="{{ asec }}">
+      <input type="hidden" id="regime" value="{{ regime }}">
+    </form>
+    {# <table id="table1" cellspacing="0" class="mytable filterable ui very basic table"> #}
+    <table id="example" class="display nowrap" style="width:100%">
+      <thead>
+        <tr>
+          <th align="center">N°</th>
+          <th>{{ 'Matricule'|trans }}</th>
+          <th>Nom & Prénom</th>
+          <th>الإسم و اللقب</th>
+          <th>{{ 'Sexe'|trans }}</th>
+          <th>{{ 'Date de naissance'|trans }}</th>
+          <th>{{ 'Actions'|trans }}</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% set numero = 0 %}
+      {% for eleve in eleves %}
+        {% set color = '' %}
+        {% set numero = numero + 1 %}
+        {% if eleve.renvoye == 1 %}
+          {% set color = 'red' %}
+        {% endif %}
+        <tr>
+          <td align="center"><font color={{ color }}>{{ numero }}</font></td>
+          <td><font color={{ color }}>{{ eleve.matricule }}</font></td>
+          <td><font color={{ color }}>{{ eleve.nomFr }} {{ eleve.pnomFr }}</font></td>
+          <td><font color={{ color }}>{{ eleve.pnomAr }} {{ eleve.nomAr }}</font></td>
+          <td>
+            <font color={{ color }}>
+              <div class="home-eleve" data-tooltip="{{ eleve.nomFr }} {{ eleve.pnomFr }} est de sexe ">
+                {% if eleve.sexe == 1 %}
+                  {{ 'ذكر' }}
+                {% else %}
+                  {{ 'أنثى' }}
+                {% endif %}
+              </div>
+            </font>
+          </td>
+          <td><font color={{ color }}>{{ eleve.dateNaissance|date("d-m-Y") }}</font></td>
+          <td>
+            <font color={{ color }}>
+              <div class="ui grid">
+                <div class="wide column" data-tooltip="Modifier les information de l'élève">
+                  <a href="{{ path('isi_edit_eleve', {'as': asec, 'regime': regime, 'eleveId': eleve.eleveId}) }}"><i class="edit icon"></i></a>
+                </div>
+                <div class="wide column" data-tooltip="Voir les informations de l'élève">
+                  <a href="{{ path('isi_info_eleve', {'as': asec, 'regime': regime, 'eleveId': eleve.eleveId}) }}"><i class="info circle icon"></i></a>
+                </div>
+                <div class="wide column" data-tooltip="Enregistrer une conduite de l'élève">
+                  <a href="{{ path('isi_enregistrer_conduite', {'as': asec, 'regime': regime, 'eleveId': eleve.eleveId}) }}"><i class="certificate icon"></i></a>
+                </div>
+                {% for eleveI in elevesI %}
+                    {% if eleve.eleveId == eleveI.getEleveId %}
+                        <div class="wide column" data-tooltip="Inscrit(e) à l'internat">
+                          <i class="bed icon"></i>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+              </div>
+            </font>
+          </td>
+        </tr> 
+       {% endfor %}
+      </tbody>
+       <!--<tbody>
+
+      </tbody> -->
+      {# <tfoot>
+        <tr>
+          <th align="center">N°</th>
+          <th>{{ 'Matricule'|trans }}</th>
+          <th>Nom & Prénom</th>
+          <th>الإسم و اللقب</th>
+          <th>{{ 'Sexe'|trans }}</th>
+          <th>{{ 'Date de naissance'|trans }}</th>
+          <th>{{ 'Actions'|trans }}</th>
+        </tr>
+      </tfoot> #}
+    </table>
+    {# <div id="test" data-is-test="{{ eleves }}"></div> #}
+
+    {# {{ dump(eleves)}} #}
+
+    <script data-config>
+      console.log("JavaScript bien chargé");
+      $('document').ready(function(){
+    var test = $('#test').data("isTest");
+    console.log(test);
+        console.log("Etape 1");
+        console.log({{eleves|json_encode|raw}});
+          var list = $('#list');
+          console.log("Récupération de la liste");
+          /*$.ajax({
+            url: "{{ path('selection_eleves_regime', {'as': asec, 'regime': regime}) }}",
+            type: "GET",
+            dataType: "json",
+            success: function (data){
+                console.log(data)
+                for(var i in data)
+                var id = data[i].id
+                var lien = { path('isi_edit_eleve', {'as': asec, 'regime': regime, 'id': id}) };
+                $("#table1 > tbody:last")
+                  .append(
+                    "<tr><td>" + data[i].id +
+                    "</td><td>" + data[i].matricule +
+                    "</td><td>" + data[i].nomFr + " " + data[i].pnomFr +
+                    "</td><td>" + data[i].nomAr + " " + data[i].pnomAr +
+                    "</td><td>" + data[i].sexe +
+                    "</td><td>" + data[i].dateNaissance['date'] +
+                    "</td><td><div class='" + lien + "'><i class='edit icon'></i></a></div></td></tr>"
+                    // "</td><td><div class='home-eleve' data-tooltip='Modifier les information de l\'élève'><a href='/espace-eleves/edit-eleve-{{ asec }}-{{ regime }}-" + data[i].id + ".html'><i class='edit icon'></i></a></div></td></tr>"
+      				)
+            }
+          });*/
+      });
+
+      {# var filtersConfig = {
+        base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+        col_0: "none",
+        col_4: 'select',
+        col_6: "none",
+        alternate_rows: true,
+        rows_counter: true,
+        btn_reset: true,
+        loader: true,
+        status_bar: true,
+        mark_active_columns: true,
+        highlight_keywords: true,
+        no_results_message: true,
+        col_types: [
+          'number', 'string', 'string',
+          'string', 'string', 'string',
+        ],
+        
+        extensions: [{ name: 'sort' }]
+      };
+
+      var tf = new TableFilter('table1', filtersConfig);
+      tf.init(); #}
+    </script>
+    <script>
+         /* $(document).ready(function() {
+          $('#example').DataTable( {
+              {# "ajax": JSON.parse('{{ eleves|raw}}');, #}
+              //"ajax": {{ eleves|json_encode|raw }},
+              "columns": [
+                  { "data": "matricule" },
+                  { "data": "pnomFr" },
+                  { "data": "pnomAr" },
+                  { "data": "sexe" },
+                  { "data": "dateNaissance" }
+              ]
+          } );
+      } );*/
+      $(document).ready(function() { 
+        $('#example').DataTable( {
+          "scrollY": 500,
+          "scrollX": true,
+          "pageLength": 100,
+          "lengthMenu": [ 50, 100, 200 ]
+        });
+        $.ajax({
+            //url: "{{ path('selection_eleves_regime', {'as': asec, 'regime': regime}) }}",
+            type: "GET",
+            dataType: "json",
+            success: function (data){
+                //console.log(data)
+                $('#example').DataTable( {
+                  /*"ajax": data,
+                  "columns": [
+                      { "data": "id" },
+                      { "data": "matricule" },
+                      { "data": "nomFr" },
+                      { "data": "nomAr" },
+                      { "data": "sexe" },
+                      { "data": "dateNaissance" },
+                      { "data": "action" },
+                  ],*/
+                  "scrollY": 500,
+                  "scrollX": true,
+                  "pageLength": 100,
+                  "lengthMenu": [ 50, 100, 200 ]
+                });
+            },
+          });
+        
+      });
+    </script>
+    </div>
+  {% endif %}
+{% endblock %}
+

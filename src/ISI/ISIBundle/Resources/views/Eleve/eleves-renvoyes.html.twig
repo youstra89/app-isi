@@ -1,0 +1,135 @@
+{# ISIBundle/Ressources/views/Eleve #}
+{% set template = "" %}
+{% if regime == 'C' %}
+  {% set template = 'ISIBundle:Coran:index.html.twig' %}
+{% else %}
+  {% set template = 'ISIBundle:Eleve:index.html.twig' %}
+{% endif %}
+{% extends template %}
+
+{% block title %}
+  Elèves renvoyés
+{% endblock %}
+
+
+{% block body %}
+
+    {% block content %}
+      {% set regimeDeFormation = '' %}
+      {% if regime == 'A' %}
+        {% set regimeDeFormation = 'Academie' %}
+      {% elseif regime == 'F' %}
+        {% set regimeDeFormation = 'Formation' %}
+      {% else %}
+        {% set regimeDeFormation = 'Espace Coran' %}
+      {% endif %}
+      <div class="ui {{ dir2 }} aligned segment">
+        <h1 class="ui header">
+          <i class="student icon"></i>{{ 'Elèves renvoyés - '|trans }} {{ regimeDeFormation }}
+        </h1>
+      </div>
+    {% if regime is same as('A') %}
+      <a href="{{ path('isi_renvoi_home', {'as': asec, 'regime': 'A'}) }}">
+    {% elseif regime is same as('F') %}
+      <a href="{{ path('isi_renvoi_home', {'as': asec, 'regime': 'F'}) }}">
+    {% else %}
+      <a href="{{ path('isi_renvoi_home', {'as': asec, 'regime': 'C'}) }}">
+    {% endif %}
+
+      <button class="negative ui button">
+        <i class="minus icon"></i>
+        {{ 'Renvoyer un élève'|trans }}
+      </button>
+    </a>
+    {% for message in app.session.flashbag.get('error') %}
+      <div class="ui red message">
+        <div class="header">{{ 'Attention'|trans }} !!! </div>
+        <ul class="list">
+          <li>{{ message }}.</li>
+        </ul>
+      </div>
+    {% endfor %}
+    {% for message in app.session.flashbag.get('info') %}
+      <div class="ui green message">
+        <div class="header">{{ 'Notification'|trans }}: </div>
+        <ul class="list">
+          <li>{{ message }}.</li>
+        </ul>
+      </div>
+    {% endfor %}
+      {# {{dump(renvoyes)}} #}
+        <table id="eleves-renvoyes" cellspacing="0" class="mytable filterable ui very basic table">
+          <thead>
+            <tr>
+              <th align="center">{{ 'N°'|trans }}</th>
+              <th>{{ 'Matricule'|trans }}</th>
+              <th>{{ 'Nom & Prénom'|trans }}</th>
+              <th>الإسم و اللقب</th>
+              <th>{{ 'Sexe'|trans }}</th>
+              <th>{{ 'Date de naissance'|trans }}</th>
+              <th>{{ 'Classe'|trans }}</th>
+              <th>{{ 'Date de renvoi'|trans }}</th>
+              {% if is_granted('ROLE_ADMIN_SCOLARITE') or is_granted('ROLE_ADMIN_ANNEXE') %}
+                <th>{{ 'Action'|trans }}</th>
+              {% endif %}
+            </tr>
+          </thead>
+          <tbody>
+            {% set numero = 0 %}
+            {% for eleve in eleves %}
+            {% set numero = numero + 1 %}
+            <tr title="{{ eleve.motifRenvoi }}">
+              <td align="center">{{ numero }}</td>
+              <td>{{ eleve.matricule }}</td>
+              <td>{{ eleve.nomFr }} {{ eleve.pnomFr }}</td>
+              <td><span>{{ eleve.pnomAr }} {{ eleve.nomAr }}</span></td>
+              <td>
+                <div class="home-eleve" data-tooltip="{{ eleve.nomFr }} {{ eleve.pnomFr }} est de sexe ">
+                  {% if eleve.sexe == 1 %}
+                    {{ 'ذكر' }}
+                  {% else %}
+                    {{ 'أنثى' }}
+                  {% endif %}
+                </div>
+              </td>
+              <td>{{ eleve.dateNaissance|date("d-m-Y") }}</td>
+              <td>{{ eleve.classe }}</td>
+              <td>{{ eleve.dateRenvoi|date("d-m-Y") }}</td>
+              {% if is_granted('ROLE_ADMIN_SCOLARITE') or is_granted('ROLE_ADMIN_ANNEXE') %}
+                <td><a href="{{ path('isi_reintegration', {'as': asec, 'regime': regime, 'eleveId': eleve.id}) }}"><i class="plus icon"></i></a></td>
+              {% endif %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+    {% endblock %}
+    <script data-config>
+      var filtersConfig = {
+        base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+        col_0: 'none',
+        col_4: 'select',
+        col_6: 'select',
+        col_8: 'none',
+        alternate_rows: true,
+        rows_counter: true,
+        btn_reset: true,
+        loader: true,
+        status_bar: true,
+        mark_active_columns: true,
+        highlight_keywords: true,
+        no_results_message: true,
+        col_types: [
+          'number', 'string', 'string',
+          'string', 'string', 'string',
+          'string'
+        ],
+        col_widths: [
+          '5px', '130px', '300px', , , '100px', ,
+        ],
+        extensions: [{ name: 'sort' }]
+      };
+
+      var tf = new TableFilter('eleves-renvoyes', filtersConfig);
+      tf.init();
+    </script>
+{% endblock %}

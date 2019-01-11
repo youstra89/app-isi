@@ -1,0 +1,99 @@
+{% extends "ORGBundle::layout.html.twig" %}
+
+{% block title %}
+  Gestion des prières du vendredi
+{% endblock %}
+
+{% block contextual_menu %}
+  {% include('ORGBundle::contextual-menu.html.twig') %}
+{% endblock %}
+
+
+{% block notification %}
+  {% for message in app.session.flashbag.get('error') %}
+  <div class="ui red message">
+    <div class="header">{{ 'Attention'|trans }} !!! </div>
+    <ul class="list">
+      <li>{{ message }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+  {% for message in app.session.flashbag.get('info') %}
+  <div class="ui green message">
+    <div class="header">{{ 'Notification'|trans }}: </div>
+    <ul class="list">
+      <li>{{ message }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+{% endblock %}
+
+
+{% block titre_page %}
+  <i class="users icon"></i>{{ 'Proères du vendredi'|trans }}
+{% endblock %}
+
+
+{% block body %}
+  <h2>Les prières du mois</h2>
+  <table class="uk-table uk-table-small uk-table-divider" id="vendredis">
+    <thead>
+      <tr>
+        <th>N°</th>
+        <th>Date</th>
+        <th>Imam</th>
+        <th>Mosquee</th>
+        <th>Commune</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% set i = 0 %}
+      {% for vendredi in vendredis %}
+        {% set i = i + 1 %}
+        <tr>
+          <td>{{ i }}</td>
+          <td>{{ vendredi.date|date('Y-m-d') }}</td>
+          <td>{{ vendredi.imam.nom }} {{ vendredi.imam.pnom }}</td>
+          <td>{{ vendredi.mosquee.nom }}</td>
+          <td>{{ vendredi.mosquee.commune.nom }}</td>
+          <td>
+            <a href="" data-tooltip="Editer les informations de l'imam"><i class="edit icon"></i></a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+
+
+{% block javascript %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+      col_0: 'none',
+      col_5: 'none',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string',
+        'string', 'string', 'string',
+      ],
+      col_widths: [
+        // '25px', '330px', '270px'
+      ],
+      extensions: [{ name: 'sort' }]
+    };
+
+    var tf = new TableFilter('vendredis', filtersConfig);
+    tf.init();
+  </script>
+{% endblock %}

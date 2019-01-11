@@ -1,0 +1,137 @@
+{# Page de d'inscription #}
+{% set template = "" %}
+{% if regime == 'C' %}
+  {% set template = 'ISIBundle:Coran:index.html.twig' %}
+{% else %}
+  {% set template = 'ISIBundle:Eleve:index.html.twig' %}
+{% endif %}
+{% extends template %}
+
+{% block pageTitle %}
+  Inscription
+{% endblock %}
+
+{% block content %}
+  {# Cas de fiches de notes déjà éditées #}
+  {% for message in app.session.flashbag.get('error') %}
+    <div class="ui red message">
+      <div class="header">{{ 'Attention'|trans }} !!! </div>
+      <ul class="list">
+        <li>{{ message }}</li>
+      </ul>
+    </div>
+  {% endfor %}
+  {% for message in app.session.flashbag.get('info') %}
+    <div class="ui green message">
+      <div class="header">{{ 'Notification'|trans }}: </div>
+      <ul class="list">
+        <li>{{ message }}.</li>
+      </ul>
+    </div>
+  {% endfor %}
+<h3>{{ 'Inscription dans une classe'|trans }}</h3>
+{{ form_start(form, {'attr': {'class': 'ui form'}}) }}
+  <div class="form-group">
+    {# Génération du label. #}
+    <div class="field">
+      <label for="">
+          {{ form_label(form.matricule, "Matricule", {'label_attr': {'class': ''}}) }}
+          {{ form_errors(form.matricule) }}
+      </label>
+      {{ form_widget(form.matricule, {'attr': {'class': 'matricule', 'placeholder': 'Saisissez un matricule', 'value': 'ISI-0'}}) }}
+      <!-- <label>Matricule</label>
+      <input type="text" name="matricule" list="mat">
+      <datalist id='mat'>
+        {% for matricule in matricules %}
+          <option value="{{ matricule }}">{{ matricule }} => Nom & Prénom
+        {% endfor %}
+      </datalist> -->
+    </div>
+    <div class="three fields">
+      <div class="field">
+        <label for="">
+           {{ form_label(form.nomFr, "Nom", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.nomFr) }}
+        </label> {{ form_widget(form.nomFr, {'attr': {'class': 'nomFr', 'placeholder': 'Le nom apparaitra ici'}}) }}
+      </div>
+      <div class="field">
+        <label for="">
+           {{ form_label(form.pnomFr, "Prénom", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.pnomFr) }}
+        </label>{{ form_widget(form.pnomFr, {'attr': {'class': 'pnomFr', 'placeholder': 'Le prénom de ce côté,'}}) }}
+      </div>
+      <div class="field">
+        <label for="">
+           {{ form_label(form.dateNaissance, "Date de naissance", {'label_attr': {'class': ''}}) }}
+           {{ form_errors(form.dateNaissance) }}
+        </label>{{ form_widget(form.dateNaissance, {'attr': {'class': 'dateNaissance', 'placeholder': 'Et la date de naissance là'}}) }}
+      </div>
+    </div>
+    <div class="three fields">
+      {% if regime != 'C' %}
+        <div class="field">
+          <label for="">{{ 'Niveau'|trans }}</label>
+          <select name="niveau" id="form_niveau">
+            <option value="">{{ 'Veuillez choisir un niveau'|trans }}</option>
+            {% for niveau in niveaux %}
+              <option value="{{ niveau.getId }}">{{ niveau.getLibelleAr }}</option>
+            {% endfor %}
+          </select>
+          {# <label for="">
+            {{ form_label(form.niveau, "Niveau", {'label_attr': {'class': ''}}) }}
+            {{ form_errors(form.niveau) }}
+          </label>{{ form_widget(form.niveau, {'attr' : {'class' : 'niveauclass'}}) }} #}
+        </div>
+        <div class="field">
+          <label for="">{{ 'Classe'|trans }}</label>
+          <select name="classe" id="form_classe">
+            <option value="">{{ 'Veuillez choisir une classe'|trans }}</option>
+          </select>
+          {# <label for="">
+            {{ form_label(form.classe, "Classe", {'label_attr': {'class': ''}}) }}
+            {{ form_errors(form.classe) }}
+          </label>{{ form_widget(form.classe, {'attr' : {'class' : 'classeclass'}}) }} #}
+        </div>
+      {% endif %}
+      {% if regime == 'A' %}
+        <div class="field">
+          {#<label for="">
+            {{ form_label(form.halaqa, "Halaqa", {'label_attr': {'class': ''}}) }}
+            {{ form_errors(form.halaqa) }}
+          </label>{{ form_widget(form.halaqa, {'attr' : {'class' : 'halaqa'}}) }}#}
+          <label for="">{{ 'Halaqa'|trans }}</label>
+          <select name="halaqa" id="">
+            <option value="">{{ 'Veuillez choisir une halaqa'|trans }}</option>
+            {% for halaqa in halaqas %}
+              <!-- Si halaqa.genre == 1 alors on affiche homme, sinon femme -->
+              {% set genre = '' %}
+              {% if halaqa.genre == 'H' %}
+                 {% set genre = 'رجال' %}
+              {% elseif halaqa.genre == 'F' %}
+                 {% set genre = 'نساء' %}
+              {% else %}
+                 {% set genre = 'مزدوج' %}
+              {% endif %}
+              <option value="{{ halaqa.getId }}">{{ halaqa.getLibelleHalaqa }} - {{ genre }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      {% elseif regime == 'C' %}
+        <div class="field">
+          <label for="">{{ 'Halaqa'|trans }}</label>
+          <select name="halaqa" id="">
+            <option value="">{{ 'Veuillez choisir une halaqa'|trans }}</option>
+            {% for halaqa in halaqas %}
+              <!-- Si halaqa.genre == 1 alors on affiche homme, sinon femme -->
+              <option value="{{ halaqa.getId }}">{{ halaqa.getLibelleHalaqa }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  <input type="hidden" id="anneeId" value="{{ asec }}">
+  {{ form_widget(form.save, {'attr': {'class': 'ui primary button'}}) }}
+
+  {{ form_end(form) }}
+{% endblock %}

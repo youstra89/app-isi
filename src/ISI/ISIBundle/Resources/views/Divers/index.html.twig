@@ -1,0 +1,65 @@
+{# ISIBundle/Resources/views/Hissaby #}
+{# Pour gérer son profil #}
+
+{% extends "::divers-layout.html.twig" %}
+
+
+{% block body %}
+    <!-- Début d'affichage des notifications et des messages d'erreur -->
+    {% for message in app.session.flashbag.get('error') %}
+        <div class="ui red message">
+            <div class="header">{{ 'Attention'|trans }} !!! </div>
+            <ul class="list">
+                <li>{{ message }}.</li>
+            </ul>
+        </div>
+    {% endfor %} 
+    {% for message in app.session.flashbag.get('info') %}
+        <div class="ui green message">
+            <div class="header">{{ 'Notification'|trans }}: </div>
+            <ul class="list">
+                <li>{{ message }}.</li>
+            </ul>
+        </div>
+    {% endfor %}
+    <!-- Fin d'affichage des notifications et des message d'erreur  -->
+
+    <div class="ui three cards">
+        <div class="card">
+            <div class="content">
+                <img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
+                <div class="header">Academie</div>
+                <div class="meta">  </div>
+                <div class="description">
+                    <div class="ui link list">
+                    </div>
+                </div>
+            </div>
+            <div class="extra content">
+                <div class="ui buttons">
+                    <a class="item" href="{{path('isi_saisie_de_notes', {'as': asec, 'regime': 'A'})}}">
+                        <div class="ui basic green button">{{ 'Saisie des notes'|trans }}</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="content">
+                <img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
+                <div class="header">Centre de formation</div>
+                <div class="meta">  </div>
+                <div class="description">
+                    <div class="ui link list">
+                    </div>
+                </div>
+            </div>
+            <div class="extra content">
+                <div class="ui buttons">
+                    <a class="item" href="{{path('isi_saisie_de_notes', {'as': asec, 'regime': 'F'})}}">
+                        <div class="ui basic green button">{{ 'Saisie des notes'|trans }}</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

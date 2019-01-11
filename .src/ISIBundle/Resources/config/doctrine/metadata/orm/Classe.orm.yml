@@ -1,0 +1,48 @@
+Classe:
+    type: entity
+    table: classe
+    indexes:
+        regimeformation_classe_fk:
+            columns:
+                - regime_ref
+    id:
+        classeId:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: classe_id
+            generator:
+                strategy: IDENTITY
+    fields:
+        libelleclassefr:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: libelleClasseFr
+        libelleclassear:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: libelleClasseAr
+        regimeRef:
+            type: string
+            nullable: false
+            length: 2
+            options:
+                fixed: false
+            column: regime_ref
+        dateSave:
+            type: datetime
+            nullable: false
+            column: date_save
+        dateUpdate:
+            type: datetime
+            nullable: false
+            column: date_update
+    lifecycleCallbacks: {  }

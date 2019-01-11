@@ -1,0 +1,21 @@
+<div class="ui vertical menu">
+    <div class="item">
+        <div class="header">Panel Admin</div>
+        <div class="menu">
+            <a class="item" href="{{ path('admin_home', {'as': annee.anneeScolaireId}) }}">Home Panel Admin</a>
+            <a class="item" href="{{ path('isi_user', {'as': asec}) }}">Utilisateurs</a>
+            <a class="item" href="{{ path('isi_home_scolarite') }}">Scolarité</a>
+            <a class="item" href="{{ path('internat_home', {'as': asec}) }}">Internat</a>
+            <a class="item" href="{{ path('ens_home', {'as': asec}) }}">Enseignants</a>
+            <a class="item" href="{{ path('etude_home', {'as': asec}) }}">Etude</a>
+            <a class="item" href="{{ path('org_homepage', {'as': asec}) }}">Organisation</a>
+        </div>
+    </div>
+    {# <div class="item">
+        <div class="header">Activités précédentes</div>
+        <div class="menu">
+            <a class="item
+            ">Années précédentes</a>
+        </div>
+    </div> #}
+</div>

@@ -1,0 +1,78 @@
+{% extends "ENSBundle:Enseignant:layout.html.twig" %}
+
+{% block title %}
+  Index Enseignant
+{% endblock %}
+
+{% block contextual_menu %}
+  {% if is_granted('ROLE_SUPER_ADMIN') %}
+      {{ include("ISIBundle::contextual-menu-panel-admin.html.twig") }}
+  {% elseif is_granted('ROLE_ADMIN_ANNEXE') %}
+      <div class="ui vertical menu">
+        <div class="item">
+          <div class="header">{{ 'Autres modules'|trans }}</div>
+          <div class="menu">
+            {# Cette partie permet de voir la liste de tous les élèves de la l'institut #}
+            <a class="item" href="{{path('isi_home_scolarite')}}">{{ 'Scolarité'|trans }}</a>
+            <a class="item" href="{{path('etude_home', {'as': asec})}}">{{ 'Programmes d\'étude'|trans }}</a>
+          </div>
+        </div>
+      </div>
+  {% else %}
+    {{ include("ISIBundle::contextual-menu-user.html.twig") }}
+  {% endif %}
+{% endblock %}
+
+{% block corps %}
+    <a href="{{ path('ens_add', {'as': asec}) }}" class="ui positive button"><i class="plus icon"></i> {{ 'Ajouter un enseignant'|trans }}</a>
+    {% if enseignants is not defined %}
+        <p>{{ 'Aucun enseignant n\'a encore été inscrit'|trans }}</p>
+    {% else %}
+        <table id="table-ens" cellspacing="0" class="mytable filterable ui very basic table">
+          <thead>
+            <tr>
+              <th>{{ 'N°'|trans }}</th>
+              <th>{{ 'Matricule'|trans }}</th>
+              <th>Nom & Prénom</th>
+              <th>الإسم و اللقب</th>
+              <th>{{ 'Sexe'|trans }}</th>
+              <th>{{ 'Date de naissance'|trans }}</th>
+              <th>{{ 'Actions'|trans }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% set n = 0 %}
+            {% for ens in enseignants %}
+              {% set n = n + 1 %}
+              {% set color = "" %}
+              {% if (n % 2) == 0 %}
+                  {% set color = "WhiteSmoke" %}
+              {% endif %}
+              <tr bgcolor="{{ color }}">
+                <td>{{ n }}</td>
+                <td>{{ ens.matricule }}</td>
+                <td>{{ ens.getNomFr }} {{ ens.getPnomFr }}</td>
+                <td>{{ ens.getNomAr }} {{ ens.getPnomAr }}</td>
+                <td>
+                  {% if ens.sexe == 1 %}
+                    {{ 'ذكر' }}
+                  {% else %}
+                    {{ 'أنثى' }}
+                  {% endif %}
+                </td>
+                {# <!-- <td>{{ ens.dateNaissance|localizeddate('full', 'none', 'locale') }}</td> --> #}
+                <td>{{ ens.dateNaissance|date("d-m-Y") }}</td>
+                <td>
+                  <a href="{{ path('ens_info', {'as': asec, 'enseignantId':ens.getId}) }}" data-tooltip="Voir les informations de l'enseignant">
+                    <i class="info circle icon"></i>
+                  </a>
+                  <a href="{{ path('ens_edit', {'as': asec, 'enseignantId':ens.getId}) }}" data-tooltip="Mettre à jour les informations de l'enseignant">
+                    <i class="edit icon"></i>
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

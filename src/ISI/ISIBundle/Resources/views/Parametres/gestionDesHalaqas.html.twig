@@ -1,0 +1,62 @@
+{# Page de gestion des classes #}
+{% set template = "" %}
+{% if regime == 'C' %}
+  {% set template = 'ISIBundle:Coran:index.html.twig' %}
+{% else %}
+  {% set template = 'ISIBundle:Eleve:index.html.twig' %}
+{% endif %}
+{% extends template %}
+{% block pageTitle %} Halaqas {% endblock %}
+{% block content %}
+    <h3>{{ 'Gestion des halaqas'|trans }}</h3>
+    <a href="{{ path('isi_nouvelle_halaqa', {'as': asec, 'regime': regime}) }}">
+        <button class="positive ui button">
+        <i class="plus icon"></i>
+        {{ 'Ajouter une halaqa'|trans }}
+        </button>
+    </a>
+    <div class="ui hidden divider"></div>
+    {% if halaqas is empty %}
+    <p>{{ 'Aucune halaqa n\'a encore été enregistrée'|trans }}</p>
+    {% else %}
+        <div class="column" style="width:75%">
+            <table class="ui selectable very basic table">
+                <thead>
+                    <tr>
+                        <th>الحلقات</th>
+                        <th>الجنس</th>
+                        <th class="two wide">{{ 'Actions'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for halaqa in halaqas %}
+                         {% set genre = '' %}
+                         {% if halaqa.genre == 'H' %}
+                            {% set genre = 'رجال' %}
+                          {% elseif halaqa.genre == 'F' %}
+                             {% set genre = 'نساء' %}
+                          {% else %}
+                             {% set genre = 'مزدوج' %}
+                         {% endif %}
+                        <tr>
+                            <td>
+                                <h4 class="ui image header">{{ halaqa.libelleHalaqa }} </h4>
+                            </td>
+                            <td>
+                                <h4 class="ui image header">{{ genre }}</h4>
+                            </td>
+                            <td>
+                                <a href="{{ path('isi_edit_halaqa', {'as': asec, 'halaqaId': halaqa.id, 'regime': regime}) }}">
+                                    <i class="edit icon"></i>
+                                </a>
+                                <a>
+                                    <i class="delete icon"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

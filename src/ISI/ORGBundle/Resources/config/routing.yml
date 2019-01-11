@@ -1,0 +1,25 @@
+org_homepage:
+    path:     /index-{as}
+    defaults: { _controller: ORGBundle:Default:index }
+    requirements:
+        as: \d+
+
+localites:
+    resource: "@ORGBundle/Resources/config/routing/localite.yml"
+    prefix:   /localites
+
+mosquee:
+    resource: "@ORGBundle/Resources/config/routing/mosquee.yml"
+    prefix:   /mosquees
+
+imam:
+    resource: "@ORGBundle/Resources/config/routing/imam.yml"
+    prefix:   /imam
+
+conversion:
+    resource: "@ORGBundle/Resources/config/routing/conversion.yml"
+    prefix:   /conversion
+
+vendredi:
+    resource: "@ORGBundle/Resources/config/routing/vendredi.yml"
+    prefix:   /vendredi

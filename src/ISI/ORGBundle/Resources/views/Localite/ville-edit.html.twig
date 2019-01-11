@@ -1,0 +1,19 @@
+{% extends 'ORGBundle:Localite:index.html.twig'%}
+
+
+{% block stylesheets %}
+{% endblock %}
+
+
+{% block title 'Edition d\'une ville' %}
+
+
+
+{% block body %}
+  <h2>Edition d'une ville</h2>
+  {{ include('ORGBundle:Localite:_ville-form.html.twig', {button: 'Editer'}) }}
+{% endblock %}
+
+
+{% block javascripts %}
+{% endblock %}

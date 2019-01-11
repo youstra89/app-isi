@@ -1,0 +1,48 @@
+{# Page d'édition d'un niveau #}
+
+{% extends "ISIBundle:Etude:index.html.twig" %}
+
+{% block pageTitle %}
+	Editer niveau
+{% endblock %}
+
+{% block contextual_menu %}  
+    {% include('ISIBundle:Etude:contextual-menu-parametres.html.twig') %}
+{% endblock %}
+
+{% block head %}
+	<div class="ui {{ dir2 }} aligned segment">
+		<h1 class="ui header">
+			<i class="settings icon"></i>{{ 'PARAMETRES'|trans }}
+		</h1>
+	</div> 
+{% endblock %}
+{% block content %}
+	<h3>{{ 'Edition de matière'|trans }}</h3>
+
+	<div class="well">
+		{{form_start(form, {'attr': {'class': 'ui form'}})}}
+			<div class="form-group">
+				<div class="two fields">
+					<div class="field">
+						<label for="">
+						{{ form_label(form.libelleAr, "Niveau (en arabe)", {'label_attr': {'class': ''}}) }}
+						{{ form_errors(form.libelleAr) }}
+						</label>
+						{{ form_widget(form.libelleAr, {'attr': {'class': '', 'placeholder': 'Niveau'}}) }}
+					</div>
+					<div class="field">
+						<label for="">
+						{{ form_label(form.libelleFr, "Niveau (en français)", {'label_attr': {'class': ''}}) }}
+						{{ form_errors(form.libelleFr) }}
+						</label>
+						{{ form_widget(form.libelleFr, {'attr': {'class': '', 'placeholder': 'Niveau'}}) }}
+					</div>
+				</div>
+		    </div>
+
+		    {{ form_widget(form.update, {'attr': {'class': 'ui positive button'}}) }}
+      {{ form(form) }}
+	</div>
+
+{% endblock %}

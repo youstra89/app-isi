@@ -1,0 +1,43 @@
+{% extends 'ISIBundle:Scolarite:index.html.twig' %}
+
+{% block pageTitle %}
+    Réaménagement de {{ classe.niveau.libelleFr }} - {{ classe.libelleClasseFr}}
+{% endblock %}
+
+{% block content %}
+    {% set grp = '' %}
+    {% if regime is same as('A') %}
+      {% set grp = 'Académie' %}
+    {% else %}
+      {% set grp = 'Formation' %}
+    {% endif %}
+    <h3>{{ 'Réaménagement de la classe'|trans }} {{ classe.libelleClasseFr}} </h3>
+    <form class="ui form" action="{{ path('isi_appliquer_reamenagement', {'as': asec, 'regime': regime, 'classeId': classe.classeId}) }}" method="post">
+        <button class="ui small primary labeled icon button">
+          <i class="save icon"></i> {{ 'Appliquer les changements'|trans }}
+        </button>
+        <div class="ui middle aligned selection list">
+          {% for eleve in eleves %}
+              <div class="item">
+                <div class="right floated content">
+                    <select class="ui fluid dropdown" name="classe[{{ eleve.eleveId }}]">
+                        <option value="">{{ 'Sélectionner une classe'|trans }}</option>
+                        {% for cl in classes %}
+                            {% if cl.genre == 'M' or (cl.genre == 'H' and eleve.sexeFr == 1) or (cl.genre == 'F' and eleve.sexeFr == 2) %}
+                                <option value="{{ cl.classeId }}">{{ cl.niveau.libelleFr }} - {{ cl.libelleClasseFr }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <img class="ui avatar image" src="/markaz/web/images/logoISI-x.png" />
+                <div class="content">
+                  {{ eleve.matricule }} <i class="next icon"></i> {{ eleve.nomFr }} {{ eleve.pnomFr }}
+                </div>
+              </div>
+          {% endfor %}
+        </div>
+        <button class="ui right floated small primary labeled icon massive button">
+          <i class="save icon"></i> {{ 'Appliquer les changements'|trans }}
+        </button>
+    </form>
+{% endblock %}

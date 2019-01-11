@@ -1,0 +1,36 @@
+{% extends 'ISIBundle:Eleve:index.html.twig' %}
+
+{% block pageTitle %} Modification de niveau - {{ eleve.nomFr }} {{ eleve.pnomfr }} {% endblock %}
+
+{% block content %}
+    <h3>{{ 'Modification dniveau de'|trans }} {{ eleve.getNomFr }} {{ eleve.getPnomfr }} </h3>
+    <p>{{ 'Classe actuelle'|trans }}: {{ classeActuelle.getLibelleClasseFr }} </p>
+    <form action="" class="ui form" method="post">
+        <div class="two fields">
+            <div class="field">
+                <label for="">Nouvelle classe</label>
+                <select name="classe" id="">
+                    <option value="">{{ 'Choisir la nouvelle classe pour'|trans }} {{ eleve.getNomFr }} {{ eleve.getPnomfr }}</option>
+                    {% for classe in classes %}
+                        {% if (classe.getGenre == 'M' or classe.getGenre == classeActuelle.getGenre) and classe.getNiveau.getId != classeActuelle.getNiveau.getId %}
+                            <option value="{{ classe.getClasseId }}">{{ classe.getLibelleClasseFr }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            {% if regime == 'A' %}
+                <div class="field">
+                    <label for="">Nouvelle halaqa</label>
+                    <select name="halaqa" id="">
+                        <option value="">{{ 'Choisir la nouvelle halaqa'|trans }} {{ eleve.getNomFr }} {{ eleve.getPnomfr }}</option>
+                        {% for halaqa in halaqas %}
+                            <option value="{{ halaqa.getId }}">{{ halaqa.getLibelleHalaqa }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            {% endif %}
+        </div>
+        <br />
+        <input type="submit" class="ui primary button" value="   Valider le changement de classe   " name="submit">
+    </form>
+{% endblock %}

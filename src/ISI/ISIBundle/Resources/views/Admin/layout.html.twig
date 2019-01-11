@@ -1,0 +1,111 @@
+{# ISIBundle/Ressources/views/Moustamil #}
+{# Accueil panel admin #}
+
+<!DOCTYPE html>
+{% set dir = '' %}
+{% set dir2 = '' %}
+{% if app.request.locale == 'fr' %}
+  {% set dir = 'ltr' %}
+  {% set dir2 = 'right' %}
+{% else %}
+  {% set dir = 'rtl' %}
+  {% set dir2 = 'left' %}
+{% endif %}
+<html dir="{{ dir }}">
+  <head>
+    <meta charset="UTF-8" />
+    <title>
+      {% block title %}{% endblock %}
+    </title>
+    {% block stylesheets %}
+      <link rel="stylesheet" type="text/css" href="{{ asset('../vendor/semantic/ui/dist/semantic.min.css') }}" /> {# Site CSS #}
+      <lin rel="stylesheet" href="{{ asset('../vendor/twbs/bootstrap/dist/css/bootstrap.min.css') }}" />
+      <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" />
+    {% endblock %}
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+  </head>
+  <body>
+    <div class="menu_principal ">
+      <div class="ui attached stackable menu">
+        <div class="ui container">
+          <a class="item" href="{{ path('isi_user', {'as': asec}) }}">
+            <h4 class="ui header"><span class="style-main-menu"><i class="home icon"></i> {{ 'Accueil'|trans }}</span></h4>
+          </a>
+          <div class="ui input">
+            <div class="ui simple dropdown item">
+              <a>
+                <h4 class="ui header"><span class="style-main-menu"><i class="users icon"></i>{{ 'Gestion des utilisateurs'|trans }}</span></h4>
+              </a>
+              <i class="dropdown icon"></i>
+              <div class="menu">
+                <span class="sub-menu">
+                  <a class="item" href="{{ path('internat_add', {'as': asec}) }}">
+                    <span class="style-main-menu"><i class="user times icon"></i> {{ 'Supp. Utilisateur'|trans }}</span>
+                  </a>
+                  <a class="item" href="{{ path('internat_delete', {'as': asec}) }}">
+                    <span class="style-main-menu"><i class="briefcase icon"></i>{{ 'Activités Utilisateur'|trans }}</span>
+                  </a>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="right item">
+            <div class="ui input">
+              <div class="ui simple dropdown item">
+                <span class="style-main-menu">{{ 'Mon compte perso'|trans }}
+                  <i class="dropdown icon"></i>
+                </span>
+                <div class="menu">
+                  <a class="item" href="{{ path('isi_account', {'as': asec, 'userType': 'admin'}) }}">
+                    <i class="edit icon"></i> {{ 'Modifier mon profil'|trans }}
+                  </a>
+                  <a class="item" href="{{ path('msg_homepage') }}">
+                    <i class="envelope outline icon"></i> {{ 'Messages'|trans }}
+                  </a>
+                  <a class="item" href="{{ path('isi_change_langue', {'as': asec, 'route': app.request.get('_route'), 'route_params': app.request.get('_route_params')}) }}">
+                    <i class="globe icon"></i> {{ 'Changer la langue'|trans }}
+                  </a>
+                  <a class="item" href="{{ path('fos_user_security_logout') }}">
+                    <i class="sign out icon"></i> {{ 'Déconnexion'|trans }}
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ui hidden divider"></div>
+    <div class="ui internally celled grid">
+      <div class="row">
+        <div class="three wide column">
+          <div class="ui tertiary segment">
+            <p>Année scolaire:
+              <strong>{{ annee.libelleAnneeScolaire }}</strong>
+            </p>
+          </div>
+          {# {% if is_granted('ROLE_SUPER_ADMIN') %} #}
+          <p>
+            Super Admin :
+            <a class="ui basic image label">
+              <img src="/markaz/web/images/elliot.jpg">
+              <strong>{{ app.user.username }}</strong>
+            </a>
+          </p>
+          {{ include("ISIBundle::contextual-menu-panel-admin.html.twig") }}
+        </div>
+        <div class="thirteen wide column">
+          <div class="ui {{ dir2 }} aligned segment">
+            <h1 class="ui header">
+              {% block titre %}
+              {% endblock %}
+            </h1>
+          </div>
+          {% block corps %}
+          {% endblock %}
+        </div>
+      </div>
+    </div>
+  </body>
+<script src="{{ asset('../vendor/semantic/ui/examples/assets/library/jquery.min.js') }}"></script>
+</html>

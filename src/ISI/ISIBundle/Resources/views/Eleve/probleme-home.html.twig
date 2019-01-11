@@ -1,0 +1,52 @@
+{# Accueil pour l'édition des listes de classe' #}
+{% set template = "" %}
+{% if regime == 'C' %}
+  {% set template = 'ISIBundle:Coran:index.html.twig' %}
+{% else %}
+  {% set template = 'ISIBundle:Eleve:index.html.twig' %}
+{% endif %}
+{% extends template %}
+
+{% block title %}
+  Accueil problèmes
+{% endblock %}
+
+{% block content %}
+  {% set grp = '' %}
+  {% if regime is same as('A') %}
+    {% set grp = 'Académie' %}
+  {% else %}
+    {% set grp = 'Centre de formation' %}
+  {% endif %}
+  {% for message in app.session.flashbag.get('info') %}
+    <div class="ui green message">
+      <div class="header">{{ 'Notification'|trans }}: </div>
+      <ul class="list">
+        <li>{{ message }}</li>
+      </ul>
+    </div>
+  {% endfor %} {% for message in app.session.flashbag.get('error') %}
+    <div class="ui red message">
+      <div class="header">{{ 'Attention'|trans }} !!! </div>
+      <ul class="list">
+        <li>{{ message }}</li>
+      </ul>
+    </div>
+  {% endfor %}
+  <h3>{{ 'Regime de formation'|trans }} : {{ grp }}</h3>
+  <a href="{{ path('isi_eleves_renvoyes', { 'as': asec, 'regime': regime }) }}">{{ 'Cliquez ici pour voir les conduites/problèmes enregistrés'|trans }}</a>
+  <div class="ui raised very padded text container segment">
+    <center>
+      <h3>{{ 'Entrez le matricule d\'un élève'|trans }}</h3>
+      <form action="" method="post">
+        <input type="text" name="matricule" id="" placeholder="ISI-0555KG-17" style="font-size: 3em; text-align: center; border-radius: 5px" />
+      </form>
+  </center>
+  </div>
+  <div id="DivInfo" style="display: none;">
+    DivInfo
+  </div>
+  {% if (js is defined) %}
+    {{ js|raw }}
+  {% endif %}
+{% endblock %}

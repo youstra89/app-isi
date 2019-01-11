@@ -1,0 +1,221 @@
+#-------------------------------------- LES PARAMETRES ---------------------------------------
+#Routes pour les paramètres
+isi_parametres:
+    path:     /parametres-{as}.html
+    defaults: { _controller: ISIBundle:Parametres:index }
+    requirements:
+        as: \d+
+
+#(((((((((((((((( ANNEE SCOLAIRE ))))))))))))))))
+isi_nouvelle_annee:
+    path:     /nouvelle-annnee-scolaire-{as}.html
+    defaults: { _controller: ISIBundle:Parametres:nouvelleAnnee }
+    requirements:
+        as: \d+
+
+# Pour voir les années précédentes d'activité
+isi_annees_precedentes:
+    path:     /les-annnees-scolaires-precedentes-{as}.html
+    defaults: { _controller: ISIBundle:Parametres:anneesPrecedentes }
+    requirements:
+        as: \d+
+
+#((((((((((((((((  CLASSES ))))))))))))))))
+
+#Page d'accueil de gestion des classes
+isi_gestion_classes:
+    path:     /gestion-des-classes-{as}-{regime}.html
+    defaults: { _controller: ISIBundle:Parametres:lesClasses }
+    requirements:
+        as:     \d+
+        regime: A|F
+
+#Page d'accueil de gestion des halaqas
+isi_gestion_halaqas:
+    path:     /gestion-des-halaqas-{as}-{regime}.html
+    defaults: { _controller: ISIBundle:Parametres:lesHalaqas }
+    requirements:
+        as:     \d+
+        regime: A|C
+
+#Page d'ajout d'une nouvelle classe
+isi_nouvelle_classe:
+    path:     /ajout-de-classe-{as}-{regime}.html
+    defaults: { _controller: ISIBundle:Parametres:addClasse }
+    requirements:
+        as:     \d+
+        regime: A|F
+
+#Page d'ajout d'une nouvelle halaqa
+isi_nouvelle_halaqa:
+    path:     /ajout-de-halaqa-{as}-{regime}.html
+    defaults: { _controller: ISIBundle:Parametres:addHalaqa }
+    requirements:
+        as:     \d+
+        regime: A|C
+
+#Page d'édition de classes
+isi_edit_classe:
+    path:     /edition-de-classe-{as}-{classeId}-{regime}.html
+    defaults: { _controller: ISIBundle:Parametres:editClasse }
+    requirements:
+        as:       \d+
+        classeId: \d+
+        regime: A|F
+
+#Page d'édition de halaqa
+isi_edit_halaqa:
+    path:     /edition-de-halaqa-{as}-{halaqaId}-{regime}.html
+    defaults: { _controller: ISIBundle:Parametres:editHalaqa }
+    requirements:
+        as:       \d+
+        halaqaId: \d+
+        regime: A|C
+
+#(((((((((((((((( LIENS ENTRE CLASSES ET MATIERES ))))))))))))))))
+isi_niveaux_matieres:
+    path:     /niveaux-matieres-{as}-{regime}.html
+    defaults: { _controller: ISIBundle:Parametres:niveauxMatieres }
+    requirements:
+        as:     \d+
+        regime: A|F
+
+# Pour voir les matières d'un niveau
+isi_liste_niveaux_matieres:
+    path:     /voir-liste-des-matieres-du-niveaux-{as}-{niveauId}-{regime}.html
+    defaults: { _controller: ISIBundle:Parametres:listeMatieresNiveaux }
+    requirements:
+        as:       \d+
+        niveauId: \d+
+        regime:   A|F
+
+#(((((((((((((((( EXAMENS ))))))))))))))))
+# J'ai un controller dédié aux examens pour ne pas avoir un ParametresController très géant
+
+# Pour tirer les fiches de notes
+isi_afficher_fiches_de_notes:
+    path:     /examen/tirer-fiches-de-notes-{as}-{regime}.html
+    defaults: { _controller: ISIBundle:Examen:afficherLesClassesPourTirerLesFichesDeNotes }
+    requirements:
+        as:       \d+
+        regime:   A|F
+
+# Afficher une classe pour pouvoir tirer ses fiches de notes
+isi_tirer_fiches_de_notes:
+    path:     /examen/les-fiches-de-notes-de-la-classe-{as}-{regime}-{classeId}.html
+    defaults: { _controller: ISIBundle:Examen:lesFichesDeNotesDeLaClasse }
+    requirements:
+        as:       \d+
+        regime:   A|F
+        classeId: \d+
+
+# Impression effectif de la fiche de note d'une classe pour une matière donnée
+isi_fiche_de_notes_d_une_matiere:
+    path:     /examen/la-fiche-de-notes-de-la-classe-pour-une-matiere-{as}-{regime}-{classeId}-{matiereId}.html
+    defaults: { _controller: ISIBundle:Examen:laFichesDeNotesDeLaClassePourUneMatiere }
+    requirements:
+        as:        \d+
+        regime:    A|F
+        classeId:  \d+
+        matiereId: \d+
+
+# Pour la saisie des notes:
+isi_saisie_de_notes_de_la_classe_pour_une_matiere:
+    path:     /examen/saisie-des-notes-sauvegarde-en-db-{as}-{regime}-{classeId}-{examenId}-{matiereId}.html
+    defaults: { _controller: ISIBundle:Examen:enregistrerNotes }
+    requirements:
+        as:        \d+
+        regime:    A|F
+        classeId:  \d+
+        matiereId: \d+
+        examenId:  \d+
+
+# Pour la modification des notes déjà saisies:
+isi_edition_des_notes:
+    path:     /examen/edition-des-notes-sauvegarde-en-db-{as}-{regime}-{classeId}-{examenId}-{matiereId}.html
+    defaults: { _controller: ISIBundle:Examen:editerNotes }
+    requirements:
+        as:        \d+
+        regime:    A|F
+        classeId:  \d+
+        matiereId: \d+
+        examenId:  \d+
+
+# Impression du bulletin d'un élève donné
+isi_bulletin_unique:
+    path:     /examen/bulletin-d-un-eleve-{as}-{regime}-{classeId}-{examenId}-{eleveId}.html
+    defaults: { _controller: ISIBundle:Examen:bulletinUnique }
+    requirements:
+        as:        \d+
+        regime:    A|F
+        classeId:  \d+
+        examenId:  \d+
+        eleveId:   \d+
+
+# Impression des bulletins des élèves d'une classe donné, (mais on les génère individuellement dans un fichier pdf)
+isi_bulletin_individuel:
+    path:     /examen/impression-des-bulletins-{as}-{regime}-{classeId}-{examenId}.html
+    defaults: { _controller: ISIBundle:Examen:bulletinIndividuel }
+    requirements:
+        as:        \d+
+        regime:    A|F
+        classeId:  \d+
+        examenId:  \d+
+
+# Impression des bulletin d'une classe donnée
+isi_bulletin:
+    path:     /examen/impression-des-bulletins-d-une-classe-donnee-{as}-{regime}-{classeId}-{examenId}.html
+    defaults: { _controller: ISIBundle:Examen:bulletins }
+    requirements:
+        as:        \d+
+        regime:    A|F
+        classeId:  \d+
+        examenId:  \d+
+
+# Les résultats de façon générale (liste des élèves, leur moyenne et leur rang)
+isi_resultats_generaux_une_classe:
+    path:     /examen/resultats-generaux-des-eleves-de-la-classe/{as}/{regime}/{classeId}/{examenId}
+    defaults: { _controller: ISIBundle:Examen:resultatsgenerauxDUneClasse }
+    requirements:
+        as:        \d+
+        regime:    A|F
+        classeId:  \d+
+        examenId:  \d+
+
+# Les résultats de façon générale (liste des élèves, leur moyenne et leur rang)
+isi_classement:
+    path:     /examen/classement/{as}/{regime}/{classeId}/{examenId}
+    defaults: { _controller: ISIBundle:Examen:classement }
+    requirements:
+        as:        \d+
+        regime:    A|F
+        classeId:  \d+
+        examenId:  \d+
+
+# Pour voir les notes des élèves d'une classe après un examen
+isi_notes_eleves_une_classe:
+    path:     /examen/notes-des-eleves-d-une-classe-donnee-{as}-{regime}-{classeId}-{examenId}.html
+    defaults: { _controller: ISIBundle:Examen:notesDesElevesDUneClasse }
+    requirements:
+        as:        \d+
+        regime:    A|F
+        classeId:  \d+
+        examenId:  \d+
+
+# Cette route me permettra in chaa Allah de voir le bilan annuel
+isi_bilan_annuel_home:
+    path:     /examen/bilan-annuel-{as}.html
+    defaults: { _controller: ISIBundle:Examen:bilanAnnuel }
+    requirements:
+        as:     \d+
+
+# Cette route me permettra in chaa Allah de voir le bilan annuel
+isi_bilan_annuel_regime:
+    path:     /examen/bilan-annuel-de-regime-{as}-{regime}.html
+    defaults: { _controller: ISIBundle:Examen:bilanAnnuelDUnRegime }
+    requirements:
+        as:     \d+
+        regime: A|F
+
+
+#------------------------------- FIN DES ROUTES DES PARAMETRES ------------------------------------

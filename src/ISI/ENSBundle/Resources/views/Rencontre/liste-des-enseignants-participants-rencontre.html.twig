@@ -1,0 +1,51 @@
+{% extends "ENSBundle:Enseignant:layout.html.twig" %}
+
+{% block title %}
+  Sélection d'enseignants participant à une rencontre
+{% endblock %}
+
+{% block contextual_menu %}
+  {{ include("ENSBundle:Rencontre:contextual-menu-rencontre.html.twig") }}
+{% endblock %}
+
+{% block titre_page %}
+  <i class="handshake icon"></i>{{ 'Rencontres'|trans }}
+{% endblock %}
+
+{% block corps %}
+  <h2>{{ 'Liste des enseignants aynat participé à la rencontre: '|trans }} <font  class="ui massive blue tag label">{{ rencontre.type }} du {{ rencontre.date|date("d-m-Y") }}</font></h2>
+  {% if enseignantsRencontre is not defined %}
+    <p>{{ 'Aucun enseignant n\'a encore été inscrit'|trans }}</p>
+  {% else %}
+      <table class="ui selectable very basic table">
+      <thead>
+        <tr>
+          <th>{{ 'N°'|trans }}</th>
+          <th>{{ 'Matricule'|trans }}</th>
+          <th>Nom & Prénom</th>
+          <th>الإسم و اللقب</th>
+          <th>{{ 'Sexe'|trans }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% set n = 0 %}
+        {% for contrat in enseignantsRencontre %}
+          {% set n = n + 1 %}
+          <tr>
+            <td>{{ n }}</td>
+            <td>{{ contrat.getContrat.getEnseignant.getMatricule }}</td>
+            <td>{{ contrat.getContrat.getEnseignant.getNomFr }} {{ contrat.getContrat.getEnseignant.getPnomFr }}</td>
+            <td>{{ contrat.getContrat.getEnseignant.getPnomAr }} {{ contrat.getContrat.getEnseignant.getNomAr }}</td>
+            <td>
+              {% if contrat.getContrat.getEnseignant.getSexe == 1 %}
+                {{ 'ذكر' }}
+              {% else %}
+                {{ 'أنثى' }}
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends "ISIBundle:Scolarite:index.html.twig" %}
+{% block pageTitle %}
+    Résultats de la classe
+{% endblock %}
+
+{% block content %}
+<h3>{{ 'Résultats de'|trans }} : {{ classe.libelleClasseFr }}</h3>    
+    <div class="">
+        {# Cette petite partie me permet de vérifier que le classemnt à été fait ou pas encore #}
+        <!--
+            Pour cela je sélectionne le premier élève de la liste des élèves et je compare la
+            la valeur de sa moyenne à null. Si la valeur vaut null cela veut dire que le classement
+            n'a pas encore été fait.
+        -->
+        {% set uneMoyenne = '' %}
+        {% for moyenne in moyennes %}
+            {% if loop.index == 1 %}
+                {% set uneMoyenne = moyenne %}
+            {% endif %}
+        {% endfor %}
+
+        <!-- C'est pour cela qu'on va demander à l'utilisateur de faire le classement -->
+        {% if uneMoyenne.rang == null %}
+            <p>{{ 'Le classement n\'a pas encore été fait'|trans }}.
+                <a href=" {{path('isi_resultats_de_la_classe', {'as': asec, 'regime': regime, 'classeId': classe.classeId, 'examenId': examenId})}} ">
+                    {{ 'Cliquer ici pour le faire'|trans }}
+                </a>
+            </p>
+        {% else %}
+            <div>
+                <h4>{{ 'Classement annuel'|trans }}</h4>
+                {% if moyennes|length > 45 %}
+                    <a href="{{ path('isi_bulletins_moyennes_annuelles', {'as': asec, 'regime': regime, 'classeId': classe.classeId, 'partie': 1}) }}">
+                        <button class="ui teal basic button">{{ 'Voir / Imprimer les bulletins annuels (1)'|trans }}</button>
+                    </a>
+                    <a href="{{ path('isi_bulletins_moyennes_annuelles', {'as': asec, 'regime': regime, 'classeId': classe.classeId, 'partie': 2}) }}">
+                        <button class="ui teal basic button">{{ 'Voir / Imprimer les bulletins annuels (2)'|trans }}</button>
+                    </a>
+                {% else %}
+                    <a href="{{ path('isi_bulletins_moyennes_annuelles', {'as': asec, 'regime': regime, 'classeId': classe.classeId}) }}">
+                        <button class="ui teal basic button">{{ 'Voir / Imprimer les bulletins annuels'|trans }}</button>
+                    </a>
+                {% endif %}
+                <a href="{{path('isi_statistiques_annuelles', {'as': asec, 'regime': regime, 'classeId':classe.classeId})}}">
+                    <button class="ui blue basic button">{{ 'Résultats généraux & statistiques'|trans }}</button>
+                </a>
+                <a href="{{ path('isi_notes_des_deux_examens', {'as': asec, 'regime': regime, 'classeId': classe.classeId}) }}">
+                    <button class="ui violet basic button">{{ 'Voir les notes des élèves'|trans }}</button>
+                </a>
+            </div>
+            <div class="ui middle aligned selection list">
+                <!-- On boucle sur la liste des moyenne. Et pour chaque moyenne: -->
+                {% for moyenne in moyennes %}
+                    <!-- On boucle encore sur la liste des moyennes -->
+                    {% for eleve in eleves %}
+                         <!--  Cette partie me permet seulement de sélectionner l'image qui se trouve à côte de l'élève  -->
+                        {% set image = "" %}
+                        {% if eleve.sexeFr == 1 %}
+                            {% set image = "/markaz/web/images/mark.png" %}
+                        {% else %}
+                            {% set image = "/markaz/web/images/molly.png" %}
+                        {% endif %}
+                        <!-- Ici on compare l'id de l'élève et la référence de l'élève dans l'objet moyenne -->
+                        <!-- S'il y a égalité, on affiche l'élève et son rang -->
+                        {% set nieme = '' %}
+                        {% if eleve.eleveId == moyenne.eleve.eleveId %}
+                            <!-- On va formater l'affichage du rang -->
+
+                            {% if moyenne.classementAnnuel == 1 and eleve.sexeFr == 1 %}
+                                <!-- Dans ce cas, c'est un homme. Il faudra donc dire: Le premier -->
+                                {% set nieme = 'er' %}
+                            {% elseif moyenne.classementAnnuel == 1 and eleve.sexeFr == 2 %}
+                                <!-- Dans ce cas, c'est une femme. Il faudra donc dire: La première -->
+                                {% set nieme = 'ère' %}
+                            {% else %}
+                                <!-- Pour le reste il n'a pas de différence -->
+                                {% set nieme = 'ème' %}
+                            {% endif %}
+                            <div class="item">
+                                <div class="right floated content">
+                                    <a href="{{ path('isi_bulletin_annuel_individuel', {'as': asec, 'regime': regime, 'classeId': classe.classeId, 'eleveId': eleve.eleveId, 'eleveId': eleve.eleveId}) }}">
+                                        <button class="ui red basic button">{{ 'Voir le bulletin annuel'|trans }}</button>
+                                    </a>
+                                </div>
+                                <img class="ui avatar image" src="{{ image }}">
+                                <div class="content">
+                                    <div class="header"> {{ eleve.nomFr }} {{ eleve.pnomFr }}</div>
+                                    {{ moyenne.classementAnnuel }}<sup>{{ nieme }}</sup> avec {{ moyenne.moyenneAnnuelle }} de moyenne
+                                </div>
+                            </div>
+                        {% endif %}
+                        <!-- Fin de la condition de comparaison de l'élève et la référence de l'élève dans l'objet moyenne -->
+                    {% endfor %}
+                    <!-- Fin de la boucle sur les élèves -->
+                {% endfor %}
+                <!-- Fin de la boucle sur le moyennes -->
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}

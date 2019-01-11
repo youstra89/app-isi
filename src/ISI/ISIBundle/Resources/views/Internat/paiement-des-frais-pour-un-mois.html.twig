@@ -1,0 +1,114 @@
+{# Accueil pour l'édition des listes de classe' #}
+
+{% extends 'ISIBundle:Internat:index.html.twig' %}
+
+{% block title %}
+  Paiement des frais de {{ eleve.nomFr }} {{ eleve.pnomFr }}
+{% endblock %}
+
+{% block corps %}
+  <div class="ui container">
+    <h3>{{ 'Règlement des frais du mois de '|trans }} {{ mois.mois.mois}}</h3>
+    <center>
+      <form class="ui form" action="" method="post">
+        <button class="blue ui button">
+          <i class="plus icon"></i>
+          {{ 'Payer les frais de '|trans }} {{ eleve.nomFr }} {{ eleve.pnomFr }}
+        </button><br /><br />
+        <label for="">{{ 'Montant'|trans }}</label>
+        <div class="ui right labeled input">
+          <input placeholder="Entrer le montant..." type="text" name="montant">
+          <div class="ui basic label">
+            F CFA
+          </div>
+        </div>
+      </form>
+    </center><br>
+    <div>
+      <h2 class="ui horizontal divider header">
+        <i class="tag icon"></i>
+        {{ 'Identification personnelle'|trans }}
+      </h2>
+      <center>
+        <h2>
+          <font color="red">{{ eleve.matricule }}</font>
+        </h2>
+      </center>
+      <br>
+      <div class="ui two column doubling stackable grid container">
+        <div class="column">
+          <table>
+            <tr>
+              <td>
+                <strong>{{ 'Nom'|trans }} : </strong>
+              </td>
+              <td>{{ eleve.nomFr }}</td>
+            </tr>
+            <tr>
+              <td>
+                <strong>{{ 'Prénom'|trans }} : </strong>
+              </td>
+              <td>{{ eleve.pnomFr }}</td>
+            </tr>
+            <tr>
+              <td>
+                <strong>{{ 'Sexe'|trans }} : </strong>
+              </td>
+              {% if eleve.sexeFr == 1 %}
+              <td>{{ 'Homme'|trans }}</td>
+              {% else %}
+              <td>{{ 'Femme'|trans }}</td>
+              {% endif %}
+            </tr>
+            <tr>
+              <td>
+                <strong>{{ 'Date de naissance'|trans }} : </strong>
+              </td>
+              <td>{{ eleve.dateNaissance|date("d-m-Y") }} à {{ eleve.lieuNaissance }} </td>
+            </tr>
+            <tr>
+              <td>
+                <strong>{{ 'Référence extrait de naissance'|trans }} : </strong>
+              </td>
+              <td>{{ eleve.refExtrait }} </td>
+            </tr>
+          </table>
+        </div>
+        <div class="column">
+          <table>
+            <tr>
+              <td>
+                <strong>{{ 'Nationalité'|trans }} : </strong>
+              </td>
+              <td>{{ eleve.nationalite }}</td>
+            </tr>
+            <tr>
+              <td>
+                <strong>{{ 'Résidence'|trans }} : </strong>
+              </td>
+              <td>{{ eleve.commune }} {{ eleve.residence }}</td>
+            </tr>
+            <tr>
+              <td>
+                <strong>{{ 'Etablissement d\'origine'|trans }} : </strong>
+              </td>
+              <td>{{ eleve.etsOrigine }}</td>
+            </tr>
+            <tr>
+              <td>
+                <strong>{{ 'Contact'|trans }} : </strong>
+              </td>
+              <td>{{ eleve.contact }} </td>
+            </tr>
+            <tr>
+              <td>
+                <strong></strong>
+              </td>
+              <td></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

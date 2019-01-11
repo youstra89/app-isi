@@ -1,0 +1,58 @@
+{% extends "ENSBundle:Enseignant:layout.html.twig" %}
+
+{% block title %}
+  Index Convocations
+{% endblock %}
+
+{% block contextual_menu %}
+  {{ include("ENSBundle:Discipline:contextual-menu-convocation.html.twig") }}
+{% endblock %}
+
+{% block titre_page %}
+  <i class="american sign language interpreting icon"></i>{{ 'Discipline - Convocation'|trans }}
+{% endblock %}
+
+{% block corps %}
+  <h2>{{ 'Liste des convocations de l\'année '|trans }}</h2>
+  {% if convocations is not defined %}
+    <p>{{ 'Aucun enseignant n\'a encore été inscrit'|trans }}</p>
+  {% else %}
+    <table class="ui selectable very basic table">
+      <thead>
+        <tr>
+          <th>{{ 'N°'|trans }}</th>
+          <th>{{ 'Enseignants'|trans }}</th>
+          <th>{{ 'Date de convocation'|trans }}</th>
+          <th>{{ 'Instance'|trans }}</th>
+          <th>{{ 'Motif de la convocation'|trans }}</th>
+        </tr>
+      </thead>
+      {% set i = 0 %}
+      <tbody>
+        {% set n = 0 %}
+        {% for convocation in convocations %}
+          {% set n = n + 1 %}
+          <tr>
+            <td>{{ n }}</td>
+            <td>
+              {% for convoque in convoques %}
+                {% if convoque.getConvocation.getId == convocation.id %}
+                  {% if convoque.getVerdict == NULL %}
+                    <a href="{{ path('ens_audition_et_verdict', { 'as': asec, 'ensConvocationId': convoque.getId }) }}" title="Cliquer pour enregistrer le verdict"><i class="check red icon"></i></a>
+                  {% else %}
+                    {# <i class="caret right icon"></i> #}
+                    <i class="check icon"></i>
+                  {% endif %}
+                  {{ convoque.getContrat.getEnseignant.getNomFr }} {{ convoque.getContrat.getEnseignant.getPnomFr }} -> {{ convoque.getContrat.getEnseignant.getMatricule }}<br/>
+                {% endif %}
+              {% endfor %}
+            </td>
+            <td>{{ convocation.date|date("d-m-Y") }}</td>
+            <td>{{ convocation.instance }}</td>
+            <td>{{ convocation.motif }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+{% endblock %}

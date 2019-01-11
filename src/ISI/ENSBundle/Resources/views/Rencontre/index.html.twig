@@ -1,0 +1,52 @@
+{% extends "ENSBundle:Enseignant:layout.html.twig" %}
+
+{% block title %}
+  Index Rencontre
+{% endblock %}
+
+{% block contextual_menu %}
+  {{ include("ENSBundle:Rencontre:contextual-menu-rencontre.html.twig") }}
+{% endblock %}
+
+{% block titre_page %}
+  <i class="handshake icon"></i>{{ 'Rencontres'|trans }}
+{% endblock %}
+
+{% block corps %}
+  <h2>{{ 'Rencontres de l\'année '|trans }}</h2>
+  {% if rencontres is empty %}
+    <p>{{ 'Aucune rencontre n\'a encore été enregistrée'|trans }}</p>
+  {% else %}
+    <table class="ui selectable very basic table">
+      <thead>
+        <tr>
+          <th>{{ 'N°'|trans }}</th>
+          <th>{{ 'Type de la rencontre'|trans }}</th>
+          <th>{{ 'Date'|trans }}</th>
+          <th>{{ 'Thème'|trans }}</th>
+          <th>{{ 'Durée'|trans }}</th>
+          <th></th>
+        </tr>
+      </thead>
+      {% set i = 0 %}
+      <tbody>
+        {% set n = 0 %}
+        {% for rencontre in rencontres %}
+          {% set n = n + 1 %}
+          <tr>
+            <td>{{ n }}</td>
+            <td>{{ rencontre.type }}</td>
+            <td>{{ rencontre.date|date("d-m-Y") }}</td>
+            <td>{{ rencontre.theme }}</td>
+            <td>{{ rencontre.duree }}</td>
+            <td>
+              <a href="{{ path('ens_edit_rencontre', {'as': asec, 'rencontreId': rencontre.id}) }}" title="Modifier la rencontre"><i class="edit icon"></i><a>
+              <a href="{{ path('ens_participants_rencontre', {'as': asec, 'rencontreId': rencontre.id}) }}" title="Ajouter des participants"><i class="plus icon"></i><a>
+              <a href="{{ path('ens_liste_des_participants', {'as': asec, 'rencontreId': rencontre.id}) }}" title="Liste des participants"><i class="list icon"></i><a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+{% endblock %}

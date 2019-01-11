@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>
+        {% block title %} Impression liste d'appel | {{ classe.getLibelleClasseAr }} {% endblock %}
+    </title>
+
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    <style>
+        @font-face
+        {
+            font-family: "majalla";
+            src: url("file:///C:/wamp64/www/markaz/web/polices/majalla.ttf");
+        }
+
+        @font-face
+        {
+            font-family: "Lato";
+            src: url("file:///C:/wamp64/www/markaz/web/polices/Lato-Regular.ttf");
+        }
+
+        @font-face
+        {
+            font-family: "amiri";
+            src: url("file:///C:/wamp64/www/markaz/web/polices/Amiri-Regular.ttf");
+        }
+
+        @font-face
+        {
+            font-family: "katibeth";
+            src: url("file:///C:/wamp64/www/markaz/web/polices/Katibeh-Regular.ttf");
+        }
+
+        * {
+            font-family: majalla, Lato;
+        }
+
+        body {
+            font-family: Lato;
+			direction: rtl
+        }
+
+        .en-tete{
+            width: 1350px;
+            height: 1984px;
+        }
+
+        .en-tete table{
+            border: 0px;
+        }
+
+        .en-tete-fr, .en-tete-ar{
+          line-height: 5px;
+          font-weight: bold;
+          font-size: 1.7em;
+        }
+
+        .en-tete-ar{
+          font-size: 1.8em;
+        }
+
+        .titre-document {
+            border: solid 2px;
+            line-height: 0px;
+            width: 100%;
+            margin: auto;
+            font-size: 1.5em;
+            font-family: "sakkal majalla", "majalla", "sakkal", "traditional arabic";
+            font-weight: bold;
+        }
+
+        span {
+            font-family: majalla, 'traditional arabic';
+        }
+
+        .id-fiche {
+            font-size: 2em;
+            direction: rtl;
+        }
+
+        .classe, .annee {
+            font-family: majalla, 'traditional arabic';
+            display: inline;
+        }
+
+        .matiere {
+            font-family: majalla, 'traditional arabic';
+            display: inline;
+            margin-right: 700px;
+        }
+
+        .libelleClasse, .libelleMatiere {
+            font-family: majalla, 'traditional arabic';
+            font-weight: bold;
+        }
+
+        table {
+            display: inline-table;
+            border-spacing: 0px;
+            table-layout: fixed;
+        }
+
+        thead{
+            border: 1px solid black;
+        }
+
+        td {
+            border: 0.99px solid black;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .line-table {
+            font-size: 1.6em;
+            line-height: 27px;
+        }
+
+        .table-header {
+            border: 1px solid black;
+            font-weight: bold;
+            font-size: 1.5em;
+            height: 20px;
+            align-content: center;
+        }
+
+        .table-header-semaine{
+            border: 1px solid black;
+            font-size: 1em;
+        }
+
+        .matricule-ar{
+            border: 1px solid black;
+            font-size: 1.1em;
+            align-content: center;
+        }
+
+        .matricule{
+            font-size: 0.9em;
+        }
+
+        .sexe-ar{
+            font-size: 0.5em;
+        }
+
+        .nomAr, .nomFr {
+            font-family: "sakkal majalla", "majalla", "sakkal", "traditional arabic";
+            font-weight: bold;
+        }
+
+        .nomEleveAr {
+            font-family: "sakkal majalla", "majalla", "sakkal", "traditional arabic";
+            font-weight: bold;
+            font-size: 0.9em
+        }
+
+        .nomEleveFr {
+            font-family: "sakkal majalla", "majalla", "sakkal", "traditional arabic";
+            white-space: nowrap;
+            text-overflow: clip;
+			font-size: 0.85em
+        }
+
+        .nomDeHalaqa {
+            font-family: "sakkal majalla", "majalla", "sakkal", "traditional arabic";
+            white-space: nowrap;
+            text-overflow: clip;
+			font-size: 0.6em
+        }
+
+        .effectif {
+            font-size: 2.5em;
+            font-family: majalla;
+        }
+    </style>
+</head>
+
+<body style="font-family: Arial">
+    <header>
+        <center>
+            <img src="{{app.request.schemeAndHttpHost ~ asset('../web/images/en-tete.png')}}" alt="" width="75%">
+        </center>
+    </header>
+    {% block body %}
+
+        {% if eleves is empty %}
+            <p>Inscrivez d'abord des élèves dans cette classe.</p>
+        {% else %}
+            <div class="titre-document">
+                <center>
+                    <h1>قائمة الحضور</h1>
+                </center>
+            </div>
+            <br />
+            <div class="id-fiche">
+                <center>
+                    <div class="classe">
+                        <span>الفصل : <span class="libelleClasse">{{ classe.libelleClasseAr }}</span></span>
+                    </div>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <div class="annee">
+                        <span>السنة الدراسية : <span class="libelleClasse">{{ annee.libelleAnneeScolaire }}</span></span>
+                    </div>
+                </center> 
+            </div>
+            <br /> {# {{dump(eleves)}} #}
+            <table width="100%" align="center">
+                <thead>
+                    <tr class="">
+                        <th width="25px" align="center" class="table-header">N°</th>
+                        <th width="110px" align="center" class="matricule-ar">الرقم التسلسلي</th>
+                        <th width="180px" class="nomAr table-header">الاسم و اللقب</th>
+                        <th width="200px" align="right" class="nomFr table-header">{{ 'Nom & Prénom'|trans }}</th>
+                        <th width="60px" align="right" class="nomFr table-header">الحلقة</th>
+                        <th width="30px" align="center" class="nomAr table-header"><span class="sexe-ar">الجنس</span></th>
+                        <th colspan="5" class="table-header-semaine">الأحد</th>
+                        <th colspan="5" class="table-header-semaine">الاثنين</th>
+                        <th colspan="5" class="table-header-semaine">الثلاثاء</th>
+                        <th colspan="5" class="table-header-semaine">الأربعاء</th>
+                        <th colspan="5" class="table-header-semaine">الخميس</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set numero = 0 %}
+                    {% set color = '' %}
+                    {% for eleve in eleves %}
+                        {# Ce code me permet d'alterner la couleur des lignes du tableau #}
+                        {% if (numero % 2) == 0 %}
+                            {% set color = 'white' %}
+                        {% else %}
+                            {% set color = '#efefef' %}
+                        {% endif %}
+                        {# Pour le sexe #}
+                        {% if eleve.sexeFr == 1 %}
+                            {% set sexe = 'ذكر' %}
+                        {% else %}
+                            {% set sexe = 'أنثى' %}
+                        {% endif %}
+                        {% set numero = numero + 1 %}
+                        <tr class="line-table" bgcolor={{color}}>
+                            <td align="center">{{ numero }}</td>
+                            <td align="right" class="matricule">{{ eleve.matricule }}</td>
+                            <td align="right" class="nomEleveAr">{{ eleve.pnomAr }} {{ eleve.nomAr }}</td>
+                            <td align="right" class="nomEleveFr">{{ eleve.nomFr  }} {{  eleve.pnomFr }}</td>
+                            {# On va faire ici la sélection de la halaqa #}
+                            {% for eleveH in elevesH %}
+                                {% if eleve.getEleveId == eleveH.GetEleve.getEleveId %}
+                                    <td align="right" class="nomDeHalaqa">{{ eleveH.getHalaqa.getLibelleHalaqa }}</td>
+                                {% endif %}
+                            {% endfor %}
+                        {# Fin de la sélection de la halaqa #}
+                            <td align="center">{{ sexe }}</td>
+                            {% for i in 0..24 %}
+                                <td align="right"></td>
+                            {% endfor %}
+                        </tr>
+                    <!-- On divise le tableau pour mieux afficher la suite de la liste -->
+                    {% if numero == 19 or numero == 47 or numero == 70 %}
+                </tbody>
+            </table>
+            <br><br>
+            <table width="100%" class="" align="center">
+                <thead>
+                    <tr class="">
+                        <th width="25px" align="center" class="table-header">N°</th>
+                        <th width="110px" align="center" class="matricule-ar">الرقم التسلسلي</th>
+                        <th width="180px" class="nomAr table-header">الاسم و اللقب</th>
+                        <th width="200px" align="right" class="nomFr table-header">{{ 'Nom & Prénom'|trans }}</th>
+                        <th width="60px" align="right" class="nomFr table-header">الحلقة</th>
+                        <th width="30px" align="center" class="nomAr table-header"><span class="sexe-ar">الجنس</span></th>
+                        <th colspan="5" class="table-header-semaine">الأحد</th>
+                        <th colspan="5" class="table-header-semaine">الاثنين</th>
+                        <th colspan="5" class="table-header-semaine">الثلاثاء</th>
+                        <th colspan="5" class="table-header-semaine">الأربعاء</th>
+                        <th colspan="5" class="table-header-semaine">الخميس</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Pour la couleur de fond des différentes lignes -->
+                    {% if (numero % 2) == 0 %}
+                        {% set color = 'white' %}
+                    {% else %}
+                        {% set color = 'gray' %}
+                    {% endif %}
+                    <!--Pour le sexe  -->
+                    {% if eleve.sexeFr == 1 %}
+                        {% set sexe = 'ذكر' %}
+                    {% else %}
+                        {% set sexe = 'أنثى' %}
+                    {% endif %}
+                    {% set numero = numero %}
+                        {% if loop.index == 19 or loop.index == 47 or loop.index == 70 %}
+							{% set sautEleve = 0 %}
+                        {% else %}
+							<tr class="line-table" bgcolor={{color}}>
+								<td align="center">{{ numero }}</td>
+								<td align="right">{{ eleve.matricule }}</td>
+								<td align="right" class="nomEleveAr">{{ eleve.pnomAr }} {{ eleve.nomAr }}</td>
+								<td align="right" class="nomEleveFr">{{ eleve.nomFr }} {{ eleve.pnomFr }}</td>
+                                {# On va faire ici la sélection de la halaqa #}
+                                    {% for eleveH in elevesH %}
+                                        {% if eleve.getEleveId == eleveH.GetEleve.getEleveId %}
+                                            <td align="right" class="nomDeHalaqa">{{ eleveH.getHalaqa.getLibelleHalaqa }}</td>
+                                        {% endif %}
+                                    {% endfor %}
+                                {# Fin de la sélection de la halaqa #}
+								<td align="center">{{ sexe }}</td>
+								{% for i in 0..24 %}
+									<td align="right"></td>
+								{% endfor %}
+							</tr>
+                        {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br />
+            <center><span class="effectif">المجموع :  {{ numero }}</span> </center>
+        {% endif %}
+        <!-- Fin if eleves empty  -->
+
+    {% endblock %}
+</body>
+
+</html>

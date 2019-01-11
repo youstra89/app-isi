@@ -1,0 +1,74 @@
+{# Page d'ajout d'un nouveau niveau #}
+
+{% extends "ISIBundle:Etude:index.html.twig" %}
+
+{% block pageTitle %}
+	Enregistrer livre
+{% endblock %}
+
+{% block contextual_menu %}  
+    {% include('ISIBundle:Etude:contextual-menu-parametres.html.twig') %}
+{% endblock %}
+
+{% block head %}
+	<div class="ui {{ dir2 }} aligned segment">
+		<h1 class="ui header">
+			<i class="settings icon"></i>{{ 'PARAMETRES'|trans }}
+		</h1>
+	</div> 
+{% endblock %}
+
+{% block content %}
+	<h3>{{ 'Enregistrement d\'un nouveau livre'|trans }}</h3>
+
+	<div class="well">
+		{{form_start(form, {'attr': {'class': 'ui form'}})}}
+			<div class="form-group">
+				<div class="two fields">
+					<div class="field">
+						<label for="">
+						{{ form_label(form.nom, "اسم الكتاب", {'label_attr': {'class': ''}}) }}
+						{{ form_errors(form.nom) }}
+						</label>
+						{{ form_widget(form.nom, {'attr': {'class': '', 'placeholder': 'Le nom du livre'}}) }}
+					</div>
+					<div class="field">
+						<label for="">
+						{{ form_label(form.auteur, "اسم المألف", {'label_attr': {'class': ''}}) }}
+						{{ form_errors(form.auteur) }}
+						</label>
+						{{ form_widget(form.auteur, {'attr': {'class': '', 'placeholder': 'Nom de l\'auteur'}}) }}
+					</div>
+				</div>
+				<div class="three fields">
+					<div class="field">
+						<label for="">
+						{{ form_label(form.description, "Description", {'label_attr': {'class': ''}}) }}
+						{{ form_errors(form.description) }}
+						</label>
+						{{ form_widget(form.description, {'attr': {'class': '', 'placeholder': 'Donner une breve description du livre'}}) }}
+					</div>
+					<div class="field">
+						<label for="">
+						{{ form_label(form.matiere, "", {'label_attr': {'class': ''}}) }}
+						{{ form_errors(form.matiere) }}
+						</label>
+						{{ form_widget(form.matiere, {'attr': {'class': '', 'placeholder': 'Le prénom'}}) }}
+					</div>
+					<div class="field">
+						<label for="">
+						{{ form_label(form.support) }}
+						{{ form_errors(form.support) }}
+						</label>
+						{{ form_widget(form.support) }}
+					</div>
+				</div>
+		    </div>
+
+		    {{ form_widget(form.save, {'attr': {'class': 'ui primary button'}}) }}
+
+	  	{{ form_end(form) }}
+      {{ form(form) }}
+	</div>
+
+{% endblock %}

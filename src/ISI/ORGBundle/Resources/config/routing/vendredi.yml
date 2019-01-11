@@ -1,0 +1,18 @@
+home_vendredis:
+    path:     /index-{as}
+    defaults: { _controller: ORGBundle:Vendredi:index }
+    requirements:
+        as: \d+
+
+vendredi.add:
+    path:     /enregistrer-une-priere-{as}
+    defaults: { _controller: ORGBundle:Vendredi:add }
+    requirements:
+        as: \d+
+
+vendredi.edit:
+    path:     /mettre-a-jour-un-programme-de-priere-{as}-{id}
+    defaults: { _controller: ORGBundle:Vendredi:edit }
+    requirements:
+        as: \d+
+        id: \d+

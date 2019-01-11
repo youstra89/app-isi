@@ -1,0 +1,41 @@
+{# On affiche toues les classes d'un niveau de formation. On sélectionne alors une classe pour aller saisir les notes #}
+
+{% extends 'ISIBundle:Scolarite:index.html.twig' %}
+
+{% block pageTitle %}
+  Accueil résultats annuels
+{% endblock %}
+
+{% block content %}
+  {% set grp = '' %}
+  {% if regime is same as('A') %}
+    {% set grp = 'Académie' %}
+  {% else %}
+    {% set grp = 'Formation' %}
+  {% endif %}
+  <h3>{{ 'Résultats annuels'|trans }} : {{ grp }}</h3>
+    {% for niveau in niveaux %}
+      <div class="">
+        <h2 class="ui header"> {{ niveau.getLibelleFr }}</h2>
+      </div>
+      <div class="niveau"> 
+        {% for classe in classes %}
+          {% for key, mc in moyenneC %}
+            {% if niveau.getId == classe.getNiveau.getId and key == classe.getClasseId and mc == FALSE %}
+              <a href="{{ path('isi_resultats_annuels_d_une_classe', {'as': asec, 'regime': regime, 'classeId': classe.getClasseId}) }}">
+                <div class="classe-n" data-tooltip="Les moyennes ne sont pas encore calculées">
+                  <center>{{ classe.getLibelleClasseFr }}</center>
+                </div>
+              </a>
+            {% elseif niveau.getId == classe.getNiveau.getId and key == classe.getClasseId and mc == TRUE %}
+              <a href="{{ path('isi_classement_annuel', {'as': asec, 'regime': regime, 'classeId': classe.getClasseId}) }}">
+                <div class="classe">
+                  <center>{{ classe.getLibelleClasseFr }}</center>
+                </div>
+              </a>
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+      </div><br>
+  {% endfor %}
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "ORGBundle::layout.html.twig" %}
+
+{% block title %}
+  Gestion des imams
+{% endblock %}
+
+{% block contextual_menu %}
+  {% include('ORGBundle::contextual-menu.html.twig') %}
+{% endblock %}
+
+
+{% block notification %}
+  {% for message in app.session.flashbag.get('error') %}
+  <div class="ui red message">
+    <div class="header">{{ 'Attention'|trans }} !!! </div>
+    <ul class="list">
+      <li>{{ message }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+  {% for message in app.session.flashbag.get('info') %}
+  <div class="ui green message">
+    <div class="header">{{ 'Notification'|trans }}: </div>
+    <ul class="list">
+      <li>{{ message }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+{% endblock %}
+
+
+{% block titre_page %}
+  <i class="users icon"></i>{{ 'Imams'|trans }}
+{% endblock %}
+
+
+{% block body %}
+  <h2>Imams enregistrés</h2>
+  <table class="uk-table uk-table-small uk-table-divider" id="imams">
+    <thead>
+      <tr>
+        <th>N°</th>
+        <th>Nom & Prénom</th>
+        <th>Numéro de téléphone</th>
+        <th>Niveau d'étude</th>
+        <th>Spécialité</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% set i = 0 %}
+      {% for imam in imams %}
+        {% set i = i + 1 %}
+        <tr>
+          <td>{{ i }}</td>
+          <td>{{ imam.nom }} {{ imam.pnom }}</td>
+          <td>{{ imam.numero}}</td>
+          <td>{{ imam.niveauEtude}}</td>
+          <td>{{ imam.specialite}}</td>
+          <td>
+            <a href="{{ path('imam.edit', {as: asec, id: imam.id}) }}" data-tooltip="Editer les informations de l'imam"><i class="edit icon"></i></a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+
+
+{% block javascript %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+      col_0: 'none',
+      col_5: 'none',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string',
+        'string', 'string', 'string',
+      ],
+      col_widths: [
+        // '25px', '330px', '270px'
+      ],
+      extensions: [{ name: 'sort' }]
+    };
+
+    var tf = new TableFilter('imams', filtersConfig);
+    tf.init();
+  </script>
+{% endblock %}

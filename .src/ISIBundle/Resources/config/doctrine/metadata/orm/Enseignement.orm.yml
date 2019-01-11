@@ -1,0 +1,65 @@
+Enseignement:
+    type: entity
+    table: enseignement
+    indexes:
+        annee_scolaire_id:
+            columns:
+                - annee_scolaire_id
+        matiere_id:
+            columns:
+                - matiere_id
+        IDX_BD310CC8F5EA509:
+            columns:
+                - classe_id
+    id: {  }
+    fields:
+        coefficient:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+                default: '1'
+        statuMatiere:
+            type: boolean
+            nullable: false
+            column: statu_matiere
+        dateSave:
+            type: datetime
+            nullable: false
+            column: date_save
+        dateUpdate:
+            type: datetime
+            nullable: false
+            column: date_update
+    oneToOne:
+        anneeScolaire:
+            targetEntity: Anneescolaire
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                annee_scolaire_id:
+                    referencedColumnName: annee_scolaire_id
+            orphanRemoval: false
+        classe:
+            targetEntity: Classe
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                classe_id:
+                    referencedColumnName: classe_id
+            orphanRemoval: false
+        matiere:
+            targetEntity: Matiere
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                matiere_id:
+                    referencedColumnName: matiere_id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

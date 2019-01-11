@@ -1,0 +1,42 @@
+{{ form_start(form, { 'attr': {'class': 'ui form'} }) }}
+    <div class="two fields">
+      <div class="field">
+          {{ form_row(form.nom, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+      <div class="field">
+          {{ form_row(form.pnom, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+    </div>
+    <div class="three fields">
+      <div class="field">
+          {{ form_row(form.sexe, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+      <div class="field">
+          {{ form_row(form.age, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+      <div class="field">
+          {{ form_row(form.numero, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+    </div>
+    <div class="four fields">
+      <div class="field">
+          {{ form_row(form.residence, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+      <div class="field">
+          {{ form_row(form.ancienneConfession, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+      <div class="field">
+          {{ form_row(form.profession, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+      <div class="field">
+          <label for="">Date de conversion</label>
+          <input type="date" name="date" value="">
+      </div>
+    </div>
+    <div class="field">
+      {{ form_row(form.commentaire, { 'attr': {'class': 'uk-input'} }) }}
+    </div>
+    {{ form_rest(form) }}
+    <button class="ui primary button">{{ button|default('Enregistrer') }}</button>
+  </div><br>
+{{ form_end(form) }}

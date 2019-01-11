@@ -1,0 +1,64 @@
+{# Page d'ajout d'un nouvel examen #}
+
+{% extends "ISIBundle:Scolarite:index.html.twig" %}
+
+{% block pageTitle %}
+	Heures enregistrées - {{ classe.getLibelleClasseFr }}
+{% endblock %}
+
+{% block content %}
+	<h3>{{ 'Heures d\'absences enregistrées '|trans }} {{ '"' ~ absence ~ '"' }} {{ ' de la classe'|trans }} {{ classe.getLibelleClasseFr }} </h3>
+	<table class="">
+		<thead>
+			<tr>
+				<th width="25px" rowspan="2" align="center" class="table-header">N°</th>
+				<th width="110px" rowspan="2" align="center" class="matricule-ar">الرقم التسلسلي</th>
+				<th width="180px" rowspan="2" class="">الاسم و اللقب</th>
+				<th width="180px" rowspan="2" align="right" class="">{{ 'Nom & Prénom'|trans }}</th>
+				<th width="30px" rowspan="2" align="center" class=""><span class="sexe-ar">الجنس</span></th>
+				{% for mois in moisAbsences %}
+					<th colspan="" class="">{{ mois.getMois.getMois }}</th>
+				{% endfor %}
+			</tr>
+		</thead>
+		<tbody>
+			{% set numero = 0 %}
+			{% set color = '' %}
+			{% for eleve in eleves %}
+				{# Ce code me permet d'alterner la couleur des lignes du tableau #}
+				{% if (numero % 2) == 0 %}
+					{% set color = 'white' %}
+				{% else %}
+					{% set color = '#efefef' %}
+				{% endif %}
+				{# Pour le sexe #}
+				{% if eleve.getSexeFr == 1 %}
+					{% set sexe = 'ذكر' %}
+				{% else %}
+					{% set sexe = 'أنثى' %}
+				{% endif %}
+				{% set numero = numero + 1 %}
+				<tr class="line-table" bgcolor={{color}}>
+					<td align="center">{{ numero }}</td>
+					<td align="right" class="matricule">{{ eleve.getMatricule }}</td>
+					<td align="right" class="nomEleveAr">{{ eleve.getPnomAr }} {{ eleve.getNomAr }}</td>
+					<td align="right" class="nomEleveFr">{{ eleve.getNomFr  }} {{  eleve.getPnomFr }}</td>
+					<td align="center">{{ sexe }}</td>
+					{% for abs in moisAbsences %}
+						{% for absEleve in absences %}
+							{% if abs.getMois.getId == absEleve.getMois.getId and eleve.getEleveId == absEleve.getEleve.getEleveId %}
+								{% set heuresAbsences = 0 %}
+								{% if absence == 'Cours' %}
+									{% set heuresAbsences = absEleve.getHeureCours %}
+								{% else %}
+									{% set heuresAbsences = absEleve.getHeureCoran %}
+								{% endif %}
+								<td align="right">{{ heuresAbsences }}</td>
+							{% endif %}
+						{% endfor %}
+					{% endfor %}
+                </tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}

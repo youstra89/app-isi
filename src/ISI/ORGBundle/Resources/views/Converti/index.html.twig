@@ -1,0 +1,109 @@
+{% extends "ORGBundle::layout.html.twig" %}
+
+{% block title %}
+  Gestion des convertis
+{% endblock %}
+
+{% block contextual_menu %}
+  {% include('ORGBundle::contextual-menu-converti.html.twig') %}
+{% endblock %}
+
+
+{% block notification %}
+  {% for message in app.session.flashbag.get('error') %}
+  <div class="ui red message">
+    <div class="header">{{ 'Attention'|trans }} !!! </div>
+    <ul class="list">
+      <li>{{ message }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+  {% for message in app.session.flashbag.get('info') %}
+  <div class="ui green message">
+    <div class="header">{{ 'Notification'|trans }}: </div>
+    <ul class="list">
+      <li>{{ message }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+{% endblock %}
+
+
+{% block titre_page %}
+  <i class="users icon"></i>{{ 'Convertis'|trans }}
+{% endblock %}
+
+
+{% block body %}
+  <h2>Convertis enregistrés</h2>
+  <table class="uk-table uk-table-small uk-table-divider" id="convertis" width="100%">
+    <thead>
+      <tr>
+        <th>N°</th>
+        <th>Nom & Prénom</th>
+        <th>Sexe</th>
+        <th>Numéro de téléphone</th>
+        <th>Résidence</th>
+        <th>Anc. COnfession</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% set i = 0 %}
+      {% for converti in convertis %}
+        {% set i = i + 1 %}
+        <tr>
+          <td>{{ i }}</td>
+          <td>{{ converti.nom }} {{ converti.pnom }}</td>
+          <td>
+            {% if converti.sexe == 1 %}
+            Homme
+            {% else %}
+            Femme
+            {% endif %}
+          </td>
+          <td>{{ converti.numero }}</td>
+          <td>{{ converti.residence }}</td>
+          <td>{{ converti.ancienneConfession }}</td>
+          <td>
+            <a href="{{ path('converti.edit', {as: asec, id: converti.id}) }}" data-tooltip="Editer les informations du converti"><i class="edit icon"></i></a>
+            <a href="{{ path('converti.info', {as: asec, id: converti.id}) }}" data-tooltip="Voir les informations du converti"><i class="info icon"></i></a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+
+
+{% block javascript %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+      col_0: 'none',
+      col_2: 'select',
+      col_6: 'none',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string',
+        'string', 'string', 'string',
+      ],
+      col_widths: [
+        '25px', '350px', '100px', '130px', '180px'
+      ],
+      extensions: [{ name: 'sort' }]
+    };
+
+    var tf = new TableFilter('convertis', filtersConfig);
+    tf.init();
+  </script>
+{% endblock %}

@@ -1,0 +1,139 @@
+{% extends "ISIBundle:Admin:layout.html.twig" %}
+  {% block title %}
+    Index Panel Admin
+  {% endblock %}
+  {% block titre %}
+    <i class="users icon"></i>Panel Admin
+  {% endblock %}
+
+  {% block corps %}
+    <!-- Début d'affichage des notifications et des messages d'erreur -->
+    {% for message in app.session.flashbag.get('error') %}
+      <div class="ui red message">
+        <div class="header">Attention !!! </div>
+        <ul class="list">
+          <li>{{ message }}.</li>
+        </ul>
+      </div>
+    {% endfor %}
+    {% for message in app.session.flashbag.get('info') %}
+      <div class="ui green message">
+        <div class="header">Notification: </div>
+        <ul class="list">
+          <li>{{ message }}.</li>
+        </ul>
+      </div>
+    {% endfor %}
+    <!-- Fin d'affichage des notifications et des message d'erreur  -->
+    <div class="ui link three cards">
+      <div class="card">
+        <div class="image">
+          <a class="item" href="{{ path('isi_user', {'as': asec}) }}">
+            <img src="/markaz/web/images/users1.png">
+          </a>
+        </div>
+        <div class="content">
+          <div class="header">{{ 'GESTION DES UTILISATEURS'|trans }}</div>
+          <div class="meta">
+            <a>Amis</a>
+          </div>
+          <div class="description">{{ 'Gestion des utilisateurs du système'|trans }}</div>
+        </div>
+        <div class="extra content">
+          <span class="right floated">{{ 'Dernière connexion'|trans }} </span>
+          <span>
+            <i class="users icon"></i></span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="image">
+          <a href="{{path('isi_home_scolarite')}}">
+            <img src="/markaz/web/images/scolarite.png">
+          </a>
+        </div>
+        <div class="content">
+          <div class="header">{{ 'DIRECTION DES AFFAIRES SCOLAIRES'|trans }}</div>
+          <div class="meta">
+          </div>
+          <div class="description">{{ 'Tout ce qui concerne les élèves: préinscription, réinscription, inscription et autre...'|trans }}</div>
+        </div>
+        <div class="extra content">
+          <span class="right floated"></span>
+          <span>
+            <i class="student icon"></i></span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="image">
+          <a href="{{ path('internat_home', {'as': asec}) }}">
+            <img src="/markaz/web/images/internat.png">
+          </a>
+        </div>
+        <div class="content">
+          <div class="header">{{ 'GESTION DES INTERNES'|trans }}</div>
+          <div class="meta">
+          </div>
+          <div class="description">{{ 'Les élèves qui sont inscrits à l\'internat'|trans }}</div>
+        </div>
+        <div class="extra content">
+          <span class="right floated"></span>
+          <span>
+            <i class="bed icon"></i></span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="image">
+          <a href="{{ path('ens_home', {'as': asec}) }}">
+            <img src="/markaz/web/images/enseignant.jpg">
+          </a>
+        </div>
+        <div class="content">
+          <div class="header">{{ 'GESTION DES ENSEIGNANTS'|trans }}</div>
+          <div class="meta">
+          </div>
+          <div class="description">{{ 'Les enseignants de l\'institut'|trans }}</div>
+        </div>
+        <div class="extra content">
+          <span class="right floated"></span>
+          <span>
+            <i class="student icon"></i></span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="image">
+          <a href="{{ path('etude_home', {'as': asec}) }}">
+            <img src="/markaz/web/images/etude.jpg">
+          </a>
+        </div>
+        <div class="content">
+          <div class="header">{{ 'GESTION DES ETUDES'|trans }}</div>
+          <div class="meta">
+          </div>
+          <div class="description">{{ 'Les programmes d\'étude, les progressions des différents niveaux, découpage de l\'année scolaire...'|trans }}</div>
+        </div>
+        <div class="extra content">
+          <span class="right floated"></span>
+          <span>
+            <i class="bed icon"></i></span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="image">
+          <a href="{{ path('org_homepage', {'as': asec}) }}">
+            <img src="/markaz/web/images/org.jpg">
+          </a>
+        </div>
+        <div class="content">
+          <div class="header">{{ 'MODULE D\'ORGANISATION'|trans }}</div>
+          <div class="meta">
+          </div>
+          <div class="description">{{ 'Tous les programmes d\'organisation '|trans }}</div>
+        </div>
+        <div class="extra content">
+          <span class="right floated"></span>
+          <span>
+            <i class="settings icon"></i></span>
+        </div>
+      </div>
+    </div>
+  {% endblock %}

@@ -1,0 +1,54 @@
+{# On affiche toues les classes d'un niveau de formation. On sélectionne alors une classe pour aller saisir les notes #}
+
+{% extends 'ISIBundle:Scolarite:index.html.twig' %}
+
+{% block pageTitle %}
+  Gestion des absences - {{ parent() }}
+{% endblock %}
+
+
+{% block content %}
+  {% set grp = '' %}
+  {% if regime is same as('A') %}
+    {% set grp = 'Académie' %}
+  {% else %}
+    {% set grp = 'Formation' %}
+  {% endif %}
+  <h3>{{ 'Heures d\'absence'|trans }} : {{classe.libelleClasseFr}} [{{absence}}]</h3>
+  {# Cas de fiches de notes déjà éditées #}
+    {% for message in app.session.flashbag.get('error') %}
+      <div class="ui red message">
+        <div class="header">{{ 'Attention'|trans }} !!! </div>
+        <ul class="list">
+          <li>{{ message }}</li>
+        </ul>
+      </div>
+    {% endfor %}
+    {% for message in app.session.flashbag.get('info') %}
+      <div class="ui green message">
+        <div class="header">{{ 'Notification'|trans }}: </div>
+        <ul class="list">
+          <li>{{ message }}.</li>
+        </ul>
+      </div>
+    {% endfor %}
+  {# Fin des notifications #}
+  <br />
+  <div class="ui six cards">
+    {% for m in mois %}
+      <div class="card">
+        <div class="content">
+
+          <a href="{{ path('isi_saisie_des_heures_d_absence', {'as': asec, 'regime': regime, 'classeId': classe.classeId, 'absence': absence, 'moisId': m.id}) }}">
+            <div class="content">
+              <img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
+              <div class="header"><h4>{{ m.mois }}</h4> </div>
+              <div class="meta"></div>
+              <div class="description"></div>
+            </div>
+          </a>
+        </div>
+      </div>
+    {% endfor %}<!-- Fin for classe in classes -->
+  </div>
+{% endblock %}

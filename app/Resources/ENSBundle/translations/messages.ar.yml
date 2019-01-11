@@ -1,0 +1,122 @@
+Retards: __Retards
+'Voir les retards': '__Voir les retards'
+'Modifier les retards': '__Modifier les retards'
+'Enregistrement d''absences des enseignants': '__Enregistrement d''absences des enseignants'
+'Retards enregistrés': '__Retards enregistrés'
+Attention: __Attention
+Notification: __Notification
+'Saisie des retards du': '__Saisie des retards du'
+'Il n y a auccun enseignant enregistré pour le moment': '__Il n y a auccun enseignant enregistré pour le moment'
+'Retards (en min)': '__Retards (en min)'
+Matricule: __Matricule
+'Nom & prénoms des enseignants': '__Nom & prénoms des enseignants'
+minutes: __minutes
+'Gestion des fonctions': '__Gestion des fonctions'
+'Prise de fonction': '__Prise de fonction'
+'Arrêt des fonctions': '__Arrêt des fonctions'
+'Enseignants de l''année': '__Enseignants de l''année'
+'Ajouter un enseignant': '__Ajouter un enseignant'
+'Liste des enseignants': '__Liste des enseignants'
+'Enregistrement d''un nouvel enseignant': '__Enregistrement d''un nouvel enseignant'
+'Le matricule': '__Le matricule'
+'Mise à jour des informations': '__Mise à jour des informations'
+N°: __N°
+Sexe: __Sexe
+Cours: __Cours
+Coran: __Coran
+Samedi: __Samedi
+Actions: __Actions
+'Fonctions en cours': '__Fonctions en cours'
+'Aucune fonction en cours pour le moment': '__Aucune fonction en cours pour le moment'
+'Date de naissance': '__Date de naissance'
+'Gestion des élèves': '__Gestion des élèves'
+Elèves: __Elèves
+'Aucun enseignant n''a encore été inscrit': '__Aucun enseignant n''a encore été inscrit'
+'Identification personnelle': '__Identification personnelle'
+Nom: __Nom
+Prénom: __Prénom
+Homme: __Homme
+Femme: __Femme
+'Référence extrait de naissance': '__Référence extrait de naissance'
+Nationalité: __Nationalité
+Résidence: __Résidence
+'Etablissement d''origine': '__Etablissement d''origine'
+Contact: __Contact
+'Identification des parents': '__Identification des parents'
+Scolarité: __Scolarité
+Conduite: __Conduite
+'Nouvelle prise de fonction': '__Nouvelle prise de fonction'
+'Entrez le matricule de l''enseignant': '__Entrez le matricule de l''enseignant'
+Valider: __Valider
+Accueil: __Accueil
+'Ajouter enseignant': '__Ajouter enseignant'
+Fonctions: __Fonctions
+Contrôle: __Contrôle
+Absences: __Absences
+Discipline: __Discipline
+Convocations: __Convocations
+Conduites: __Conduites
+Sanctions: __Sanctions
+'Mon compte perso': '__Mon compte perso'
+'Modifier mon profil': '__Modifier mon profil'
+'Changer la langue': '__Changer la langue'
+Déconnexion: __Déconnexion
+'Année scolaire': '__Année scolaire'
+Admin: __Admin
+Utilisateur: __Utilisateur
+'GESTION DES ENSEIGNANTS': '__GESTION DES ENSEIGNANTS'
+'Enregistrement pour le programme d''enseignement': '__Enregistrement pour le programme d''enseignement'
+'Prise de fonction pour l''enseignant(e)': '__Prise de fonction pour l''enseignant(e)'
+'Voir les absences': '__Voir les absences'
+'Enregistrement d''absence pour l''enseignant:': '__Enregistrement d''absence pour l''enseignant:'
+'Enregistrement des retards des enseignants': '__Enregistrement des retards des enseignants'
+'Retards enregistrés pour le mois de': '__Retards enregistrés pour le mois de'
+Durée: __Durée
+'Discipline - Conduites': '__Discipline - Conduites'
+'Audition et Verdict': '__Audition et Verdict'
+Audition: __Audition
+Verdict: __Verdict
+'Gestion des convocations': '__Gestion des convocations'
+'Accueil des convocation': '__Accueil des convocation'
+'Convoquer des enseignants': '__Convoquer des enseignants'
+'Discipline - Convocation': '__Discipline - Convocation'
+'Sélection d''enseignants pour enregistrement de convocation': '__Sélection d''enseignants pour enregistrement de convocation'
+'Enregistrement de conduite pour l''enseignant(e)': '__Enregistrement de conduite pour l''enseignant(e)'
+'Discipline - Sanction': '__Discipline - Sanction'
+'Enregistrement de sanction': '__Enregistrement de sanction'
+'Enregistrement de conduite pour un enseignant': '__Enregistrement de conduite pour un enseignant'
+Voir: __Voir
+Ajouter: __Ajouter
+'Liste des convocations de l''année': '__Liste des convocations de l''année'
+Enseignants: __Enseignants
+'Date de convocation': '__Date de convocation'
+Instance: __Instance
+'Motif de la convocation': '__Motif de la convocation'
+'Aucun contrat n''a encore été enregistrée': '__Aucun contrat n''a encore été enregistrée'
+'Nombre de sanctions': '__Nombre de sanctions'
+Action: __Action
+'Enregistrement d''une nouvelle convocation': '__Enregistrement d''une nouvelle convocation'
+'Les conduites de': '__Les conduites de'
+'Référence de la CNI': '__Référence de la CNI'
+'Rien à signaler': '__Rien à signaler'
+'Arrêt de fonction pour l''enseignant(e)': '__Arrêt de fonction pour l''enseignant(e)'
+'Arrêter les fonctions de': '__Arrêter les fonctions de'
+'Date de fin': '__Date de fin'
+'Motif de fin de contrat': '__Motif de fin de contrat'
+'Inscrivez d''abord des enseignants.': '__Inscrivez d''abord des enseignants.'
+'Autres modules': '__Autres modules'
+'Programmes d''étude': '__Programmes d''étude'
+Programme: __Programme
+'Arrêt de fonction': '__Arrêt de fonction'
+Rencontres: __Rencontres
+'Enregistrement d''une nouvelle rencontre': '__Enregistrement d''une nouvelle rencontre'
+'Gestion des rencontres': '__Gestion des rencontres'
+'Ajouter une rencontre': '__Ajouter une rencontre'
+'Mise à jours des informations de la rencontre': '__Mise à jours des informations de la rencontre'
+'Sélection d''enseignants aynat participé à la rencontre:': '__Sélection d''enseignants aynat participé à la rencontre:'
+'Rencontres de l''année': '__Rencontres de l''année'
+'Aucune rencontre n''a encore été enregistrée': '__Aucune rencontre n''a encore été enregistrée'
+'Type de la rencontre': '__Type de la rencontre'
+Date: __Date
+Thème: __Thème
+'Liste des enseignants aynat participé à la rencontre:': '__Liste des enseignants aynat participé à la rencontre:'

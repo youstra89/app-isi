@@ -1,0 +1,102 @@
+{# Page d'ajout d'un nouvel examen #}
+{% extends "ISIBundle:Scolarite:index.html.twig" %}
+{% block pageTitle %}
+    Résultats généraux - {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="ui info message">
+        <center>
+            <h3>{{ 'Statistiques annuelles de la classe'|trans }} : {{ classe.getLibelleClasseFr }}</h3>
+        </center>
+    </div>
+    {# {{dump(app)}} #}
+    <div style="flex-direction: column-reverse">
+        {# Avant toute chose, il faut connaître l'effectif de la classe, le nombre d'admis et le nombre de recalés  #}
+        {% set nbrTotalAdmis = 0 %}
+        {% set nbrTotalRecales = 0 %}
+
+        {# <div class="ui compact menu">
+            <i class="icon mail"></i> Messages <div class="floating ui red label">22</div>
+            <i class="icon users"></i>Amis <div class="floating ui teal label">22</div>
+        </div> #}
+        <div>
+            <table class="ui selectable celled table">
+                <thead>
+                    <tr>
+                        <th>{{ 'Matricule'|trans }}</th>
+                        <th>{{ 'Nom & Prénom'|trans }}</th>
+                        <th>{{ 'Total annuel'|trans }}</th>
+                        <th>{{ 'Moyenne annuelle'|trans }}</th>
+                        <th>{{ 'Rang annuel'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {# On va afficher les moyennes #}
+                    {% for moyenne2 in moyennes2 %}
+                        {% for moyenne1 in moyennes1 %}
+                            {% for fq in frequenter %}
+                                {% if moyenne1.getEleve.eleveId == moyenne2.getEleve.getEleveId and moyenne1.getEleve.getEleveId == fq.getEleve.getEleveId %}
+                                    {% set total = 0 %}
+                                    {% set total = moyenne1.getTotalPoints + moyenne2.getTotalPoints %}
+                                    {# Afficher ème en exposant #}
+                                    {% set nieme = '' %}
+                                    {% if moyenne2.getClassementAnnuel == 1 and moyenne2.getEleve.getSexeFr == 1 %}
+                                        <!-- Dans ce cas, c'est un homme. Il faudra donc dire: Le premier -->
+                                        {% set nieme = 'er' %}
+                                    {% elseif moyenne2.getClassementAnnuel == 1 and moyenne2.getEleve.getSexeFr == 2 %}
+                                        <!-- Dans ce cas, c'est une femme. Il faudra donc dire: La première -->
+                                        {% set nieme = 'ère' %}
+                                    {% else %}
+                                        <!-- Pour le reste il n'a pas de différence -->
+                                        {% set nieme = 'ème' %}
+                                    {% endif %}
+                                    {# Fin afficher ème en exposant #}
+                                    {# % if moyenne2.moyenneAnnuelle > 10 %#}
+                                    {% if fq.admission == 1 %}
+                                        {% set nbrTotalAdmis = nbrTotalAdmis + 1 %}
+                                        <tr bgcolor="">
+                                        <td>{{ moyenne2.getEleve.getMatricule }}</td>
+                                        <td>{{ moyenne2.getEleve.getNomFr }} {{ moyenne2.getEleve.getPnomFr }}</td>
+                                        <td>{{ total }}</td>
+                                        <td>{{ moyenne2.getMoyenneAnnuelle }}</td>
+                                        <td>{{ moyenne2.getClassementAnnuel }}<sup>{{ nieme }}</sup></td>
+                                        </tr>
+                                    {% elseif fq.admission == 0 %}
+                                        {% set nbrTotalRecales = nbrTotalRecales + 1 %}
+                                        <tr class="error">
+                                            <td>{{ moyenne2.getEleve.getMatricule }}</td>
+                                            <td>{{ moyenne2.getEleve.getNomFr }} {{ moyenne2.getEleve.getPnomFr }}</td>
+                                            <td>{{ total }}</td>
+                                            <td>{{ moyenne2.getMoyenneAnnuelle }}</td>
+                                            <td>{{ moyenne2.getClassementAnnuel }}<sup>{{ nieme }}</sup></td>
+                                        </tr>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}{# Fin boucle de frequenter #}
+                        {% endfor %}
+                        {# for moyennes2 #}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% set pourcentageAdmis = (nbrTotalAdmis * 100)/moyennes2|length %}
+        <div>
+            <a class="ui tag label">
+                <span class="info-stat">
+                    {{ 'Le nombre d\'admis est de'|trans }} <strong>{{ nbrTotalAdmis }} {{ 'élèves'|trans }}</strong>
+                </span>
+            </a>
+            <a class="ui blue tag label">
+                <span class="info-stat">
+                    {{ 'Le nombre de recalés est de'|trans }} <strong>{{ nbrTotalRecales }} {{ 'élèves'|trans }}</strong>
+                </span>
+            </a>
+            <a class="ui teal tag label">
+                <span class="info-stat">
+                    {{ 'Pourcentage d\'admis'|trans }}: <strong>{{ pourcentageAdmis|number_format(2, ',') }} %</strong>
+                </span>
+            </a>
+        </div>
+    </div>
+{% endblock %}

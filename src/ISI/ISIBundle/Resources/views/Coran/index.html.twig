@@ -1,0 +1,177 @@
+{% extends "ISIBundle::layout.html.twig" %}
+
+{% block title %}
+    {% block pageTitle %}
+        Espace Coran | Home
+    {% endblock %}
+{% endblock %}
+
+{% block contextual_menu %}
+    <div class="ui vertical menu">
+       <div class="item">
+        <div class="header">{{ 'Affectations'|trans }}</div>
+        <div class="menu">
+          {# <a class="item" href="{{path('isi_eleves_inscrits', {'as': asec, 'regime': regime})}}">{{ 'Elèves inscrits'|trans }}</a> #}
+          {# <a class="item" href="{{path('isi_modifier_inscription', {'as': asec, 'regime': regime})}}">{{ 'Modifier inscription'|trans }}</a> #}
+          <a class="item" href="{{path('isi_inscription', {'as': asec, 'regime': regime})}}">{{ 'Inscription'|trans }}</a>
+          <a class="item" href="{{path('isi_renvoi_home', {'as': asec, 'regime': regime})}}">{{ 'Renvoi'|trans }}</a>
+        </div>
+      </div>
+      <div class="item">
+        <div class="header">{{ 'Edition'|trans }}</div>
+        <div class="menu">
+          <a class="item" href="{{path('isi_liste_des_halaqas', {'as': asec, 'regime': regime})}}">{{ 'Une liste de halaqa'|trans }}</a>
+        </div>
+      </div>
+      <div class="item">
+        <div class="header">{{ 'Divers'|trans }}</div>
+        <div class="menu">
+          <a class="item">{{ 'Permission'|trans }}</a>
+          <a class="item" href="{{ path('isi_problemes_home', { 'as': asec, 'regime': regime }) }}">{{ 'Signaler un problème'|trans }}</a>
+        </div>
+      </div> 
+    </div>
+{% endblock %}
+
+{% block body %}
+  <div class="ui {{ dir2 }} aligned segment">
+    <h1 class="ui header">
+      <i class="student icon"></i>{{ 'Elèves - Espace Coran '|trans }}
+    </h1>
+  </div>
+
+  {% if eleves is not defined %}
+    {% block content %}
+    {% endblock %}
+  {% else %}
+    {% set notif = app.session.flashbag.get('info') %}
+    {% if notif is not empty %}
+      <div class="ui green message">
+        <div class="header">{{ 'Notification'|trans }}:</div>
+        <ul class="list">
+          {% for message in notif %}
+            <li>{{ message }}.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+    {% for message in app.session.flashbag.get('error') %}
+      <div class="ui red message">
+        <div class="header">{{ 'Attention'|trans }} !!! </div>
+        <ul class="list">
+          <li>{{ message }}</li>
+        </ul>
+      </div>
+    {% endfor %}
+    <a href="{{ path('isi_preinscription', {'as': asec, 'regime': 'C'}) }}">
+      <button class="positive ui button">
+        <i class="plus icon"></i>
+        {{ 'Préinscrire un nouvel élève'|trans }}
+      </button>
+    </a>
+    <form class="" action="" method="post">
+      <input type="hidden" id="asec" value="{{ asec }}">
+      <input type="hidden" id="regime" value="{{ regime }}">
+    </form>
+    <table id="example" class="display nowrap" style="width:100%">
+      <thead>
+        <tr>
+          <th align="center">N°</th>
+          <th>{{ 'Matricule'|trans }}</th>
+          <th>Nom & Prénom</th>
+          <th>الإسم و اللقب</th>
+          <th>{{ 'Sexe'|trans }}</th>
+          <th>{{ 'Date de naissance'|trans }}</th>
+          <th>{{ 'Actions'|trans }}</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% set numero = 0 %}
+      {% for eleve in eleves %}
+        {% set color = '' %}
+        {% set numero = numero + 1 %}
+        {% if eleve.renvoye == 1 %}
+          {% set color = 'red' %}
+        {% endif %}
+        <tr>
+          <td align="center"><font color={{ color }}>{{ numero }}</font></td>
+          <td><font color={{ color }}>{{ eleve.matricule }}</font></td>
+          <td><font color={{ color }}>{{ eleve.nomFr }} {{ eleve.pnomFr }}</font></td>
+          <td><font color={{ color }}>{{ eleve.pnomAr }} {{ eleve.nomAr }}</font></td>
+          <td>
+            <font color={{ color }}>
+              <div class="home-eleve" data-tooltip="{{ eleve.nomFr }} {{ eleve.pnomFr }} est de sexe ">
+                {% if eleve.sexeFr == 1 %}
+                  {{ 'Masculin' }}
+                {% else %}
+                  {{ 'Féminin' }}
+                {% endif %}
+              </div>
+            </font>
+          </td>
+          <td><font color={{ color }}>{{ eleve.dateNaissance|date("d-m-Y") }}</font></td>
+          <td>
+            <font color={{ color }}>
+              <div class="ui grid">
+                <div class="wide column" data-tooltip="Modifier les information de l'élève">
+                  <a href="{{ path('isi_edit_eleve', {'as': asec, 'regime': regime, 'eleveId': eleve.eleveId}) }}"><i class="edit icon"></i></a>
+                </div>
+                <div class="wide column" data-tooltip="Voir les informations de l'élève">
+                  <a href="{{ path('isi_info_eleve', {'as': asec, 'regime': regime, 'eleveId': eleve.eleveId}) }}"><i class="info circle icon"></i></a>
+                </div>
+                <div class="wide column" data-tooltip="Enregistrer une conduite de l'élève">
+                  <a href="{{ path('isi_enregistrer_conduite', {'as': asec, 'regime': regime, 'eleveId': eleve.eleveId}) }}"><i class="certificate icon"></i></a>
+                </div>
+                {% for eleveI in elevesI %}
+                    {% if eleve.eleveId == eleveI.getEleveId %}
+                        <div class="wide column" data-tooltip="Inscrit(e) à l'internat">
+                          <i class="bed icon"></i>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+              </div>
+            </font>
+          </td>
+        </tr> 
+       {% endfor %}
+      </tbody>
+    </table>
+
+    <script>
+      $(document).ready(function() { 
+        $('#example').DataTable( {
+          "scrollY": 500,
+          "scrollX": true,
+          "pageLength": 100,
+          "lengthMenu": [ 50, 100, 200 ]
+        });
+        $.ajax({
+            //url: "{{ path('selection_eleves_regime', {'as': asec, 'regime': regime}) }}",
+            type: "GET",
+            dataType: "json",
+            success: function (data){
+                //console.log(data)
+                $('#example').DataTable( {
+                  /*"ajax": data,
+                  "columns": [
+                      { "data": "id" },
+                      { "data": "matricule" },
+                      { "data": "nomFr" },
+                      { "data": "nomAr" },
+                      { "data": "sexe" },
+                      { "data": "dateNaissance" },
+                      { "data": "action" },
+                  ],*/
+                  "scrollY": 500,
+                  "scrollX": true,
+                  "pageLength": 100,
+                  "lengthMenu": [ 50, 100, 200 ]
+                });
+            },
+          });
+        
+      });
+    </script>
+    </div>
+  {% endif %}
+{% endblock %}

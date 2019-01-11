@@ -1,0 +1,70 @@
+{# Page d'ajout d'un nouvel examen #}
+{% extends "ISIBundle:Scolarite:index.html.twig" %}
+{% block title %}
+    {% block pageTitle %}
+        Saisie des notes
+    {% endblock %}
+{% endblock %}
+
+{% block content %}
+<div class="ui info message">
+    <center>
+        <h3>{{ 'Saisie des notes de la classe '|trans }}: {{ classe.getLibelleClasseFr }}</h3>
+        <h4>{{ 'Session'|trans }} {{ examen.getSession }} : {{ examen.getAnneeScolaire.getLibelleAnneeScolaire }}</h4>
+    </center>
+</div>
+<div>
+    <a href="{{path('isi_notes_eleves_une_classe', {'as': asec, 'regime': regime, 'classeId':classe.getClasseId, 'examenId': examen.getExamenId})}}">
+        <button class="ui violet basic button">{{ 'Voir les notes des élèves de'|trans }} {{ classe.getNiveau.getLibelleFr }} - {{ classe.getLibelleClasseFr }}</button>
+    </a>
+</div><br>
+<div class="well">
+    <div class="ui six cards">
+    {% for matiere in matieres %}
+        <!--
+            Si la variable noteDUnEleve est vide alors, on affiche les matieres avec un label
+            'Saisir les notes'. Au clique sur le bouton on génère les notes et en même temps
+            on les saisie
+            -->
+            {# {{dump(notesDUnEleve)}} #}
+        {% for note in notesDUnEleve %}
+            {% if matiere.getMatiereId == note.getMatiere.getMatiereId and note.getNote is empty %}
+                <div class="card">
+                    <div class="content">
+                        <div class="header">{{ matiere.getLibelleMatiere }}</div>
+                        <div class="description"></div>
+                    </div>
+                    <a href="{{path('isi_saisie_de_notes_de_la_classe_pour_une_matiere', {'as': asec, 'regime': regime, 'classeId': classe.classeId, 'examenId': examen.getExamenId, 'matiereId': matiere.getMatiereId, 'note': 1})}}">
+                        <div class="ui positive bottom attached button">{{ 'Saisir les notes'|trans }}</div>
+                    </a>
+                </div>
+            {% elseif matiere.getMatiereId == note.getMatiere.getMatiereId and note.getNote is not empty %}
+                <div class="card">
+                    <div class="content">
+                        <div class="header">{{ matiere.getLibelleMatiere }}</div>
+                        <div class="description"></div>
+                    </div>
+                    <a href="{{path('isi_edition_des_notes', {'as': asec, 'regime': regime, 'classeId': classe.getClasseId, 'examenId': examen.getExamenId, 'matiereId': matiere.getMatiereId})}}">
+                        <div class="ui bottom attached button">{{ 'Modifier les notes'|trans }} </div>
+                    </a>
+                </div>
+            {% endif %}
+        {% endfor %}
+        {% for mat in matiereSansNote %}
+            {% if matiere.getMatiereId == mat.getMatiereId %}
+                <div class="card">
+                    <div class="content">
+                        <div class="header">{{ matiere.getLibelleMatiere }}</div>
+                        <div class="description"></div>
+                    </div>
+                    <a href="{{path('isi_saisie_de_notes_de_la_classe_pour_une_matiere', {'as': asec, 'regime': regime, 'classeId': classe.getClasseId, 'examenId': examen.getExamenId, 'matiereId': matiere.getMatiereId, 'note': 0})}}">
+                        <div class="ui positive bottom attached button">{{ 'Saisir les notes'|trans }} </div>
+                    </a>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

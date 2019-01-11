@@ -1,0 +1,37 @@
+{% extends 'ISIBundle:Eleve:index.html.twig' %}
+
+{% block pageTitle %} Réintegration d'un élève renvoyé{% endblock %}
+
+{% block content %}
+    {% for message in app.session.flashbag.get('error') %}
+      <div class="ui red message">
+        <div class="header">{{ 'Attention'|trans }} !!! </div>
+        <ul class="list">
+          <li>{{ message }}</li>
+        </ul>
+      </div>
+    {% endfor %}
+    {% for message in app.session.flashbag.get('info') %}
+      <div class="ui green message">
+        <div class="header">{{ 'Notification'|trans }}: </div>
+        <ul class="list">
+          <li>{{ message }}.</li>
+        </ul>
+      </div>
+    {% endfor %}
+    <h3>{{ 'Réintégration de'|trans }} {{ eleve.nomFr }} {{ eleve.pnomfr }} </h3>
+    <p>{{ 'Classe avant renvoi'|trans }}: <span>{{ classeAvRenvoi.niveau.libelleFr }} - {{ classeAvRenvoi.libelleClasseFr }}</span></p>
+    <form action="" class="ui form" method="post">
+        <label for="">{{ 'Nouvelle classe'|trans }}</label>
+        <select name="classe" id="">
+            <option value="">{{ 'Choisir la nouvelle classe pour'|trans }} {{ eleve.nomFr }} {{ eleve.pnomfr }}</option>
+            {% for classe in classes %}
+                {% if classe.genre == 'M' or (classe.genre == 'H' and eleve.sexeFr == 1) or (classe.genre == 'F' and eleve.sexeFr == 2) %}
+                    <option value="{{ classe.classeId }}">{{ classe.niveau.libelleFr }} - {{ classe.libelleClasseFr }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+        <br />
+        <input type="submit" class="ui primary button" value="   Valider la réintégration   " name="submit">
+    </form>
+{% endblock %}

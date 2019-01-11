@@ -1,0 +1,24 @@
+{{ form_start(form, { 'attr': {'class': 'ui form'} }) }}
+    <div class="two fields">
+      <div class="field">
+          {{ form_row(form.nom, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+      <div class="field">
+          {{ form_row(form.pnom, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+    </div>
+    <div class="three fields">
+      <div class="field">
+          {{ form_row(form.numero, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+      <div class="field">
+          {{ form_row(form.niveau_etude, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+      <div class="field">
+          {{ form_row(form.specialite, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+    </div>
+    {{ form_rest(form) }}
+    <button class="ui primary button">{{ button|default('Enregistrer') }}</button>
+  </div><br>
+{{ form_end(form) }}

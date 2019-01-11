@@ -1,0 +1,47 @@
+{# Page de gestion des classes #}
+
+{% extends "ISIBundle:Eleve:index.html.twig" %}
+
+{% block pageTitle %}
+  Suppression inscription
+{% endblock %}
+
+{% block content %}
+  <h3>{{ 'Supprimer l\'inscription d\'un élève de'|trans }} {{classe.niveau.libelleFr}}-{{classe.libelleClasseFr}} </h3>
+  <div class="ui hidden divider"></div>
+  {% if elevesClasse is empty %}
+    <p>{{ 'Aucune classe n\'a encore été enregistrée'|trans }}</p>
+  {% else %}
+    <div class="ui special five cards">
+    {% set i = 0 %}
+    {% for eleve in elevesClasse %}
+      {% set image = "" %}
+      {% set i = i + 1 %}
+      {% if eleve.sexeFr == 1 %}
+        {% set image = "/markaz/web/images/mark.png" %}
+      {% else %}
+        {% set image = "/markaz/web/images/molly.png" %}
+      {% endif %}
+        <div class="card">
+          <div class="blurring dimmable image">
+            <div class="ui dimmer">
+              <div class="content">
+                <div class="center">
+                  <div class="ui inverted button">{{ 'Ajouter un ami'|trans }}</div>
+                </div>
+              </div>
+            </div>
+            <img src="{{ image }}">
+          </div>
+          <div class="content">
+            <h4>{{ eleve.nomFr }} {{ eleve.pnomFr }}</h4>
+            <a class="supprimer" href="{{path('isi_supprime_eleve',{'as': asec, 'regime': regime, 'classeId': classe.classeId, 'eleveId': eleve.eleveId})}}">Supprimer</a>
+
+            {#<span class="supprimeEleve">Supprimer</span>
+            <a>Supprimer</a>#}
+          </div>
+        </div>
+    {% endfor %}<!-- Fin for eleve in eleves -->
+    </div>
+  {% endif %}<!-- Fin f=if classes empty -->
+{% endblock %}

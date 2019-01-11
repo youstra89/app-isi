@@ -1,0 +1,6 @@
+services:
+#    services.example:
+#        class: ServicesBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]
+    # services.userconnexion:
+    #     class: ServicesBundle\Services\UserConnexion

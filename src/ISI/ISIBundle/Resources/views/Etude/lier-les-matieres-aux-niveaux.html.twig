@@ -1,0 +1,70 @@
+{# Page de liaison des matieres et des niveaux #}
+
+{% extends "ISIBundle:Etude:progression-home.html.twig" %}
+
+{% block pageTitle %}
+	Liaison de matières
+{% endblock %}
+
+{% block content %}
+{% block notif %}
+	<!-- Début d'affichage des notifications et des messages d'erreur -->
+	{% for message in app.session.flashbag.get('error') %}
+		<div class="ui red message">
+		<div class="header">{{ 'Attention'|trans }} !!! </div>
+		<ul class="list">
+			<li>{{ message }}.</li>
+		</ul>
+		</div>
+	{% endfor %}
+	{% for message in app.session.flashbag.get('info') %}
+		<div class="ui green message">
+		<div class="header">{{ 'Notification'|trans }}: </div>
+		<ul class="list">
+			<li>{{ message }}.</li>
+		</ul>
+		</div>
+	{% endfor %}
+	<!-- Fin d'affichage des notifications et des message d'erreur  -->
+{% endblock %}
+	<h3>{{ 'Ajout de matière pour le niveau'|trans }} {{ niveau.libelleFr }}</h3>
+	{{ form_start(form, {'attr': {'class': 'ui form'}}) }} 
+		<div class="four fields">
+			<div class="field">
+				<label for="">
+					{{ form_label(form.matiere, "Matière", {'label_attr': {'class': ''}}) }} 
+					{{ form_errors(form.matiere) }}
+				</label>
+				{{ form_widget(form.matiere) }}
+			</div>
+			<div class="field">
+				<label for="">
+					{{ form_label(form.coefficient, "Coefficient", {'label_attr': {'class': ''}}) }} 
+					{{ form_errors(form.coefficient) }}
+				</label>
+				{{ form_widget(form.coefficient, {'attr' : {'class' : 'niveauclass'}}) }}
+			</div>
+			<div class="field">
+				<label for="">
+					{{ form_label(form.livre, "Sélectionner un livre", {'label_attr': {'class': ''}}) }} 
+					{{ form_errors(form.livre) }}
+				</label>
+				{{ form_widget(form.livre) }}
+			</div>
+			{# <div class="field">
+				<select name="liv" id="liv">
+					<option value="0">Test</option>
+				</select>
+				
+			</div> #}
+			<div class="field">
+				<label for="">
+					{{ form_label(form.statuMatiere, "Cocher si c'est une matière spécifique", {'label_attr': {'class': ''}}) }} 
+					{{ form_errors(form.statuMatiere) }}
+				</label>
+				{{ form_widget(form.statuMatiere, {'attr' : {'class' : 'ui toggle checkbox'}}) }}
+			</div>
+		</div>
+		{{ form_widget(form.save, {'attr': {'class': 'ui primary button'}}) }}
+	{{ form_end(form) }}
+{% endblock %}

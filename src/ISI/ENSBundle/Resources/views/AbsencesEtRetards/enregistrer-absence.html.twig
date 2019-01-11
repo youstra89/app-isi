@@ -1,0 +1,60 @@
+{% extends 'ENSBundle:Enseignant:layout.html.twig' %}
+
+{% block title %}
+  Enregistrement d'absence pour | {{ contrat.getEnseignant.getNomFr }} {{ contrat.getEnseignant.getPnomFr }}
+{% endblock %}
+
+{% block contextual_menu %}
+  {{ include("ENSBundle:AbsencesEtRetards:contextual-menu-retards-et-absences.html.twig") }}
+{% endblock %}
+
+{% block titre_page %}
+  <i class="flag checkered icon"></i>{{ 'Absences'|trans }}
+{% endblock %}
+
+{% block corps %}
+
+<div class="">
+	<h2>{{ 'Enregistrement d\'absence pour l\'enseignant: '|trans }} <font color="green">{{ contrat.getEnseignant.getNomFr }} {{ contrat.getEnseignant.getPnomFr }}</font></h2>
+	<div class="form-group">
+		{{ form_start(form, {'attr': {'class': 'ui form'}}) }}
+			<center>
+				<div class="field">
+					<label for="">
+						{{ form_label(form.autorisation, "Avez-vous autorisé cette absence ?", {'label_attr': {'class': ''}}) }}
+						{{ form_errors(form.autorisation) }}
+					</label> {{ form_widget(form.autorisation, {'attr': {'class': 'autorisation'}}) }}
+				</div>
+			</center>
+			<div class="three fields">
+				<div class="field">
+					<label for="">
+						{{ form_label(form.dateDemande, "Date de demande", {'label_attr': {'class': ''}}) }}
+						{{ form_errors(form.dateDemande) }}
+					</label> {{ form_widget(form.dateDemande, {'attr': {'class': 'date-demande'}}) }}
+				</div>
+				<div class="field">
+					<label for="">
+						{{ form_label(form.dateDepart, "Début de l'absence", {'label_attr': {'class': ''}}) }}
+						{{ form_errors(form.dateDepart) }}
+					</label> {{ form_widget(form.dateDepart, {'attr': {'class': 'date-depart'}}) }}
+				</div>
+				<div class="field">
+					<label for="">
+						{{ form_label(form.dateRetour, "Fin de l'absence", {'label_attr': {'class': ''}}) }}
+						{{ form_errors(form.dateRetour) }}
+					</label> {{ form_widget(form.dateRetour, {'attr': {'class': 'date-fin'}}) }}
+				</div>
+			</div>
+			<div class="field">
+				<label for="">
+					{{ form_label(form.motif, "Motif de l'absence", {'label_attr': {'class': ''}}) }}
+					{{ form_errors(form.motif) }}
+				</label> {{ form_widget(form.motif, {'attr': {'class': 'motif'}}) }}
+			</div>
+			{{ form_widget(form.save, {'attr': {'class': 'ui primary button'}}) }}
+		{{ form_end(form) }}
+	</div>
+</div>
+
+{% endblock %}

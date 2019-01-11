@@ -1,0 +1,70 @@
+{% extends "ISIBundle:Internat:layout.html.twig" %}
+
+{% block title %}
+  Index Internat
+{% endblock %}
+
+{% block contextual_menu %}
+  {% if is_granted('ROLE_SUPER_ADMIN') %}
+    {{ include("ISIBundle::contextual-menu-panel-admin.html.twig") }}
+  {% else %}
+    {{ include("ISIBundle::contextual-menu-user.html.twig") }}
+  {% endif %}
+{% endblock %}
+
+{% block corps %}
+    {% if internes is empty %}
+        <p>{{ 'Aucun élève n\'a encore été inscrit cette année'|trans }}</p>
+    {% else %}
+        <table id="table-internes" cellspacing="0" class="mytable filterable ui very basic table">
+          <thead>
+            <tr>
+              <th align="center">{{ 'N°'|trans }}</th>
+              <th align="center">{{ 'Matricule'|trans }}</th>
+              <th>Nom & Prénom</th>
+              <th>الإسم و اللقب</th>
+              <th>{{ 'Sexe'|trans }}</th>
+              <th>{{ 'Date de naissance'|trans }}</th>
+              <th>{{ 'Bâtiment'|trans }}</th>
+              <th>{{ 'Libellé chambre'|trans }}</th>
+              <th>{{ 'Actions'|trans }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% set n = 0 %}
+            {% for interne in internes %}
+            {% if interne.getRenvoye == 0 %}
+              {% set n = n + 1 %}
+              {% set color = "" %}
+              {% if (n % 2) == 0 %}
+                  {% set color = "WhiteSmoke" %}
+              {% endif %}
+              <tr bgcolor="{{ color }}">
+                <td>{{ n }}</td>
+                <td>{{ interne.getEleve.getMatricule }}</td>
+                <td>{{ interne.getEleve.getNomFr }} {{ interne.getEleve.getPnomFr }}</td>
+                <td>{{ interne.getEleve.getNomAr }} {{ interne.getEleve.getPnomAr }}</td>
+                <td>
+                  {% if interne.getEleve.getSexeFr == 1 %}
+                    {{ 'ذكر' }}
+                  {% else %}
+                    {{ 'أنثى' }}
+                  {% endif %}
+                </td>
+                <td>{{ interne.getEleve.dateNaissance|date("d-m-Y") }}</td>
+                <td>{{ interne.getChambre.getBatiment.getResponsable }}</td>
+                <td>{{ interne.getChambre.getLibelleChambre }}</td>
+                <td>
+                  <div class="ui grid">
+                    <div class="home-eleve wide column" data-tooltip="Modifier les informations de l'élève">
+                      <a href="{{ path('internat_info_eleve', {'as': asec, 'id':interne.getEleve.getEleveId}) }}"><i class="info circle icon"></i></a>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

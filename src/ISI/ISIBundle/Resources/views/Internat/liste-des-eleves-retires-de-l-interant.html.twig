@@ -1,0 +1,66 @@
+{% extends "ISIBundle:Internat:index.html.twig" %}
+
+{% block title %}
+  Elèves renvoyés de l'internat
+{% endblock %}
+
+
+{% block corps %}
+    <div class="ui container">
+        <h3>{{ 'Liste des élèves retirés'|trans }}</h3>
+        {% if internes is not defined %}
+            <p>{{ 'Aucun élève n\'a été renvoyé de l\'internat cette année.'|trans }}</p>
+        {% else %}
+            <table id="table-internes" cellspacing="0" class="mytable filterable ui very basic table">
+              <thead>
+                <tr>
+                  <th align="center">{{ 'N°'|trans }}</th>
+                  <th align="center">{{ 'Matricule'|trans }}</th>
+                  <th>{{ 'Nom & Prénom'|trans }}</th>
+                  <th>{{ 'Sexe'|trans }}</th>
+                  <th>{{ 'Date de naissance'|trans }}</th>
+                  <th>{{ 'Libellé chambre'|trans }}</th>
+                  <th>{{ 'Date renvoi'|trans }}</th>
+                  <th>{{ 'Actions'|trans }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% set n = 0 %}
+                {% for interne in internes %}
+                  {% set n = n + 1 %}
+                  {% set color = "" %}
+                  {% if (n % 2) == 0 %}
+                      {% set color = "WhiteSmoke" %}
+                  {% endif %}
+                  <tr bgcolor="{{ color }}">
+                    <td>{{ n }}</td>
+                    <td>{{ interne.eleve.matricule }}</td>
+                    <td>{{ interne.eleve.nomFr }} {{ interne.eleve.pnomFr }}</td>
+                    <td>
+                      {% if interne.eleve.sexeFr == 1 %}
+                        Garçon
+                      {% else %}
+                        Fille
+                      {% endif %}
+                    </td>
+                    <td>{{ interne.eleve.dateNaissance|localizeddate('full', 'none', 'locale') }}</td>
+                    <td>{{ interne.chambre.libelleChambre }}</td>
+                    <td>{{ interne.dateRenvoi|localizeddate('full', 'none', 'locale') }} à {{ interne.dateRenvoi|localizeddate('none', 'full', 'locale') }}</td>
+                    <td>
+                      <a href="#">
+                        <i class="circle info icon"></i>
+                      </a>
+                      <a href="#">
+                        <i class="info circle icon"></i>
+                      </a>
+                      <a href="#">
+                        <i class="info icon"></i>
+                      </a>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        {% endif %}
+    </div>
+{% endblock %}

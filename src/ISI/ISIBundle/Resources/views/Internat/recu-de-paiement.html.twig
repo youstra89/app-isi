@@ -1,0 +1,124 @@
+{# ISIBundle/Ressources/views/Scolarite #}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Reçu de paiement de | {{ eleve.nomFr }} - {{ eleve.pnomFr }} </title>
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    <style>
+    @font-face
+        {
+            font-family: "majalla";
+            src: url("file:///C:/wamp64/www/markaz/web/polices/majalla.ttf");
+        }
+
+        @font-face
+        {
+            font-family: "Lato";
+            src: url("file:///C:/wamp64/www/markaz/web/polices/Lato-Regular.ttf");
+        }
+
+        @font-face
+        {
+            font-family: "amiri";
+            src: url("file:///C:/wamp64/www/markaz/web/polices/Amiri-Regular.ttf");
+        }
+
+        @font-face
+        {
+            font-family: "katibeth";
+            src: url("file:///C:/wamp64/www/markaz/web/polices/Katibeh-Regular.ttf");
+        }
+
+        * {
+            font-family: majalla, Lato;
+        }
+
+        #container{
+          width: 500px;
+          border: 3px black solid;
+        }
+
+        .en-tete-fr, .en-tete-ar{
+          line-height: 5px;
+          font-weight: bold;
+          font-size: 1.2em;
+        }
+
+        .en-tete-ar{
+          font-size: 1.3em;
+        }
+
+        .titre-info{
+          font-weight: bold;
+        }
+    </style>
+  </head>
+
+  <body style="font-family: Arial">
+  	<div class="container">
+    <table width="100%">
+      <tr>
+        <td align="" width="" class="en-tete-fr">
+          <center>
+            <p>REPUBLIQUE DE COTE D'IVOIRE</p>
+            <p>INSTITUT DES SCIENCES ISLAMIQUES</p>
+            <p>ABIDJAN - ANYAMA</p>
+            <p>Tél: 21373048 - 20248312</p>
+          </center>
+        </td>
+        <td align="" width="" class="">
+          <center>
+            <img src="{{app.request.schemeAndHttpHost ~ asset('../web/images/logoISI.png')}}" alt="" width="60%">
+          </center>
+        </td>
+        <td align="" width="" class="en-tete-ar">
+          <center>
+            <p>جمهورية ساحل العاج</p>
+            <p>مركز الألوم الإسلامية</p>
+            <p>أبيجان - حي أنيام</p>
+            <p>هاتف : 21373048 - 20248312</p>
+          </center>
+        </td>
+      </tr>
+    </table>
+    <center>
+      <img src="{{app.request.schemeAndHttpHost ~ asset('../web/images/traits.png')}}" alt="" width="">
+    </center>
+    <div class="">
+      <p>Année scolaire : {{ annee.libelleAnneeScolaire }}</p>
+    </div>
+    <div class="numero recu">
+      <h3>RECU N°..............................</h3>
+    </div>
+    <div class="infos">
+      <table align="">
+        <tr>
+          <td align="" width="" class="titre-info">{{ 'Nom & Prénom :'|trans }}</td>
+          <td align="" width="" class="info">{{ eleve.nomFr }} {{ eleve.pnomFr }}</td>
+        </tr>
+        <tr>
+          <td align="" width="" class="titre-info">{{ 'Mois de :'|trans }}</td>
+          <td align="" width="" class="info">{{ mois.mois.mois }}</td>
+        </tr>
+        <tr>
+          <td align="" width="" class="titre-info">{{ 'Somme :'|trans }}</td>
+          <td align="" width="" class="info">{{ paiement.montant|number_format(0, '', ' ') }} F CFA</td>
+        </tr>
+      </table>
+      <div class="">
+        <p>Payé le : {{ paiement.dateSave|localizeddate('full', 'none', 'locale') }}</p>
+      </div>
+    </div>
+    <div class="">
+      <table width="100%">
+        <tr>
+          <td>DIRECTION COMPTABLE</td>
+          <td>Contact : 20248312</td>
+        </tr>
+      </table>
+    </div>
+
+  	<div>
+  </body>
+</html>

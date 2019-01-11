@@ -1,0 +1,25 @@
+home_convertis:
+    path:     /index-{as}
+    defaults: { _controller: ORGBundle:Converti:index }
+    requirements:
+        as: \d+
+
+converti.add:
+    path:     /ajouter-un-nouvel-converti-{as}
+    defaults: { _controller: ORGBundle:Converti:add }
+    requirements:
+        as: \d+
+
+converti.edit:
+    path:     /editer-informations-converti-{as}-{id}
+    defaults: { _controller: ORGBundle:Converti:edit }
+    requirements:
+        as: \d+
+        id: \d+
+
+converti.info:
+    path:     /informations-converti-{as}-{id}
+    defaults: { _controller: ORGBundle:Converti:informations }
+    requirements:
+        as: \d+
+        id: \d+

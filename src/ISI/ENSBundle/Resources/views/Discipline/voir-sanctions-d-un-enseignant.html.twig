@@ -1,0 +1,43 @@
+{% extends "ENSBundle:Enseignant:layout.html.twig" %}
+
+{% block title %}
+  Sanctions d'un enseignant
+{% endblock %}
+
+{% block contextual_menu %}
+  {# {{ include("ENSBundle:Discipline:contextual-menu-convocation.html.twig") }} #}
+{% endblock %}
+
+{% block titre_page %}
+  <i class="american sign language interpreting icon"></i>{{ 'Discipline - Sanction'|trans }}
+{% endblock %}
+
+{% block corps %}
+  <h2>{{ 'Sanctions enregistrées au compte de '|trans }} {{ contrat.enseignant.nomAr }} {{ contrat.enseignant.pnomAr }}</h2>
+  {% if sanctions is not defined %}
+    <p>{{ 'Aucune sanction n\'a encore été enregistrée pour cet enseignant'|trans }}</p>
+  {% else %}
+    <table class="ui selectable very basic table">
+      <thead>
+        <tr>
+          <th>{{ 'N°'|trans }}</th>
+          <th>{{ 'Date'|trans }}</th>
+          <th>{{ 'Type'|trans }}</th>
+          <th>{{ 'Description'|trans }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% set n = 0 %}
+        {% for sanction in sanctions %}
+          {% set n = n + 1 %}
+          <tr>
+            <td>{{ n }}</td>
+            <td>{{ sanction.date|date('d-m-Y') }}</td>
+            <td>{{ sanction.type }}</td>
+            <td>{{ sanction.description }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+{% endblock %}

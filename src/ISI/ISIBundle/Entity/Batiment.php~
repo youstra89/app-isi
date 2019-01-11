@@ -1,0 +1,127 @@
+<?php
+
+namespace ISIBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Batiment
+ *
+ * @ORM\Table(name="batiment")
+ * @ORM\Entity(repositoryClass="ISIBundle\Repository\BatimentRepository")
+ */
+class Batiment
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nom", type="string", length=255, unique=true)
+     */
+    private $nom;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="dateSave", type="datetime")
+     */
+    private $dateSave;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="dateUpdate", type="datetime")
+     */
+    private $dateUpdate;
+
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set nom
+     *
+     * @param string $nom
+     *
+     * @return Batiment
+     */
+    public function setNom($nom)
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    /**
+     * Get nom
+     *
+     * @return string
+     */
+    public function getNom()
+    {
+        return $this->nom;
+    }
+
+    /**
+     * Set dateSave
+     *
+     * @param \DateTime $dateSave
+     *
+     * @return Batiment
+     */
+    public function setDateSave($dateSave)
+    {
+        $this->dateSave = $dateSave;
+
+        return $this;
+    }
+
+    /**
+     * Get dateSave
+     *
+     * @return \DateTime
+     */
+    public function getDateSave()
+    {
+        return $this->dateSave;
+    }
+
+    /**
+     * Set dateUpdate
+     *
+     * @param string $dateUpdate
+     *
+     * @return Batiment
+     */
+    public function setDateUpdate($dateUpdate)
+    {
+        $this->dateUpdate = $dateUpdate;
+
+        return $this;
+    }
+
+    /**
+     * Get dateUpdate
+     *
+     * @return string
+     */
+    public function getDateUpdate()
+    {
+        return $this->dateUpdate;
+    }
+}

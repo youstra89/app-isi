@@ -1,0 +1,50 @@
+{# On affiche toues les classes d'un niveau de formation. On sélectionne alors une classe pour aller tirer les fiches #}
+
+{% extends 'ISIBundle:Examen:index.html.twig' %}
+
+{% block pageTitle %}
+  Fiches de notes des classes
+{% endblock %}
+
+
+{% block content %}
+  {% set grp = '' %}
+  {% if regime is same as('A') %}
+    {% set grp = 'Académie' %}
+  {% else %}
+    {% set grp = 'Formation' %}
+  {% endif %}
+  <h3>{{ 'Impression des fiches de notes des classes'|trans }} : {{grp}}</h3>
+{% if classes is empty %}
+  <p>{{ 'Pas de classes pour le moment'|trans }}</p>
+{% else %}
+  {% for niveau in niveaux %}
+    <h2>{{ niveau.getLibelleAr }}</h2>
+    <div class="ui four cards">
+      {% for classe in classes %}
+        {% if niveau.getId == classe.getNiveau.getId and classe.getNiveau.getGroupeFormation.getReferenceGrp is same as(regime) %}
+          <div class="card">
+            <div class="content">
+              <img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
+              <div class="header">{{ classe.getLibelleClasseFr }}</div>
+              <div class="meta">{{ classe.getNiveau.getGroupeFormation.getLibelleFr }} </div>
+              <div class="description">
+                <div class="ui link list">
+                </div>
+              </div>
+            </div>
+            <div class="extra content">
+              <div class="ui buttons">
+                <a href="{{path('isi_tirer_fiches_de_notes', {'as': asec, 'regime': regime, 'classeId': classe.getClasseId})}}">
+                  <div class="ui basic green button">{{ 'Fiches de notes'|trans }}</div>
+                </a>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    <br />
+  {% endfor %}
+{% endif %}
+{% endblock %}

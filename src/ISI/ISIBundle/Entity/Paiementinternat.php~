@@ -1,0 +1,220 @@
+<?php
+
+namespace ISIBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Paiementinternat
+ *
+ * @ORM\Table(name="paiementinternat", uniqueConstraints={@ORM\UniqueConstraint(name="paiement_unique", columns={"interner", "mois"})}, indexes={@ORM\Index(name="interner", columns={"interner"}), @ORM\Index(name="mois", columns={"mois"})})
+ * @ORM\Entity(repositoryClass="ISIBundle\Repository\PaiementinternatRepository")
+ */
+class Paiementinternat
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var \Interner
+     *
+     * @ORM\ManyToOne(targetEntity="Interner")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="interner", referencedColumnName="id")
+     * })
+     */
+    private $interner;
+
+    /**
+     * @var \Mois
+     *
+     * @ORM\ManyToOne(targetEntity="Moisdepaiementinternat")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="moisdepaiement", referencedColumnName="id")
+     * })
+     */
+    private $moisdepaiement;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="montant", type="integer", length=255, nullable=true)
+     */
+    private $montant;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_save", type="datetime", nullable=false)
+     */
+    private $dateSave;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_update", type="datetime", nullable=false)
+     */
+    private $dateUpdate;
+
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+
+    /**
+     * Set interner
+     *
+     * @param \ISIBundle\Entity\Interner $interner
+     *
+     * @return Paiementinternat
+     */
+    public function setInterner(\ISIBundle\Entity\Interner $interner = null)
+    {
+        $this->interner = $interner;
+
+        return $this;
+    }
+
+    /**
+     * Get interner
+     *
+     * @return \ISIBundle\Entity\Interner
+     */
+    public function getInterner()
+    {
+        return $this->interner;
+    }
+
+    /**
+     * Set moisdepaiement
+     *
+     * @param \ISIBundle\Entity\Moisdepaiement $mois
+     *
+     * @return Paiementinternat
+     */
+    public function setMoisdepaiement(\ISIBundle\Entity\Moisdepaiement $moisdepaiement = null)
+    {
+        $this->moisdepaiement = $moisdepaiement;
+
+        return $this;
+    }
+
+    /**
+     * Get moisdepaiement
+     *
+     * @return \ISIBundle\Entity\Moisdepaiement
+     */
+    public function getMoisdepaiement()
+    {
+        return $this->moisdepaiement;
+    }
+
+    /**
+     * Set montant
+     *
+     * @param integer $montant
+     *
+     * @return Paiementinternat
+     */
+    public function setMontant($montant)
+    {
+        $this->montant = $montant;
+
+        return $this;
+    }
+
+    /**
+     * Get montant
+     *
+     * @return integer
+     */
+    public function getMontant()
+    {
+        return $this->montant;
+    }
+
+    /**
+     * Set datePaiement
+     *
+     * @param \DateTime $datePaiement
+     *
+     * @return Paiementinternat
+     */
+    public function setDatePaiement($datePaiement)
+    {
+        $this->datePaiement = $datePaiement;
+
+        return $this;
+    }
+
+    /**
+     * Get datePaiement
+     *
+     * @return \DateTime
+     */
+    public function getDatePaiement()
+    {
+        return $this->datePaiement;
+    }
+
+    /**
+     * Set dateSave
+     *
+     * @param \DateTime $dateSave
+     *
+     * @return Paiementinternat
+     */
+    public function setDateSave($dateSave)
+    {
+        $this->dateSave = $dateSave;
+
+        return $this;
+    }
+
+    /**
+     * Get dateSave
+     *
+     * @return \DateTime
+     */
+    public function getDateSave()
+    {
+        return $this->dateSave;
+    }
+
+    /**
+     * Set dateUpdate
+     *
+     * @param \DateTime $dateUpdate
+     *
+     * @return Paiementinternat
+     */
+    public function setDateUpdate($dateUpdate)
+    {
+        $this->dateUpdate = $dateUpdate;
+
+        return $this;
+    }
+
+    /**
+     * Get dateUpdate
+     *
+     * @return \DateTime
+     */
+    public function getDateUpdate()
+    {
+        return $this->dateUpdate;
+    }
+}

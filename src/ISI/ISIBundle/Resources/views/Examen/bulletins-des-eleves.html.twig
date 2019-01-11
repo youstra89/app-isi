@@ -1,0 +1,508 @@
+{# ISIBundle/Ressources/views/Scolarite #}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Impression des bulletins | {{classe.libelleClasseFr}} </title>
+    {% block stylesheets %}
+
+    <lin rel="stylesheet" href="{{ asset('../vendor/twbs/bootstrap/dist/css/bootstrap.min.css') }}" /> {% endblock %}
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    <style>
+
+
+        @font-face
+        {
+            font-family: "majalla";
+            src: url("file:///C:/wamp64/www/markaz/web/polices/majalla.ttf");
+        }
+
+        @font-face
+        {
+            font-family: "Lato";
+            src: url("file:///C:/wamp64/www/markaz/web/polices/Lato-Regular.ttf");
+        }
+
+        @font-face
+        {
+            font-family: "amiri";
+            src: url("file:///C:/wamp64/www/markaz/web/polices/Amiri-Regular.ttf");
+        }
+
+        @font-face
+        {
+            font-family: "katibeth";
+            src: url("file:///C:/wamp64/www/markaz/web/polices/Katibeh-Regular.ttf");
+        }
+
+        * {
+            font-family: majalla, Lato;
+        }
+
+        h2{
+            background-color: #C0C0C0;
+            font-size: 3em;
+            box-shadow: 5px;
+            font-family: "traditional arabic";
+            line-height: 80px;
+            width: 90%;
+            margin: auto;
+            border: 1px solid black;
+            border-radius: 5px;
+        }
+
+        body {
+            font-family: Lato;
+            direction: rtl;
+        }
+
+        .en-tete-fr, .en-tete-ar{
+          line-height: 5px;
+          font-weight: bold;
+          font-size: 1.7em;
+        }
+
+        .en-tete-ar{
+          font-size: 1.8em;
+        }
+
+        .bulletin{
+            width: 1350px;
+            height: 1984px;
+        }
+
+        hr{
+            border: 2px;
+        }
+
+        table{
+            width: 90%;
+            align: center;
+        }
+
+        .matricule-eleve{
+            border: 1px solid black;
+            line-height: 60px;
+            font-size: 3em;
+            background-color: rgb(DC, DC, DC);
+            box-shadow: 5px;
+        }
+
+        .matricule{
+            color: red;
+            font-weight: bold;
+        }
+
+        .identification-eleve{
+            width: 75%;
+        }
+        .infos-identification-eleve{
+            line-height: 45px;
+            font-size: 2em;
+        }
+
+        .titre-info-eleve{
+            width: 50%;
+        }
+
+        .info-eleve-db{
+            width: 50%;
+        }
+
+        .bureau-examen{
+            height: 75px;
+        }
+
+        .les-notes{
+            width: 95%;
+            align: center;
+            margin-bottom: 10px;
+        }
+
+        .les-notes tr{
+            border: solid 1px black;
+        }
+
+        .les-notes th{
+            border: solid 1px black;
+            font-family: majalla, 'traditional arabic';
+            font-weight: bold;
+            font-size: 2.4em;
+            background-color: #C0C0C0;
+            line-height: 60px;
+        }
+
+        .les-notes td{
+            border: 1px solid black;
+            font-family: majalla, 'traditional arabic';
+            font-size: 2em;
+            line-height: 40px;
+        }
+
+        .libelle-matiere{
+            font-size: 2.6em;
+        }
+
+        .valeur-note{
+            font-size: 2em;
+        }
+
+        .la-moyenne{
+            border: 1px solid black;
+            margin-top: -2px;
+            margin-bottom: -2px;
+            font-size: 2em;
+            width: 75%;
+            height: 80px;
+            text-align: center;
+        }
+
+        .table-line-moyenne{
+
+        }
+
+        .titre-info-moyenne{
+            font-size: 1.1em;
+        }
+
+        .info-moyenne{
+            vertical-align: middle;
+            font-weight: bold;
+            background-color: rgb(190, 190, 190);;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .decision td{
+            border: 1px solid black;
+            margin: 15px;
+        }
+
+        .decision {
+            margin-top: 15px;
+        }
+
+        .decisions-conseil{
+            overflow: auto;
+        }
+
+        #distinction tr, #sanction tr{
+            border: 1px solid white;
+        }
+
+        #distinction th, #sanction th{
+            font-size: 2em;
+        }
+
+
+        .signature-directeur{
+            width: 300px;
+        }
+
+        .titre-bloc{
+            text-align: center;
+            vertical-align: middle;
+            font-family: katibeth;
+            font-size: 1.7em;
+        }
+
+        .case{
+            border: 1px solid black;
+            margin-right: 0px;
+            font-size: 0px;
+            line-height: 0px;
+            padding: 15px;
+            width: 5px;
+            height: 5px;
+        }
+
+        .test{
+            width: 350px;
+            margin-bottom: 5px;
+        }
+
+        .petit{
+            display: inline-block;
+            float: left;
+            width: 10%;
+        }
+
+        .grand{
+            margin-left: 15%;
+            margin-right: 10px;
+            display: inline-block;
+            line-height: 35px;
+            font-size: 1.5em;
+            font-style: italic;
+        }
+
+        .date-proclamation{
+            font-size: 2em;
+            font-style: italic;
+        }
+
+        .cache1{
+
+        }
+
+        .cache2{
+
+        }
+    </style>
+</head>
+
+<body style="font-family: Arial">
+    <header>
+    </header>
+    <!-- On va voir l'examen. Juste pour savoir s'il s'agit de la première session ou la deuxième -->
+    {% set session = "" %}
+    {% if examen.getSession == 1 %}
+         {% set session = "الاختبار الأول" %}
+    {% else %}
+         {% set session = "الاختبار الثاني" %}
+    {% endif %}
+    <!-- Pour chaque élève de la classe, on va éditer un belletion. Mais le travail se fera avec la moyenne -->
+    {% for moyenne in moyennes %}
+        <div class="bulletin">
+          <table width="100%" align="center">
+            <tr>
+              <td align="" width="" class="en-tete-ar">
+                <center>
+                  <p>جمهورية ساحل العاج</p>
+                  <p>مركز الألوم الإسلامية</p>
+                  <p>أبيجان - حي أنيام</p>
+                  <p>هاتف : 21373048 - 20248312</p>
+                </center>
+              </td>
+              <td align="" width="" class="">
+                <center>
+                  <img src="{{app.request.schemeAndHttpHost ~ asset('../web/images/logoISI.png')}}" alt="" width="60%">
+                </center>
+              </td>
+              <td align="" width="" class="en-tete-fr">
+                <center>
+                  <p>REPUBLIQUE DE COTE D'IVOIRE</p>
+                  <p>INSTITUT DES SCIENCES ISLAMIQUES</p>
+                  <p>ABIDJAN - ANYAMA</p>
+                  <p>Tél: 21373048 - 20248312</p>
+                </center>
+              </td>
+            </tr>
+          </table>
+            <h2>
+                <center title="{{ moyenne.getEleve.getPnomAr }} {{ moyenne.getEleve.getNomAr }}">{{ session }}</center>
+            </h2>
+            <br />
+            <div>
+                <table class="matricule-eleve" align="center">
+                    <tr>
+                        <td>رقم الطالب</td>
+                        <td><span class="matricule">{{ moyenne.getEleve.getMatricule }}</span></td>
+                        <td>العام الدراسي</td>
+                        <td>{{ examen.getAnneeScolaire.getLibelleAnneeScolaire }}</td>
+                    </tr>
+                </table>
+            </div>
+            <br />
+            <div>
+                <table class="identification-eleve" align="center">
+                    <tr class="infos-identification-eleve">
+                        <td class="titre-info-eleve">الاسم الكامل</td>
+                        <td class="info-eleve-db">{{ moyenne.getEleve.getPnomAr }} {{ moyenne.getEleve.getNomAr }}</td>
+                    </tr>
+                    <tr class="infos-identification-eleve">
+                        <td class="titre-info-eleve">Nom & Prénom</td>
+                        <td class="info-eleve-db">{{ moyenne.getEleve.nomFr }} {{ moyenne.getEleve.pnomFr }}</td>
+                    </tr>
+                    <tr class="infos-identification-eleve">
+                        <td class="titre-info-eleve">تاريخ الميلاد</td>
+                        <td class="info-eleve-db">{{ moyenne.getEleve.dateNaissance|date("d-m-Y") }} في {{ moyenne.getEleve.lieuNaissance }}</td>
+                    </tr>
+                    <!-- Ici on va déterminer les sexe -->
+                    {% set sexe = '' %}
+                    {% if moyenne.getEleve.getSexeFr == 1 %}
+                        {% set sexe = 'ذكر' %}
+                    {% else %}
+                        {% set sexe = 'أنثى' %}
+                    {% endif %}
+                    <tr class="infos-identification-eleve">
+                        <td class="titre-info-eleve">الجنس</td>
+                        <td class="info-eleve-db">{{ sexe }}</td>
+                    </tr>
+                    <tr class="infos-identification-eleve">
+                        <td class="titre-info-eleve">المستوى الدراسي</td>
+                        <td class="info-eleve-db">{{ classe.getNiveau.getLibelleAr }} - {{ classe.getLibelleClasseAr }}
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <span class="effectif">عدد الطلاب : {{ effectif }}</span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <!-------------------------    Début tableau des notes  ---------------------------->
+                <table class="les-notes" align="center">
+                    <tr class="">
+                        <th class="" width="" align="">المواد</th>
+                        <th class="" width="10%" align="">الدرجات</th>
+                        <th class="" width="" align="">المدرسون</th>
+                        <th class="" width="" align="">التقدير</th>
+                        <th class="" width="" align="">توقيع</th>
+                    </tr>
+                    {% set totalNote = 0 %}
+                    <!-- On va sélectionner les matières de la classe -->
+                    {% for matiere in matieres %}
+                        <!-- Dans la boucle des matières, on boucle une fois de plus sur les notes -->
+                        {% set color = '' %}
+                        {% set numero = 0 %}
+                        {% for note in notes %}
+                            {% if (numero % 2) == 0 %}
+                                {% set color = 'white' %}
+                            {% else %}
+                                {% set color = 'rgb(255, 255, 230)' %}
+                            {% endif %}
+                            <!-- On va maintenant sélectionner les notes de l'élèves -->
+                            {% if moyenne.getEleve.getEleveId == note.getEleve.getEleveId and matiere.getMatiereId == note.getMatiere.getMatiereId|e %}
+                                {% set totalNote = totalNote + note.getNote %}
+                                <tr class="" bgcolor="{{ color }}">
+                                    <td class="libelle-matiere">&nbsp;&nbsp;{{ matiere.libelleMatiere }}</td>
+                                    <td class="valeur-note" with="10%" align="center">{{ note.getNote }}</td>
+                                    <td class=""></td>
+                                    <td class="">&nbsp;&nbsp;{{ note.getAppreciationAr }}</td>
+                                    <td class=""></td>
+                                </tr>
+                            {% endif %}
+                            {% set numero = numero + 1 %}
+                        {% endfor %}
+                        <!-- Fin de la boucle sur les notes -->
+                    {% endfor %}
+                    <!-- Fin de la boucle sur les matières -->
+                </table>
+                <hr>
+                <!-------------------------    Fin tableau des notes  ---------------------------->
+                <!-- Le tableau des notes et celui de la moyenne se trouvent dans le même div -->
+                <!-----------------------   Début tableau des moyennes  ---------------------------->
+                {% set nieme = '' %}
+                {% if moyenne.getRang == 1 and moyenne.getEleve.getSexeFr == 1 %}
+                <!-- Dans ce cas, c'est un homme. Il faudra donc dire: Le premier -->
+                    {% set nieme = 'er' %}
+                {% elseif moyenne.getRang == 1 and moyenne.getEleve.getSexeFr == 2 %}
+                <!-- Dans ce cas, c'est une femme. Il faudra donc dire: La première -->
+                    {% set nieme = 'ère' %}
+                {% else %}
+                <!-- Pour le reste il n'a pas de différence -->
+                    {% set nieme = 'ème' %}
+                {% endif %}
+                <table class="la-moyenne" align="center">
+                    <tr class="table-line-moyenne">
+
+                        <td><span class="titre-info-moyenne">المجموع :&nbsp;&nbsp;</span><span class="info-moyenne">{{ totalNote }}</span></td>
+                        <td><span class="titre-info-moyenne">المعدل :&nbsp;&nbsp;</span><span class="info-moyenne">{{moyenne.getMoyenne}}</span></td>
+                        <td><span class="titre-info-moyenne">الترتيب :&nbsp;&nbsp;</span><span class="info-moyenne">{{moyenne.getRang}}{#<sup>{{nieme}}</sup>#}</span></td>
+                    <tr/>
+                </table>
+                <!-- Fin de la boucle sur les moyennes, sur les élèves donc -->
+            </div>
+            <!-- Fin du bloc des notes -->
+            <!-- Début du bloc des appréciations et décision du coonseil -->
+            <div class="decisions-conseil">
+                <table class="" align="center">
+                    <tr class="decision">
+                        <td width="30%">
+                            <table width="100%" align="center" id="distinction" border="Opx">
+                                <thead>
+                                    <tr>
+                                        <th align="center">التمييز</th>
+                                    </tr>
+                                </thead>
+
+                            </table>
+                            <div class="test">
+                                <div class="grand">شجيع</div>
+                                <div class="petit">
+                                    <div class="case"></div>
+                                </div>
+                            </div>
+                            <div class="test">
+                                <div class="grand">شريف</div>
+                                <div class="petit">
+                                    <div class="case"></div>
+                                </div>
+                            </div>
+                            <div class="test">
+                                <div class="grand">مرتبة الشرف</div>
+                                <div class="petit">
+                                    <div class="case"></div>
+                                </div>
+                            </div>
+                            <div class="test">
+                                <div class="grand">لوحة التمييز</div>
+                                <div class="petit">
+                                    <div class="case"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td width="30%">
+                            <table width="100%" align="center" id="sanction">
+                                <thead>
+                                    <tr>
+                                        <th align="center">عقوبات</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <div class="test">
+                                <div class="grand">لجهد ضعيف</div>
+                                <div class="petit"><div class="case"></div></div>
+                            </div>
+                            <div class="test">
+                                <div class="grand">لجهد ضعيف جدا</div>
+                                <div class="petit"><div class="case"></div></div>
+                            </div>
+                            <div class="test">
+                                <div class="grand">لخلق سيء</div>
+                                <div class="petit"><div class="case"></div></div>
+                            </div>
+                            <div class="test">
+                                <div class="grand">لخلق أسوأ</div>
+                                <div class="petit"><div class="case"></div></div>
+                            </div>
+                        </td>
+                        <td rowspan="2" width="40%">
+                            <div class="signature-directeur">
+                                <center>
+                                    <span class="date-proclamation">
+                                        المدير العام
+                                    </span>
+                                    {#<p>{{ examen.dateProclamationResultats|localizeddate('full', 'none', 'locale') }}</p>#}
+                                    <p>{{ examen.dateProclamationResultats|date('d-m-Y') }}</p>
+                                </center>
+                                <center>
+                                    <img src="{{ app.request.scheme ~'://' ~ app.request.httpHost ~ asset('../web/images/cachet-exam_2.png') }}" alt="" class="cache2"
+                                        width="400px" height="">
+                                </center>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="decision">
+                        <td colspan="2">
+                            <div class="bureau-examen">
+                                <center><span class="titre-bloc">لجنة الامتحانات</span></center>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+            <img src="{{ app.request.scheme ~'://' ~ app.request.httpHost ~ asset('../web/images/cachet-exam_1.png') }}" alt="" class="cache1" width="400px" height="">
+            {# <img src="file:///C:/wamp64/www/markaz/web/images/cachet-exam_1.jpeg" alt="C'est cool" class="cache1"> #}
+            <!-- Fin du bloc des appréciations et décision du coonseil -->
+        </div>
+        <!-- Fin du bulletin d'un élève -->
+    {% endfor %}
+
+
+</body>
+
+</html>

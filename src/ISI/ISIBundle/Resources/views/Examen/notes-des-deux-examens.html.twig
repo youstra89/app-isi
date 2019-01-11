@@ -1,0 +1,75 @@
+{# Page d'ajout d'un nouvel examen #}
+{% extends "ISIBundle:Scolarite:index.html.twig" %}
+{% block pageTitle %}
+    Cumul des notes en {{ classe.getLibelleClasseFr }}
+{% endblock %}
+
+{% block content %}
+<h3>{{ 'Total des notes des élèves de'|trans }} : {{ classe.getLibelleClasseFr }}</h3>
+    <div class="">
+        {% set numero = 0 %}
+        {# {{ dump(notes1) }}  #}
+        <div class="card">
+          <p><span class="legende">Pas de note lors de la 1<sup>ère</sup> session => </span><a class="ui teal tag label">légende</a></p>
+          <p><span class="legende">Pas de note lors de la 2<sup>ème</sup> session => </span><a class="ui orange tag label">légende</a></p>
+          <p><span class="legende">Aucune note durant cette année => </span><a class="ui red tag label">légende</a></p>
+        </div>
+        {# {{ dump(notes) }} #}
+        <table class="ui selectable celled table">
+            <thead>
+                <tr>
+                    <th>{{ 'N°'|trans }}</th>
+                    <th>{{ 'Nom & Prénom'|trans }}</th>
+                    {# On va maintenant afficher les matières de la classe #}
+                    {% for matiere in matieres %}
+                        <th>{{ matiere.getLibelleMatiere }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {# On va commencer par boucler sur les élèves de la classe #}
+                {% for eleve in notes %}
+                    {% set numero = numero + 1 %}
+                    <tr>
+                        <td>{{ numero }}</td>
+                        <td>{{ eleve.eleve }}</td>
+                        {# On sélectionne à nouveau les matieres de la classe #}
+                        {% for note in eleve.notes %}
+                          {# Début de la sélection de notes de la première session de composition #}
+                            {% if note.participation == 1 %}
+                                <td align="center" bgcolor="red">
+                                    <div data-tooltip="{{ eleve.eleve }} n'a aucune note en {{ note.matiere }}">
+                                        ...
+                                    </div>
+                                </td>
+                            {% elseif note.participation == 2 %}
+                                <td align="center" bgcolor="teal">
+                                    <div data-tooltip="{{ eleve.eleve }} : Note de 1ère session en {{ note.matiere }}">
+                                        {{ note.note }}
+                                    </div>
+                                </td>
+                            {% elseif note.participation == 3 %}
+                                <td align="center" bgcolor="orange">
+                                    <div data-tooltip="{{ eleve.eleve }} : Note de 2ème session en {{ note.matiere }}">
+                                        {{ note.note }}
+                                    </div>
+                                </td>
+                            {% else %}
+                                {% set color = "" %}
+                                {% if note.note < 11 %}
+                                    {% set color = 'error' %}
+                                {% endif %}
+                                <td align="center" class="{{ color }}" data-tooltip="{{ note.matiere }}">
+                                    {{ note.note }}
+                                </td>
+                            {% endif %}
+                        {% endfor %}
+                        {# Fin de sélection des matieres de la classe #}
+                    </tr>
+                {% endfor %}
+                {# Fin de la boucle sur les élèves #}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

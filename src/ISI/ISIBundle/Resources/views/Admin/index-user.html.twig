@@ -1,0 +1,79 @@
+{% extends "ISIBundle:Admin:layout.html.twig" %}
+
+{% block title %}
+  Index User Management
+{% endblock %}
+
+{% block titre %}
+  <i class="users icon"></i>{{ 'GESTION DES UTILISATEURS'|trans }}
+{% endblock %}
+
+{% block corps %}
+  <div>
+    <table class="ui compact celled definition table">
+      <thead class="full-width">
+        <tr>
+          <th colspan="6">{##}
+            <a href="{{ path('fos_user_registration_register') }}">
+              <!-- <a href=""> -->
+              <button class="ui left floated small primary labeled icon button">
+                <i class="user icon"></i>{{ 'Ajouter un utilisateur'|trans }}
+              </button>
+            </a>
+          </th>
+        </tr>
+        <tr>
+          <th></th>
+          <th>{{ 'Nom d\'utilisateur'|trans }}</th>
+          <th>{{ 'Rôles'|trans }}</th>
+          <th>{{ 'Dernière connexion'|trans }}</th>
+          <th>{{ 'Etat du compte'|trans }}</th>
+          <th>{{ 'Autres actions'|trans }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+          <tr>
+            <td class="collapsing">
+              <div class="ui fitted slider checkbox">
+                {% if user.enabled == true %}
+                  <input type="checkbox" checked="checked">
+                {% else %}
+                  <input type="checkbox">
+                {% endif %}
+                <label></label>
+              </div>
+            </td>
+            <td>{{ user.username }}</td>
+            <td>
+              <ul>
+                {% for role in user.roles %}
+                  <li>{{ role }}</li>
+                {% endfor %}
+              </ul>
+            </td>
+            <td>{{ user.lastLogin|date("d-m-Y à h:m:s") }}</td>
+            <td>{{ user.enabled }}</td>
+            <td>
+              <a href="{{path('add_roles_user', {'as': annee.anneeScolaireId, 'userId': user.id})}}"><i class="edit icon"></i>Ajouter rôles</a>
+              <a href=""><i class="delete icon"></i></a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot class="full-width">
+        <tr>
+          <th></th>
+          <th colspan="6">{##}
+            <a href="{{ path('fos_user_registration_register') }}">
+            <!-- <a href=""> -->
+              <button class="ui right floated small primary labeled icon button">
+                <i class="user icon"></i> {{ 'Ajouter un utilisateur'|trans }}
+              </button>
+            </a>
+          </th>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+{% endblock %}

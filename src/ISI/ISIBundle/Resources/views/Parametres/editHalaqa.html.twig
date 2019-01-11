@@ -1,0 +1,33 @@
+{# Page d'édition de classe #}
+
+{% extends "ISIBundle:Parametres:index.html.twig" %}
+
+{% block pageTitle %}
+	Editer classe
+{% endblock %}
+
+{% block content %}
+	<h3>{{ 'Edition d\'une halaqa'|trans }}</h3>
+
+	<div class="form-group">
+		{{ form_start(form, {'attr': {'class': 'ui form'}}) }}
+
+		<div class="two fields">
+			<div class="field">
+				<label for="">
+					{{ form_label(form.libelleHalaqa, "Libelle Halaqa", {'label_attr': {'class': ''}}) }}
+					{{ form_errors(form.libelleHalaqa) }}
+				</label> {{ form_widget(form.libelleHalaqa, {'attr': {'class': 'nomFr', 'placeholder': 'Le nom de la halaqa'}}) }}
+			</div>
+			<div class="field">
+				<label for="">
+					{{ form_label(form.genre, "Libelle Halaqa", {'label_attr': {'class': ''}}) }}
+					{{ form_errors(form.genre) }}
+				</label> {{ form_widget(form.genre, {'attr': {'class': 'nomFr'}}) }}
+			</div>
+		</div>
+
+		{{ form_widget(form.save, {'attr': {'class': 'ui primary button'}}) }} {{ form_end(form) }}
+	</div>
+
+{% endblock %}

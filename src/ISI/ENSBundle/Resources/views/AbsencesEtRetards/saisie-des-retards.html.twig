@@ -1,0 +1,75 @@
+{% extends "ENSBundle:Enseignant:layout.html.twig" %}
+
+{% block title %}
+  Saisie des retards
+{% endblock %}
+
+{% block contextual_menu %}
+  {{ include("ENSBundle:AbsencesEtRetards:contextual-menu-retards-et-absences.html.twig") }}
+{% endblock %}
+
+{% block titre_page %}
+  <i class="flag checkered icon"></i>{{ 'Retards'|trans }}
+{% endblock %}
+
+{% block corps %}
+    <h2>{{ 'Saisie des retards du '|trans }} {{ date|date('d-m-Y') }} {{ periode }}</h2>
+    {% if contrats is not defined %}
+        <p>{{ 'Il n y a auccun enseignant enregistré pour le moment'|trans }}</p>
+    {% else %}
+        <table>
+          <div class="well" style="width:75%">
+            <form action="" method="post" name="notes">
+              <div class="ui middle aligned divided list">
+              {# Pour chaque élève #}
+              <div class="item">
+                <div class="right floated content">
+                  <div class="">
+                    <h3>{{ 'Retards (en min)'|trans }}</h3>
+                  </div>
+                </div>
+                <div class="content">
+                  <h4>
+                    {{ 'Matricule'|trans }}
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {{ 'Nom & prénoms des enseignants'|trans }}
+                  </h4>
+                </div>
+              </div>
+              {# {{dump(notes)}} #}
+              {% set num = 0 %}
+              {% for contrat in contrats %}
+                {% set image = "" %}
+                {% if contrat.getContrat.getEnseignant.getSexe == 1 %}
+                  {% set image = "/markaz/web/images/mark.png" %}
+                {% else %}
+                  {% set image = "/markaz/web/images/molly.png" %}
+                {% endif %}
+                {% set num = num + 1 %}
+                <div class="item ui selectable">
+                  <div class="right floated content">
+                    <div class="">
+                      <div class="ui right labeled input">
+                        <input name="retard[{{ contrat.getId }}]" type="integer" id="{{ num }}" class="retard">
+                        <div class="ui basic label">{{ 'minutes'|trans }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <img class="ui avatar image" src="{{ image }}">
+                  <div class="content">
+                    {{ contrat.getContrat.getEnseignant.getMatricule }} 
+                    <i class="right chevron icon"></i> 
+                    <strong>{{ contrat.getContrat.getEnseignant.getNomFr }} {{ contrat.getContrat.getEnseignant.getPnomFr }}</strong>
+                  </div>
+                </div>
+              {% endfor %}
+              </div>
+              <div>
+                <input type="submit" class="ui primary button" value="   Enregistrer les retards   " name="submit">
+              </div>
+            </form>
+          </div>
+        </table>
+    {% endif %}
+{% endblock %}

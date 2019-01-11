@@ -1,0 +1,22 @@
+<div class="ui vertical menu">
+    <div class="item">
+        <div class="header">{{ 'Retards'|trans }}</div>
+        <div class="menu">
+            <a class="item" href="{{ path('ens_voir_retards_home', {'as': asec}) }}">{{ 'Voir les retards'|trans }}</a>
+            <a class="item" href="">{{ 'Modifier les retards'|trans }}</a>
+        </div>
+    </div>
+    <div class="item">
+        <div class="header">{{ 'Absences'|trans }}</div>
+        <div class="menu">
+            <a class="item" href="{{ path('ens_voir_absences_home', {'as': asec}) }}">{{ 'Voir les absences'|trans }}</a>
+        </div>
+    </div>
+    {# <div class="item">
+        <div class="header">{{ 'Enseignants de l\'année'|trans }}</div>
+        <div class="menu">
+            <a class="item" href="">{{ 'Ajouter un enseignant'|trans }}</a>
+            <a class="item" href="">{{ 'Liste des enseignants'|trans }}</a>
+        </div>
+    </div> #}
+</div>

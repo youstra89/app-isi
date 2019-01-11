@@ -1,0 +1,75 @@
+{# Accueil pour l'édition des listes de classe' #}
+
+{% extends 'ISIBundle:Scolarite:index.html.twig' %}
+
+{% block title %}
+  {% block pageTitle %}
+    Statistiques
+  {% endblock %}
+{% endblock %}
+
+
+{% block content %}
+  {% set grp = '' %}
+  {% if regime is same as('A') %}
+    {% set grp = 'Académie' %}
+  {% else %}
+    {% set grp = 'Formation' %}
+  {% endif %}
+  <h3>{{ 'Les classes de'|trans }} : {{grp}}</h3>
+{% if classes is empty %}
+  <p>{{ 'Pas de classes pour le moment'|trans }}</p>
+{% else %}
+  {# {{ dump(statClasses) }} #}
+  {% for niveau in niveaux %}
+    {% set effectifTotal = 0 %}
+    {% set totalRedoublants = 0 %}
+    {% set totalGarcons = 0 %}
+    {% set totalFilles = 0 %}
+    <i class="dropdown icon"></i>
+    Voir {{ niveau.libelleAr }}
+    <div class="stat-niveau">
+      <table cellspacing="0" class="ui selectable very basic table" width="75%">
+        <thead>
+          <tr>
+            <th>{{ 'Classe'|trans }}</th>
+            <th>{{ 'Effectif'|trans }}</th>
+            <th>{{ 'Redoublants'|trans }}</th>
+            <th>{{ 'Garçons'|trans }}</th>
+            <th>{{ 'Filles'|trans }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for classe in statClasses %}
+            {% set nbrF = 0 %}
+            {% if classe.niveau == niveau.id %}
+              {% set nbrF = classe.effectif - classe.nbrG %}
+              {% set effectifTotal = effectifTotal + classe.effectif %}
+              {% set totalRedoublants = totalRedoublants + classe.nbrR %}
+              {% set totalGarcons = totalGarcons + classe.nbrG %}
+              {% set totalFilles = totalFilles + nbrF %}
+              <tr class="">
+                <td>{{ classe.libelle }}</td>
+                <td>{{ classe.effectif }}</td>
+                <td>{{ classe.nbrR }}</td>
+                <td>{{ classe.nbrG }}</td>
+                <td>{{ nbrF }}</td>
+              </tr>
+            {% endif %}
+          {% endfor %}<!-- Fin for classe in classes -->
+        </tbody>
+        <tfoot>
+          <tr style="background-color: silver">
+            <td>Totaux</td>
+            <td>{{ effectifTotal }}</td>
+            <td>{{ totalRedoublants }}</td>
+            <td>{{ totalGarcons }}</td>
+            <td>{{ totalFilles }}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div><br><br><br>
+  {% endfor %}<!-- Fin for niveau in niveaux -->
+{% endif %}
+
+{% endblock %}
