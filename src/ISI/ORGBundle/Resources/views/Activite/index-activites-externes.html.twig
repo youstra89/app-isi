@@ -1,0 +1,35 @@
+{% extends "ORGBundle::layout.html.twig" %}
+
+{% block title %}
+  Index Activités externes
+{% endblock %}
+
+{% block contextual_menu %}
+  {% if is_granted('ROLE_SUPER_ADMIN') %}
+      {{ include("ISIBundle::contextual-menu-panel-admin.html.twig") }}
+  {% elseif is_granted('ROLE_ADMIN_ANNEXE') %}
+      <div class="ui vertical menu">
+        <div class="item">
+          <div class="header">{{ 'Autres modules'|trans }}</div>
+          <div class="menu">
+            {# Cette partie permet de voir la liste de tous les élèves de la l'institut #}
+            <a class="item" href="{{path('isi_home_scolarite')}}">{{ 'Scolarité'|trans }}</a>
+            <a class="item" href="{{path('etude_home', {'as': asec})}}">{{ 'Programmes d\'étude'|trans }}</a>
+          </div>
+        </div>
+      </div>
+  {% else %}
+    {{ include("ISIBundle::contextual-menu-user.html.twig") }}
+  {% endif %}
+{% endblock %}
+
+
+
+{% block titre_page %}
+  <i class="users icon"></i>{{ 'Activités externes'|trans }}
+{% endblock %}
+
+
+
+{% block corps %}
+{% endblock %}

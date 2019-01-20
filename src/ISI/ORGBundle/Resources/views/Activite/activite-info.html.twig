@@ -1,0 +1,51 @@
+{% extends 'ORGBundle::layout.html.twig'%}
+
+
+{% block stylesheets %}
+{% endblock %}
+
+
+{% block title %}
+  Informations activité {{ activite.getTypeType }} du {{ activite.date|date('d-m-Y') }} à {{ activite.commune.nom }}
+{% endblock %}
+
+
+
+{% block body %}
+  <h2>Informations activité: {{ activite.getTypeType }} du {{ activite.date|date('d-m-Y') }} à {{ activite.commune.nom }} - {{ activite.lieu }}</h2>
+  <br>
+  <a href="javascript:history.back()" class="ui small positive button">Revenir</a>
+  <table class="ui stakkable table">
+    <thead>
+      <tr>
+        <th colspan="2"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th>Type</th>
+        <td>{{ activite.getTypeType }}</td>
+      </tr>
+      <tr>
+        <th>Date</th>
+        <td>{{ activite.date|date('d-m-Y') }}</td>
+      </tr>
+      <tr>
+        <th>Lieu</th>
+        <td>{{ activite.commune.nom }} - {{ activite.lieu }}</td>
+      </tr>
+      <tr>
+        <th>Heure</th>
+        <td>{{ activite.heure }}</td>
+      </tr>
+      <tr>
+        <th>Thème</th>
+        <td>{{ activite.theme }}</td>
+      </tr>
+    </tbody>
+  </table>
+{% endblock %}
+
+
+{% block javascripts %}
+{% endblock %}

@@ -57,10 +57,15 @@ class Commune
      */
     private $updated_at;
 
-    // /**
-    //  * @ORM\OneToMany(targetEntity="App\Entity\Mosquee", mappedBy="commune")
-    //  */
-    // private $mosquees;
+    /**
+     * @ORM\OneToMany(targetEntity="ISI\ORGBundle\Entity\Mosquee", mappedBy="commune")
+     */
+    private $mosquees;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Activite", mappedBy="commune")
+     */
+    private $activites;
 
 
     public function __construct()

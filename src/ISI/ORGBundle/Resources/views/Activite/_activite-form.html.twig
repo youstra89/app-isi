@@ -1,0 +1,29 @@
+{{ form_start(form, { 'attr': {'class': 'ui form'} }) }}
+    <div class="two fields">
+      <div class="field">
+          {{ form_row(form.type, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+      <div class="field">
+          <label for="">Date</label>
+          {% if activite.date is defined %}
+            <input type="date" name="date" value="{{ activite.date|date('Y-m-d') }}" required>
+          {% else %}
+            <input type="date" name="date" value="" required>
+          {% endif %}
+      </div>
+    </div>
+    <div class="three fields">
+      <div class="field">
+          {{ form_row(form.theme, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+      <div class="field">
+          {{ form_row(form.lieu, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+      <div class="field">
+          {{ form_row(form.heure, { 'attr': {'class': 'uk-input'} }) }}
+      </div>
+    </div>
+    {{ form_rest(form) }}
+    <button class="ui primary button">{{ button|default('Enregistrer') }}</button>
+  </div><br>
+{{ form_end(form) }}

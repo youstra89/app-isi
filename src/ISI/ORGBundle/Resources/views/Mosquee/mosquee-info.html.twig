@@ -62,13 +62,23 @@
             {% endif %}
         </div>
       </div>
-      <div class="field">
-          <label for="">Description</label>
-          {% if mosquee.description is not empty %}
-            {{ mosquee.description }}
-          {% else %}
-            Pas de description
-          {% endif %}
+      <div class="two fields">
+        <div class="field">
+            <label for="">Options</label>
+            <ul>
+              {% for option in mosquee.getOptionsType %}
+                <li>{{ option }}</li>  
+              {% endfor %}
+            </ul>
+        </div>
+        <div class="field">
+            <label for="">Description</label>
+            {% if mosquee.description is not empty %}
+              {{ mosquee.description }}
+            {% else %}
+              Pas de description
+            {% endif %}
+        </div>
       </div>
     </div><br>
   </form>

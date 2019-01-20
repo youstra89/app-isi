@@ -1,0 +1,59 @@
+{% extends "ORGBundle::layout.html.twig" %}
+
+{% block title %}
+  Index Activités locales
+{% endblock %}
+
+{% block contextual_menu %}
+  {% if is_granted('ROLE_SUPER_ADMIN') %}
+      {{ include("ISIBundle::contextual-menu-panel-admin.html.twig") }}
+  {% elseif is_granted('ROLE_ADMIN_ANNEXE') %}
+      <div class="ui vertical menu">
+        <div class="item">
+          <div class="header">{{ 'Autres modules'|trans }}</div>
+          <div class="menu">
+            {# Cette partie permet de voir la liste de tous les élèves de la l'institut #}
+            <a class="item" href="{{path('isi_home_scolarite')}}">{{ 'Scolarité'|trans }}</a>
+            <a class="item" href="{{path('etude_home', {'as': asec})}}">{{ 'Programmes d\'étude'|trans }}</a>
+          </div>
+        </div>
+      </div>
+  {% else %}
+    {{ include("ISIBundle::contextual-menu-user.html.twig") }}
+  {% endif %}
+{% endblock %}
+
+
+
+{% block titre_page %}
+  <i class="users icon"></i>{{ 'Activités locales'|trans }}
+{% endblock %}
+
+
+
+{% block corps %}
+    <h3 class="ui header">{{ 'Choix de la commune pour l\'enregistrement d\'une activité locale'|trans }}</h3>
+    <div class="ui four cards">
+      {% for commune in communes %}
+        <div class="card">
+          <div class="content">
+            <img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
+            <div class="header">{{ commune.nom }}</div>
+            <div class="meta">{{ commune.ville.nom }} </div>
+            <div class="description">
+              <div class="ui link list">
+
+              </div>
+            </div>
+          </div>
+          <div class="extra content">
+            <div class="ui buttons">
+              <a href="{{path('activite.locales.add', {'as': asec, 'communeId': commune.id})}}">
+                <div class="ui basic green button">{{ 'Ajouter une activité'|trans }}</div>
+              </a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+{% endblock %}

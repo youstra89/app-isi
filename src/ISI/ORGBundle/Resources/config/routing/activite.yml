@@ -1,0 +1,39 @@
+activites_locales:
+    path:     /activites-locales-{as}
+    defaults: { _controller: ORGBundle:ActiviteLocale:indexActivitesLocales }
+    requirements:
+        as: \d+
+
+activites_externes:
+    path:     /activites-externes-{as}
+    defaults: { _controller: ORGBundle:ActiviteExterne:indexActivitesExternes }
+    requirements:
+        as: \d+
+
+choix.commune.activite.locales.add:
+    path:     /choix-de-la-commune-pour-ajouter-une-activite-locale-{as}
+    defaults: { _controller: ORGBundle:ActiviteLocale:choixDeLaCommuneActivitesLocales }
+    requirements:
+        as: \d+
+        communeId: \d+
+
+activite.locales.add:
+    path:     /ajouter-une-activite-locale-{as}-{communeId}
+    defaults: { _controller: ORGBundle:ActiviteLocale:addActivitesLocales }
+    requirements:
+        as: \d+
+        communeId: \d+
+
+activite.locales.edit:
+    path:     /editer-une-activite-locale-{as}-{id}
+    defaults: { _controller: ORGBundle:ActiviteLocale:editActivitesLocales }
+    requirements:
+        as: \d+
+        id: \d+
+
+activite.locales.info:
+    path:     /info-une-activite-locale-{as}-{id}
+    defaults: { _controller: ORGBundle:ActiviteLocale:infoActivitesLocales }
+    requirements:
+        as: \d+
+        id: \d+

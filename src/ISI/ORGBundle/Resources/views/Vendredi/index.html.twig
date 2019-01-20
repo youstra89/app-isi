@@ -54,11 +54,11 @@
         <tr>
           <td>{{ i }}</td>
           <td>{{ vendredi.date|date('Y-m-d') }}</td>
-          <td>{{ vendredi.imam.nom }} {{ vendredi.imam.pnom }}</td>
-          <td>{{ vendredi.mosquee.nom }}</td>
-          <td>{{ vendredi.mosquee.commune.nom }}</td>
+          <td>{{ vendredi.imam_nom }} {{ vendredi.imam_pnom }}</td>
+          <td>{{ vendredi.mosquee_nom }}</td>
+          <td>{{ vendredi.commune_nom }}</td>
           <td>
-            <a href="" data-tooltip="Editer les informations de l'imam"><i class="edit icon"></i></a>
+            <a href="{{ path('vendredi.edit', {as: asec, id: vendredi.id}) }}" data-tooltip="Editer les informations"><i class="edit icon"></i></a>
           </td>
         </tr>
       {% endfor %}

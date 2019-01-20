@@ -8,7 +8,6 @@ use Symfony\Component\HttpFoundation\Request;
 use ISI\ORGBundle\Entity\Mosquee;
 use ISI\ORGBundle\Form\MosqueeType;
 use ISI\ISIBundle\Entity\Anneescolaire;
-use ISI\ISIBundle\Repository\AnneeContratRepository;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -49,6 +48,8 @@ class MosqueeController extends Controller
       $form->handleRequest($request);
       if($form->isSubmitted() && $form->isValid())
       {
+        // $t = json_decode($mosquee->getOptions(), true);
+        // return new Response(var_dump([$mosquee->getOptions(), $t]));
         $em->persist($mosquee);
         $em->flush();
         $this->addFlash('info', 'La mosquée '.$mosquee->getNom().' à '.$mosquee->getCommune()->getNom().' a été enregistré avec succès.');
@@ -78,7 +79,7 @@ class MosqueeController extends Controller
         $mosquee->setUpdatedAt(new \DateTime());
         $em->flush();
         $this->addFlash('info', 'Les informations sur la mosquée '.$mosquee->getNom().' à '.$mosquee->getCommune()->getNom().' ont été mises à jour avec succès.');
-        return $this->redirectToRoute('mosquees');
+        return $this->redirectToRoute('home_mosquees', ['as' => $as]);
       }
       //>>
       return $this->render('ORGBundle:Mosquee:mosquee-edit.html.twig', [

@@ -1,0 +1,91 @@
+{% extends "ORGBundle::layout.html.twig" %}
+
+{% block title %}
+  Index Activités locales
+{% endblock %}
+
+{% block contextual_menu %}
+  {% if is_granted('ROLE_SUPER_ADMIN') %}
+      {{ include("ISIBundle::contextual-menu-panel-admin.html.twig") }}
+  {% elseif is_granted('ROLE_ADMIN_ANNEXE') %}
+      <div class="ui vertical menu">
+        <div class="item">
+          <div class="header">{{ 'Autres modules'|trans }}</div>
+          <div class="menu">
+            {# Cette partie permet de voir la liste de tous les élèves de la l'institut #}
+            <a class="item" href="{{path('isi_home_scolarite')}}">{{ 'Scolarité'|trans }}</a>
+            <a class="item" href="{{path('etude_home', {'as': asec})}}">{{ 'Programmes d\'étude'|trans }}</a>
+          </div>
+        </div>
+      </div>
+  {% else %}
+    {{ include("ISIBundle::contextual-menu-user.html.twig") }}
+  {% endif %}
+{% endblock %}
+
+
+
+{% block notification %}
+  {% for message in app.session.flashbag.get('error') %}
+  <div class="ui red message">
+    <div class="header">{{ 'Attention'|trans }} !!! </div>
+    <ul class="list">
+      <li>{{ message|raw }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+  {% for message in app.session.flashbag.get('info') %}
+  <div class="ui green message">
+    <div class="header">{{ 'Notification'|trans }}: </div>
+    <ul class="list">
+      <li>{{ message|raw }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+{% endblock %}
+
+
+
+{% block titre_page %}
+  <i class="users icon"></i>{{ 'Activités locales'|trans }}
+{% endblock %}
+
+
+
+{% block corps %}
+    <a href="{{ path('choix.commune.activite.locales.add', {as: asec}) }}" class="positive ui button">
+      <i class="plus icon"></i>
+      {{ 'Enregistrer une activité'|trans }}
+    </a><br><br>
+    <div class="ui four cards">
+      {% for activite in activites %}
+        <div class="card">
+          <div class="content">
+            <img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
+            <div class="header">{{ activite.getTypeType }}</div>
+            <div class="meta">{{ activite.date|date('d-m-Y') }} </div>
+            <div class="description">
+              <div class="ui link list">
+                <p>{{ activite.theme }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="extra content">
+            {{ activite.commune.nom }} - {{ activite.lieu }}
+            <span class="right floated"></span><br>
+            <span>
+              <a href="{{ path('activite.locales.edit', {as: asec, id: activite.id}) }}" class="ui teal circular label" data-tooltip="Plus de détails">
+                <i class="plus icon" ></i>
+              </a>
+              <a href="{{ path('activite.locales.info', {as: asec, id: activite.id}) }}" class="ui blue circular label" data-tooltip="Plus de détails">
+                <i class="list icon" ></i>
+              </a>
+            </span>
+          </div>
+        </div>
+      {% endfor %}
+    </div><br><br>
+    <div class="navigation">
+        {{ knp_pagination_render(activites) }}
+    </div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'ORGBundle::layout.html.twig'%}
+
+
+{% block stylesheets %}
+{% endblock %}
+
+
+{% block title %}
+  Edition informations activite {{ activite.getTypeType }} du {{ activite.date|date('d-m-Y') }} à {{ activite.commune.nom }}
+{% endblock %}
+
+
+{% block body %}
+  <h2>Edition d'un activite: {{ activite.getTypeType }} du {{ activite.date|date('d-m-Y') }} à {{ activite.commune.nom }} - {{ activite.lieu }}</h2>
+  {{ include('ORGBundle:Activite:_activite-form.html.twig', {button: 'Editer'}) }}
+{% endblock %}
+
+
+{% block javascripts %}
+{% endblock %}

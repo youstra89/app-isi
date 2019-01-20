@@ -23,3 +23,7 @@ conversion:
 vendredi:
     resource: "@ORGBundle/Resources/config/routing/vendredi.yml"
     prefix:   /vendredi
+
+activite:
+    resource: "@ORGBundle/Resources/config/routing/activite.yml"
+    prefix:   /activite

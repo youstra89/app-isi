@@ -6,12 +6,12 @@
 
 
 {% block title %}
-  Edition informations imam {{ imam.nom }} {{ imam.pnom }}
+  Edition informations d'un office du vendredi
 {% endblock %}
 
 
 {% block body %}
-  <h2>Edition d'une mosquée</h2>
+  <h2>Edition d'un office</h2>
   {{ include('ORGBundle:Vendredi:_vendredi-form.html.twig', {button: 'Editer'}) }}
 {% endblock %}
 

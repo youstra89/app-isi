@@ -44,38 +44,17 @@
         </div>
         <div class="ui input">
           <div class="ui simple dropdown item">
-            <a>
-              <h4 class="ui header"><span class="style-main-menu"><i class="flag checkered icon"></i>{{ 'Tournées'|trans }}</span></h4>
-            </a>
-            <i class="dropdown icon"></i>
-            <div class="menu">
-              <span class="sub-menu">
-                <a class="item" href="{{ path('org_homepage', {'as': asec}) }}">
-                  {{ 'Absences'|trans }}
-                </a>
-                <a class="item" href="{{ path('org_homepage', {'as': asec}) }}">
-                  {{ 'Retards'|trans }}
-                </a>
-              </span>
-            </div>
-          </div>
-        </div>
-        <div class="ui input">
-          <div class="ui simple dropdown item">
             <a href="{{ path('org_homepage', {'as': asec}) }}">
-              <h4 class="ui header"><span class="style-main-menu"><i class="american sign language interpreting icon"></i>{{ 'Activités locales'|trans }}</span></h4>
+              <h4 class="ui header"><span class="style-main-menu"><i class="american sign language interpreting icon"></i>{{ 'Activités'|trans }}</span></h4>
             </a>
             <i class="dropdown icon"></i>
             <div class="menu">
               <span class="sub-menu">
-                <a class="item" href="{{ path('ens_convocation_home', {'as': asec}) }}">
-                  {{ 'Prêches'|trans }}
+                <a class="item" href="{{ path('activites_locales', {'as': asec}) }}">
+                  {{ 'Activités locales'|trans }}
                 </a>
-                <a class="item" href="{{ path('ens_conduite_home', {'as': asec}) }}">
-                  {{ 'Conférences'|trans }}
-                </a>
-                <a class="item" href="{{ path('ens_sanction_home', {'as': asec}) }}">
-                  {{ 'Séminaires'|trans }}
+                <a class="item" href="{{ path('activites_externes', {'as': asec}) }}">
+                  {{ 'Tournées'|trans }}
                 </a>
               </span>
             </div>

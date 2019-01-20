@@ -14,6 +14,14 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class Mosquee
 {
+
+    const OPTIONS = [
+      0 => 'Sous notre égide',
+      1 => 'Cours Dr',
+      2 => 'Programmation office du vendredi',
+      3 => 'Programmation de cours',
+    ];
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -79,6 +87,11 @@ class Mosquee
      * @ORM\Column(type="string", length=255)
      */
     private $description;
+
+    /**
+     * @ORM\Column(type="json_array", length=255)
+     */
+    private $options;
 
 
     public function __construct()
@@ -221,6 +234,35 @@ class Mosquee
         $this->description = $description;
 
         return $this;
+    }
+
+    public function getOptions(): array
+    {
+      $options = $this->options;
+
+      // Afin d'être sûr qu'un user a toujours au moins 1 rôle
+      if (empty($options)) {
+          $options = [];
+      }
+
+      return array_unique($options);
+    }
+
+    public function setOptions(array $options): void
+    {
+
+        $this->options = $options;
+    }
+
+    public function getOptionsType(): array
+    {
+      $options = $this->options;
+      $_options = [];
+      foreach($options as $j)
+      {
+        $_options[] = self::OPTIONS[$j];
+      }
+      return $_options;
     }
 
 }

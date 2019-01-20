@@ -1,0 +1,23 @@
+{% extends 'ORGBundle::layout.html.twig'%}
+
+
+{% block stylesheets %}
+{% endblock %}
+
+
+{% block title 'Ajout d\'un nouvelle activité' %}
+
+
+
+{% block body %}
+  <h2>
+    {% trans with {'%commune%': commune.nom} from 'app' %}
+      Enregistrement d'une activité dans la commune de %commune%
+    {% endtrans %}
+  </h2>
+  {{ include('ORGBundle:Activite:_activite-form.html.twig') }}
+{% endblock %}
+
+
+{% block javascripts %}
+{% endblock %}

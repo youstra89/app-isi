@@ -20,11 +20,14 @@ class VendrediType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-          ->add('mosquee',            EntityType::class, [
+          ->add('mosquee', EntityType::class, [
               'required' => true,
               'label' => 'Mosquee',
               'placeholder' => 'Mosquee',
               'class' => 'ORGBundle:Mosquee',
+              'query_builder' => function (EntityRepository $er) {
+                  return $er->createQueryBuilder('m');
+              },
               'choice_label' => 'nom',
               'multiple' => false
           ])

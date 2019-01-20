@@ -1,6 +1,7 @@
 <?php
 
 namespace ISI\ORGBundle\Form;
+use ISI\ORGBundle\Entity\Mosquee;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -10,6 +11,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class MosqueeType extends AbstractType
@@ -46,6 +48,10 @@ class MosqueeType extends AbstractType
                   return $er->createQueryBuilder('i');
               },
               'multiple' => false
+            ])
+            ->add('options', ChoiceType::class, [
+              'choices' => $this->getChoices(Mosquee::OPTIONS),
+              'multiple' => true
             ]);
     }/**
      * {@inheritdoc}
@@ -65,5 +71,15 @@ class MosqueeType extends AbstractType
         return 'isi_orgbundle_mosquee';
     }
 
+
+    public function getChoices($entity)
+    {
+      $choices = $entity;
+      $output = [];
+      foreach($choices as $k => $v){
+        $output[$v] = $k;
+      }
+      return $output;
+    }
 
 }
