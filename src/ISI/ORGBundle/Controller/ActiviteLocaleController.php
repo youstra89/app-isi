@@ -5,14 +5,14 @@ namespace ISI\ORGBundle\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
-use ISI\ISIBundle\Entity\Anneescolaire;
 use ISI\ORGBundle\Entity\Activite;
 use ISI\ORGBundle\Form\ActiviteType;
-use ISI\ISIBundle\Repository\AnneeContratRepository;
+use ISI\ISIBundle\Entity\Anneescolaire;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use ISI\ISIBundle\Repository\AnneeContratRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class ActiviteLocaleController extends Controller
 {

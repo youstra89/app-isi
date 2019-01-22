@@ -22,6 +22,18 @@ class Converti
     private $id;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Tournee", inversedBy="convertis")
+     * @ORM\JoinColumn(name="tournee", nullable=true)
+     */
+    private $tournee;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Commune", inversedBy="convertis")
+     * @ORM\JoinColumn(name="commune", nullable=true)
+     */
+    private $commune;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="nom", type="string", length=255)
@@ -120,6 +132,30 @@ class Converti
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getCommune(): ?Commune
+    {
+        return $this->commune;
+    }
+
+    public function setCommune($commune): self
+    {
+        $this->commune = $commune;
+
+        return $this;
+    }
+
+    public function getTournee(): ?Tournee
+    {
+        return $this->tournee;
+    }
+
+    public function setTournee($tournee): self
+    {
+        $this->tournee = $tournee;
+
+        return $this;
     }
 
     /**

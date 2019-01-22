@@ -1,0 +1,119 @@
+{% extends 'ORGBundle::layout.html.twig'%}
+
+
+{% block stylesheets %}
+{% endblock %}
+
+
+{% block title %}
+  Informations sur la tournée nationale du {{ tournee.debut|date('d-m-Y') }} au {{ tournee.fin|date('d-m-Y') }}
+{% endblock %}
+
+
+
+{% block notification %}
+  {% for message in app.session.flashbag.get('error') %}
+  <div class="ui red message">
+    <div class="header">{{ 'Attention'|trans }} !!! </div>
+    <ul class="list">
+      <li>{{ message }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+  {% for message in app.session.flashbag.get('info') %}
+  <div class="ui green message">
+    <div class="header">{{ 'Notification'|trans }}: </div>
+    <ul class="list">
+      <li>{{ message }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+{% endblock %}
+
+
+
+{% block body %}
+  <h2>
+    {% trans with {'%debut%': tournee.debut|date('d-m-Y'), '%fin%': tournee.fin|date('d-m-Y')} from 'app' %}
+      Informations sur la tournée nationale du %debut% au %fin%
+    {% endtrans %}
+  </h2>
+  <p><strong>Nombre de régions : </strong> {{ tournee.communes|length }}</p>
+  <table class="ui very basic compact table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Nom de la commune</th>
+        <th>Activités</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% set i = 0 %}
+      {% for item in tournee.communes %}
+        {% set i = i + 1 %}
+        <tr>
+          <td>{{ i }}</td>
+          <td>{{ item.commune.nom }}</td>
+          <td>
+            {% for activite in activites %}
+                {% if activite.communeId == item.commune.id %}
+                  <li>{{ activite.activiteType }} - {{ activite.activiteTheme }}</li>
+                  {#<form method="post" action="{{ path('destination.tournee.remove.action', {as: asec, id: activite.activiteId, tourneeId: activite.activiteId}) }}" style="display: inline-block" onsubmit="return confirm('Etes-vous vraiment sûrs de vouloir supprimer cette commune ?')">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ activite.activiteId) }}">
+                    <button class="ui small negative button">Supprimer</button>
+                  </form>#}
+                {% endif %}
+            {% endfor %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <br>
+  <p><strong>Nombre de convertis : </strong> {{ tournee.convertis|length }}</p>
+  {% if tournee.convertis|length != 0 %}
+    <table class="ui very basic compact table" id="convertis" width="100%">
+      <thead>
+        <tr>
+          <th>N°</th>
+          <th>Nom & Prénom</th>
+          <th>Sexe</th>
+          <th>Numéro de téléphone</th>
+          <th>Résidence</th>
+          <th>Anc. COnfession</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% set i = 0 %}
+        {% for converti in tournee.convertis %}
+          {% set i = i + 1 %}
+          <tr>
+            <td>{{ i }}</td>
+            <td>{{ converti.nom }} {{ converti.pnom }}</td>
+            <td>
+              {% if converti.sexe == 1 %}
+                Homme
+              {% else %}
+                Femme
+              {% endif %}
+            </td>
+            <td>{{ converti.numero }}</td>
+            <td>{{ converti.commune.nom }} - {{ converti.residence }}</td>
+            <td>{{ converti.ancienneConfession }}</td>
+            <td>
+              <a href="{{ path('converti.edit', {as: asec, id: converti.id}) }}" data-tooltip="Editer les informations du converti"><i class="edit icon"></i></a>
+              <a href="{{ path('converti.info', {as: asec, id: converti.id}) }}" data-tooltip="Voir les informations du converti"><i class="info icon"></i></a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+
+{% endblock %}
+
+
+{% block javascript %}
+{% endblock %}

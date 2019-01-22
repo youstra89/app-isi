@@ -66,6 +66,10 @@ class Commune
      * @ORM\OneToMany(targetEntity="Activite", mappedBy="commune")
      */
     private $activites;
+    /**
+     * @ORM\OneToMany(targetEntity="Converti", mappedBy="commune")
+     */
+    private $convertis;
 
 
     public function __construct()

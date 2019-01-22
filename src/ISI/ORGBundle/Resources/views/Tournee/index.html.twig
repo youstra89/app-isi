@@ -47,49 +47,55 @@
 
 
 {% block titre_page %}
-  <i class="users icon"></i>{{ 'Activités locales'|trans }}
+  <i class="users icon"></i>{{ 'Tournées'|trans }}
 {% endblock %}
 
 
 
 {% block corps %}
-    <a href="{{ path('activite.nationale.add', {as: asec}) }}" class="positive ui button">
+    <a href="{{ path('tournee.nationale.add', {as: asec}) }}" class="positive ui button">
       <i class="plus icon"></i>
       {{ 'Enregistrer une tournée nationale'|trans }}
     </a>&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="{{ path('activite.internationale.add', {as: asec}) }}" class="positive ui button">
+    <a href="{{ path('tournee.internationale.add', {as: asec}) }}" class="teal ui button">
       <i class="plus icon"></i>
       {{ 'Enregistrer une tournée internationale'|trans }}
     </a><br><br>
-    <div class="ui four cards">
-      {% for activite in activites %}
-        <div class="card">
-          <div class="content">
-            <img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
-            <div class="header">{{ activite.getTypeType }}</div>
-            <div class="meta">{{ activite.date|date('d-m-Y') }} </div>
-            <div class="description">
-              <div class="ui link list">
-                <p>{{ activite.theme }}</p>
-              </div>
-            </div>
-          </div>
-          <div class="extra content">
-            {{ activite.commune.nom }} - {{ activite.lieu }}
-            <span class="right floated"></span><br>
-            <span>
-              <a href="{{ path('activite.externe.edit', {as: asec, id: activite.id}) }}" class="ui teal circular label" data-tooltip="Plus de détails">
-                <i class="plus icon" ></i>
-              </a>
-              <a href="{{ path('activite.externe.info', {as: asec, id: activite.id}) }}" class="ui blue circular label" data-tooltip="Plus de détails">
-                <i class="list icon" ></i>
-              </a>
-            </span>
-          </div>
-        </div>
-      {% endfor %}
-    </div><br><br>
+    <table class="ui very basic compact table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Début</th>
+          <th>Fin</th>
+          <th>Destinations</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% set i = 0 %}
+        {% for tournee in tournees %}
+          {% set i = i + 1 %}
+          <tr title="{{ tournee.commentaire }}">
+            <td>{{ i }}</td>
+            <td>{{ tournee.debut|date('d-m-Y') }}</td>
+            <td>{{ tournee.fin|date('d-m-Y') }}</td>
+            <td>
+              {% for item in tournee.communes %}
+                <li>{{ item.commune.nom }}</li>
+              {% endfor %}
+            </td>
+            <td>
+              <a href="{{ path('tournee.nationale.edit', {as: asec, id: tournee.id}) }}" data-tooltip="Editer tournée"><i class="edit icon"></i></a>
+              <a href="{{ path('tournee.nationale.info', {as: asec, id: tournee.id}) }}" data-tooltip="Informations tournée"><i class="info icon"></i></a>
+              <a href="{{ path('destination.tournee.add.activite', {as: asec, id: tournee.id}) }}" data-tooltip="Ajouter une activité"><i class="plus icon"></i></a>
+              <a href="{{ path('destination.tournee.remove.activite', {as: asec, id: tournee.id}) }}" data-tooltip="Retirer une commune"><i class="minus red icon"></i></a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
     <div class="navigation">
-        {{ knp_pagination_render(activites) }}
+        {{ knp_pagination_render(tournees) }}
     </div>
 {% endblock %}

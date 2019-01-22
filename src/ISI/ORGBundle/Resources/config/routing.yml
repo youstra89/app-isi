@@ -24,6 +24,10 @@ vendredi:
     resource: "@ORGBundle/Resources/config/routing/vendredi.yml"
     prefix:   /vendredi
 
-activite:
-    resource: "@ORGBundle/Resources/config/routing/activite.yml"
-    prefix:   /activite
+activite_locale:
+    resource: "@ORGBundle/Resources/config/routing/activite-locale.yml"
+    prefix:   /activite-locale
+
+activite_externe:
+    resource: "@ORGBundle/Resources/config/routing/activite-externe.yml"
+    prefix:   /activite-externe

@@ -1,0 +1,83 @@
+{% extends 'ORGBundle::layout.html.twig'%}
+
+
+{% block stylesheets %}
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+  <link href="{{ asset('css/select2.min.css') }}" rel="stylesheet" />
+{% endblock %}
+
+
+{% block title %}
+  Edition de la tournée nationale du {{ tournee.debut|date('d-m-Y') }} au {{ tournee.fin|date('d-m-Y') }}
+{% endblock %}
+
+
+
+{% block notification %}
+  {% for message in app.session.flashbag.get('error') %}
+  <div class="ui red message">
+    <div class="header">{{ 'Attention'|trans }} !!! </div>
+    <ul class="list">
+      <li>{{ message }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+  {% for message in app.session.flashbag.get('info') %}
+  <div class="ui green message">
+    <div class="header">{{ 'Notification'|trans }}: </div>
+    <ul class="list">
+      <li>{{ message }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+{% endblock %}
+
+
+
+{% block body %}
+  <h2>
+    {% trans with {'%debut%': tournee.debut|date('d-m-Y'), '%fin%': tournee.fin|date('d-m-Y')} from 'app' %}
+      Edition de la tournée nationale du %debut% au %fin%
+    {% endtrans %}
+  </h2>
+  <form class="ui form" action="" method="post">
+    <div class="two fields">
+      <div class="field">
+        <label for="debut">Date de début</label>
+        <input type="date" name="debut" id="debut" value="{{ tournee.debut|date('Y-m-d') }}" required>
+      </div>
+      <div class="field">
+        <label for="fin">Date de fin</label>
+        <input type="date" name="fin" id="fin" value="{{ tournee.fin|date('Y-m-d') }}" required>
+      </div>
+    </div>
+    <div class="field">
+      <label for="destination">Destinations</label>
+      <select class="js-example-basic-single" name="destination[]" id="destination" multiple="multiple">
+        <option value="">Choisir les destinations</option>
+        {% for commune in communes %}
+          {% if commune.ville.id != 105 %}
+            <option value="{{ commune.id }}">{{ commune.nom }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label for="commentaire">Commentaire sur la tournée</label>
+      <textarea name="commentaire" id="commentaire" rows="8" cols="80" placeholder="Ce champ est optionnel">{{ tournee.commentaire }}</textarea>
+    </div>
+    <input type="hidden" name="_token" value="{{ csrf_token('edit') }}">
+    <button type="submit" name="button" class="ui primary button">Enregistrer</button>
+  </form>
+{% endblock %}
+
+
+{% block javascript %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <script src="{{ asset('js/select2.min.js') }}"></script>
+    <script>
+    $(document).ready(function() {
+      $('.js-example-basic-single').select2();
+    });
+    </script>
+{% endblock %}

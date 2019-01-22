@@ -53,7 +53,7 @@
 
 
 {% block corps %}
-    <a href="{{ path('choix.commune.activite.locales.add', {as: asec}) }}" class="positive ui button">
+    <a href="{{ path('choix.commune.activite.locale.add', {as: asec}) }}" class="positive ui button">
       <i class="plus icon"></i>
       {{ 'Enregistrer une activité'|trans }}
     </a><br><br>
@@ -74,10 +74,10 @@
             {{ activite.commune.nom }} - {{ activite.lieu }}
             <span class="right floated"></span><br>
             <span>
-              <a href="{{ path('activite.locales.edit', {as: asec, id: activite.id}) }}" class="ui teal circular label" data-tooltip="Plus de détails">
+              <a href="{{ path('activite.locale.edit', {as: asec, id: activite.id}) }}" class="ui teal circular label" data-tooltip="Editer">
                 <i class="plus icon" ></i>
               </a>
-              <a href="{{ path('activite.locales.info', {as: asec, id: activite.id}) }}" class="ui blue circular label" data-tooltip="Plus de détails">
+              <a href="{{ path('activite.locale.info', {as: asec, id: activite.id}) }}" class="ui blue circular label" data-tooltip="Plus de détails">
                 <i class="list icon" ></i>
               </a>
             </span>

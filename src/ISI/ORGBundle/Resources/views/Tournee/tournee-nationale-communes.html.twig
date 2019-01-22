@@ -1,0 +1,59 @@
+{% extends "ORGBundle::layout.html.twig" %}
+
+{% block title %}
+  Destinations de la tournée du {{ tournee.debut|date('d-m-Y') }} au {{ tournee.fin|date('d-m-Y') }}
+{% endblock %}
+
+
+
+{% block notification %}
+  {% for message in app.session.flashbag.get('error') %}
+  <div class="ui red message">
+    <div class="header">{{ 'Attention'|trans }} !!! </div>
+    <ul class="list">
+      <li>{{ message|raw }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+  {% for message in app.session.flashbag.get('info') %}
+  <div class="ui green message">
+    <div class="header">{{ 'Notification'|trans }}: </div>
+    <ul class="list">
+      <li>{{ message|raw }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+{% endblock %}
+
+
+
+{% block corps %}
+    <h2>Destinations de la du {{ tournee.debut|date('d-m-Y') }} au {{ tournee.fin|date('d-m-Y') }}</h2>
+    <div class="ui two cards">
+      {% for item in tournee.communes %}
+      <div class="card">
+        <div class="content">
+          <img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
+          <div class="header">{{ item.commune.nom }}</div>
+          <div class="description">
+            <div class="ui link list">
+
+            </div>
+          </div>
+        </div>
+        <div class="extra content">
+          <span>
+            <a href="{{ path('activite.tournee.add', {as: asec, id: tournee.id, communeId: item.commune.id}) }}" class="ui teal button">
+              Ajouter une activité
+            </a>
+          </span>
+          <span>
+            <a href="{{ path('converti.add', {as: asec, tourneeId: tournee.id, communeId: item.commune.id}) }}" class="ui orange button">
+              Ajouter un(e) converti(e)
+            </a>
+          </span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+{% endblock %}

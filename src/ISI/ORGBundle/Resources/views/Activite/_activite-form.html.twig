@@ -7,6 +7,8 @@
           <label for="">Date</label>
           {% if activite.date is defined %}
             <input type="date" name="date" value="{{ activite.date|date('Y-m-d') }}" required>
+          {% elseif tournee is defined %}
+            <input type="date" name="date" value="" min="{{ tournee.debut|date('Y-m-d') }}" max="{{ tournee.fin|date('Y-m-d') }}" required>
           {% else %}
             <input type="date" name="date" value="" required>
           {% endif %}

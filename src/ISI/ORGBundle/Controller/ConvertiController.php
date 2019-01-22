@@ -42,20 +42,32 @@ class ConvertiController extends Controller
     public function addAction(Request $request, $as): Response
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee      = $em->getRepository('ISIBundle:Anneescolaire');
-      $annee       = $repoAnnee->find($as);
-      $converti = new Converti();
+      $repoAnnee = $em->getRepository('ISIBundle:Anneescolaire');
+      $annee     = $repoAnnee->find($as);
+      $tourneeId = $request->get('tourneeId');
+      $communeId = $request->get('communeId');
+      $converti  = new Converti();
       $form = $this->createForm(ConvertiType::class, $converti);
       $form->handleRequest($request);
       if($form->isSubmitted() && $form->isValid())
       {
+        $url = $this->redirectToRoute('home_convertis', ['as' => $as]);
+        if(isset($tourneeId)){
+          $repoCommune = $em->getRepository('ORGBundle:Commune');
+          $repoTournee = $em->getRepository('ORGBundle:Tournee');
+          $commune = $repoCommune->find($communeId);
+          $tournee = $repoTournee->find($tourneeId);
+          $converti->setCommune($commune);
+          $converti->setTournee($tournee);
+          $url = $this->redirectToRoute('destination.tournee.add.activite', ['as' => $as, 'id' => $tourneeId]);
+        }
         $data = $request->request->All();
         $date = new \DateTime($data['date']);
         $converti->setDateConversion($date);
         $em->persist($converti);
         $em->flush();
         $this->addFlash('info', 'Le converti '.$converti->getNom().' '.$converti->getPnom().' a été enregistré avec succès.');
-        return $this->redirectToRoute('home_convertis', ['as' => $as]);
+        return $url;
       }
       //>>
       return $this->render('ORGBundle:Converti:converti-add.html.twig', [

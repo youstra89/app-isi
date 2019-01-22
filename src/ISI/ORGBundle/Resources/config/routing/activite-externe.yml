@@ -1,0 +1,61 @@
+activites_externes:
+    path:     /index-{as}
+    defaults: { _controller: ORGBundle:ActiviteExterne:indexTournees }
+    requirements:
+        as: \d+
+
+tournee.nationale.add:
+    path:     /ajouter-une-tournee-nationale-{as}
+    defaults: { _controller: ORGBundle:ActiviteExterne:addTourneesNationales }
+    requirements:
+        as: \d+
+
+tournee.nationale.edit:
+    path:     /editer-une-tournee-nationale-{as}-{id}
+    defaults: { _controller: ORGBundle:ActiviteExterne:editTourneesNationales }
+    requirements:
+        as: \d+
+        id: \d+
+
+destination.tournee.add.activite:
+    path:     /enregistrement-destinations-de-tournee-{as}-{id}
+    defaults: { _controller: ORGBundle:ActiviteExterne:destinationPourAddActivitesTourneesNationale }
+    requirements:
+        as: \d+
+        id: \d+
+
+destination.tournee.remove.activite:
+    path:     /suppression-destinations-de-tournee-{as}-{id}
+    defaults: { _controller: ORGBundle:ActiviteExterne:destinationPourRemoveActivitesTourneesNationale }
+    requirements:
+        as: \d+
+        id: \d+
+
+destination.tournee.remove.action:
+    path:     /suppression-destinations-de-tournee-{as}-{id}-{tourneeId}
+    defaults: { _controller: ORGBundle:ActiviteExterne:delete }
+    requirements:
+        as: \d+
+        id: \d+
+        tourneeId: \d+
+
+activite.tournee.add:
+    path:     /ajouter-activite-pour-la-destination-de-tournee-{as}-{id}-{communeId}
+    defaults: { _controller: ORGBundle:ActiviteExterne:addActivitesTourneesNationale }
+    requirements:
+        as: \d+
+        id: \d+
+        communeId: \d+
+
+tournee.internationale.add:
+    path:     /ajouter-une-activite-internationale-{as}
+    defaults: { _controller: ORGBundle:ActiviteExterne:addTourneesInternationales }
+    requirements:
+        as: \d+
+
+tournee.nationale.info:
+    path:     /info-une-tournee-nationale-{as}-{id}
+    defaults: { _controller: ORGBundle:ActiviteExterne:infoTourneeNationale }
+    requirements:
+        as: \d+
+        id: \d+

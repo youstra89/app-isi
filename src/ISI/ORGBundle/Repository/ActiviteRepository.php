@@ -16,7 +16,13 @@ class ActiviteRepository extends \Doctrine\ORM\EntityRepository
       $qb = $this->createQueryBuilder('a');
 
       $qb->select('a')
+         ->join('a.commune', 'c')
+         ->addSelect('c')
+         ->join('c.ville', 'v')
+         ->addSelect('v')
+         ->where('v.id = :id')
          ->orderBy('a.createdAt', 'DESC')
+         ->setParameter(':id', 105)
       ;
       return $qb
           ->getQuery()

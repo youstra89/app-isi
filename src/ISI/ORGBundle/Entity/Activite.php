@@ -37,6 +37,11 @@ class Activite
     private $commune;
 
     /**
+     * @ORM\OneToMany(targetEntity="ActiviteCommune", mappedBy="activite")
+     */
+    private $communes;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="date", type="datetime")
