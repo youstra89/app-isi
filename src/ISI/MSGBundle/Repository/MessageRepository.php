@@ -40,7 +40,7 @@ class MessageRepository extends \Doctrine\ORM\EntityRepository
            ->where('m.fromId = :userId AND m.readAt IS NULL')
            ->groupBy('m.fromId')
            ->setParameter('userId', $userId)
-
+           
         ;
 
         return $qb

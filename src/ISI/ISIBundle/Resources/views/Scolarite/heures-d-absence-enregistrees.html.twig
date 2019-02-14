@@ -10,14 +10,19 @@
 	<h3>{{ 'Heures d\'absences enregistrées '|trans }} {{ '"' ~ absence ~ '"' }} {{ ' de la classe'|trans }} {{ classe.getLibelleClasseFr }} </h3>
 	<table class="">
 		<thead>
-			<tr>
+			<tr style="background-color: #efefef">
 				<th width="25px" rowspan="2" align="center" class="table-header">N°</th>
 				<th width="110px" rowspan="2" align="center" class="matricule-ar">الرقم التسلسلي</th>
 				<th width="180px" rowspan="2" class="">الاسم و اللقب</th>
 				<th width="180px" rowspan="2" align="right" class="">{{ 'Nom & Prénom'|trans }}</th>
 				<th width="30px" rowspan="2" align="center" class=""><span class="sexe-ar">الجنس</span></th>
 				{% for mois in moisAbsences %}
-					<th colspan="" class="">{{ mois.getMois.getMois }}</th>
+					<th colspan="" class="">
+						{{ mois.getMois.getMois }}<br>
+						<a href="{{path('isi_modification_des_heures_d_absence', {'as': asec, 'regime': regime, 'classeId': classe.classeId, 'absence': absence, 'moisId': mois.getMois.getId })}}" data-tooltip="Modifier les heures d'absence de {{ mois.getMois.getMois }}">
+							<i class="edit teal icon"></i>
+						</a>
+					</th>
 				{% endfor %}
 			</tr>
 		</thead>
@@ -53,7 +58,7 @@
 								{% else %}
 									{% set heuresAbsences = absEleve.getHeureCoran %}
 								{% endif %}
-								<td align="right">{{ heuresAbsences }}</td>
+								<td align="right" data-tooltip="{{ abs.getMois.getMois}}">{{ heuresAbsences }}</td>
 							{% endif %}
 						{% endfor %}
 					{% endfor %}

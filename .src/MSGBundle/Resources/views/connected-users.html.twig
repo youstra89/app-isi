@@ -1,0 +1,17 @@
+<div class="list-group">
+    <a href="#" class="list-group-item disabled"><h3>Liste des utilisateurs</h3></a>
+    {% for user in users %}
+        {% if user.id != app.user.id %}
+            <a href="{{ path('msg_show_conversations', {'id': user.id}) }}" class="list-group-item">{{ user.pnom }} {{ user.nom }}
+            {% for key, msg in unread %}
+                {% if msg is not empty %}
+                    {% if msg[1] == user.id %}
+                        <span class="badge badge-primary badge-pill">{{ msg[2] }}</span>
+                    {% endif %} 
+                {% endif %} 
+            {% endfor %}   
+            </a>
+        {% endif %}
+    {% endfor %}
+</div>
+{# {{ dump(unread) }} #}

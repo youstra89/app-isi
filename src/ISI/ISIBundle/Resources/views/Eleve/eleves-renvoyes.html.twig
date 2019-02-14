@@ -96,7 +96,9 @@
               <td>{{ eleve.classe }}</td>
               <td>{{ eleve.dateRenvoi|date("d-m-Y") }}</td>
               {% if is_granted('ROLE_ADMIN_SCOLARITE') or is_granted('ROLE_ADMIN_ANNEXE') %}
-                <td><a href="{{ path('isi_reintegration', {'as': asec, 'regime': regime, 'eleveId': eleve.id}) }}"><i class="plus icon"></i></a></td>
+                <td>
+                  <a href="{{ path('isi_reintegration', {'as': asec, 'regime': regime, 'eleveId': eleve.id}) }}" data-tooltip="Réintegrer l'élève"><i class="plus icon"></i></a>
+                  <a href="{{ path('isi_info_eleve_renvoye', {'as': asec, 'regime': regime, 'eleveId': eleve.id}) }}" data-tooltip="Plus de détails"><i class="list icon"></i></a></td>
               {% endif %}
             </tr>
             {% endfor %}

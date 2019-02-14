@@ -10,7 +10,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="ISI\ORGBundle\Repository\MosqueeRepository")
- * @UniqueEntity("nom")
  */
 class Mosquee
 {

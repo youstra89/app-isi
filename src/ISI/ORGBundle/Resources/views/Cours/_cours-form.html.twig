@@ -1,0 +1,27 @@
+{{ form_start(form, { 'attr': {'class': 'ui form'} }) }}
+    <div class="two fields">
+      <div class="field">
+          {{ form_row(form.heure) }}
+      </div>
+      <div class="field">
+          {{ form_row(form.jour, { 'attr': {'class': 'js-example-basic-single'} }) }}
+      </div>
+    </div>
+    <div class="three fields">
+      <div class="field">
+          {{ form_row(form.discipline) }}
+      </div>
+      <div class="field">
+          {{ form_row(form.livre) }}
+      </div>
+      <div class="field">
+          {{ form_row(form.anneeDebut) }}
+      </div>
+    </div>
+    <div class="field">
+      {{ form_row(form.mosquee) }}
+    </div>
+    {{ form_rest(form) }}
+    <button class="ui primary button">{{ button|default('Enregistrer') }}</button>
+  </div><br>
+{{ form_end(form) }}

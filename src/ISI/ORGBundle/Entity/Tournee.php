@@ -66,6 +66,11 @@ class Tournee
     private $updatedAt;
 
     /**
+     * @ORM\OneToMany(targetEntity="TourneePays", mappedBy="tournee")
+     */
+    private $pays;
+
+    /**
      * @ORM\OneToMany(targetEntity="TourneeCommune", mappedBy="tournee")
      */
     private $communes;
@@ -81,6 +86,7 @@ class Tournee
     {
       $this->nationale = true;
       $this->created_at = new \Datetime();
+      $this->pays = new ArrayCollection();
       $this->communes = new ArrayCollection();
       $this->convertis = new ArrayCollection();
       // $this->mosquees = new ArrayCollection();
@@ -239,6 +245,14 @@ class Tournee
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @return Collection|Pays[]
+     */
+    public function getPays(): Collection
+    {
+        return $this->pays;
     }
 
     /**

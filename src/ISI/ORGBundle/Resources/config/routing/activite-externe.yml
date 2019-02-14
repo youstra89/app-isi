@@ -4,13 +4,14 @@ activites_externes:
     requirements:
         as: \d+
 
-tournee.nationale.add:
-    path:     /ajouter-une-tournee-nationale-{as}
+tournee.add:
+    path:     /ajouter-une-tournee-{as}-{nationale}
     defaults: { _controller: ORGBundle:ActiviteExterne:addTourneesNationales }
     requirements:
         as: \d+
+        nationale: \d+
 
-tournee.nationale.edit:
+tournee.edit:
     path:     /editer-une-tournee-nationale-{as}-{id}
     defaults: { _controller: ORGBundle:ActiviteExterne:editTourneesNationales }
     requirements:
@@ -18,8 +19,15 @@ tournee.nationale.edit:
         id: \d+
 
 destination.tournee.add.activite:
-    path:     /enregistrement-destinations-de-tournee-{as}-{id}
+    path:     /liste-destinations-de-tournee-nationale-pour-enregistrement-activites-{as}-{id}
     defaults: { _controller: ORGBundle:ActiviteExterne:destinationPourAddActivitesTourneesNationale }
+    requirements:
+        as: \d+
+        id: \d+
+
+destination.tournee.internationale.add.activite:
+    path:     /liste-destinations-de-tournee-internationale-pour-enregistrement-activites-{as}-{id}
+    defaults: { _controller: ORGBundle:ActiviteExterne:destinationPourAddActivitesTourneesInternationale }
     requirements:
         as: \d+
         id: \d+
@@ -47,15 +55,30 @@ activite.tournee.add:
         id: \d+
         communeId: \d+
 
+activite.tournee.internationale.add:
+    path:     /ajouter-activite-pour-destination-de-tournee-internationale-{as}-{id}-{paysId}
+    defaults: { _controller: ORGBundle:ActiviteExterne:addActivitesTourneesInternationale }
+    requirements:
+        as: \d+
+        id: \d+
+        paysId: \d+
+
 tournee.internationale.add:
     path:     /ajouter-une-activite-internationale-{as}
     defaults: { _controller: ORGBundle:ActiviteExterne:addTourneesInternationales }
     requirements:
         as: \d+
 
-tournee.nationale.info:
-    path:     /info-une-tournee-nationale-{as}-{id}
+tournee.info:
+    path:     /informations-sur-une-tournee-nationale-{as}-{id}
     defaults: { _controller: ORGBundle:ActiviteExterne:infoTourneeNationale }
+    requirements:
+        as: \d+
+        id: \d+
+
+tournee.internationale.info:
+    path:     /informations-sur-une-tournee-internationale-{as}-{id}
+    defaults: { _controller: ORGBundle:ActiviteExterne:infoTourneeInternationale }
     requirements:
         as: \d+
         id: \d+

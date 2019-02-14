@@ -46,20 +46,27 @@ class ConvertiController extends Controller
       $annee     = $repoAnnee->find($as);
       $tourneeId = $request->get('tourneeId');
       $communeId = $request->get('communeId');
+      $paysId    = $request->get('paysId');
       $converti  = new Converti();
       $form = $this->createForm(ConvertiType::class, $converti);
       $form->handleRequest($request);
       if($form->isSubmitted() && $form->isValid())
       {
         $url = $this->redirectToRoute('home_convertis', ['as' => $as]);
-        if(isset($tourneeId)){
+        $repoTournee = $em->getRepository('ORGBundle:Tournee');
+        $tournee = $repoTournee->find($tourneeId);
+        $converti->setTournee($tournee);
+        if(isset($tourneeId) && isset($communeId)){
           $repoCommune = $em->getRepository('ORGBundle:Commune');
-          $repoTournee = $em->getRepository('ORGBundle:Tournee');
-          $commune = $repoCommune->find($communeId);
-          $tournee = $repoTournee->find($tourneeId);
+          $commune     = $repoCommune->find($communeId);
           $converti->setCommune($commune);
-          $converti->setTournee($tournee);
           $url = $this->redirectToRoute('destination.tournee.add.activite', ['as' => $as, 'id' => $tourneeId]);
+        }
+        elseif(isset($tourneeId) && isset($paysId)){
+          $repoPays = $em->getRepository('ORGBundle:Pays');
+          $pays     = $repoPays->find($paysId);
+          $converti->setPays($pays);
+          $url = $this->redirectToRoute('destination.tournee.internationale.add.activite', ['as' => $as, 'id' => $tourneeId]);
         }
         $data = $request->request->All();
         $date = new \DateTime($data['date']);
@@ -90,10 +97,17 @@ class ConvertiController extends Controller
       $form->handleRequest($request);
       if($form->isSubmitted() && $form->isValid())
       {
+        $url = $this->redirectToRoute('home_convertis', ['as' => $as]);
+        $tourneeId = $request->get('tourneeId');
+        $nationale = $request->get('nationale');
+        if(isset($tourneeId) and $nationale == 1)
+          $url = $this->redirectToRoute('tournee.info', ['as' => $as, 'id' => $tourneeId]);
+        elseif(isset($tourneeId) and $nationale == 0)
+          $url = $this->redirectToRoute('tournee.internationale.info', ['as' => $as, 'id' => $tourneeId]);
         $converti->setUpdatedAt(new \DateTime());
         $em->flush();
         $this->addFlash('info', 'Les informations sur l\'converti '.$converti->getNom().' '.$converti->getPnom().' ont été mises à jour avec succès.');
-        return $this->redirectToRoute('home_convertis', ['as' => $as]);
+        return $url;
       }
       //>>
       return $this->render('ORGBundle:Converti:converti-edit.html.twig', [

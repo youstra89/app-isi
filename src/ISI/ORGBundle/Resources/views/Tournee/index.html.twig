@@ -4,23 +4,10 @@
   Index Activités externes
 {% endblock %}
 
+
+
 {% block contextual_menu %}
-  {% if is_granted('ROLE_SUPER_ADMIN') %}
-      {{ include("ISIBundle::contextual-menu-panel-admin.html.twig") }}
-  {% elseif is_granted('ROLE_ADMIN_ANNEXE') %}
-      <div class="ui vertical menu">
-        <div class="item">
-          <div class="header">{{ 'Autres modules'|trans }}</div>
-          <div class="menu">
-            {# Cette partie permet de voir la liste de tous les élèves de la l'institut #}
-            <a class="item" href="{{path('isi_home_scolarite')}}">{{ 'Scolarité'|trans }}</a>
-            <a class="item" href="{{path('etude_home', {'as': asec})}}">{{ 'Programmes d\'étude'|trans }}</a>
-          </div>
-        </div>
-      </div>
-  {% else %}
-    {{ include("ISIBundle::contextual-menu-user.html.twig") }}
-  {% endif %}
+    {{ include("ORGBundle::contextual-menu-tournee.html.twig") }}
 {% endblock %}
 
 
@@ -47,17 +34,17 @@
 
 
 {% block titre_page %}
-  <i class="users icon"></i>{{ 'Tournées'|trans }}
+  <i class="plane icon"></i>{{ 'Tournées'|trans }}
 {% endblock %}
 
 
 
 {% block corps %}
-    <a href="{{ path('tournee.nationale.add', {as: asec}) }}" class="positive ui button">
+    <a href="{{ path('tournee.add', {as: asec, nationale: 1}) }}" class="positive ui button">
       <i class="plus icon"></i>
       {{ 'Enregistrer une tournée nationale'|trans }}
     </a>&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="{{ path('tournee.internationale.add', {as: asec}) }}" class="teal ui button">
+    <a href="{{ path('tournee.add', {as: asec, nationale: 0}) }}" class="teal ui button">
       <i class="plus icon"></i>
       {{ 'Enregistrer une tournée internationale'|trans }}
     </a><br><br>
@@ -75,20 +62,35 @@
         {% set i = 0 %}
         {% for tournee in tournees %}
           {% set i = i + 1 %}
-          <tr title="{{ tournee.commentaire }}">
+          {% set bold = '' %}
+          {% if tournee.nationale == false %}
+            {% set bold = 'warning' %}
+          {% endif %}
+          <tr title="{{ tournee.commentaire }}" class="{{ bold }}">
             <td>{{ i }}</td>
             <td>{{ tournee.debut|date('d-m-Y') }}</td>
             <td>{{ tournee.fin|date('d-m-Y') }}</td>
             <td>
-              {% for item in tournee.communes %}
-                <li>{{ item.commune.nom }}</li>
-              {% endfor %}
+              {% if tournee.nationale == true %}
+                {% for item in tournee.communes %}
+                  <li>{{ item.commune.nom }}</li>
+                {% endfor %}
+              {% else %}
+                {% for item in tournee.pays %}
+                  <li>{{ item.pays.nom }}</li>
+                {% endfor %}
+              {% endif %}
             </td>
             <td>
-              <a href="{{ path('tournee.nationale.edit', {as: asec, id: tournee.id}) }}" data-tooltip="Editer tournée"><i class="edit icon"></i></a>
-              <a href="{{ path('tournee.nationale.info', {as: asec, id: tournee.id}) }}" data-tooltip="Informations tournée"><i class="info icon"></i></a>
-              <a href="{{ path('destination.tournee.add.activite', {as: asec, id: tournee.id}) }}" data-tooltip="Ajouter une activité"><i class="plus icon"></i></a>
-              <a href="{{ path('destination.tournee.remove.activite', {as: asec, id: tournee.id}) }}" data-tooltip="Retirer une commune"><i class="minus red icon"></i></a>
+              <a href="{{ path('tournee.edit', {as: asec, id: tournee.id}) }}" data-tooltip="Editer tournée"><i class="edit icon"></i></a>
+              {% if tournee.nationale == true %}
+                <a href="{{ path('tournee.info', {as: asec, id: tournee.id}) }}" data-tooltip="Informations tournée"><i class="info icon"></i></a>
+                <a href="{{ path('destination.tournee.add.activite', {as: asec, id: tournee.id}) }}" data-tooltip="Ajouter une activité"><i class="plus icon"></i></a>
+                <a href="{{ path('destination.tournee.remove.activite', {as: asec, id: tournee.id}) }}" data-tooltip="Retirer une commune"><i class="minus red icon"></i></a>
+              {% else %}
+                <a href="{{ path('tournee.internationale.info', {as: asec, id: tournee.id}) }}" data-tooltip="Informations tournée"><i class="info icon"></i></a>
+                <a href="{{ path('destination.tournee.internationale.add.activite', {as: asec, id: tournee.id}) }}" data-tooltip="Ajouter une activité"><i class="plus icon"></i></a>
+              {% endif %}
             </td>
           </tr>
         {% endfor %}

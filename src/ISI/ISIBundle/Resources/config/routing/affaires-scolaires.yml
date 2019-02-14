@@ -276,6 +276,17 @@ isi_saisie_des_heures_d_absence:
         absence:  Cours|Coran
         moisId:   \d+
 
+# Affiche un formulaire pour permettre la modification des heures d'absence
+isi_modification_des_heures_d_absence:
+    path:     /modification-des-heures-d-absence-{as}-{regime}-{classeId}-{absence}-{moisId}.html
+    defaults: { _controller: ISIBundle:AffairesScolaires:modificationDesHeuresDAbsence }
+    requirements:
+        as:       \d+
+        regime:   A|F
+        classeId: \d+
+        absence:  Cours|Coran
+        moisId:   \d+
+
 # Voir les heures d'absence (heures d'absence)
 isi_accueil_heures_enregistrees:
     path:     /accueil-heures-d-absences-enregistrees-{as}-{regime}.html

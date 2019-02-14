@@ -10,6 +10,11 @@
 {% endblock %}
 
 
+{% block titre_page %}
+  <i class="plane icon"></i>{{ 'Tournées'|trans }}
+{% endblock %}
+
+
 
 {% block notification %}
   {% for message in app.session.flashbag.get('error') %}

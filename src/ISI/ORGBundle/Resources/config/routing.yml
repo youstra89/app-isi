@@ -31,3 +31,7 @@ activite_locale:
 activite_externe:
     resource: "@ORGBundle/Resources/config/routing/activite-externe.yml"
     prefix:   /activite-externe
+
+cours:
+    resource: "@ORGBundle/Resources/config/routing/cours.yml"
+    prefix:   /cours

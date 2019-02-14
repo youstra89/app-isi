@@ -26,6 +26,11 @@
 {% endblock %}
 
 
+{% block titre_page %}
+  <i class="plane icon"></i>{{ 'Tournées'|trans }}
+{% endblock %}
+
+
 
 {% block corps %}
     <h2>Suppression de destinations de la du {{ tournee.debut|date('d-m-Y') }} au {{ tournee.fin|date('d-m-Y') }}</h2>

@@ -50,11 +50,14 @@
             <i class="dropdown icon"></i>
             <div class="menu">
               <span class="sub-menu">
-                <a class="item" href="{{ path('activites_locales', {'as': asec}) }}">
-                  {{ 'Activités locales'|trans }}
+                <a class="item" href="{{ path('cours_home', {'as': asec}) }}">
+                  {{ 'Cours'|trans }}
                 </a>
                 <a class="item" href="{{ path('activites_externes', {'as': asec}) }}">
                   {{ 'Tournées'|trans }}
+                </a>
+                <a class="item" href="{{ path('activites_locales', {'as': asec}) }}">
+                  {{ 'Activités locales'|trans }}
                 </a>
               </span>
             </div>

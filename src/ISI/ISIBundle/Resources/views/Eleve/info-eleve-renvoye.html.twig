@@ -1,0 +1,218 @@
+{# Fiche de renseignement d'un élève #}
+{% set template = "" %}
+{% if regime == 'C' %}
+  {% set template = 'ISIBundle:Coran:index.html.twig' %}
+{% else %}
+  {% set template = 'ISIBundle:Eleve:index.html.twig' %}
+{% endif %}
+{% extends template %}
+
+{% block title %}
+  Fiche de renseignements (élève renvoyé)- {{eleve.nomFr}} {{eleve.pnomFr}}
+{% endblock %}
+
+{% block content %}
+
+<div>
+  <h2 class="ui horizontal divider header">
+    <i class="tag icon"></i>
+    {{ 'Identification personnelle'|trans }}
+  </h2>
+  <center><h2><font color="red">{{ eleve.matricule }}</font></h2></center><br>
+  <div class="ui two column doubling stackable grid container">
+    <div class="column">
+      <table>
+        <tr>
+          <td><strong>{{ 'Nom'|trans }} : </strong></td>
+          <td>{{ eleve.nomFr }}</td>
+        </tr>
+        <tr>
+          <td><strong>{{ 'Prénom'|trans }} : </strong></td>
+          <td>{{ eleve.pnomFr }}</td>
+        </tr>
+        <tr>
+          <td><strong>{{ 'Sexe'|trans }} : </strong></td>
+          {% if eleve.sexeFr == 1 %}
+            <td>{{ 'Homme'|trans }}</td>
+          {% else %}
+            <td>{{ 'Femme'|trans }}</td>
+          {% endif %}
+        </tr>
+        <tr>
+          <td><strong>{{ 'Date de naissance'|trans }} : </strong></td>
+          <td>{{ eleve.dateNaissance|date("d-m-Y") }} à {{ eleve.lieuNaissance }} </td>
+        </tr>
+        <tr>
+          <td><strong>{{ 'Référence extrait de naissance'|trans }} : </strong></td>
+          <td>{{ eleve.refExtrait }} </td>
+        </tr>
+      </table>
+    </div>
+    <div class="column">
+      <table>
+        <tr>
+          <td><strong>{{ 'Nationalité'|trans }} : </strong></td>
+          <td>{{ eleve.nationalite }}</td>
+        </tr>
+        <tr>
+          <td><strong>{{ 'Résidence'|trans }} : </strong></td>
+          <td>{{ eleve.commune }} {{ eleve.residence }}</td>
+        </tr>
+        <tr>
+          <td><strong>{{ 'Etablissement d\'origine'|trans }} : </strong></td>
+          <td>{{ eleve.etsOrigine }}</td>
+        </tr>
+        <tr>
+          <td><strong>{{ 'Contact'|trans }} : </strong></td>
+          <td>{{ eleve.contact }} </td>
+        </tr>
+        <tr>
+          <td><strong></strong></td>
+          <td></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <h2 class="ui horizontal divider header" style="color: red">
+    <i class="bar chart icon"></i>
+    {{ 'Motif de renvoi'|trans }}
+  </h2>
+  <div class="ui column stackable doubling grid container">
+    {{ renvoye.motif }}
+  </div>
+  <h2 class="ui horizontal divider header">
+    <i class="bar chart icon"></i>
+    {{ 'Identification des parents / Tuteur'|trans }}
+  </h2>
+  <div class="ui three column stackable doubling grid container">
+    <div class="column">
+      <table>
+        <tr>
+          <th colspan="2">{{ 'Père'|trans }}</th>
+        </tr>
+        <tr>
+          <td><strong>{{ 'Nom'|trans }}</strong></td>
+          <td>{{ eleve.nomPere }}</td>
+        </tr>
+        <tr>
+          <td><strong>{{ 'Contact'|trans }}</strong></td>
+          <td>{{ eleve.contactPere }}</td>
+        </tr>
+        <tr>
+          <td><strong>{{ 'Profession'|trans }}</strong></td>
+          <td>{{ eleve.professionPere }}</td>
+        </tr>
+        <tr>
+          <td><strong>{{ 'Situation'|trans }}</strong></td>
+          {% if eleve.situationPere == 1 %}
+            <td>{{ 'Vivant'|trans }}</td>
+          {% else %}
+            <td>{{ 'Décédé'|trans }}</td>
+          {% endif %}
+        </tr>
+      </table>
+    </div>
+    <div class="column">
+      <table>
+        <tr>
+          <th colspan="2">{{ 'Mère'|trans }}</th>
+        </tr>
+        <tr>
+          <td><strong>{{ 'Nom'|trans }}</strong></td>
+          <td>{{ eleve.nomMere }}</td>
+        </tr>
+        <tr>
+          <td><strong>{{ 'Contact'|trans }}</strong></td>
+          <td>{{ eleve.contactMere }}</td>
+        </tr>
+        <tr>
+          <td><strong>{{ 'Profession'|trans }}</strong></td>
+          <td>{{ eleve.professionMere }}</td>
+        </tr>
+        <tr>
+          <td><strong>{{ 'Situation'|trans }}</strong></td>
+          {% if eleve.situationMere == 1 %}
+            <td>{{ 'Vivante'|trans }}</td>
+          {% else %}
+            <td>{{ 'Décédée'|trans }}</td>
+          {% endif %}
+        </tr>
+      </table>
+    </div>
+    <div class="column">
+      <table align="center" width="25%">
+        <tr>
+          <th colspan="2">{{ 'Tuteur'|trans }}</th>
+        </tr>
+          <tr>
+            <td><strong>{{ 'Nom'|trans }}</strong></td>
+            <td>{{ eleve.nomTuteur }}</td>
+          </tr>
+          <tr>
+            <td><strong>{{ 'Contact'|trans }}</strong></td>
+            <td>{{ eleve.contactTuteur }}</td>
+          </tr>
+          <tr>
+            <td><strong>{{ 'Profession'|trans }}</strong></td>
+            <td>{{ eleve.professionTuteur }}</td>
+          </tr>
+        </table>
+    </div>
+  </div>
+
+  <h2 class="ui horizontal divider header">
+    <i class="student icon"></i>
+    {{ 'Scolarité & Conduite'|trans }}
+  </h2>
+  {% if frequenter is empty %}
+    <center>{{ eleve.getNomFr }} {{ eleve.getPnomFr }} {{ 'n\'est pas encore inscrit(e)'|trans }}</center>
+  {% else %}
+    <div>
+      <table align="center" width="15%">
+        <tr>
+          <td><strong>{{ 'Classe'|trans }} </strong></td>
+          <td>{{ frequenter.getClasse.getLibelleClasseFr }}</td>
+        </tr>
+      </table>
+    </div>
+  {% endif %}
+  <br>
+
+  <h3>Conduite</h3>
+  {% if problemes is empty %}
+      <div class="ui container">
+        Rien A Signaler
+      </div>
+  {% else %}
+    <div class="ui list">
+      {% for probleme in problemes %}
+        <div class="item">
+          <i class="map marker icon"></i>
+          <div class="content">
+            <a class="header">{{ probleme.getAppreciation }} </a>
+            <div class="description">{{ probleme.getDescription }} </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {# Begin #}
+
+  {# End #}
+</div>
+<script>
+$(document).ready(function(){
+    $('.demo.menu .item').tab({history:false});
+});
+$(document).ready(function(){
+    $('.ui .item').on('click', function() {
+      $('.ui .item').removeClass('active');
+      $(this).addClass('active');
+    });
+});
+<script/>
+
+
+{% endblock %}

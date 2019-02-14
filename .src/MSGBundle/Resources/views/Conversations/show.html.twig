@@ -1,0 +1,38 @@
+{% extends "MSGBundle::index.html.twig" %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-3">
+                {% include 'MSGBundle::connected-users.html.twig' %}            
+            </div>
+            <div class="col-sm-9">
+                <div class="card">
+                    <div class="card-body">
+                        <p class="h4 py-4">{{ sendTo.pnom }} {{ sendTo.nom }}</p>
+                        <div class="row">
+                            {% for message in messages|reverse %}
+                                <div class="col-sm-9 {{ message.fromId.id != sendTo.id ? 'offset-sm-3 text-right' : '' }}">
+                                    <a class="font-italic teal-text">{{ message.createAt|date("F j, Y H:i") }}</a><br />
+                                    <strong>{{ message.fromId.id != sendTo.id ? 'Moi' : message.fromId.username }}</strong>
+                                    <p>{{ message.content|nl2br }}</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="navigation">
+                            {{ knp_pagination_render(messages) }}
+                        </div>
+                        <form method="post" action="">
+                            <div class="md-form">
+                                <i class="fa fa-pencil prefix"></i>
+                                <textarea type="text" id="form10" class="md-textarea form-control" rows="3" name="content" required></textarea>
+                                <label for="form10">Corps du message</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Envoyer<i class="fa fa-paper-plane-o ml-1"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'ORGBundle::layout.html.twig'%}
+
+
+{% block stylesheets %}
+{% endblock %}
+
+
+{% block title %}
+  Enregistrement d'une activité pour la tournée internationale du {{ tournee.debut|date('d-m-Y') }} au {{ tournee.fin|date('d-m-Y') }} - {{ pays.nom }}
+{% endblock %}
+
+
+{% block titre_page %}
+  <i class="plane icon"></i>{{ 'Tournées'|trans }}
+{% endblock %}
+
+
+
+{% block notification %}
+  {% for message in app.session.flashbag.get('error') %}
+  <div class="ui red message">
+    <div class="header">{{ 'Attention'|trans }} !!! </div>
+    <ul class="list">
+      <li>{{ message }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+  {% for message in app.session.flashbag.get('info') %}
+  <div class="ui green message">
+    <div class="header">{{ 'Notification'|trans }}: </div>
+    <ul class="list">
+      <li>{{ message }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+{% endblock %}
+
+
+
+{% block body %}
+<h2>
+  {% trans with {'%pays%': pays.nom, '%debut%': tournee.debut|date('d-m-Y'), '%fin%': tournee.fin|date('d-m-Y')} from 'app' %}
+    Enregistrement d'une activité pour la tournée internationale - %pays% du %debut% au %fin%
+  {% endtrans %}
+</h2>
+{{ include('ORGBundle:Activite:_activite-form.html.twig') }}
+
+{% endblock %}
+
+
+{% block javascript %}
+{% endblock %}

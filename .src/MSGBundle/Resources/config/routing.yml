@@ -1,0 +1,19 @@
+msg_homepage:
+    path:     /index-messenger.html
+    defaults: { _controller: MSGBundle:Conversations:conversations }
+
+msg_conversations:
+    path:     /conversations.html
+    defaults: { _controller: MSGBundle:Conversations:conversations }
+
+msg_show_conversations:
+    path:     /conversations-{id}.html
+    defaults: { _controller: MSGBundle:Conversations:show }
+    requirements:
+        id: \d+
+
+piece_show:
+    path:     /piece/{id}/show
+    defaults: { _controller: "MSGBundle:Conversations:show" }
+    methods:  GET
+    

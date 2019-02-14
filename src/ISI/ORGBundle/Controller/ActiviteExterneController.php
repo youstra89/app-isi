@@ -8,10 +8,12 @@ use Symfony\Component\HttpFoundation\Request;
 use ISI\ORGBundle\Entity\Tournee;
 use ISI\ORGBundle\Entity\Activite;
 use ISI\ORGBundle\Form\ActiviteType;
+use ISI\ORGBundle\Entity\TourneePays;
 use ISI\ISIBundle\Entity\Anneescolaire;
 use ISI\ORGBundle\Entity\TourneeCommune;
 use ISI\ORGBundle\Entity\ActiviteTournee;
 use ISI\ORGBundle\Entity\ActiviteCommune;
+use ISI\ORGBundle\Entity\ActivitePays;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use ISI\ISIBundle\Repository\AnneeContratRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -68,13 +70,19 @@ class ActiviteExterneController extends Controller
   /**
    * @Security("has_role('ROLE_ORGANISATION')")
    */
-  public function addTourneesNationalesAction(Request $request, int $as)
+  public function addTourneesNationalesAction(Request $request, int $as, int $nationale)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoPays    = $em->getRepository('ORGBundle:Pays');
     $repoCommune = $em->getRepository('ORGBundle:Commune');
     $annee       = $repoAnnee->find($as);
     $communes    = $repoCommune->findAll();
+    $pays        = $repoPays->findAll();
+    if($nationale != 0 && $nationale != 1){
+      $this->addFlash('error', 'La valeur saisie est incorrecte.');
+      return $this->redirectToRoute('activites_externes', ['as' => $as]);
+    }
     if ($request->isMethod('post')) {
       if($this->isCsrfTokenValid('add', $request->get('_token'))){
         $em = $this->getDoctrine()->getManager();
@@ -86,40 +94,67 @@ class ActiviteExterneController extends Controller
         $dispo = $this->disponibilite($debut, $fin);
         if($debut > $fin){
           $this->addFlash('error', 'La date de fin ne doit pas être antérieure à la date de départ.');
-          return $this->redirectToRoute('tournee.nationale.add', ['as' => $as]);
+          return $this->redirectToRoute('tournee.add', ['as' => $as, 'nationale' => $nationale]);
         }
 
         // Cette condition va nous permettre de vérifier la disponibilité de la durée choisie
         if($dispo == false){
           $this->addFlash('error', 'La durée saisie est inclue dans la durée de l\'une des tournée déjà enregistrée.');
-          return $this->redirectToRoute('tournee.nationale.add', ['as' => $as]);
+          return $this->redirectToRoute('tournee.add', ['as' => $as, 'nationale' => $nationale]);
         }
         $tournee = new Tournee();
+        if($nationale == 1)
+          $tournee->setNationale(false);
         $tournee->setCommentaire($commentaire);
         $tournee->setDebut($debut);
         $tournee->setFin($fin);
         $tournee->setCreatedAt(new \DateTime());
         $em->persist($tournee);
-        foreach ($destinations as $key => $value) {
-          $commune = $repoCommune->find($value);
-          $tourneeCommune = new TourneeCommune();
-          $tourneeCommune->setTournee($tournee);
-          $tourneeCommune->setCommune($commune);
-          $em->persist($tourneeCommune);
-          // return new Response(var_dump($tourneeCommune));
+        if($nationale == 1){
+          $url = $this->redirectToRoute('destination.tournee.add.activite', ['as' => $as, 'id' => $tournee->getId()]);
+          foreach ($destinations as $key => $value) {
+            $commune = $repoCommune->find($value);
+            $tourneeCommune = new TourneeCommune();
+            $tourneeCommune->setTournee($tournee);
+            $tourneeCommune->setCommune($commune);
+            $em->persist($tourneeCommune);
+            // return new Response(var_dump($tourneeCommune));
+          }
+        }
+        elseif($nationale == 0){
+          $url = $this->redirectToRoute('destination.tournee.internationale.add.activite', ['as' => $as, 'id' => $tournee->getId()]);
+          foreach ($destinations as $key => $value) {
+            $pays = $repoPays->find($value);
+            $tourneePays = new TourneePays();
+            $tourneePays->setTournee($tournee);
+            $tourneePays->setPays($pays);
+            $em->persist($tourneePays);
+            // return new Response(var_dump($tourneeCommune));
+          }
         }
         $em->flush();
         $this->addFlash('info', 'La tournée du <strong>'.$debut->format('d-m-Y').'</strong> au <strong>'.$fin->format('d-m-Y').'</strong> a été enregistrée avec succès.');
-        return $this->redirectToRoute('destination.tournee.add.activite', ['as' => $as, 'id' => $tournee->getId()]);
+        return $url;
       }
     }
 
+    if ($nationale == 1) {
+      return $this->render('ORGBundle:Tournee:tournee-nationale-add.html.twig', [
+        'asec'      => $as,
+        'annee'     => $annee,
+        'communes'  => $communes,
+        'nationale' => $nationale,
+      ]);
+    }
+    else{
+      return $this->render('ORGBundle:Tournee:tournee-internationale-add.html.twig', [
+        'asec'      => $as,
+        'annee'     => $annee,
+        'pays'      => $pays,
+        'nationale' => $nationale,
+      ]);
+    }
 
-    return $this->render('ORGBundle:Tournee:tournee-nationale-add.html.twig', [
-      'asec'     => $as,
-      'annee'    => $annee,
-      'communes' => $communes,
-    ]);
   }
 
 
@@ -196,6 +231,25 @@ class ActiviteExterneController extends Controller
     $tournee     = $repoTournee->find($id);
 
     return $this->render('ORGBundle:Tournee:tournee-nationale-communes.html.twig', [
+      'asec'    => $as,
+      'annee'   => $annee,
+      'tournee' => $tournee,
+    ]);
+  }
+
+
+  /**
+   * @Security("has_role('ROLE_ORGANISATION')")
+   */
+  public function destinationPourAddActivitesTourneesInternationaleAction(Request $request, int $as, int $id)
+  {
+    $em = $this->getDoctrine()->getManager();
+    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoTournee = $em->getRepository('ORGBundle:Tournee');
+    $annee       = $repoAnnee->find($as);
+    $tournee     = $repoTournee->find($id);
+
+    return $this->render('ORGBundle:Tournee:tournee-internationale-pays.html.twig', [
       'asec'    => $as,
       'annee'   => $annee,
       'tournee' => $tournee,
@@ -297,6 +351,59 @@ class ActiviteExterneController extends Controller
   /**
    * @Security("has_role('ROLE_ORGANISATION')")
    */
+  public function addActivitesTourneesInternationaleAction(Request $request, int $as, int $id, int $paysId)
+  {
+    $em = $this->getDoctrine()->getManager();
+    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoTournee = $em->getRepository('ORGBundle:Tournee');
+    $repoPays = $em->getRepository('ORGBundle:Pays');
+    $annee       = $repoAnnee->find($as);
+    $tournee     = $repoTournee->find($id);
+    $pays     = $repoPays->find($paysId);
+    $activite = new Activite();
+    $form = $this->createForm(ActiviteType::class, $activite);
+    $form->handleRequest($request);
+    if($form->isSubmitted() && $form->isValid())
+    {
+      $data = $request->request->All();
+      $date = new \DateTime($data['date']);
+      // On vérifie si la date sélectionnée est inclue dans la durée de la tournée
+      if ($date < $tournee->getDebut() || $date > $tournee->getFin()) {
+        return new Response('Date incorrecte');
+        $this->addFlash('error', 'La date saisie n\'est pas inclue dans la durée de la tournée.');
+        return $this->redirectToRoute('activite.tournee.add', ['as' => $as, 'id' => $id, 'communeId' => $communeId]);
+      }
+      $activite->setCreatedAt(new \DateTime());
+      $activite->setDate($date);
+      $em->persist($activite);
+      // On va aussi enregistrer les tuples des tables intermediares
+      $activiteTournee = new ActiviteTournee();
+      $activiteTournee->setActivite($activite);
+      $activiteTournee->setTournee($tournee);
+      $activitePays = new ActivitePays();
+      $activitePays->setActivite($activite);
+      $activitePays->setPays($pays);
+      $em->persist($activiteTournee);
+      $em->persist($activitePays);
+      $em->flush();
+      $this->addFlash('info', 'Le <strong>'.$activite->getTypeType().'</strong> du <strong>'.$activite->getDate()->format('d-m-Y').'</strong> pour la tournée internationale du <strong>'.$tournee->getDebut()->format('d-m-Y').'</strong> au <strong>'.$tournee->getFin()->format('d-m-Y').'</strong> à <strong>'.$pays->getNom().'</strong> a été enregistré avec succès.');
+      return $this->redirectToRoute('destination.tournee.internationale.add.activite', ['as' => $as, 'id' => $id]);
+
+    }
+
+    return $this->render('ORGBundle:Tournee:tournee-internationale-activite-add.html.twig', [
+      'asec'    => $as,
+      'annee'   => $annee,
+      'pays'    => $pays,
+      'tournee' => $tournee,
+      'form'    => $form->createView()
+    ]);
+  }
+
+
+  /**
+   * @Security("has_role('ROLE_ORGANISATION')")
+   */
   public function addActivitesInternationalesAction(Request $request, int $as)
   {
     $em = $this->getDoctrine()->getManager();
@@ -356,6 +463,59 @@ class ActiviteExterneController extends Controller
     dump($activites);
 
     return $this->render('ORGBundle:Tournee:tournee-nationale-info.html.twig', [
+      'asec'    => $as,
+      'annee'   => $annee,
+      'tournee' => $tournee,
+      'activites' => $activites,
+    ]);
+  }
+
+
+
+  /**
+   * @Security("has_role('ROLE_ORGANISATION')")
+   */
+  public function infoTourneeInternationaleAction(Request $request, int $as, int $id)
+  {
+    $em = $this->getDoctrine()->getManager();
+    $repoAnnee     = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoTournee   = $em->getRepository('ORGBundle:Tournee');
+    $repoActiviteC = $em->getRepository('ORGBundle:ActiviteCommune');
+    $annee         = $repoAnnee->find($as);
+    $tournee       = $repoTournee->find($id);
+    $requete_des_activites = "
+    SELECT
+      p.id AS paysId,
+      p.nom AS nomPays,
+      a.id AS activiteId,
+      a.type AS activiteType,
+      a.date AS activiteDate,
+      a.theme AS activiteTheme,
+      a.lieu AS activiteLieu,
+      a.heure AS activiteHeure
+    FROM
+      activite a
+    JOIN activitepays ap ON
+      ap.activite = a.id
+    JOIN pays p ON
+      p.id = ap.pays
+    JOIN activitetournee AT ON
+      a.id = AT.activite
+    JOIN tournee t ON AT
+      .tournee = t.id
+    JOIN tourneepays tp ON
+      tp.tournee = t.id
+    WHERE
+      tp.pays = p.id AND t.id = :id
+    ;";
+    $statement = $em->getConnection()->prepare($requete_des_activites);
+    $statement->bindValue('id', $id);
+    $statement->execute();
+    $activites = $statement->fetchAll();
+
+    dump($activites);
+
+    return $this->render('ORGBundle:Tournee:tournee-internationale-info.html.twig', [
       'asec'    => $as,
       'annee'   => $annee,
       'tournee' => $tournee,

@@ -22,6 +22,13 @@ class Probleme
     private $problemeId;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date", type="datetime")
+     */
+    private $date;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="appreciation", type="string", length=255, nullable=false)
@@ -64,6 +71,30 @@ class Probleme
     public function getProblemeId()
     {
         return $this->problemeId;
+    }
+
+    /**
+     * Set date
+     *
+     * @param \DateTime $date
+     *
+     * @return Probleme
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * Get date
+     *
+     * @return \DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
     }
 
     /**

@@ -73,12 +73,11 @@
       </table>
     </div>
   </div>
-
   <h2 class="ui horizontal divider header">
     <i class="bar chart icon"></i>
-    {{ 'Identification des parents'|trans }}
+    {{ 'Identification des parents / Tuteur'|trans }}
   </h2>
-  <div class="ui two column stackable doubling grid container">
+  <div class="ui three column stackable doubling grid container">
     <div class="column">
       <table>
         <tr>
@@ -133,33 +132,30 @@
         </tr>
       </table>
     </div>
+    <div class="column">
+      <table align="center" width="25%">
+        <tr>
+          <th colspan="2">{{ 'Tuteur'|trans }}</th>
+        </tr>
+          <tr>
+            <td><strong>{{ 'Nom'|trans }}</strong></td>
+            <td>{{ eleve.nomTuteur }}</td>
+          </tr>
+          <tr>
+            <td><strong>{{ 'Contact'|trans }}</strong></td>
+            <td>{{ eleve.contactTuteur }}</td>
+          </tr>
+          <tr>
+            <td><strong>{{ 'Profession'|trans }}</strong></td>
+            <td>{{ eleve.professionTuteur }}</td>
+          </tr>
+        </table>
+    </div>
   </div>
-  {% if eleve.nomTuteur is not empty %}
-  <h2 class="ui horizontal divider header">
-    <i class="bar chart icon"></i>
-    {{ 'Identification du tuteur'|trans }}
-  </h2>
-  <div>
-    <table align="center" width="25%">
-        <tr>
-          <td><strong>{{ 'Nom'|trans }}</strong></td>
-          <td>{{ eleve.nomTuteur }}</td>
-        </tr>
-        <tr>
-          <td><strong>{{ 'Contact'|trans }}</strong></td>
-          <td>{{ eleve.contactTuteur }}</td>
-        </tr>
-        <tr>
-          <td><strong>{{ 'Profession'|trans }}</strong></td>
-          <td>{{ eleve.professionTuteur }}</td>
-        </tr>
-      </table>
-  </div>
-  {% endif %}
 
   <h2 class="ui horizontal divider header">
     <i class="student icon"></i>
-    {{ 'Scolarité'|trans }}
+    {{ 'Scolarité & Conduite'|trans }}
   </h2>
   {% if frequenter is empty %}
     <center>{{ eleve.getNomFr }} {{ eleve.getPnomFr }} {{ 'n\'est pas encore inscrit(e)'|trans }}</center>
@@ -173,11 +169,9 @@
       </table>
     </div>
   {% endif %}
+  <br>
 
-  <h2 class="ui horizontal divider header">
-    <i class="student icon"></i>
-    Conduite
-  </h2>
+  <h3>Conduite</h3>
   {% if problemes is empty %}
       <div class="ui container">
         Rien A Signaler
@@ -189,26 +183,27 @@
           <i class="map marker icon"></i>
           <div class="content">
             <a class="header">{{ probleme.getAppreciation }} </a>
-            <div class="description">{{ probleme.getDescription }} </div>
+            <div class="description">{{ probleme.getDescription }} <strong><i>{{ probleme.date|date('d-m-Y') }}</i></strong></div>
           </div>
         </div>
       {% endfor %}
     </div>
   {% endif %}
+
   {# Begin #}
-  
+
   {# End #}
 </div>
 <script>
 $(document).ready(function(){
     $('.demo.menu .item').tab({history:false});
 });
-$(document).ready(function(){ 
-    $('.ui .item').on('click', function() { 
-      $('.ui .item').removeClass('active'); 
-      $(this).addClass('active'); 
-    });    
-}); 
+$(document).ready(function(){
+    $('.ui .item').on('click', function() {
+      $('.ui .item').removeClass('active');
+      $(this).addClass('active');
+    });
+});
 <script/>
 
 

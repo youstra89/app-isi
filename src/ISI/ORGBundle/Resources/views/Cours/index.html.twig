@@ -1,0 +1,107 @@
+{% extends "ORGBundle::layout.html.twig" %}
+
+{% block title %}
+  Gestion des cours
+{% endblock %}
+
+{% block contextual_menu %}
+{% endblock %}
+
+
+{% block notification %}
+  {% for message in app.session.flashbag.get('error') %}
+  <div class="ui red message">
+    <div class="header">{{ 'Attention'|trans }} !!! </div>
+    <ul class="list">
+      <li>{{ message|raw }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+  {% for message in app.session.flashbag.get('info') %}
+  <div class="ui green message">
+    <div class="header">{{ 'Notification'|trans }}: </div>
+    <ul class="list">
+      <li>{{ message|raw }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+{% endblock %}
+
+
+{% block titre_page %}
+  <i class="book icon"></i>{{ 'Cours'|trans }}
+{% endblock %}
+
+
+{% block body %}
+  <h2>Cours enregistrés</h2>
+  <a href="{{ path('cours.add', {as: asec}) }}" class="ui small teal button">Ajouter un cours</a>
+  <table class="ui very basic compact table" id="cours">
+    <thead>
+      <tr>
+        <th>N°</th>
+        <th>Jour</th>
+        <th>Heure</th>
+        <th>Discipline</th>
+        <th>Livre</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% set i = 0 %}
+      {% for item in cours %}
+        {% set i = i + 1 %}
+        <tr>
+          <td>{{ i }}</td>
+          <td>
+            {% for day in item.jour %}
+              {% for key, jour in jours %}
+                {% if day.index == key %}
+                  {{ jour }}
+                {% endif %}
+              {% endfor %}
+            {% endfor %}
+          </td>
+          <td>{{ item.heure }}</td>
+          <td>{{ item.discipline }}</td>
+          <td>{{ item.livre }}</td>
+          <td>
+            <a href="{{ path('cours.edit', {as: asec, id: item.id}) }}" data-tooltip="Editer les informations de le cours"><i class="edit icon"></i></a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+
+
+{% block javascript %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+      col_0: 'none',
+      col_5: 'none',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string',
+        'string', 'string', 'string',
+      ],
+      col_widths: [
+        // '25px', '330px', '270px'
+      ],
+      extensions: [{ name: 'sort' }]
+    };
+
+    var tf = new TableFilter('cours', filtersConfig);
+    tf.init();
+  </script>
+{% endblock %}

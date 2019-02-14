@@ -828,7 +828,6 @@ class EleveController extends Controller
             'fq'     => $fq
           ]);
         }
-
     }
 
     return $this->render('ISIBundle:Eleve:probleme-home.html.twig', [
@@ -869,14 +868,14 @@ class EleveController extends Controller
     if($request->isMethod('post'))
     {
       $data = $request->request->all();
-      $appreciation = $data['appreciation'];
-      $description = $data['description'];
-      if(empty($appreciation))
-      {
-        $request->getSession()->getFlashBag()->add('error', 'Vous n\'avez pas précisez l\'appréciation de la conduite à enregistrer.');
-        return $this->redirect($this->generateUrl('isi_problemes_home', ['as' => $as, 'regime' => $regime]));
+      if(isset($data['appreciation']))
+        $appreciation = $data['appreciation'];
+      else {
+        $appreciation = 'Rien à signaler';
       }
-      elseif(empty($description))
+      $description = $data['description'];
+      $date = new \DateTime($data['date']);
+      if(empty($description))
       {
         $request->getSession()->getFlashBag()->add('error', 'La description de la conduite ne doit pas être vide.');
         return $this->redirect($this->generateUrl('isi_problemes_home', ['as' => $as, 'regime' => $regime]));
@@ -886,6 +885,7 @@ class EleveController extends Controller
       $probleme = new Probleme();
       $probleme->setAppreciation($appreciation);
       $probleme->setDescription($description);
+      $probleme->setDate($date);
       $probleme->setDateSave(new \Datetime());
       $probleme->setDateUpdate(new \Datetime());
 
@@ -1152,7 +1152,7 @@ class EleveController extends Controller
       $renvoye['dateRenvoi']    = $eleve->getDateRenvoi();
       // Soit la variable $er, un élève renvoyé
       $er = $repoEleverenvoye->dernierRenvoi($eleve->getEleveId());
-      if(count($er) != 0)
+      if(!is_null($er))
       {
         $fq = $repoFrequenter->findOneBy(['eleve' => $eleve->getEleveId(), 'anneeScolaire' => $er->getAnneeScolaire()->getAnneeScolaireId()]);
         $renvoye['anneeRenvoi'] = $er->getAnneeScolaire()->getLibelleAnneeScolaire();
@@ -1181,6 +1181,49 @@ class EleveController extends Controller
       'renvoyes'      => $renvoyes,
       // 'frequentation' => $frequentation
     ));
+  }
+
+  //Pour voir la liste des élèves renvoyés
+  public function infoEleveRenvoyeAction(Request $request, $as, $regime, $eleveId)
+  {
+    $em = $this->getDoctrine()->getManager();
+    $repoAnnee       = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoEleve       = $em->getRepository('ISIBundle:Eleve');
+    $repoProbleme    = $em->getRepository('ISIBundle:Probleme');
+    $repoFrequenter  = $em->getRepository('ISIBundle:Frequenter');
+    $repoEleveRenvoye     = $em->getRepository('ISIBundle:Eleverenvoye');
+    $repoEleveReintegre   = $em->getRepository('ISIBundle:Elevereintegre');
+    $repoEleveAutreregime = $em->getRepository('ISIBundle:Eleveautreregime');
+
+    // Sélection de l'année scolaire
+    $annee  = $repoAnnee->find($as);
+
+    // Sélection de l'élève dont l'id est passé en paramètre de la fonction
+    $eleve = $repoEleve->find($eleveId);
+
+    // La classe de l'élève durant l'annee en cours
+    $fq = $repoFrequenter->findOneBy(['eleve' => $eleve->getEleveId(), 'anneeScolaire' => $as]);
+
+    // On va ici sélectionner les problèmes qu'auraient eu l'élève
+    $problemes   = $repoProbleme->problemesDUnEleveLorsDUneAnnee($eleve->getEleveId(), $as);
+
+    $renvoye     = $repoEleveRenvoye->dernierRenvoi($eleveId);
+    $reintegre   = $repoEleveReintegre->findBy(['eleve' => $eleve->getEleveId()]);
+    $autreRegime = $repoEleveAutreregime->findBy(['eleve' => $eleve->getEleveId()]);
+
+    // return new Response(var_dump($problemes));
+
+    return $this->render('ISIBundle:Eleve:info-eleve-renvoye.html.twig', [
+      'asec'       => $as,
+      'regime'     => $regime,
+      'annee'      => $annee,
+      'eleve'      => $eleve,
+      'problemes'  => $problemes,
+      'frequenter' => $fq,
+      'renvoye'    => $renvoye,
+      'reintegre'  => $reintegre,
+      'autreregime' => $autreRegime,
+    ]);
   }
 
   // Ce code doit être supprimé, Il sert plus à rien

@@ -13,6 +13,7 @@
 
 {% block body %}
   <h2>Informations sur la mosquée {{ mosquee.nom }} à {{ mosquee.commune.nom }}</h2>
+  <a href="javascript:history.back()" class="ui small orange button">Retour</a>
   <form class="ui form">
       <div class="four fields">
         <div class="field">
@@ -67,7 +68,7 @@
             <label for="">Options</label>
             <ul>
               {% for option in mosquee.getOptionsType %}
-                <li>{{ option }}</li>  
+                <li>{{ option }}</li>
               {% endfor %}
             </ul>
         </div>

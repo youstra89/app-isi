@@ -28,4 +28,29 @@ class AbsenceRepository extends \Doctrine\ORM\EntityRepository
       ->getResult()
     ;
   }
+
+  public function absenceDuMoisDesElevesDeLaClasse($classeId, $moisId, $as)
+  {
+    $qb = $this->createQueryBuilder('a');
+
+    $qb->select('a')
+       ->join('a.eleve', 'e')
+       ->addSelect('e')
+       ->join('e.frequenter', 'f')
+       ->addSelect('f')
+       ->join('f.classe', 'c')
+       ->addSelect('c')
+       ->join('a.mois', 'm')
+       ->addSelect('m')
+       ->where('c.classeId = :classeId AND a.mois = :moisId AND a.anneeScolaire = :an')
+       //->addSelect('e')
+       ->setParameter('classeId', $classeId)
+       ->setParameter('moisId', $moisId)
+       ->setParameter('an', $as)
+    ;
+    return $qb
+      ->getQuery()
+      ->getResult()
+    ;
+  }
 }

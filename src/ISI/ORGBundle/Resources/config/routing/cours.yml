@@ -1,0 +1,18 @@
+cours_home:
+    path:     /index-{as}
+    defaults: { _controller: ORGBundle:Cours:index }
+    requirements:
+        as: \d+
+
+cours.add:
+    path:     /ajouter-un-nouvel-cours-{as}
+    defaults: { _controller: ORGBundle:Cours:add }
+    requirements:
+        as: \d+
+
+cours.edit:
+    path:     /editer-informations-cours-{as}-{id}
+    defaults: { _controller: ORGBundle:Cours:edit }
+    requirements:
+        as: \d+
+        id: \d+

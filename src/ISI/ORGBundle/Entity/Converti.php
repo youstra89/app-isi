@@ -34,6 +34,12 @@ class Converti
     private $commune;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Pays", inversedBy="convertis")
+     * @ORM\JoinColumn(name="pays", nullable=true)
+     */
+    private $pays;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="nom", type="string", length=255)
@@ -142,6 +148,18 @@ class Converti
     public function setCommune($commune): self
     {
         $this->commune = $commune;
+
+        return $this;
+    }
+
+    public function getPays(): ?Pays
+    {
+        return $this->pays;
+    }
+
+    public function setPays($pays): self
+    {
+        $this->pays = $pays;
 
         return $this;
     }

@@ -712,6 +712,115 @@ class AffairesScolairesController extends Controller
     ]);
   }
 
+  /**
+   * @Security("has_role('ROLE_SCOLARITE')")
+   */
+  public function modificationDesHeuresDAbsenceAction(Request $request, $as, $regime, $classeId, $moisId, $absence)
+  {
+    $em = $this->getDoctrine()->getManager();
+    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoMois    = $em->getRepository('ISIBundle:Mois');
+    $repoClasse  = $em->getRepository('ISIBundle:Classe');
+    $repoEleve   = $em->getRepository('ISIBundle:Eleve');
+    $repoAbsence = $em->getRepository('ISIBundle:Absence');
+    $repoExamen  = $em->getRepository('ISIBundle:Examen');
+    $examens = $repoExamen->lesExamensDeLAnnee($as);
+
+    // Sélection des informations à envoyer vers le formulaire
+    $annee  = $repoAnnee->find($as);
+
+    /**
+     * Quand l'année scolaire est finie, on doit plus faire des
+     * mofications, des mises à jour
+     **/
+    if($annee->getAchevee() == TRUE)
+    {
+      $request->getSession()->getFlashBag()->add('error', 'Impossible de modifier des heures d\'absence car l\'année scolaire '.$annee->getLibelleAnneeScolaire().' est achevée.');
+      return $this->redirect($this->generateUrl('isi_accueil_gestion_absences', ['as' => $as, 'regime' => $regime]));
+    }
+
+    $eleves = $repoEleve->lesElevesDeLaClasse($as, $classeId);
+    $classe = $repoClasse->find($classeId);
+    $mois   = $repoMois->find($moisId);
+    $absence == 'Cours' ? $absence = 'Cours' : $absence = 'Coran';
+
+
+    $absencesDuMois = $repoAbsence->absenceDuMoisDesElevesDeLaClasse($classeId, $moisId, $as);
+
+    $defaultData = array('message' => 'Type your message here');
+    $form        = $this->createFormBuilder($defaultData);
+    $form->getForm();
+
+    // Quand on soumet le formulaire
+    if($request->isMethod('post')){
+      $em = $this->getDoctrine()->getManager();
+      $data = $request->request->all();
+      // return new Response(var_dump($data));
+      foreach($data['abs'] as $key => $absenceEleve)
+      {
+        // On vérifie qu'aucune des notes saisies n'est pas supérieures à 10.
+        if(!is_numeric($absenceEleve))
+        {
+          $eleveNoteSup = $eleve;
+          $request->getSession()->getFlashBag()->add('error', 'Les heures sont des données numériques.');
+
+          return $this->redirect($this->generateUrl('isi_modification_des_heures_d_absence',[
+            'as'       => $as,
+            'regime'   => $regime,
+            'classeId' => $classeId,
+            'absence'  => $absence,
+            'moisId'   => $moisId
+          ]));
+        }
+
+        foreach($eleves as $eleve)
+        {
+          if($eleve->getEleveId() == $key)
+          {
+            $abs = $repoAbsence->findOneBy(['mois' => $moisId, 'eleve' => $key, 'anneeScolaire' => $as]);
+            // Cette condition me permet de savoir si l'élève à composé dans la matière ou non
+            if($absence == 'Cours')
+            {
+              if(empty($absenceEleve))
+                $abs->setHeureCours(0);
+              else
+                $abs->setHeureCours($absenceEleve);
+            }
+            else{
+              if(empty($absenceEleve))
+                $abs->setHeureCoran(0);
+              else
+                $abs->setHeureCoran($absenceEleve);
+            }
+
+            $abs->setDateUpdate(new \Datetime());
+            $em->flush();
+          }
+        } // Fin foreach $eleves
+      } // Fin foreach $data['note']
+
+      $request->getSession()->getFlashBag()->add('info', 'Les heures d\'absence du mois de '.$mois->getMois().' de la classe '.$classe->getNiveau()->getLibelleFr().' '.$classe->getLibelleClasseFr().' ont été bien enregistrées.');
+      return $this->redirect($this->generateUrl('isi_heures_absences_enregistrees',[
+        'as' => $as,
+        'regime' => $regime,
+        'classeId' => $classeId,
+        'absence' => $absence
+      ]));
+    }
+
+    return $this->render('ISIBundle:Scolarite:formulaire-de-modification-des-heures-d-absence.html.twig', [
+      'asec'    => $as,
+      'regime'  => $regime,
+      'annee'   => $annee,
+      'classe'  => $classe,
+      'mois'    => $mois,
+      'eleves'  => $eleves,
+      'absence' => $absence,
+      'examens' => $examens,
+      'absencesDuMois' => $absencesDuMois
+    ]);
+  }
+
   // Page d'accueil des heures d'absences enregistrées
   /**
    * @Security("has_role('ROLE_SCOLARITE')")

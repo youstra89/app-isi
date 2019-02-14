@@ -87,6 +87,15 @@ isi_renvoi:
         regime:  A|F|C
         eleveId: \d+
 
+# Lancer le code de renvoi d'un élève
+isi_info_eleve_renvoye:
+    path:     /informations-eleve-renvoye-{as}-{regime}-{eleveId}.html
+    defaults: { _controller: ISIBundle:Eleve:infoEleveRenvoye }
+    requirements:
+        as:      \d+
+        regime:  A|F|C
+        eleveId: \d+
+
 # Pour pouvoir inscrire à nouveau un élève qu'on a renvoyé (au cours d'une même année)
 isi_reintegration:
     path:     /reintegration-eleve-renvoye/{as}-{regime}-{eleveId}.html
@@ -150,7 +159,7 @@ isi_changer_regime_home:
     requirements:
         as:     \d+
         regime: A|F|C
-        
+
 # Changement de regime de formation d'un élève donné
 isi_changer_regime_eleve:
     path:     /changement-du-regime-de-l-eleve-{as}-{regime}-{eleveId}.html
