@@ -61,4 +61,22 @@ class FrequenterRepository extends \Doctrine\ORM\EntityRepository
         return $qb->getQuery()
                   ->getResult();
     }
+
+    public function statistiquesClasse(int $classeId)
+    {
+        $renvoi = false;
+        $qb = $this->createQueryBuilder('f');
+        $qb->select('f')
+           ->join('f.eleve', 'e')
+           ->addSelect('e')
+           ->join('f.classe', 'c')
+           ->addSelect('c')
+           ->where('e.renvoye = :renvoi AND c.classeId = :classeId') 
+           ->setParameter('renvoi', $renvoi)
+           ->setParameter('classeId', $classeId)
+         ;
+
+        return $qb->getQuery()
+                  ->getResult();
+    }
 }

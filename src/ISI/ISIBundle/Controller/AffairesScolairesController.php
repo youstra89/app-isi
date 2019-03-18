@@ -98,7 +98,7 @@ class AffairesScolairesController extends Controller
       $stat = [];
       $classeId = $classe->getClasseId();
       $niveauId = $classe->getNiveau()->getId();
-      $effectif = $repoFrequenter->findBy(['anneeScolaire' => $as, 'classe' =>$classeId]);
+      $effectif = $repoFrequenter->statistiquesClasse($classeId);
       $nbrG = 0;
       $nbrR = 0;
       foreach ($effectif as $eff) {
