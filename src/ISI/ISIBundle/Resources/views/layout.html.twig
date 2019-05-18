@@ -160,7 +160,16 @@
         </div>
       </div>
     </body>
+    <script src="{{ asset('js/push.js') }}"></script>
     <script>
+      {# Push.create("Un nouvel article a été publié sur ShevArezo`blog !", {
+          body: "CanIUse en ligne de commande",
+          icon: 'icon.png',
+          timeout: 4000,
+          onClick: function () {
+              window.open('http://blog.shevarezo.fr/post/2015/08/13/caniuse-ligne-commande-css', '_self');
+          }
+      }); #}
       $("document").ready(function(){
         $('#bt').on('click', function(){
 

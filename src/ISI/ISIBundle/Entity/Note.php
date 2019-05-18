@@ -36,20 +36,6 @@ class Note
     private $participation;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="appreciation_fr", type="string", length=255, nullable=true)
-     */
-    private $appreciationFr;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="appreciation_ar", type="string", length=255, nullable=true)
-     */
-    private $appreciationAr;
-
-    /**
      * @var \DateTime
      *
      * @ORM\Column(name="date_save", type="datetime", nullable=false)
@@ -92,6 +78,16 @@ class Note
      * })
      */
     private $matiere;
+
+    /**
+     * @var \Appreciation
+     *
+     * @ORM\ManyToOne(targetEntity="Appreciation")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="appreciation", referencedColumnName="id")
+     * })
+     */
+    private $appreciation;
 
 
 
@@ -152,54 +148,6 @@ class Note
     public function getParticipation()
     {
         return $this->participation;
-    }
-
-    /**
-     * Set appreciationFr
-     *
-     * @param string $appreciationFr
-     *
-     * @return Note
-     */
-    public function setAppreciationFr($appreciationFr)
-    {
-        $this->appreciationFr = $appreciationFr;
-
-        return $this;
-    }
-
-    /**
-     * Get appreciationFr
-     *
-     * @return string
-     */
-    public function getAppreciationFr()
-    {
-        return $this->appreciationFr;
-    }
-
-    /**
-     * Set appreciationAr
-     *
-     * @param string $appreciationAr
-     *
-     * @return Note
-     */
-    public function setAppreciationAr($appreciationAr)
-    {
-        $this->appreciationAr = $appreciationAr;
-
-        return $this;
-    }
-
-    /**
-     * Get appreciationAr
-     *
-     * @return string
-     */
-    public function getAppreciationAr()
-    {
-        return $this->appreciationAr;
     }
 
     /**
@@ -320,6 +268,30 @@ class Note
     public function getMatiere()
     {
         return $this->matiere;
+    }
+
+    /**
+     * Set appreciation
+     *
+     * @param \ISI\ISIBundle\Entity\Appreciation $appreciation
+     *
+     * @return Note
+     */
+    public function setAppreciation(\ISI\ISIBundle\Entity\Appreciation $appreciation = null)
+    {
+        $this->appreciation = $appreciation;
+
+        return $this;
+    }
+
+    /**
+     * Get appreciation
+     *
+     * @return \ISI\ISIBundle\Entity\Appreciation
+     */
+    public function getAppreciation()
+    {
+        return $this->appreciation;
     }
 
     // Fonction de tri de tableau d'objets

@@ -60,6 +60,33 @@ isi_inscription:
         as:      \d+
         regime:  A|F|C
 
+#Route pour l'inscription des élèves d'une classe
+isi_flash_inscription:
+    path:     /flash-inscription-{as}-{regime}.html
+    defaults:
+        _controller: ISIBundle:Eleve:flashInscription
+    requirements:
+        as:      \d+
+        regime:  A|F|C
+
+isi_flash_inscription_d_une_classe:
+    path:     /flash-inscription-d-une-classe-{as}-{regime}-{classeId}.html
+    defaults:
+        _controller: ISIBundle:Eleve:flashInscriptionDUneClasse
+    requirements:
+        as:       \d+
+        regime:   A|F|C
+        classeId: \d+
+
+isi_appliquer_flash_inscription:
+    path:     /execution-de-la-flash-inscription-d-une-classe-{as}-{regime}-{classeId}.html
+    defaults:
+        _controller: ISIBundle:Eleve:executerFlashInscription
+    requirements:
+        as:       \d+
+        regime:   A|F|C
+        classeId: \d+
+
 # Route pour afficher la liste des élèves renvoyés
 isi_eleves_renvoyes:
     path:     /eleves-renvoyes-{as}-{regime}.html

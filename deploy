@@ -1,0 +1,2 @@
+rsync -avp ./ youstra@192.168.1.250:C:/xampp/htdocs/markaz --exclude=.git --exclude=app/config --exclude=vendor --exclude=web --exclude=var --exclude-from=.gitignore --exclude=src/ISI/ORGBundle/Resources/views/Mosquee/.git
+#C:\xampp\htdocs\markaz\var\cache>

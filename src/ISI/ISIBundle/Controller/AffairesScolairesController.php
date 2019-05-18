@@ -986,15 +986,15 @@ class AffairesScolairesController extends Controller
       $data    = $request->request->all();
       $classes = $data['classe'];
 
-    /**
-     * Quand l'année scolaire est finie, on doit plus faire des
-     * mofications, des mises à jour
-     **/
-    if($annee->getAchevee() == TRUE)
-    {
-      $request->getSession()->getFlashBag()->add('error', 'Impossible de faire le réaménagement car l\'année scolaire '.$annee->getLibelleAnneeScolaire().' est achevée.');
-      return $this->redirect($this->generateUrl('isi_reamenager_classes_home', ['as' => $as, 'regime' => $regime]));
-    }
+      /**
+       * Quand l'année scolaire est finie, on doit plus faire des
+       * mofications, des mises à jour
+       **/
+      if($annee->getAchevee() == TRUE)
+      {
+        $request->getSession()->getFlashBag()->add('error', 'Impossible de faire le réaménagement car l\'année scolaire '.$annee->getLibelleAnneeScolaire().' est achevée.');
+        return $this->redirect($this->generateUrl('isi_reamenager_classes_home', ['as' => $as, 'regime' => $regime]));
+      }
 
       /**
        * On va créer une variable qui s'appelle $bool. Sa valeur initiale est false.

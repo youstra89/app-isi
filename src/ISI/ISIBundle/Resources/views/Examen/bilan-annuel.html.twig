@@ -59,6 +59,7 @@
                         <th colspan="3" align="center">Effectif</th>
                         <th colspan="3" align="center">Admis</th>
                         <th colspan="3" align="center">Recalés</th>
+                        <th rowspan="2">Taux d'admis</th>
                     </tr>
                     <tr>
                         <th>
@@ -105,6 +106,7 @@
                                     <td>{{ nvo.totalRecalesM }}</td>
                                     <td>{{ nvo.totalRecalesF }}</td>
                                     <td>{{ nvo.totalRecalesM + nvo.totalRecalesF }}</td>
+                                    <td>{{ nvo.pourcentageAdmis|number_format(2, ',') }} %</td>
                                 </tr>
                             {% endif %} 
                         {% endfor %} 

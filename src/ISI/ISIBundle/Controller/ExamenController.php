@@ -25,6 +25,7 @@ use ISI\ISIBundle\Entity\Examen;
 use ISI\ISIBundle\Entity\Matiere;
 use ISI\ISIBundle\Entity\Moyenne;
 use ISI\ISIBundle\Entity\Enseignement;
+use ISI\ISIBundle\Entity\Appreciation;
 use ISI\ISIBundle\Entity\Moyenneclasse;
 use ISI\ISIBundle\Entity\Anneescolaire;
 use ISI\ISIBundle\Entity\FrequenterMatiere;
@@ -34,6 +35,7 @@ use ISI\ISIBundle\Repository\NiveauRepository;
 use ISI\ISIBundle\Repository\MoyenneRepository;
 use ISI\ISIBundle\Repository\MatiereRepository;
 use ISI\ISIBundle\Repository\AnneescolaireRepository;
+use ISI\ISIBundle\Repository\AppreciationRepository;
 
 use ISI\ISIBundle\Form\NoteType;
 use ISI\ISIBundle\Form\NotesType;
@@ -159,6 +161,15 @@ class ExamenController extends Controller
     );
   }
 
+  public static function dateToFrench($date, $format) 
+  {
+      $english_days = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+      $french_days = array('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche');
+      $english_months = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+      $french_months = array('Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre');
+      return str_replace($english_months, $french_months, str_replace($english_days, $french_days, date($format, strtotime($date) ) ) );
+  }
+
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
@@ -197,8 +208,8 @@ class ExamenController extends Controller
 
     // Je sélectionne ici les notes d'un élèves donné et je les envoie au template pour que si l'on se rend compte
     // qu'il existe déjà une note, on grise la matière de de ne plus permettre la saisie de notes
-    $notesDUnEleve   = $repoNote->findBy(['examen' => $examenId, 'eleve' => $eleves[0]->getEleveId()]);
-    $moyenneDUnEleve = $repoMoyenne->findOneBy(['examen' => $examenId, 'eleve' => $eleves[0]->getEleveId()]);
+    $notesDUnEleve   = $repoNote->findBy(['examen' => $examenId, 'eleve' => $eleves[0]['eleveId']]);
+    $moyenneDUnEleve = $repoMoyenne->findOneBy(['examen' => $examenId, 'eleve' => $eleves[0]['eleveId']]);
 
     /**
      * Alors, ce que nous allons faire ici, ... C'est simple.
@@ -223,7 +234,7 @@ class ExamenController extends Controller
     $idsMatiereSansNote = array_diff($idsMatieres, $idsMatiereAvecNote);
     foreach ($idsMatiereSansNote as $mat) {
       $matiereSansNote[] = $repoMatiere->find($mat);
-      // $matiereSansNote[] = $repoNote->findOneBy(['examen' => $examenId, 'eleve' => $eleves[0]->getEleveId(), 'matiere' => $mat]);
+      // $matiereSansNote[] = $repoNote->findOneBy(['examen' => $examenId, 'eleve' => $eleves[0]['eleveId'], 'matiere' => $mat]);
     }
     /********* *    Fin de la sélection des matières ou les élèves n'on pas encore eu de note    **********/
 
@@ -242,13 +253,47 @@ class ExamenController extends Controller
     ]);
   }
 
+  public function findAppreciation($noteEleve, int $total)
+  {
+    if($total == 20){
+      $noteEleve = $noteEleve / 2;
+    }
+
+    if(empty($noteEleve)){
+      $noteEleve = 0;
+    }
+
+    switch ($noteEleve) {
+      case $noteEleve < 5:
+        $appreciation = 1;
+        break;
+      
+      case $noteEleve >= 5 && $noteEleve < 6:
+        $appreciation = 2;
+        break;
+      
+      case $noteEleve >= 6 && $noteEleve < 8:
+        $appreciation = 3;
+        break;
+      
+      case $noteEleve >= 8 && $noteEleve < 9:
+        $appreciation = 4;
+        break;
+        
+      default:
+        $appreciation = 5;
+        break;
+    }
+
+    return $appreciation;
+  }
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
   public function enregistrerNotesAction(Request $request, $as, $regime, $classeId, $examenId, $matiereId)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAppreciation = $em->getRepository('ISIBundle:Appreciation');
     $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
     $repoEleve   = $em->getRepository('ISIBundle:Eleve');
     $repoExamen  = $em->getRepository('ISIBundle:Examen');
@@ -262,7 +307,7 @@ class ExamenController extends Controller
     $examen  = $repoExamen->findOneBy(['examenId'   => $examenId]);
     $matiere = $repoMatiere->findOneBy(['matiereId' => $matiereId]);
     $classe  = $repoClasse->findOneBy(['classeId'   => $classeId]);
-    $moyenne = $repoMoyenne->findOneBy(['eleve' => $eleves[0]->getEleveId(), 'examen' => $examenId]);
+    $moyenne = $repoMoyenne->findOneBy(['eleve' => $eleves[0]['eleveId'], 'examen' => $examenId]);
     /**************************---------------------------********************************
      * Je vais créer un variable booléen et la passé en paramètre à url. Sa valeur initial
      * est 0. Son rôle sera de tester la première visite de cette page. Alors, si nous
@@ -351,26 +396,9 @@ class ExamenController extends Controller
             $note = $repoNote->findOneBy(['examen' => $examenId, 'eleve' => $key, 'matiere' => $matiereId]);
 
             // On va déterminer l'appréciation de la note obtenue
-            if($noteEleve < 5){
-              $note->setAppreciationFr('Faible');
-              $note->setAppreciationAr('ضعيف');
-            }
-            elseif ($noteEleve >= 5 && $noteEleve < 6) {
-              $note->setAppreciationFr('Passable');
-              $note->setAppreciationAr('مقبول');
-            }
-            elseif ($noteEleve >= 6 && $noteEleve < 8) {
-              $note->setAppreciationFr('Bien');
-              $note->setAppreciationAr('جيد');
-            }
-            elseif ($noteEleve >= 8 && $noteEleve < 9) {
-              $note->setAppreciationFr('Très bien');
-              $note->setAppreciationAr('جيد جدا');
-            }
-            elseif ($noteEleve >= 9 && $noteEleve <= 10) {
-              $note->setAppreciationFr('Excellent');
-              $note->setAppreciationAr('ممتاز');
-            }
+            $appreciationId = $this->findAppreciation($noteEleve, 10);
+            $appreciation = $repoAppreciation->find($appreciationId);
+            $note->setAppreciation($appreciation);
 
             // Cette condition me permet de savoir si l'élève à composé dans la matière ou non
             if($noteEleve == 0 && strlen($noteEleve) <= 1)
@@ -422,6 +450,7 @@ class ExamenController extends Controller
   public function editerNotesAction(Request $request, $as, $regime, $classeId, $examenId, $matiereId)
   {
     $em = $this->getDoctrine()->getManager();
+    $repoAppreciation = $em->getRepository('ISIBundle:Appreciation');
     $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
     $repoEleve   = $em->getRepository('ISIBundle:Eleve');
     $repoExamen  = $em->getRepository('ISIBundle:Examen');
@@ -437,7 +466,7 @@ class ExamenController extends Controller
     $eleves  = $repoEleve->lesElevesDeLaClasse($as, $classeId);
     $examen  = $repoExamen->findOneBy(['examenId' => $examenId]);
     $matiere = $repoMatiere->findOneBy(['matiereId' => $matiereId]);
-    $moyenne = $repoMoyenne->findOneBy(['eleve' => $eleves[0]->getEleveId(), 'examen' => $examenId]);
+    $moyenne = $repoMoyenne->findOneBy(['eleve' => $eleves[0]['eleveId'], 'examen' => $examenId]);
     $classe  = $repoClasse->findOneBy(['classeId' => $classeId]);
     $moyenneClasse = $repoMoyenneclasse->findOneBy(["classe" => $classeId, "examen" => $examenId]);
 
@@ -491,26 +520,9 @@ class ExamenController extends Controller
             if($note->getNote() != $noteEleve)
             {
               $noteMAJ = $noteMAJ + 1;
-              if($noteEleve < 5){
-                $note->setAppreciationFr('Faible');
-                $note->setAppreciationAr('ضعيف');
-              }
-              elseif ($noteEleve >= 5 && $noteEleve < 6) {
-                $note->setAppreciationFr('Passable');
-                $note->setAppreciationAr('مقبول');
-              }
-              elseif ($noteEleve >= 6 && $noteEleve < 8) {
-                $note->setAppreciationFr('Bien');
-                $note->setAppreciationAr('جيد');
-              }
-              elseif ($noteEleve >= 8 && $noteEleve < 9) {
-                $note->setAppreciationFr('Très bien');
-                $note->setAppreciationAr('جيد جدا');
-              }
-              elseif ($noteEleve >= 9 && $noteEleve <= 10) {
-                $note->setAppreciationFr('Excellent');
-                $note->setAppreciationAr('ممتاز');
-              }
+              $appreciationId = $this->findAppreciation($noteEleve, 10);
+              $appreciation = $repoAppreciation->find($appreciationId);
+              $note->setAppreciation($appreciation);
               // Cette condition me permet de savoir si l'élève à composé dans la matière ou non
               if($noteEleve == 0 && strlen($noteEleve) == 1)
               {
@@ -820,8 +832,8 @@ class ExamenController extends Controller
     // Pour cela je crée une variable qui compte le nombre de note null.
     $noteNull  = 0;
     $tableNote = [];
-    $notesDUnEleve1 = $repoNote->findBy(['examen' => $examenId - 1, 'eleve' => $eleves[0]->getEleveId()]);
-    $notesDUnEleve2 = $repoNote->findBy(['examen' => $examenId, 'eleve' => $eleves[0]->getEleveId()]);
+    $notesDUnEleve1 = $repoNote->findBy(['examen' => $examenId - 1, 'eleve' => $eleves[0]['eleveId']]);
+    $notesDUnEleve2 = $repoNote->findBy(['examen' => $examenId, 'eleve' => $eleves[0]['eleveId']]);
     /**
      * Lorsque la valeur de $noteNull vaut 0, on pourra commencer le calcul des moyennes.
      * Sinon, on refuse le calcul
@@ -836,7 +848,7 @@ class ExamenController extends Controller
     if($noteNull != 0)
     {
       $request->getSession()->getFlashBag()->add('error', 'Toutes les notes n\'ont pas encore été saisies.');
-      // return new Response(var_dump($tableNote, $eleves[0]->getEleveId(), $eleves[0]->getNomFr()));
+      // return new Response(var_dump($tableNote, $eleves[0]['eleveId'], $eleves[0]->getNomFr()));
       return $this->redirect($this->generateUrl('isi_resultats_d_examens', ['as' => $as, 'regime' => $regime]));
     }
 
@@ -1175,7 +1187,7 @@ class ExamenController extends Controller
     // On va profiter pour calculer la moyenne annuelle de chaque élève
     // Ici, il faudra faire un test pour voir si les moyennes annuelles ont été calculées ou pas.
     // Si elles sont calculées, alors la valeur de $moyennesPretes passera à TRUE
-    $moyenneAnnuelleDUnEleve = $repoMoyenne->findOneBy(['examen' => $examenId, 'eleve' => $eleves[0]->getEleveId()]);
+    $moyenneAnnuelleDUnEleve = $repoMoyenne->findOneBy(['examen' => $examenId, 'eleve' => $eleves[0]['eleveId']]);
     $moyennesPretes = (is_null($moyenneAnnuelleDUnEleve->getMoyenneAnnuelle())) ? FALSE : TRUE ;
     return $this->render('ISIBundle:Examen:resultats-annuels-de-la-classe.html.twig', [
       'asec'   => $as,
@@ -1220,10 +1232,11 @@ class ExamenController extends Controller
     // On va calculer les moyennes annuelles et faire le classement annuel
     // Séance 1:
     // On sélectionne d'abord les élèves de la classe
+    
     $eleves = $repoEleve->lesElevesDeLaClasse($as, $classeId);
-    // return new Response(var_dump($eleves));
+    // return new Response(var_dump(json_encode($eleves)));
 
-    $moyenneDUnEleve = $repoMoyenne->findOneBy(['examen' => $examenId, 'eleve' => $eleves[0]->getEleveId()]);
+    $moyenneDUnEleve = $repoMoyenne->findOneBy(['examen' => $examenId, 'eleve' => $eleves[0]['eleveId']]);
     // return new Response(var_dump($moyenneDUnEleve));
     // Séance 2:
     // Pour chaque élève, on va sélectionner les notes de la première et de la session de l'année et les entités Frequenter
@@ -1232,7 +1245,7 @@ class ExamenController extends Controller
       $moyennes = [];
       foreach($eleves as $eleve)
       {
-        $eleveId = $eleve->getEleveId();
+        $eleveId = $eleve['eleveId'];
         $totalMoyennesDesDifferentesMatieres = 0;
         $moyenne = $repoMoyenne->findOneBy(['examen' => $examenId, 'eleve' => $eleveId]);
         // On va calculer les moyennes annuelles ici
@@ -1435,7 +1448,7 @@ class ExamenController extends Controller
       $moyennes = [];
       foreach($eleves as $eleve)
       {
-        $moyennes[] = $repoMoyenne->findOneBy(['examen' => $examenId, 'eleve' => $eleve->getEleveId()]);
+        $moyennes[] = $repoMoyenne->findOneBy(['examen' => $examenId, 'eleve' => $eleve['eleveId']]);
       }
 
       // On fait encore un arrangement dans l'ordre décroissant des moyennes
@@ -1666,9 +1679,13 @@ class ExamenController extends Controller
     // $snappy->setOption("orientation", "Landscape");
     $filename = "moyenne-annuelle-des-eleves-".$classe->getNiveau()->getLibelleFr()."-".$classe->getLibelleClasseFr();
 
+    $date = $examens[1]->getDateProclamationResultats();
+    $dt = strftime("%A %d %B %G", strtotime(date_format($date, 'd F Y')));
+    $dt = $this->dateToFrench($dt, "l j F Y");
 
     // $html = $this->renderView('../../../../scr/ISIBundle/Resources/views/Scolarite/liste-de-la-classe.html.twig', [
     $html = $this->renderView('ISIBundle:Examen:bulletins-moyennes-annuelles.html.twig', [
+      'dt'         => $dt,
       'asec'       => $as,
       'regime'     => $regime,
       'examen'     => $examens[1],
@@ -1729,10 +1746,15 @@ class ExamenController extends Controller
     $snappy = $this->get("knp_snappy.pdf");
     $snappy->setOption("encoding", "UTF-8");
     // $snappy->setOption("orientation", "Landscape");
-    $filename = "moyenne-annuelle-de-".$eleve->getNomFr()."-".$eleve->getPnomFr();
+    $filename = $classe->getLibelleClasseFr()." --- moyenne-annuelle-de-".$eleve->getNomFr()."-".$eleve->getPnomFr();
+    
+    $date = $examens[1]->getDateProclamationResultats();
+    $dt = strftime("%A %d %B %G", strtotime(date_format($date, 'd F Y')));
+    $dt = $this->dateToFrench($dt, "l j F Y");
 
     // $html = $this->renderView('../../../../scr/ISIBundle/Resources/views/Scolarite/liste-de-la-classe.html.twig', [
     $html = $this->renderView('ISIBundle:Examen:bulletin-moyenne-annuelle-d-un-eleve.html.twig', [
+      'dt'       => $dt,
       'asec'     => $as,
       'regime'   => $regime,
       'moyenne'  => $moyenne,
@@ -1829,12 +1851,12 @@ class ExamenController extends Controller
      * Si $notesDUnEleve < $ens alors on refuse de les résultats.
     */
     $ens           = $repoEnseignement->findBy(['anneeScolaire' => $as, 'niveau' => $niveauId]);
-    $notesDUnEleve = $repoNote->findBy(['examen' => $examenId, 'eleve' => $eleves[0]->getEleveId()]);
+    $notesDUnEleve = $repoNote->findBy(['examen' => $examenId, 'eleve' => $eleves[0]['eleveId']]);
     // return new Response(var_dump(count($notesDUnEleve), count($ens)));
     if(count($notesDUnEleve) < count($ens))
     {
       $request->getSession()->getFlashBag()->add('error', 'Vous ne pouvez pas voir les résultats. Toutes les notes de la session '.$examen->getSession().' n\'ont pas encore été saisies en '.$classe->getNiveau()->getLibelleFr().' - '.$classe->getLibelleClasseFr().'.');
-      // return new Response(var_dump($tableNote, $eleves[0]->getEleveId(), $eleves[0]->getNomFr()));
+      // return new Response(var_dump($tableNote, $eleves[0]['eleveId'], $eleves[0]->getNomFr()));
       return $this->redirect($this->generateUrl('isi_resultats_d_examens', ['as' => $as, 'regime' => $regime]));
     }
 
@@ -1842,18 +1864,30 @@ class ExamenController extends Controller
      * cela signifie que les calculs n'ont pas enore été effectués: à savoir la moyenne et le rang.
      * Donc dans ce cas on procède aux calculs des moyennes et ensuite à celui des rangs
      */
-    $moyenneDUnEleve = $repoMoyenne->findOneBy(['examen' => $examenId, 'eleve' => $eleves[0]->getEleveId()]);
+    $moyenneDUnEleve = $repoMoyenne->findOneBy(['examen' => $examenId, 'eleve' => $eleves[0]['eleveId']]);
 
     /**
      * Si la session de l'examen en cours = 2 et que $moyenneDUnEleve = NULL
      * on va demander à l'utilisateur de calculer d'abord la moyenne annuelle
      * dans la rubrique "Résultats annuels"
      */
-    if($examen->getSession() == 2 && empty($moyenneDUnEleve))
+    if(!empty($moyenneDUnEleve))
     {
+      if($examen->getSession() == 2 && empty($moyenneDUnEleve->getMoyenne()))
+      {
+        // return new Response("Retour 1");
+        $request->getSession()->getFlashBag()->add('error', 'Vous devez calculer les résultats dans la "Résultats annuels".');
+        return $this->redirect($this->generateUrl('isi_resultats_annuels', ['as' => $as, 'regime' => $regime]));
+      }
+    }
+    elseif($examen->getSession() == 2)
+    {
+      // return new Response("Retour 2");
       $request->getSession()->getFlashBag()->add('error', 'Vous devez calculer les résultats dans la "Résultats annuels".');
       return $this->redirect($this->generateUrl('isi_resultats_annuels', ['as' => $as, 'regime' => $regime]));
     }
+
+    // return new Response("Retour 3");
 
     /* Quand on arrive sur cette page pour la première fois, les moyennes ne sont pas encore caldulées
      // C'est pour cela que je fais une sérification, si la moyenne d'un élève vaut null, on procède au calcul des moyennes
@@ -2067,7 +2101,7 @@ class ExamenController extends Controller
       }
       // ****************  1 - Première étape - 1   ***************** //
       // A ce niveau toutes les moyennes sont enregistrées. On boucle encore sur les moyenne pour
-      // les ranger du plus grand au plu petit. Al hamdoulillah la fonction array_multisort permet
+      // les ranger du plus grand au plus petit. Al hamdoulillah la fonction array_multisort permet
       // de gérer cela efficacement
       foreach ($moyennes as $key => $moyenne) {
         $valeur_moyenne[$key]  = $moyenne->getMoyenne();
@@ -2228,11 +2262,17 @@ class ExamenController extends Controller
     $moyenneclasse  = $repoMoyenneclasse->findOneBy(['examen' => $examenId, 'classe' => $classeId]);
     $effectif = $moyenneclasse->getAdmis() + $moyenneclasse->getRecales();
 
+    $date = $examen->getDateProclamationResultats();
+    $dt = strftime("%A %d %B %G", strtotime(date_format($date, 'd F Y')));
+    $dt = $this->dateToFrench($dt, "l j F Y");
+
     $notes     = $repoNote->findBy(['examen' => $examenId, 'eleve' => $eleveId]);
     $html = $this->renderView('ISIBundle:Examen:bulletin.html.twig', [
+      'dt'       => $dt,
       'asec'     => $as,
       'regime'   => $regime,
       'annee'    => $annee,
+      'eleve'    => $eleve,
       'classe'   => $classe,
       'examen'   => $examen,
       'notes'    => $notes,
@@ -2286,11 +2326,15 @@ class ExamenController extends Controller
     }
     array_multisort($valeur_moyenne, SORT_DESC, $id, SORT_ASC, $moyennes);
 
+    $date = $examen->getDateProclamationResultats();
+    $dt = strftime("%A %d %B %G", strtotime(date_format($date, 'd F Y')));
+    $dt = $this->dateToFrench($dt, "l j F Y");
     $data = [];
     foreach($moyennes as $moy)
     {
       $notes     = $repoNote->findBy(['examen' => $examenId, 'eleve' => $moy->getEleve()->getEleveId()]);
       $html = $this->renderView('ISIBundle:Examen:bulletin.html.twig', [
+        'dt'       => $dt,
         'asec'     => $as,
         'regime'   => $regime,
         'annee'    => $annee,
@@ -2371,6 +2415,9 @@ class ExamenController extends Controller
       }
       $moyennes = $halfEleves;
     }
+    $date = $examen->getDateProclamationResultats();
+    $dt = strftime("%A %d %B %G", strtotime(date_format($date, 'd F Y')));
+    $dt = $this->dateToFrench($dt, "l j F Y");
 
     $snappy = $this->get("knp_snappy.pdf");
     $snappy->setOption("encoding", "UTF-8");
@@ -2381,6 +2428,7 @@ class ExamenController extends Controller
     // $html = $this->renderView('../../../../scr/ISIBundle/Resources/views/Scolarite/liste-de-la-classe.html.twig', [
     $html = $this->renderView('ISIBundle:Examen:bulletins-des-eleves.html.twig', [
       // "title" => "Titre de mon document",
+      'dt'       => $dt,
       'asec'     => $as,
       'regime'   => $regime,
       'annee'    => $annee,
@@ -2550,6 +2598,7 @@ class ExamenController extends Controller
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee      = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoEleve     = $em->getRepository('ISIBundle:Eleve');
     $repoNiveau     = $em->getRepository('ISIBundle:Niveau');
     $repoClasse     = $em->getRepository('ISIBundle:Classe');
     $repoExamen     = $em->getRepository('ISIBundle:Examen');
@@ -2576,9 +2625,10 @@ class ExamenController extends Controller
       if ($fq->getAdmission() == NULL) {
         # code...
         $nbr++;
+        // return new Response(var_dump($fq->getEleve()));
       }
     }
-
+    // return new Response(var_dump($nbr));
     if ($nbr != 0) {
       # code...
       $request->getSession()->getFlashBag()->add('error', 'Le bilan annuel ne peut être fait car tous les résultats annuels ne sont pas disponibles.');
@@ -2601,6 +2651,7 @@ class ExamenController extends Controller
     $statistiquesClasses = [];
     $statistiquesNiveaux = [];
     foreach ($niveaux as $niveau) {
+
       # code...
       $effectifNiveau = 0;
       $totalFeminin = 0;
@@ -2637,12 +2688,12 @@ class ExamenController extends Controller
               $totalFemininAdmisNiveau++;
             }
 
-            if ($fq->getEleve()->getSexeFr() == 1 and $fq->getAdmission() != 1) {
+            if ($fq->getEleve()->getSexeFr() == 1 and $fq->getAdmission() == 0) {
               # code...
               $recalesClasse++;
               $nbrTotalRecalesMasculin++;
               $totalMasculinRecalesNiveau++;
-            } elseif ($fq->getEleve()->getSexeFr() == 2 and $fq->getAdmission() != 1) {
+            } elseif ($fq->getEleve()->getSexeFr() == 2 and $fq->getAdmission() == 0) {
               # code...
               $recalesClasse++;
               $nbrTotalRecalesFeminin++;
@@ -2659,21 +2710,29 @@ class ExamenController extends Controller
         // return new Response(var_dump($statistiquesClassesF));
       }// Fin de foreach $classesF
       // return new Response(var_dump($statistiquesClassesF));
+
       /* Il faut créer un tableau à cet enfroit pour enregistrer pour chaque niveau les stats */
       $totalAdmisNiveau = $totalMasculinAdmisNiveau + $totalFemininAdmisNiveau;
       $recalesNiveau = $effectifNiveau - $totalAdmisNiveau;
-      $statistiquesNiveaux[$i++] = [
-        "id" => $niveau->getId(),
-        "niveau" => $niveau->getLibelleFr(),
-        "totalM" => $totalMasculin,
-        "totalF" => $totalFeminin,
-        "totalAdmisM" => $totalMasculinAdmisNiveau,
-        "totalAdmisF" => $totalFemininAdmisNiveau,
-        "totalRecalesM" => $totalMasculinRecalesNiveau,
-        "totalRecalesF" => $totalFemininRecalesNiveau,
-        "effectif" => $effectifNiveau,
-        "admis" => $totalAdmisNiveau,
-        "recales" => $recalesNiveau ] ;
+      // On va déterminer ici le pourcentage d'admis de chaque niveau
+      if ($effectifNiveau != 0) {
+        # code...
+        $pourcentage = ($totalAdmisNiveau * 100) / $effectifNiveau;
+        $statistiquesNiveaux[$i++] = [
+          "id" => $niveau->getId(),
+          "niveau" => $niveau->getLibelleFr(),
+          "totalM" => $totalMasculin,
+          "totalF" => $totalFeminin,
+          "totalAdmisM" => $totalMasculinAdmisNiveau,
+          "totalAdmisF" => $totalFemininAdmisNiveau,
+          "totalRecalesM" => $totalMasculinRecalesNiveau,
+          "totalRecalesF" => $totalFemininRecalesNiveau,
+          "effectif" => $effectifNiveau,
+          "admis" => $totalAdmisNiveau,
+          "recales" => $recalesNiveau,
+          "pourcentageAdmis" => $pourcentage ] ;
+      }
+      
     }// Fin de foreach $niveaux
     // return new Response(var_dump($statistiquesClassesF));
 

@@ -1,0 +1,92 @@
+{% extends 'ISIBundle:Eleve:index.html.twig' %}
+
+{% block pageTitle %}
+    Flash inscription de {{ classe.niveau.libelleFr }} - {{ classe.libelleClasseFr}}
+{% endblock %}
+
+{% block content %}
+    {% set grp = '' %}
+    {% if regime is same as('A') %}
+      {% set grp = 'Académie' %}
+    {% else %}
+      {% set grp = 'Formation' %}
+    {% endif %}
+
+    <h3>{{ 'Flash inscription de la classe'|trans }} {{ classe.libelleClasseFr}} </h3>
+    {% if frequenter|length == 0 %}
+        <p>Tous les élèves de cette classe sont déjà inscrits</p>
+    {% else %}
+        <form class="ui form" action="{{ path('isi_appliquer_flash_inscription', {'as': asec, 'regime': regime, 'classeId': classe.classeId}) }}" method="post">
+            <button class="ui small primary labeled icon button">
+            <i class="save icon"></i> {{ 'Appliquer les changements'|trans }}
+            </button>
+            <table class="ui very basic table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Avatar</th>
+                        <th>Matricule</th>
+                        <th>Nom & Prénom</th>
+                        <th>Classe</th>
+                        {% if regime == 'A' %}
+                            <th>Halaqa</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set i = 0 %}
+                    {% for fq in frequenter %}
+                        {% set i = i + 1 %}
+                        {% set class = '' %}
+                        {% if fq.admission == FALSE %}
+                            {% set class = 'error' %}
+                        {% endif %}
+                        <tr class="{{ class }}">
+                            <td>{{ i }}</td> 
+                            <td><img class="ui avatar image" src="/markaz/web/images/logoISI-x.png" /></td> 
+                            <td>{{ fq.eleve.matricule }}</td> 
+                            <td>{{ fq.eleve.nomFr }} {{ fq.eleve.pnomFr }}</td> 
+                            <td>
+                                {% if fq.admission == TRUE %}
+                                    <select class="ui fluid dropdown" name="classe[{{ fq.eleve.eleveId }}]">
+                                        <option value="">{{ 'Sélectionner une classe'|trans }}</option>
+                                        {% for cl in classesSup %}
+                                            {% if cl.genre == 'M' or (cl.genre == 'H' and fq.eleve.sexeFr == 1) or (cl.genre == 'F' and fq.eleve.sexeFr == 2) %}
+                                                <option value="{{ cl.classeId }}">{{ cl.libelleClasseFr }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                {% else %}
+                                    <select class="ui fluid dropdown" name="classe[{{ fq.eleve.eleveId }}]">
+                                        <option value="">{{ 'Sélectionner une classe'|trans }}</option>
+                                        {% for cl in classesR %}
+                                            {% if cl.genre == 'M' or (cl.genre == 'H' and fq.eleve.sexeFr == 1) or (cl.genre == 'F' and fq.eleve.sexeFr == 2) %}
+                                                <option value="{{ cl.classeId }}">{{ cl.libelleClasseFr }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                {% endif %}
+                            </td> 
+                            {% if regime == 'A' %}
+                                <td>
+                                    <select class="ui fluid dropdown" name="halaqa[{{ fq.eleve.eleveId }}]">
+                                        <option value="">{{ 'Sélectionner une halaqa'|trans }}</option>
+                                        {% for halaqa in halaqas %}
+                                            {% if halaqa.genre == 'M' or (halaqa.genre == 'H' and fq.eleve.sexeFr == 1) or (halaqa.genre == 'F' and fq.eleve.sexeFr == 2) %}
+                                                <option value="{{ halaqa.id }}">{{ halaqa.libelleHalaqa }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </td> 
+                            {% endif %}
+                        </tr>
+                    {% endfor %}               
+                <tbody>
+            <table>
+            <input type="hidden" name="effectif" value="{{ frequenter|length }}">
+            <button class="ui right floated small primary labeled icon massive button">
+            <i class="save icon"></i> {{ 'Appliquer les changements'|trans }}
+            </button>
+        </form>
+    {% endif %}
+{% endblock %}

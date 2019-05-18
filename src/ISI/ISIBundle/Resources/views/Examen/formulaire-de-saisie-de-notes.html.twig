@@ -35,7 +35,9 @@
 				</div>
 				{# {{dump(notes)}} #}
 				{% set num = 0 %}
+				{% set i = 0 %}
 				{% for eleve in eleves %}
+					{% set i = i + 1 %}
 					{% set image = "" %}
 					{% if eleve.sexeFr == 1 %}
 						{% set image = "/markaz/web/images/mark.png" %}
@@ -55,7 +57,7 @@
 									</div>
 								</div>
 								<img class="ui avatar image" src="{{ image }}">
-								<div class="content">{{ eleve.matricule }} <i class="right chevron icon"></i> <strong>{{eleve.nomFr}} {{eleve.pnomFr}}</strong></div>
+								<div class="content"><span class="ui violet circular label">{{ i }}</span><i class="right chevron icon"></i>{{ eleve.matricule }} <i class="right chevron icon"></i> <strong>{{eleve.nomFr}} {{eleve.pnomFr}}</strong></div>
 							</div>
 						{% endif %}
 					{% endfor %}

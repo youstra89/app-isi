@@ -1,5 +1,5 @@
 <?php
-    $db = new PDO("mysql:host=localhost; dbname=database", "root", "");
+    $db = new PDO("mysql:host=localhost; dbname=drdiallooo", "phpmyadmin", "root");
 ?>
 <!DOCTYPE>
 <html>
@@ -9,18 +9,45 @@
     </head>
     <body>
         <h1>Les élèves à qui il manque quelques notes...</h1>
-        <?php
-
-        ?>
         <form action="" name="" method="post">
             <label for="annee">Entrez l'identifiant de l'année:</label>
-            <input type="integer" id="annee" name="annee" value="1">
+            <select id="annee" name="annee">
+                <option>Choisir l'année</option>
+                <?php
+                    $requeteAnnee = 'SELECT * FROM anneescolaire';
+                    $requete    = $db->query($requeteAnnee);
+                    $annees   = $requete->fetchAll();
+                    foreach ($annees as $an) {
+                        echo '<option value="'.$an[0].'">'.$an[1].'</option>';
+                    }
+                ?>
+            </select>
             <br>
             <label for="niveau">Entrez l'identifiant d'un niveau:</label>
-            <input type="integer" id="niveau" name="niveau">
+            <select id="niveau" name="niveau">
+                <option>Choisir le niveau</option>
+                <?php
+                    $requeteNiveau = 'SELECT * FROM niveau';
+                    $requete    = $db->query($requeteNiveau);
+                    $niveaux   = $requete->fetchAll();
+                    foreach ($niveaux as $niv) {
+                        echo '<option value="'.$niv[0].'">'.$niv[1].'</option>';
+                    }
+                ?>
+            </select>
             <br>
             <label for="examen">Entrez l'identifiant de l'examen:</label>
-            <input type="integer" id="examen" name="examen" value="1">
+            <select id="examen" name="examen">
+                <option>Choisir l'examen</option>
+                <?php
+                    $requeteExamen = 'SELECT e.examen_id, a.libelle_annee_scolaire, e.libelle_fr, e.session FROM examen e JOIN anneescolaire a ON a.annee_scolaire_id = e.annee_scolaire_id';
+                    $requete    = $db->query($requeteExamen);
+                    $examens   = $requete->fetchAll();
+                    foreach ($examens as $examen) {
+                        echo '<option value="'.$examen[0].'">'.$examen[1].' '.$examen[2].'</option>';
+                    }
+                ?>
+            </select>
             <br><br>
             <input type="submit" value=" Afficher les élèves " class="ui primary button" name="sms">
         </form>

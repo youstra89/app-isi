@@ -123,6 +123,20 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
   // génération de la liste de classe en pdf
   public function lesElevesDeLaClasse($as, $classeId)
   {
+    $em = $this->getEntityManager();
+    $sql = 'SELECT e.eleve_id AS eleveId, e.matricule AS matricule, e.nom_fr AS nomFr, e.pnom_fr AS pnomFr, e.nom_ar AS nomAr, e.pnom_ar AS pnomAr, e.sexe_fr AS sexeFr, IF(er.eleve IS NULL, FALSE, TRUE) AS renvoye FROM eleve_renvoye er RIGHT JOIN eleve e ON er.eleve = e.eleve_id AND er.annee_scolaire = :an JOIN frequenter f ON f.eleve_id = e.eleve_id JOIN classe c ON c.classe_id = f.classe_id WHERE f.annee_scolaire_id = :an AND c.classe_id = :classeId;';
+    $statement = $em->getConnection()->prepare($sql);
+    $statement->bindValue('classeId', $classeId);
+    $statement->bindValue('an', $as);
+    $statement->execute();
+    $eleves = $statement->fetchAll();
+    foreach ($eleves as $key => $value) {
+      if ($eleves[$key]['renvoye'] == true) {
+        unset($eleves[array_search($eleves[$key], $eleves)]);
+      }
+    }
+    return $eleves;
+
     $qb = $this->createQueryBuilder('e');
     $qb->join('e.frequenter', 'f')
        ->join('f.classe', 'c')

@@ -16,8 +16,8 @@ class FrequenterRepository extends \Doctrine\ORM\EntityRepository
         $qb = $this->createQueryBuilder('f');
         // $admission = NULL;
         $qb->select('f')
-           ->where('f.anneeScolaire = :as AND f.admission IS NULL')
-           ->setParameter('as', $as);
+           ->where('f.anneeScolaire = :anneeId AND f.admission IS NULL')
+           ->setParameter('anneeId', $as);
         //    ->setParameter('admission', $admission);
 
         // return $qb->getDql();
@@ -78,5 +78,23 @@ class FrequenterRepository extends \Doctrine\ORM\EntityRepository
 
         return $qb->getQuery()
                   ->getResult();
+    }
+   
+    public function eleveDUneClasseActuelle($as, $ids)
+    {
+      $renvoi = false;
+      $qb = $this->createQueryBuilder('f');
+      $qb->select('f')
+         ->join('f.eleve', 'e')
+         ->addSelect('e')
+         ->where('f.eleve IN (:ids) AND f.anneeScolaire = :an AND e.renvoye = :renvoi')
+         ->setParameter('renvoi', $renvoi)
+         ->setParameter('ids', $ids)
+         ->setParameter('an', $as)
+      ;
+      return $qb
+        ->getQuery()
+        ->getResult()
+      ;
     }
 }

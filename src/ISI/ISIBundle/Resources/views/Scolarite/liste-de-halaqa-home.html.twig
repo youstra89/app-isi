@@ -3,7 +3,7 @@
 {% if regime == 'C' %}
   {% set template = 'ISIBundle:Coran:index.html.twig' %}
 {% else %}
-  {% set template = 'ISIBundle:Eleve:index.html.twig' %}
+  {% set template = 'ISIBundle:Scolarite:index.html.twig' %}
 {% endif %}
 {% extends template %}
 
@@ -28,12 +28,12 @@
           </tr>
         </thead>
         <tbody>
-          {% set numero = 0 %}
+          {% set i = 0 %}
           {% for halaqa in halaqas %}
-            {% set numero = numero + 1 %}
+            {% set i = i + 1 %}
             <tr>
               <td>
-                <h4 class="ui image header">{{ numero }}</h4>
+                <h4 class="ui image header">{{ i }}</h4>
               </td>
               <td>
                 <h4 class="ui image header">{{ halaqa.getLibelleHalaqa }}</h4>
@@ -42,8 +42,10 @@
                 {% set genre = '' %}
                 {% if halaqa.getGenre == 'H' %}
                   {% set genre = 'Homme' %}
-                {% else %}
+                {% elseif halaqa.genre == 'F' %}
                   {% set genre = 'Femme' %}
+                {% else %}
+                  {% set genre = 'Mixte' %}
                 {% endif %}
                 <h4 class="ui image header">{{ genre }}</h4>
               </td>
@@ -62,7 +64,7 @@
           base_path: '/markaz/web/TableFilter/dist/tablefilter/',
           col_0: "none",
           col_2: 'select',
-          col_3: 'none',
+          col_3: 'select',
           alternate_rows: true,
           rows_counter: true,
           btn_reset: true,

@@ -84,6 +84,21 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
               ->getResult();
   }
 
+  public function classesSuperieures($as, $regime, $niveauId, $succession)
+  {
+    $qb = $this->createQueryBuilder('c');
+    $qb->join('c.niveau', 'n')
+       ->join('n.groupeFormation', 'grpF')
+       ->join('c.anneeScolaire', 'an')
+       ->where('grpF.referenceGrp = :regime AND an.anneeScolaireId = :an AND n.succession = :succession')
+       ->setParameter('succession', $succession)
+       ->setParameter('regime', $regime)
+       ->setParameter('an', $as)
+    ;
+    return $qb->getQuery()
+              ->getResult();
+  }
+
   // Sélection de toutes les classes existantes lors d'une année scolaire
   public function lesClasseDeLAnnee($as)
   {

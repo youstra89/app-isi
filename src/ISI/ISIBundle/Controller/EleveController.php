@@ -674,6 +674,20 @@ class EleveController extends Controller
         elseif($redouble == 2)
         {
           $redoublant = TRUE;
+          // // On selectionne $frequenter de l'année dernière
+          // $anPrec = $as - 1;
+          // $frequenter = $repoFrequenter->findOneBy(["eleve" => $eleveId, "anneeScolaire" => $anPrec]);
+          // $niveauPrecedantId = $frequenter->getClasse()->getNiveau()->getId();
+
+          // // On sélectionne $frequenter d'il y a deux ans
+          // $idDeuxAnsAvant = $as - 2;
+          // $frequenterDeuxAns = $repoFrequenter->findOneBy(["eleve" => $eleveId, "anneeScolaire" => $idDeuxAnsAvant]);
+          // if(!empty($frequenterDeuxAns)){
+          //   if($frequenterDeuxAns->getClasse()->getNiveau()->getId() == $niveauPrecedantId){
+          //     $request->getSession()->getFlashBag()->add('error', $eleve->getNomFr().' '.$eleve->getPnomFr().' ne peut être inscrit(e) en '.$niveau->getLibelleFr().'. Il a déjà repris la classe 2 fois.');
+          //     return $this->redirect($this->generateUrl('isi_inscription', ['as' => $as, 'regime' => $regime]));
+          //   }
+          // }
         }
         else
         {
@@ -792,6 +806,194 @@ class EleveController extends Controller
       'form'    => $form->createView(),
       'matricules' => $matricules
     ]);
+  }
+
+  // Pour les inscriptions en masse
+  public function flashInscriptionAction(Request $request, $as, $regime)
+  {
+    // return new Response("Ca demarre bien!");
+    $em = $this->getDoctrine()->getManager();
+    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoClasse  = $em->getRepository('ISIBundle:Classe');
+    $repoNiveau  = $em->getRepository('ISIBundle:Niveau');
+    
+    // Sélection des entités
+    $annee = $repoAnnee->find($as);
+    $niveaux = $repoNiveau->niveauxDuGroupe($regime);
+    $classes = $repoClasse->classesDeLAnnee($as - 1, $regime);
+
+    return $this->render('ISIBundle:Eleve:flash-inscription-home.html.twig', [
+      'asec'     => $as,
+      'regime'   => $regime,
+      'annee'    => $annee,
+      'niveaux'  => $niveaux,
+      'classes'  => $classes,
+    ]);
+  }
+
+  public function flashInscriptionDUneClasseAction(Request $request, $as, $regime, $classeId)
+  {
+    $em = $this->getDoctrine()->getManager();
+    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoClasse  = $em->getRepository('ISIBundle:Classe');
+    $repoEleve   = $em->getRepository('ISIBundle:Eleve');
+    $repoFrequenter   = $em->getRepository('ISIBundle:Frequenter');
+    $halaqas   = [];
+
+    if ($regime == 'A') {
+      # code...
+      $repoHalaqa = $em->getRepository('ISIBundle:Halaqa');
+      $halaqas    = $repoHalaqa->findBy(['anneeScolaire' => $as, 'regime' => $regime]);
+    }
+    
+    // Sélection des entités
+    $annee        = $repoAnnee ->find($as);
+    $classe       = $repoClasse->find($classeId);
+    $niveauId     = $classe    ->getNiveau()->getId();
+    $classesR     = $repoClasse->lesClassesDuNiveau($as, $niveauId);
+    $frequenter   = $repoFrequenter->statistiquesClasse($classeId);
+    $eleves   = $repoEleve->lesElevesDeLaClasse($as - 1, $classeId);
+    $succession = $classe->getNiveau()->getSuccession() + 1;
+    $classesSup   = $repoClasse->classesSuperieures($as, $regime, $niveauId, $succession);
+    $elevesInscrits = [];
+    $ids = $this->recupererLesIdsDesEleves($eleves);
+    foreach ($ids as $key => $id) {
+      $item = $repoFrequenter->findOneBy(['anneeScolaire' => $as, 'eleve' => $id]);
+      if(!empty($item)){
+        $elevesInscrits[] = $item;
+      }
+    }
+    // $elevesInscrits   = $repoFrequenter->eleveDUneClasseActuelle($as, $ids);
+    // return new Response(var_dump($ids));
+    if(count($elevesInscrits) != 0){
+      foreach ($frequenter as $fq) {
+        foreach ($elevesInscrits as $eleve) {
+          if($fq->getEleve()->getEleveId() == $eleve->getEleve()->getEleveId())
+            unset($frequenter[array_search($fq, $frequenter)]);
+        }
+      }
+    }
+    // return new Response(var_dump($frequenter));
+    if(count($frequenter) != 0){
+      foreach ($frequenter as $key => $fq) {
+        $nom[$key]  = $fq->getEleve()->getNomFr();
+        $pnom[$key] = $fq->getEleve()->getPnomFr();
+      }
+      array_multisort($nom, SORT_ASC, $pnom, SORT_ASC, $frequenter);
+    }
+    
+    // return new Response("Ca demarre bien!");
+    return $this->render('ISIBundle:Eleve:flash-inscription.html.twig', [
+      'asec'        => $as,
+      'regime'      => $regime,
+      'annee'       => $annee,
+      'halaqas'     => $halaqas,
+      'classe'      => $classe,
+      'classesR'    => $classesR,
+      'classesSup'  => $classesSup,
+      'frequenter'  => $frequenter,
+    ]);
+  }
+
+  public function executerFlashInscriptionAction(Request $request, int $as, string $regime, int $classeId)
+  {
+    $em = $this->getDoctrine()->getManager();
+    $repoAnnee      = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoClasse     = $em->getRepository('ISIBundle:Classe');
+    $repoHalaqa     = $em->getRepository('ISIBundle:Halaqa');
+    $repoEleve      = $em->getRepository('ISIBundle:Eleve');
+    $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
+    $repoExamen  = $em->getRepository('ISIBundle:Examen');
+    $classe   = $repoClasse->find($classeId);
+    
+    // Sélection des entités
+    $annee    = $repoAnnee ->find($as);
+    $niveauId = $classe    ->getNiveau()->getId();
+    /**
+     * Quand l'année scolaire est finie, on doit plus faire des
+     * mofications, des mises à jour
+     **/
+    if($annee->getAchevee() == TRUE)
+    {
+      $request->getSession()->getFlashBag()->add('error', 'Impossible de faire le réaménagement car l\'année scolaire '.$annee->getLibelleAnneeScolaire().' est achevée.');
+      return $this->redirect($this->generateUrl('isi_flash_inscription_d_une_classe', ['as' => $as, 'regime' => $regime, 'classeId' => $classeId]));
+    }
+
+    if($request->isMethod('post'))
+    {
+      $data     = $request->request->all();
+      $classes  = $data['classe'];
+      if ($regime == 'A') {
+        $halaqas = $data['halaqa'];
+      }
+      $check_recording = false;
+      $classe_recording = false;
+      $halaqa_recording = false;
+
+      // return new Response(var_dump($classes, $halaqas));
+
+      // L'inscription va maintenant commencer
+      foreach ($classes as $key => $cl) {
+        if(!empty($cl)){
+          if(($regime == 'A' && array_key_exists($key, $halaqas) && $halaqas[$key] != null) || $regime == 'F'){
+            $eleve = $repoEleve->find($key);
+            $nvoClasse = $repoClasse->find((int) $cl);
+            $fq   = $repoFrequenter->findOneBy(['anneeScolaire' => $as - 1, 'classe' => $classeId, 'eleve' => $key ]);
+            $redoublant = ($fq->getClasse()->getNiveau()->getId() == $nvoClasse->getNiveau()->getId()) ? TRUE : FALSE ;
+            $frequenter = new Frequenter();
+            $frequenter->setEleve($eleve);
+            $frequenter->setClasse($nvoClasse);
+            $frequenter->setRedouble($redoublant);
+            $frequenter->setAnneeScolaire($annee);
+            $frequenter->setDateSave(new \Datetime());
+            $frequenter->setDateUpdate(new \Datetime());
+            // On persist et flush l'entité
+            $em->persist($frequenter);
+            $check_recording = true;
+          }
+          else{
+            $classe_recording = true;
+          }
+        }
+      }
+
+      if($regime == 'A'){
+        foreach ($halaqas as $key => $hal) {
+          if(!empty($hal) && array_key_exists($key, $classes) && $classes[$key] != null){
+              $eleve = $repoEleve->find($key);
+              $halaqa = $repoHalaqa->find((int) $hal);
+              $memoriser = new Memoriser();
+              $memoriser->setEleve($eleve);
+              $memoriser->setAnneeScolaire($annee);
+              $memoriser->setHalaqa($halaqa);
+              $memoriser->setDateSave(new \Datetime());
+              $memoriser->setDateUpdate(new \Datetime());
+              $em->persist($memoriser);
+          }
+          else{
+            $halaqa_recording = true;
+          }
+        }
+      }
+      if ($check_recording == false && $classe_recording == false) {
+        # On entre dans cette condition s'il n'y a pas eu d'enregistrement
+        $request->getSession()->getFlashBag()->add('error', 'Aucun changement constaté. Veuillez reprendre <strong>Flash inscription</strong>.');
+        return $this->redirect($this->generateUrl('isi_flash_inscription', ['as' => $as, 'regime' => $regime]));
+      } else {
+        # Beuh, sinon on flush les entités nouvellement créées
+        if ($classe_recording) {
+          $request->getSession()->getFlashBag()->add('error', 'Il y a au moins un élève pour qui aucune classe n\'a été présicée');
+        }
+        if ($halaqa_recording) {
+          $request->getSession()->getFlashBag()->add('error', 'Il y a au moins un élève pour qui aucune halaqa n\'a été présicée');
+        }
+        if($check_recording == true){
+          $request->getSession()->getFlashBag()->add('info', 'Flash inscription de la classe <strong>'.$classe->getLibelleClasseFr().'</strong> de l\'année précédente effectué avec succès.');
+          $em->flush();
+        }
+      }
+      return $this->redirect($this->generateUrl('isi_flash_inscription', ['as' => $as, 'regime' => $regime]));
+    }
   }
 
   // Pour signaler un probleme relatif à un élève
@@ -1050,7 +1252,7 @@ class EleveController extends Controller
     {
       $fq = $repoFrequenter->findOneBy(['eleve' => $eleve->getEleveId(), 'anneeScolaire' => $er[0]->getAnneeScolaire()->getAnneeScolaireId()]);
       if($fq != NULL)
-        $fq->setAdmission(NULL);
+        $fq->setAdmission('reintegre');
       $anneeRenvoi = $er[0]->getAnneeScolaire()->getLibelleAnneeScolaire();
     }
     elseif(count($er) > 2)
@@ -1804,6 +2006,18 @@ class EleveController extends Controller
    public function elevesSansLesNotesAuCompletesAction()
    {
      return $this->render('ISIBundle:Eleve:elevesSansQQNote.html.php');
+   }
+  
+   public function recupererLesIdsDesEleves($eleves)
+   {
+     $lesIdsEleves = [];
+     foreach($eleves as $eleve)
+     {
+         $lesIdsEleves[] = $eleve->getEleveId();
+     }
+     // $lesIdsEleves = $lesIdsEleves.'0';
+ 
+     return $lesIdsEleves;
    }
 
 }

@@ -29,6 +29,7 @@
             <th>Classses</th>
             <th>المستويات</th>
             <th>الفصول</th>
+            <th>Genre</th>
             <th class="two wide">{{ 'Actions'|trans }}</th>
           </tr>
         </thead>
@@ -37,6 +38,14 @@
           {% for classe in classes %} 
             {% if classe.niveau.groupeFormation.referenceGrp is same as(regime) %}
               {% set numero = numero + 1 %}
+              {% set genre = '' %}
+              {% if classe.genre == 'H' %}
+                {% set genre = 'Homme' %}
+              {% elseif classe.genre == 'F' %}
+                {% set genre = 'Femme' %}
+              {% else %}
+                {% set genre = 'Mixte' %}
+              {% endif %}
               <tr>
                 <td>
                   <h4 class="ui image header">{{ numero }}</h4>
@@ -52,6 +61,9 @@
                 </td>
                 <td>
                   <h4 class="ui image header">{{ classe.libelleclassear }}</h4>
+                </td>
+                <td>
+                  <h4 class="ui image header">{{ genre }}</h4>
                 </td>
                 <td>
                   <a href="{{path('isi_tirer_liste_de_la_classe_edition_sans_impression', {'as': asec, 'regime': regime, 'classeId': classe.classeId})}}">
@@ -74,7 +86,7 @@
           col_0: "none",
           col_1: 'select',
           col_3: 'select',
-          col_5: 'none',
+          col_5: 'select',
           alternate_rows: true,
           rows_counter: true,
           btn_reset: true,

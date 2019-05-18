@@ -1,0 +1,60 @@
+{% extends 'ISIBundle:Eleve:index.html.twig' %}
+
+{% block pageTitle %}
+    Accueil Flash inscription
+{% endblock %}
+
+{% block content %}
+    {% set grp = '' %}
+    {% if regime is same as('A') %}
+      {% set grp = 'Académie' %}
+    {% else %}
+      {% set grp = 'Formation' %}
+    {% endif %}
+    <h3>{{ 'Inscriptions groupées'|trans }} : {{ grp }}</h3>
+    {# Cas de fiches de notes déjà éditées #}
+      {% for message in app.session.flashbag.get('info') %}
+        <div class="ui green message">
+          <div class="header">{{ 'Notification'|trans }}</div>
+          <ul class="list">
+            <li>{{ message|raw }}.</li>
+          </ul>
+        </div>
+      {% endfor %}
+      {% set errors = app.session.flashbag.get('error') %}
+      {% if errors|length != 0 %}
+          <div class="ui red message">
+            <div class="header">{{ 'Attention'|trans }} !!! </div>
+            <ul class="list">
+              {% for message in errors %}
+                <li>{{ message|raw }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+      {% endif %}
+    {# Fin des notifications #}
+    {% if classes is empty %}
+      <p>{{ 'Pas de classes pour le moment'|trans }}</p>
+    {% else %}
+        {% for niveau in niveaux %}
+                <h2>{{ niveau.libelleFr }}</h2>
+                <div class="ui middle aligned selection list">
+                    {% for classe in classes %}
+                        {% if classe.niveau.id == niveau.id %}
+                            <div class="item">
+                                <div class="right floated content">
+                                  <a class="ui button" href="{{ path('isi_flash_inscription_d_une_classe', {'as': asec, 'regime': regime, 'classeId': classe.classeId}) }}">
+                                    {{ 'Flash inscription'|trans }}
+                                  </a>
+                                </div>
+                                <img class="ui avatar image" src="/markaz/web/images/logoISI-x.png">
+                                <div class="content">
+                                  {{ classe.libelleClasseFr }}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

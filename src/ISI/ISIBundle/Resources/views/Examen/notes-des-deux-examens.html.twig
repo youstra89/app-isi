@@ -56,7 +56,7 @@
                                 </td>
                             {% else %}
                                 {% set color = "" %}
-                                {% if note.note < 11 %}
+                                {% if note.note < 10 %}
                                     {% set color = 'error' %}
                                 {% endif %}
                                 <td align="center" class="{{ color }}" data-tooltip="{{ note.matiere }}">
