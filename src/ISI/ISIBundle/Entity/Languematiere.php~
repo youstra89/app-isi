@@ -1,6 +1,6 @@
 <?php
 
-namespace ISIBundle\Entity;
+namespace ISI\ISIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -15,18 +15,18 @@ class Languematiere
     /**
      * @var string
      *
-     * @ORM\Column(name="reference_langue", type="string", length=255, nullable=false)
+     * @ORM\Column(name="reference", type="string", length=255, nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $referenceLangue;
+    private $reference;
 
     /**
      * @var string
      *
      * @ORM\Column(name="libelle_langue", type="string", length=255, nullable=false)
      */
-    private $libelleLangue;
+    private $libelle;
 
 
 
@@ -35,9 +35,9 @@ class Languematiere
      *
      * @return string
      */
-    public function getReferenceLangue()
+    public function getReference()
     {
-        return $this->referenceLangue;
+        return $this->reference;
     }
 
     /**
@@ -62,5 +62,29 @@ class Languematiere
     public function getLibelleLangue()
     {
         return $this->libelleLangue;
+    }
+
+    /**
+     * Set libelle
+     *
+     * @param string $libelle
+     *
+     * @return Languematiere
+     */
+    public function setLibelle($libelle)
+    {
+        $this->libelle = $libelle;
+
+        return $this;
+    }
+
+    /**
+     * Get libelle
+     *
+     * @return string
+     */
+    public function getLibelle()
+    {
+        return $this->libelle;
     }
 }

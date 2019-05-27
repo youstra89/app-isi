@@ -109,8 +109,8 @@ class AbsencesEtRetardsController extends Controller
                     $newRetard->setDate($date);
                     $newRetard->setDuree($retard);
                     $newRetard->setPeriode($periode);
-                    $newRetard->setDateSave(new \Datetime());
-                    $newRetard->setDateUpdate(new \Datetime());
+                    $newRetard->setCreatedAt(new \Datetime());
+                    $newRetard->setUpdatedAt(new \Datetime());
 
                     $em->persist($newRetard);
                     // return new Response(var_dump($date));
@@ -272,8 +272,8 @@ class AbsencesEtRetardsController extends Controller
         $absence = new AnneeContratAbsence();
         $absence->setAnnee($annee);
         $absence->setContrat($contrat);
-        $absence->setDateSave(new \Datetime());
-        $absence->setDateUpdate(new \Datetime());
+        $absence->setCreatedAt(new \Datetime());
+        $absence->setUpdatedAt(new \Datetime());
         $form  = $this->createForm(AnneeContratAbsenceType::class, $absence);
         if($form->handleRequest($request)->isValid())
         {

@@ -40,7 +40,7 @@
                         <td>رقم الطالب</td>
                         <td><span class="matricule">{{moyenne.getEleve.getMatricule}}</span></td>
                         <td>العام الدراسي</td>
-                        <td>{{examen.getAnneeScolaire.getLibelleAnneeScolaire}}</td>
+                        <td>{{examen.getAnnee.getLibelle}}</td>
                     </tr>
                 </table>
             </div>
@@ -61,7 +61,7 @@
                     </tr>
                     <!-- Ici on va déterminer les sexe -->
                     {% set sexe = '' %}
-                    {% if moyenne.getEleve.getSexeFr == 1 %}
+                    {% if moyenne.getEleve.getSexe == 1 %}
                         {% set sexe = 'ذكر' %}
                     {% else %}
                         {% set sexe = 'أنثى' %}
@@ -72,7 +72,7 @@
                     </tr>
                     <tr class="infos-identification-eleve">
                         <td class="titre-info-eleve">المستوى الدراسي</td>
-                        <td class="info-eleve-db">{{ classe.libelleClasseAr }}
+                        <td class="info-eleve-db">{{ classe.libelleAr }}
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <span class="effectif">عدد الطلاب : {{ effectif }}</span>
                         </td>
@@ -105,10 +105,10 @@
                                 {% set color = 'rgb(255, 255, 230)' %}
                             {% endif %}
                             <!-- On va maintenant sélectionner les notes de l'élèves pour la première session -->
-                            {% if moyenne.getEleve.getEleveId == note1.getEleve.getEleveId and matiere.getMatiereId == note1.getMatiere.getMatiereId|e %}
+                            {% if moyenne.getEleve.getId == note1.getEleve.getId and matiere.getId == note1.getMatiere.getId|e %}
                                 <!-- On va sélectionner les notes de la seconde session -->
                                 {% for note2 in notes2 %}
-                                    {% if moyenne.getEleve.getEleveId == note2.getEleve.getEleveId and matiere.getMatiereId == note2.getMatiere.getMatiereId %}
+                                    {% if moyenne.getEleve.getId == note2.getEleve.getId and matiere.getId == note2.getMatiere.getId %}
                                         {% set moyenneMatiere = note1.getNote + note2.getNote %}
                                         {% if moyenneMatiere < 10 %}
                                           {% set appreciation = 'ضعيف' %}
@@ -126,7 +126,7 @@
                                           {% set appreciation = 'ممتاز' %}
                                         {% endif %}
                                         <tr class="" bgcolor="{{ color }}">
-                                          <td class="libelle-matiere">&nbsp;&nbsp;{{ matiere.getLibelleMatiere }}</td>
+                                          <td class="libelle-matiere">&nbsp;&nbsp;{{ matiere.getLibelle }}</td>
                                           <td class="valeur-note" with="10%" align="center">{{ note1.getNote }}</td>
                                           <td class="valeur-note" with="10%" align="center">{{ note2.getNote }}</td>
                                           <td class=""></td>
@@ -155,10 +155,10 @@
                 <!-- Le tableau des notes et celui de la moyenne se trouvent dans le même div -->
                 <!-----------------------   Début tableau des moyennes  ---------------------------->
                 {% set nieme = '' %}
-                {% if moyenne.getClassementAnnuel == 1 and moyenne.getEleve.getSexeFr == 1 %}
+                {% if moyenne.getClassementAnnuel == 1 and moyenne.getEleve.getSexe == 1 %}
                 <!-- Dans ce cas, c'est un homme. Il faudra donc dire: Le premier -->
                     {% set nieme = 'er' %}
-                {% elseif moyenne.getClassementAnnuel == 1 and moyenne.getEleve.getSexeFr == 2 %}
+                {% elseif moyenne.getClassementAnnuel == 1 and moyenne.getEleve.getSexe == 2 %}
                 <!-- Dans ce cas, c'est une femme. Il faudra donc dire: La première -->
                     {% set nieme = 'ère' %}
                 {% else %}
@@ -167,9 +167,9 @@
                 {% endif %}
                 {% set admission = '' %}
                 {% for fq in frequenter %}
-                    {% if fq.getEleve.getEleveId == moyenne.getEleve.getEleveId and fq.getAdmission == 0 %}
+                    {% if fq.getEleve.getId == moyenne.getEleve.getId and fq.getAdmission == 0 %}
                         {% set admission = 'راسب' %} 
-                    {% elseif fq.getEleve.getEleveId == moyenne.getEleve.getEleveId and fq.getAdmission == 1 %} 
+                    {% elseif fq.getEleve.getId == moyenne.getEleve.getId and fq.getAdmission == 1 %} 
                         {% set admission = 'ناجح' %}
                     {% endif %}
                 {% endfor %}

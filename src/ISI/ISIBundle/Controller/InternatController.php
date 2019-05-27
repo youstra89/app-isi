@@ -12,13 +12,13 @@ use ISI\ISIBundle\Entity\Interner;
 use ISI\ISIBundle\Entity\Chambre;
 use ISI\ISIBundle\Entity\Probleme;
 use ISI\ISIBundle\Entity\Commettre;
-use ISI\ISIBundle\Entity\Anneescolaire;
+use ISI\ISIBundle\Entity\Annee;
 use ISI\ISIBundle\Entity\Paiementinternat;
 use ISI\ISIBundle\Entity\Moisdepaiementinternat;
 use ISI\ISIBundle\Repository\PaiementinternatRepository;
 use ISI\ISIBundle\Repository\MoisdepaiementinternatRepository;
 use ISI\ISIBundle\Repository\InternerRepository;
-use ISI\ISIBundle\Repository\AnneescolaireRepository;
+use ISI\ISIBundle\Repository\AnneeRepository;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
@@ -30,7 +30,7 @@ class InternatController extends Controller
   public function indexAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee    = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee    = $em->getRepository('ISIBundle:Annee');
     $repoEleve    = $em->getRepository('ISIBundle:Eleve');
     $repoInterner = $em->getRepository('ISIBundle:Interner');
     $annee    = $repoAnnee->find($as);
@@ -58,7 +58,7 @@ class InternatController extends Controller
   public function gestionDesChambresAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoChambre = $em->getRepository('ISIBundle:Chambre');
     $annee    = $repoAnnee->find($as);
     $chambres = $repoChambre->findAll();
@@ -76,7 +76,7 @@ class InternatController extends Controller
   public function addChambresAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoChambre = $em->getRepository('ISIBundle:Chambre');
     $annee = $repoAnnee->find($as);
 
@@ -86,8 +86,7 @@ class InternatController extends Controller
     if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
       $em = $this->getDoctrine()->getManager();
       $chambre->setPlacesDisponibles($chambre->getNombreDePlaces());
-      $chambre->setDateSave(new \Datetime());
-      $chambre->setDateUpdate(new \Datetime());
+      $chambre->setCreatedAt(new \Datetime());
       $em->persist($chambre);
       $em->flush();
 
@@ -110,7 +109,7 @@ class InternatController extends Controller
   public function addInterneAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee = $em->getRepository('ISIBundle:Annee');
     $repoEleve = $em->getRepository('ISIBundle:Eleve');
 
     $annee = $repoAnnee->find($as);
@@ -160,12 +159,12 @@ class InternatController extends Controller
     $em = $this->getDoctrine()->getManager();
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
     $repoChambre = $em->getRepository('ISIBundle:Chambre');
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoEleve   = $em->getRepository('ISIBundle:Eleve');
 
     $annee    = $repoAnnee->find($as);
     $eleve    = $repoEleve->find($eleveId);
-    $fq       = $repoFrequenter->findOneBy(['anneeScolaire' => $as, 'eleve' => $eleveId]);
+    $fq       = $repoFrequenter->findOneBy(['annee' => $as, 'eleve' => $eleveId]);
     $chambres = $repoChambre->chambresDisponibles($eleve->getSexeFr());
 
     if($request->isMethod('post'))
@@ -188,7 +187,7 @@ class InternatController extends Controller
        **/
       if($annee->getAchevee() == TRUE)
       {
-        $request->getSession()->getFlashBag()->add('error', 'Impossible d\'inscrire un élève à l\'internat car l\'année scolaire '.$annee->getLibelleAnneeScolaire().' est achevée.');
+        $request->getSession()->getFlashBag()->add('error', 'Impossible d\'inscrire un élève à l\'internat car l\'année scolaire '.$annee->getLibelle().' est achevée.');
         return $this->redirect($this->generateUrl('internat_add', ['as' => $as]));
       }
 
@@ -197,11 +196,10 @@ class InternatController extends Controller
       $chambre->setPlacesDisponibles($nbrPlcs);
       $interner = new Interner();
       $interner->setEleve($eleve);
-      $interner->setAnneeScolaire($annee);
+      $interner->setAnnee($annee);
       $interner->setChambre($chambre);
       $interner->setRenvoye(FALSE);
-      $interner->setDateSave(new \Datetime());
-      $interner->setDateUpdate(new \Datetime());
+      $interner->setCreatedAt(new \Datetime());
 
       // On va profiter pour enregistrer une conduite
       // Un renvoi peut être considéré comme effet immédiat ou non d'un problème
@@ -210,14 +208,13 @@ class InternatController extends Controller
       $description  = "Inscrit(e) à l'internat";
       $probleme->setAppreciation($appreciation);
       $probleme->setDescription($description);
-      $probleme->setDateSave(new \Datetime());
-      $probleme->setDateUpdate(new \Datetime());
+      $probleme->setCreatedAt(new \Datetime());
 
       // Il nous faut un occurence de commettre pour enregistrer un problème
       $commettre = new Commettre();
       $commettre->setEleve($eleve);
       $commettre->setProbleme($probleme);
-      $commettre->setAnneescolaire($annee);
+      $commettre->setAnnee($annee);
 
       $em->persist($probleme);
       $em->persist($commettre);
@@ -243,7 +240,7 @@ class InternatController extends Controller
   public function deleteInterneAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee    = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee    = $em->getRepository('ISIBundle:Annee');
     $repoEleve    = $em->getRepository('ISIBundle:Eleve');
     $repoInterner = $em->getRepository('ISIBundle:Interner');
 
@@ -271,7 +268,7 @@ class InternatController extends Controller
         return $this->redirectToRoute('internat_delete', array('as' => $as));
       }
 
-      $eleveInterne = $repoInterner->findBy(['anneeScolaire' => $as, 'eleve' => $eleve->getEleveId()]);
+      $eleveInterne = $repoInterner->findBy(['annee' => $as, 'eleve' => $eleve->getEleveId()]);
       if(empty($eleveInterne))
       {
         $request->getSession()->getFlashBag()->add('error', 'L\'élève n\'est pas inscrit à l\'internat');
@@ -295,12 +292,12 @@ class InternatController extends Controller
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
     $repoInterner = $em->getRepository('ISIBundle:Interner');
     $repoChambre  = $em->getRepository('ISIBundle:Chambre');
-    $repoAnnee    = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee    = $em->getRepository('ISIBundle:Annee');
     $repoEleve    = $em->getRepository('ISIBundle:Eleve');
 
     $annee    = $repoAnnee->find($as);
     $eleve    = $repoEleve->find($eleveId);
-    $fq       = $repoFrequenter->findOneBy(['anneeScolaire' => $as, 'eleve' => $eleveId]);
+    $fq       = $repoFrequenter->findOneBy(['annee' => $as, 'eleve' => $eleveId]);
     $chambres = $repoChambre->findBy(['genre' => $eleve->getSexeFr()]);
 
     if($request->isMethod('post'))
@@ -311,7 +308,7 @@ class InternatController extends Controller
       $description  = $data['motifRenvoi'];
       if($annee->getAchevee() == TRUE)
       {
-        $request->getSession()->getFlashBag()->add('error', 'Impossible d\'inscrire un élève à l\'internat car l\'année scolaire '.$annee->getLibelleAnneeScolaire().' est achevée.');
+        $request->getSession()->getFlashBag()->add('error', 'Impossible d\'inscrire un élève à l\'internat car l\'année scolaire '.$annee->getLibelleAnnee().' est achevée.');
         return $this->redirect($this->generateUrl('internat_add', ['as' => $as]));
       }
 
@@ -321,10 +318,10 @@ class InternatController extends Controller
         return $this->redirectToRoute('internat_delete_eleve', array('as' => $as, 'eleveId' => $eleveId));
       }
 
-      $interner = $repoInterner->findOneBy(['eleve' => $eleveId, 'anneeScolaire' => $as]);
+      $interner = $repoInterner->findOneBy(['eleve' => $eleveId, 'annee' => $as]);
       $interner->setRenvoye(TRUE);
       $interner->setDateRenvoi(new \Datetime());
-      $interner->setDateUpdate(new \Datetime());
+      $interner->setUpdatedAt(new \Datetime());
 
       // On va profiter pour enregistrer une conduite
       // Un renvoi peut être considéré comme effet immédiat ou non d'un problème
@@ -332,14 +329,13 @@ class InternatController extends Controller
       $appreciation = "Retrait internat";
       $probleme->setAppreciation($appreciation);
       $probleme->setDescription($description);
-      $probleme->setDateSave(new \Datetime());
-      $probleme->setDateUpdate(new \Datetime());
+      $probleme->setCreatedAt(new \Datetime());
 
       // Il nous faut un occurence de commettre pour enregistrer un problème
       $commettre = new Commettre();
       $commettre->setEleve($eleve);
       $commettre->setProbleme($probleme);
-      $commettre->setAnneescolaire($annee);
+      $commettre->setAnnee($annee);
 
       $em->persist($probleme);
       $em->persist($commettre);
@@ -363,7 +359,7 @@ class InternatController extends Controller
   public function infoEleveAction(Request $request, $as, $id)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee       = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee       = $em->getRepository('ISIBundle:Annee');
     $repoEleve       = $em->getRepository('ISIBundle:Eleve');
     $repoProbleme    = $em->getRepository('ISIBundle:Probleme');
     $repoFrequenter  = $em->getRepository('ISIBundle:Frequenter');
@@ -375,10 +371,10 @@ class InternatController extends Controller
     $eleve = $repoEleve->find($id);
 
     // La classe de l'élève durant l'annee en cours
-    $fq = $repoFrequenter->findOneBy(['eleve' => $eleve->getEleveId(), 'anneeScolaire' => $as]);
+    $fq = $repoFrequenter->findOneBy(['eleve' => $id, 'annee' => $as]);
 
     // On va ici sélectionner les problèmes qu'auraient eu l'élève
-    $problemes = $repoProbleme->problemesDUnEleveLorsDUneAnnee($eleve->getEleveId(), $as);
+    $problemes = $repoProbleme->problemesDUnEleveLorsDUneAnnee($id, $as);
 
     // return new Response(var_dump($problemes));
 
@@ -398,7 +394,7 @@ class InternatController extends Controller
   public function deletedElevesAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee    = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee    = $em->getRepository('ISIBundle:Annee');
     $repoEleve    = $em->getRepository('ISIBundle:Eleve');
     $repoInterner = $em->getRepository('ISIBundle:Interner');
 
@@ -419,14 +415,14 @@ class InternatController extends Controller
   public function addMoisDePaiementAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee = $em->getRepository('ISIBundle:Annee');
     $repoMois  = $em->getRepository('ISIBundle:Mois');
 
     $annee = $repoAnnee->find($as);
     $mois  = $repoMois->findAll();
 
     $repoMoisDePaie = $em->getRepository('ISIBundle:Moisdepaiementinternat');
-    $moisdepaie     = $repoMoisDePaie->findBy(['anneeScolaire' => $as ]);
+    $moisdepaie     = $repoMoisDePaie->findBy(['annee' => $as ]);
 
     return $this->render('ISIBundle:Internat:ajouter-les-mois-de-paiement.html.twig', [
       'asec'  => $as,
@@ -444,7 +440,7 @@ class InternatController extends Controller
   {
     $em = $this->getDoctrine()->getManager();
     $repoMoisDePaie = $em->getRepository('ISIBundle:Moisdepaiementinternat');
-    $repoAnnee      = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoMois       = $em->getRepository('ISIBundle:Mois');
 
     $annee = $repoAnnee->find($as);
@@ -475,10 +471,9 @@ class InternatController extends Controller
     }
 
     $moisdepaie = new Moisdepaiementinternat();
-    $moisdepaie->setAnneescolaire($annee);
+    $moisdepaie->setAnnee($annee);
     $moisdepaie->setMois($mois);
-    $moisdepaie->setDateSave(new \Datetime());
-    $moisdepaie->setDateUpdate(new \Datetime());
+    $moisdepaie->setCreatedAt(new \Datetime());
     $em->persist($moisdepaie);
     $em->flush();
 
@@ -496,14 +491,14 @@ class InternatController extends Controller
     $repoMoisDePaie = $em->getRepository('ISIBundle:Moisdepaiementinternat');
     $repoPaiement   = $em->getRepository('ISIBundle:Paiementinternat');
     $repoInterner   = $em->getRepository('ISIBundle:Interner');
-    $repoAnnee      = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoEleve      = $em->getRepository('ISIBundle:Eleve');
 
     $annee = $repoAnnee->find($as);
-    $moisdepaie = $repoMoisDePaie->findBy(['anneeScolaire' => $as ]);
+    $moisdepaie = $repoMoisDePaie->findBy(['annee' => $as ]);
     $paiements = $repoPaiement->lesPaiementsDUneAnnee($as);
 
-    $internes = $repoInterner->findBy(['anneeScolaire' => $as]);
+    $internes = $repoInterner->findBy(['annee' => $as]);
     foreach ($internes as $key => $interne) {
       $nom[$key]  = $interne->getEleve()->getNomFr();
       $pnom[$key] = $interne->getEleve()->getPnomFr();
@@ -532,13 +527,13 @@ class InternatController extends Controller
     $repoMoisDePaie = $em->getRepository('ISIBundle:Moisdepaiementinternat');
     $repoPaiement   = $em->getRepository('ISIBundle:Paiementinternat');
     $repoInterner   = $em->getRepository('ISIBundle:Interner');
-    $repoAnnee      = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoEleve      = $em->getRepository('ISIBundle:Eleve');
 
     $annee = $repoAnnee->find($as);
     $eleve = $repoEleve->find($eleveId);
     $mois  = $repoMoisDePaie->find($moisId);
-    $moisdepaie = $repoMoisDePaie->findBy(['anneeScolaire' => $as ]);
+    $moisdepaie = $repoMoisDePaie->findBy(['annee' => $as ]);
 
     if($request->isMethod('post'))
     {
@@ -555,7 +550,7 @@ class InternatController extends Controller
         return $this->redirectToRoute('internat_pay_mois', ['as' => $as, 'eleveId' => $eleveId, 'moisId' => $moisId]);
       }
       else {
-        $interner  = $repoInterner->findBy(['anneeScolaire' => $as, 'eleve' => $eleveId]);
+        $interner  = $repoInterner->findBy(['annee' => $as, 'eleve' => $eleveId]);
         $paiements = $repoPaiement->findBy(['interner' => $interner[0]->getId()]);
         // Si la $paiements est vide, cela signifie que c'est le premier paiement et donc, il doit
         // être effectué pour le premier mois de paiement de l'année
@@ -572,8 +567,7 @@ class InternatController extends Controller
             $paiement->setInterner($interner[0]);
             $paiement->setMoisdepaiement($mois);
             $paiement->setMontant($montant);
-            $paiement->setDateSave(new \Datetime());
-            $paiement->setDateUpdate(new \Datetime());
+            $paiement->setCreatedAt(new \Datetime());
             $em->persist($paiement);
             $em->flush();
             $request->getSession()->getFlashBag()->add('info', 'Le paiement de '.$eleve->getNomFr().' '.$eleve->getPnomFr().' pour le mois de '.$mois->getMois()->getMois().' s\'est bien effectué');
@@ -598,8 +592,7 @@ class InternatController extends Controller
         $paiement->setInterner($interner[0]);
         $paiement->setMoisdepaiement($mois);
         $paiement->setMontant($montant);
-        $paiement->setDateSave(new \Datetime());
-        $paiement->setDateUpdate(new \Datetime());
+        $paiement->setCreatedAt(new \Datetime());
         $em->persist($paiement);
         $em->flush();
         $request->getSession()->getFlashBag()->add('info', 'Le paiement de '.$eleve->getNomFr().' '.$eleve->getPnomFr().' pour le mois de '.$mois->getMois()->getMois().' s\'est bien effectué');
@@ -623,7 +616,7 @@ class InternatController extends Controller
     $repoMoisDePaie = $em->getRepository('ISIBundle:Moisdepaiementinternat');
     $repoPaiement   = $em->getRepository('ISIBundle:Paiementinternat');
     $repoInterner   = $em->getRepository('ISIBundle:Interner');
-    $repoAnnee      = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoEleve      = $em->getRepository('ISIBundle:Eleve');
 
     $annee = $repoAnnee->find($as);

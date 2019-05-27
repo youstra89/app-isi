@@ -1,0 +1,305 @@
+<?php
+
+namespace ISI\ENSBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * AnneeContrat
+ *
+ * @ORM\Table(name="annee_contrat")
+ * @ORM\Entity(repositoryClass="ISI\ENSBundle\Repository\AnneeContratRepository")
+ */
+class AnneeContrat
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var \Annee
+     *
+     * @ORM\ManyToOne(targetEntity="\ISI\ISIBundle\Entity\Annee")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="annee_id", referencedColumnName="id")
+     * })
+     */
+    private $annee;
+
+    /**
+     * @var \Contrat
+     *
+     * @ORM\ManyToOne(targetEntity="Contrat")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="contrat", referencedColumnName="id")
+     * })
+     */
+    private $contrat;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="nombre_heures_cours", type="integer")
+     */
+    private $nombreHeuresCours;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="nombre_heures_coran", type="integer")
+     */
+    private $nombreHeuresCoran;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="nombre_heures_samedi", type="integer")
+     */
+    private $nombreHeuresSamedi;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_at", type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_update", type="datetime", nullable=true)
+     */
+    private $updatedAt;
+
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set annee
+     *
+     * @param \ISI\ISIBundle\Entity\Anneescolaire $annee
+     *
+     * @return AnneeContrat
+     */
+    public function setAnnee($annee)
+    {
+        $this->annee = $annee;
+
+        return $this;
+    }
+
+    /**
+     * Get annee
+     *
+     * @return \ISI\ISIBundle\Entity\Anneescolaire
+     */
+    public function getAnnee()
+    {
+        return $this->annee;
+    }
+
+    /**
+     * Set contrat
+     *
+     * @param \ISI\ENSBundle\Entity\Contrat $contrat
+     *
+     * @return AnneeContrat
+     */
+    public function setContrat($contrat)
+    {
+        $this->contrat = $contrat;
+
+        return $this;
+    }
+
+    /**
+     * Get contrat
+     *
+     * @return \ISI\ENSBundle\Entity\Contrat
+     */
+    public function getContrat()
+    {
+        return $this->contrat;
+    }
+
+    /**
+     * Set nombreHeuresCours
+     *
+     * @param integer $nombreHeuresCours
+     *
+     * @return AnneeContrat
+     */
+    public function setNombreHeuresCours($nombreHeuresCours)
+    {
+        $this->nombreHeuresCours = $nombreHeuresCours;
+
+        return $this;
+    }
+
+    /**
+     * Get nombreHeuresCours
+     *
+     * @return int
+     */
+    public function getNombreHeuresCours()
+    {
+        return $this->nombreHeuresCours;
+    }
+
+    /**
+     * Set nombreHeuresCoran
+     *
+     * @param integer $nombreHeuresCoran
+     *
+     * @return AnneeContrat
+     */
+    public function setNombreHeuresCoran($nombreHeuresCoran)
+    {
+        $this->nombreHeuresCoran = $nombreHeuresCoran;
+
+        return $this;
+    }
+
+    /**
+     * Get nombreHeuresCoran
+     *
+     * @return int
+     */
+    public function getNombreHeuresCoran()
+    {
+        return $this->nombreHeuresCoran;
+    }
+
+    /**
+     * Set nombreHeuresSamedi
+     *
+     * @param integer $nombreHeuresSamedi
+     *
+     * @return AnneeContrat
+     */
+    public function setNombreHeuresSamedi($nombreHeuresSamedi)
+    {
+        $this->nombreHeuresSamedi = $nombreHeuresSamedi;
+
+        return $this;
+    }
+
+    /**
+     * Get nombreHeuresSamedi
+     *
+     * @return int
+     */
+    public function getNombreHeuresSamedi()
+    {
+        return $this->nombreHeuresSamedi;
+    }
+
+    /**
+     * Set created_at
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return AnneeContrat
+     */
+    public function setcreated_at($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get created_at
+     *
+     * @return \DateTime
+     */
+    public function getcreated_at()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updated_at
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return AnneeContrat
+     */
+    public function setupdated_at($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updated_at
+     *
+     * @return \DateTime
+     */
+    public function getupdated_at()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return AnneeContrat
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return AnneeContrat
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+}

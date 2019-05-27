@@ -4,7 +4,7 @@ namespace ISI\ISIBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(name="livre", indexes={@ORM\Index(name="matiere_fk", columns={"matiere"})})
+ * @ORM\Table(name="livre", indexes={@ORM\Index(name="matiere_fk", columns={"matiere_id"})})
  * @ORM\Entity(repositoryClass="ISI\ISIBundle\Repository\LivreRepository")
  * @ORM\HasLifecycleCallbacks()
  * */ 
@@ -58,23 +58,23 @@ class Livre
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_save", type="datetime", nullable=false)
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private $dateSave;
+    private $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_update", type="datetime", nullable=false)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private $dateUpdate;
+    private $updatedAt;
 
     /**
      * @var \Matiere
      *
      * @ORM\ManyToOne(targetEntity="Matiere", fetch="EAGER")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="matiere", referencedColumnName="matiere_id")
+     *   @ORM\JoinColumn(name="matiere_id", referencedColumnName="id")
      * })
      */
     private $matiere;
@@ -210,51 +210,51 @@ class Livre
     }
 
     /**
-     * Set dateSave
+     * Set created_at
      *
-     * @param \DateTime $dateSave
+     * @param \DateTime $createdAt
      *
      * @return Livre
      */
-    public function setDateSave($dateSave)
+    public function setcreated_at($createdAt)
     {
-        $this->dateSave = $dateSave;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get dateSave
+     * Get created_at
      *
      * @return \DateTime
      */
-    public function getDateSave()
+    public function getcreated_at()
     {
-        return $this->dateSave;
+        return $this->createdAt;
     }
 
     /**
-     * Set dateUpdate
+     * Set updated_at
      *
-     * @param \DateTime $dateUpdate
+     * @param \DateTime $updatedAt
      *
      * @return Livre
      */
-    public function setDateUpdate($dateUpdate)
+    public function setupdated_at($updatedAt)
     {
-        $this->dateUpdate = $dateUpdate;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
     /**
-     * Get dateUpdate
+     * Get updated_at
      *
      * @return \DateTime
      */
-    public function getDateUpdate()
+    public function getupdated_at()
     {
-        return $this->dateUpdate;
+        return $this->updatedAt;
     }
 
     /**
@@ -279,5 +279,53 @@ class Livre
     public function getMatiere()
     {
         return $this->matiere;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Livre
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Livre
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
     }
 }

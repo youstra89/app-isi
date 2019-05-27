@@ -35,7 +35,7 @@
           </div>
           <div class="content">
             <h4>{{ eleve.nomFr }} {{ eleve.pnomFr }}</h4>
-            <a class="supprimer" href="{{path('isi_supprime_eleve',{'as': asec, 'regime': regime, 'classeId': classe.classeId, 'eleveId': eleve.eleveId})}}">Supprimer</a>
+            <a class="supprimer" href="{{path('isi_supprime_eleve',{'as': asec, 'regime': regime, 'classeId': classe.classeId, 'eleveId': eleve.id})}}">Supprimer</a>
 
             {#<span class="supprimeEleve">Supprimer</span>
             <a>Supprimer</a>#}

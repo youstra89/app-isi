@@ -23,11 +23,11 @@ class AnneeContratConduite
 
     
     /**
-     * @var \Anneescolaire
+     * @var \Annee
      *
-     * @ORM\ManyToOne(targetEntity="\ISI\ISIBundle\Entity\Anneescolaire")
+     * @ORM\ManyToOne(targetEntity="\ISI\ISIBundle\Entity\Annee")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="annee", referencedColumnName="annee_scolaire_id")
+     *   @ORM\JoinColumn(name="annee_id", referencedColumnName="id")
      * })
      */
     private $annee;
@@ -37,7 +37,7 @@ class AnneeContratConduite
      *
      * @ORM\ManyToOne(targetEntity="Contrat")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="contrat", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="contrat_id", referencedColumnName="id")
      * })
      */
     private $contrat;
@@ -66,16 +66,16 @@ class AnneeContratConduite
     /**
      * @var string
      *
-     * @ORM\Column(name="date_save", type="datetime", length=255)
+     * @ORM\Column(name="created_at", type="datetime")
      */
-    private $dateSave;
+    private $createdAt;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="date_update", type="datetime", length=255)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private $dateUpdate;
+    private $updatedAt;
 
 
     /**
@@ -161,61 +161,13 @@ class AnneeContratConduite
     }
 
     /**
-     * Set dateUpdate
-     *
-     * @param string $dateUpdate
-     *
-     * @return AnneeContratConduite
-     */
-    public function setDateUpdate($dateUpdate)
-    {
-        $this->dateUpdate = $dateUpdate;
-
-        return $this;
-    }
-
-    /**
-     * Get dateUpdate
-     *
-     * @return string
-     */
-    public function getDateUpdate()
-    {
-        return $this->dateUpdate;
-    }
-
-    /**
-     * Set dateSave
-     *
-     * @param \DateTime $dateSave
-     *
-     * @return AnneeContratConduite
-     */
-    public function setDateSave($dateSave)
-    {
-        $this->dateSave = $dateSave;
-
-        return $this;
-    }
-
-    /**
-     * Get dateSave
-     *
-     * @return \DateTime
-     */
-    public function getDateSave()
-    {
-        return $this->dateSave;
-    }
-
-    /**
      * Set annee
      *
-     * @param \ISI\ISIBundle\Entity\Anneescolaire $annee
+     * @param \ISI\ISIBundle\Entity\Annee $annee
      *
      * @return AnneeContratConduite
      */
-    public function setAnnee(\ISI\ISIBundle\Entity\Anneescolaire $annee = null)
+    public function setAnnee(\ISI\ISIBundle\Entity\Annee $annee = null)
     {
         $this->annee = $annee;
 
@@ -225,7 +177,7 @@ class AnneeContratConduite
     /**
      * Get annee
      *
-     * @return \ISI\ISIBundle\Entity\Anneescolaire
+     * @return \ISI\ISIBundle\Entity\Annee
      */
     public function getAnnee()
     {
@@ -254,5 +206,53 @@ class AnneeContratConduite
     public function getContrat()
     {
         return $this->contrat;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return AnneeContratConduite
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return AnneeContratConduite
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
     }
 }

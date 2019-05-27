@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 use ISI\ORGBundle\Entity\Converti;
 use ISI\ORGBundle\Form\ConvertiType;
-use ISI\ISIBundle\Entity\Anneescolaire;
+use ISI\ISIBundle\Entity\Annee;
 use ISI\ISIBundle\Repository\AnneeContratRepository;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -22,7 +22,7 @@ class ConvertiController extends Controller
   public function indexAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee      = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoConverti    = $em->getRepository('ORGBundle:Converti');
     $annee       = $repoAnnee->find($as);
     $convertis       = $repoConverti->findAll();
@@ -42,7 +42,7 @@ class ConvertiController extends Controller
     public function addAction(Request $request, $as): Response
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee = $em->getRepository('ISIBundle:Annee');
       $annee     = $repoAnnee->find($as);
       $tourneeId = $request->get('tourneeId');
       $communeId = $request->get('communeId');
@@ -91,7 +91,7 @@ class ConvertiController extends Controller
     public function editAction(Request $request, Converti $converti, $as): Response
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee   = $em->getRepository('ISIBundle:Annee');
       $annee       = $repoAnnee->find($as);
       $form = $this->createForm(ConvertiType::class, $converti);
       $form->handleRequest($request);
@@ -126,7 +126,7 @@ class ConvertiController extends Controller
     public function informationsAction(Request $request, Converti $converti, $as): Response
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee   = $em->getRepository('ISIBundle:Annee');
       $annee       = $repoAnnee->find($as);
       return $this->render('ORGBundle:Converti:converti-info.html.twig', [
         'asec'  => $as,

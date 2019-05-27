@@ -23,7 +23,7 @@ class TourneeCommune
     /**
      * @ORM\ManyToOne(targetEntity="Tournee", inversedBy="communes")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="tournee", referencedColumnName="id", nullable=false)
+     *   @ORM\JoinColumn(name="tournee_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $tournee;
@@ -31,7 +31,7 @@ class TourneeCommune
     /**
      * @ORM\ManyToOne(targetEntity="Commune")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="commune", referencedColumnName="id", nullable=false)
+     *   @ORM\JoinColumn(name="commune_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $commune;

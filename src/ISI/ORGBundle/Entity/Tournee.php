@@ -85,7 +85,7 @@ class Tournee
     public function __construct()
     {
       $this->nationale = true;
-      $this->created_at = new \Datetime();
+      $this->createdAt = new \Datetime();
       $this->pays = new ArrayCollection();
       $this->communes = new ArrayCollection();
       $this->convertis = new ArrayCollection();
@@ -200,13 +200,13 @@ class Tournee
     }
 
     /**
-     * Set createdAt
+     * Set created_at
      *
      * @param \DateTime $createdAt
      *
      * @return Tournee
      */
-    public function setCreatedAt($createdAt)
+    public function setcreated_at($createdAt)
     {
         $this->createdAt = $createdAt;
 
@@ -214,23 +214,23 @@ class Tournee
     }
 
     /**
-     * Get createdAt
+     * Get created_at
      *
      * @return \DateTime
      */
-    public function getCreatedAt()
+    public function getcreated_at()
     {
         return $this->createdAt;
     }
 
     /**
-     * Set updatedAt
+     * Set updated_at
      *
-     * @param \DateTime $updatedAt
+     * @param \DateTime $updated_at
      *
      * @return Tournee
      */
-    public function setUpdatedAt($updatedAt)
+    public function setupdated_at($updated_at)
     {
         $this->updatedAt = $updatedAt;
 
@@ -238,11 +238,11 @@ class Tournee
     }
 
     /**
-     * Get updatedAt
+     * Get updated_at
      *
      * @return \DateTime
      */
-    public function getUpdatedAt()
+    public function getupdated_at()
     {
         return $this->updatedAt;
     }
@@ -269,5 +269,125 @@ class Tournee
     public function getConvertis(): Collection
     {
         return $this->convertis;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Tournee
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt;
+     *
+     * @return Tournee
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * Add pay
+     *
+     * @param \ISI\ORGBundle\Entity\TourneePays $pay
+     *
+     * @return Tournee
+     */
+    public function addPay(\ISI\ORGBundle\Entity\TourneePays $pay)
+    {
+        $this->pays[] = $pay;
+
+        return $this;
+    }
+
+    /**
+     * Remove pay
+     *
+     * @param \ISI\ORGBundle\Entity\TourneePays $pay
+     */
+    public function removePay(\ISI\ORGBundle\Entity\TourneePays $pay)
+    {
+        $this->pays->removeElement($pay);
+    }
+
+    /**
+     * Add commune
+     *
+     * @param \ISI\ORGBundle\Entity\TourneeCommune $commune
+     *
+     * @return Tournee
+     */
+    public function addCommune(\ISI\ORGBundle\Entity\TourneeCommune $commune)
+    {
+        $this->communes[] = $commune;
+
+        return $this;
+    }
+
+    /**
+     * Remove commune
+     *
+     * @param \ISI\ORGBundle\Entity\TourneeCommune $commune
+     */
+    public function removeCommune(\ISI\ORGBundle\Entity\TourneeCommune $commune)
+    {
+        $this->communes->removeElement($commune);
+    }
+
+    /**
+     * Add converti
+     *
+     * @param \ISI\ORGBundle\Entity\Converti $converti
+     *
+     * @return Tournee
+     */
+    public function addConverti(\ISI\ORGBundle\Entity\Converti $converti)
+    {
+        $this->convertis[] = $converti;
+
+        return $this;
+    }
+
+    /**
+     * Remove converti
+     *
+     * @param \ISI\ORGBundle\Entity\Converti $converti
+     */
+    public function removeConverti(\ISI\ORGBundle\Entity\Converti $converti)
+    {
+        $this->convertis->removeElement($converti);
     }
 }

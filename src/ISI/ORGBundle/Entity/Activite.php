@@ -31,7 +31,7 @@ class Activite
     /**
      * @ORM\ManyToOne(targetEntity="Commune", inversedBy="activites")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="commune", referencedColumnName="id", nullable=true)
+     *   @ORM\JoinColumn(name="commune_id", referencedColumnName="id", nullable=true)
      * })
      */
     private $commune;
@@ -93,7 +93,7 @@ class Activite
 
     public function __construct()
     {
-      $this->created_at = new \Datetime();
+      $this->createdAt = new \Datetime();
     }
 
 
@@ -271,7 +271,7 @@ class Activite
     /**
      * Set updatedAt
      *
-     * @param \DateTime $updatedAt
+     * @param \DateTime $updatedAt;
      *
      * @return Activite
      */
@@ -290,5 +290,39 @@ class Activite
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * Add commune
+     *
+     * @param \ISI\ORGBundle\Entity\ActiviteCommune $commune
+     *
+     * @return Activite
+     */
+    public function addCommune(\ISI\ORGBundle\Entity\ActiviteCommune $commune)
+    {
+        $this->communes[] = $commune;
+
+        return $this;
+    }
+
+    /**
+     * Remove commune
+     *
+     * @param \ISI\ORGBundle\Entity\ActiviteCommune $commune
+     */
+    public function removeCommune(\ISI\ORGBundle\Entity\ActiviteCommune $commune)
+    {
+        $this->communes->removeElement($commune);
+    }
+
+    /**
+     * Get communes
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCommunes()
+    {
+        return $this->communes;
     }
 }

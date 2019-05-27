@@ -1,11 +1,11 @@
 <?php
-namespace ISIBundle\Entity;
+namespace ISI\ISIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(name="livre", indexes={@ORM\Index(name="matiere_fk", columns={"matiere"})})
- * @ORM\Entity(repositoryClass="ISIBundle\Repository\LivreRepository")
+ * @ORM\Table(name="livre", indexes={@ORM\Index(name="matiere_fk", columns={"matiere_id"})})
+ * @ORM\Entity(repositoryClass="ISI\ISIBundle\Repository\LivreRepository")
  * @ORM\HasLifecycleCallbacks()
  * */ 
 
@@ -42,29 +42,290 @@ class Livre
     private $description;
 
     /**
-     * @var \DateTime
+     * @var string
      *
-     * @ORM\Column(name="date_save", type="datetime", nullable=false)
+     * @ORM\Column(name="nom_fichier", type="string", length=255, nullable=true)
      */
-    private $dateSave;
+    private $nomFichier;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="support", type="string", length=255, nullable=true)
+     */
+    private $support;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_update", type="datetime", nullable=false)
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private $dateUpdate;
+    private $createdAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     */
+    private $updatedAt;
 
     /**
      * @var \Matiere
      *
      * @ORM\ManyToOne(targetEntity="Matiere", fetch="EAGER")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="matiere", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="matiere_id", referencedColumnName="id")
      * })
      */
     private $matiere;
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set nom
+     *
+     * @param string $nom
+     *
+     * @return Livre
+     */
+    public function setNom($nom)
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    /**
+     * Get nom
+     *
+     * @return string
+     */
+    public function getNom()
+    {
+        return $this->nom;
+    }
+
+    /**
+     * Set auteur
+     *
+     * @param string $auteur
+     *
+     * @return Livre
+     */
+    public function setAuteur($auteur)
+    {
+        $this->auteur = $auteur;
+
+        return $this;
+    }
+
+    /**
+     * Get auteur
+     *
+     * @return string
+     */
+    public function getAuteur()
+    {
+        return $this->auteur;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Livre
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set nomFichier
+     *
+     * @param string $nomFichier
+     *
+     * @return Livre
+     */
+    public function setNomFichier($nomFichier)
+    {
+        $this->nomFichier = $nomFichier;
+
+        return $this;
+    }
+
+    /**
+     * Get nomFichier
+     *
+     * @return string
+     */
+    public function getNomFichier()
+    {
+        return $this->nomFichier;
+    }
+
+    /**
+     * Set support
+     *
+     * @param string $support
+     *
+     * @return Livre
+     */
+    public function setSupport($support)
+    {
+        $this->support = $support;
+
+        return $this;
+    }
+
+    /**
+     * Get support
+     *
+     * @return string
+     */
+    public function getSupport()
+    {
+        return $this->support;
+    }
+
+    /**
+     * Set created_at
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Livre
+     */
+    public function setcreated_at($createdAt)
+    {
+        $this->created_at = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get created_at
+     *
+     * @return \DateTime
+     */
+    public function getcreated_at()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * Set updated_at
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Livre
+     */
+    public function setupdated_at($updatedAt)
+    {
+        $this->updated_at = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updated_at
+     *
+     * @return \DateTime
+     */
+    public function getupdated_at()
+    {
+        return $this->updated_at;
+    }
+
+    /**
+     * Set matiere
+     *
+     * @param \ISI\ISIBundle\Entity\Matiere $matiere
+     *
+     * @return Livre
+     */
+    public function setMatiere(\ISI\ISIBundle\Entity\Matiere $matiere = null)
+    {
+        $this->matiere = $matiere;
+
+        return $this;
+    }
+
+    /**
+     * Get matiere
+     *
+     * @return \ISI\ISIBundle\Entity\Matiere
+     */
+    public function getMatiere()
+    {
+        return $this->matiere;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Livre
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->created_at = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Livre
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updated_at = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
+    }
 }
-
-
-?>

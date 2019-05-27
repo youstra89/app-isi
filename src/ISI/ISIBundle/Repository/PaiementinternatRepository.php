@@ -15,9 +15,9 @@ class PaiementinternatRepository extends \Doctrine\ORM\EntityRepository
     $qb = $this->createQueryBuilder('p');
     $qb->join('p.moisdepaiement', 'mdp')
        // ->addSelect('mdp')
-       ->join('mdp.anneeScolaire', 'an')
+       ->join('mdp.annee', 'an')
        // ->addSelect('an')
-       ->where('an.anneeScolaireId = :as')
+       ->where('an.id = :as')
        ->setParameter('as', $as);
 
     return $qb->getQuery()

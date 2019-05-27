@@ -3,7 +3,7 @@
 {% extends 'ISIBundle:Scolarite:index.html.twig' %}
 
 {% block pageTitle %}
-  Résultats | Session {{ examen.getSession }} : {{ examen.getAnneeScolaire.getLibelleAnneeScolaire }}
+  Résultats | Session {{ examen.getSession }} : {{ examen.getAnnee.getLibelle }}
 {% endblock %}
 
 
@@ -38,7 +38,7 @@
       <div class="ui info message">
         <center>
           <h2>{{ 'Résultats d\'examen'|trans }} : {{ grp }}</h2>
-          <h3>{{ 'Session'|trans }} {{ examen.getSession }} : {{ examen.getAnneeScolaire.getLibelleAnneeScolaire }}</h3>
+          <h3>{{ 'Session'|trans }} {{ examen.getSession }} : {{ examen.getAnnee.getLibelle }}</h3>
         </center>
       </div>
       {% for niveau in niveaux %}
@@ -49,7 +49,7 @@
                 <div class="card">
                   <div class="content">
                     <img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
-                    <div class="header">{{ classe.getLibelleClasseFr }}</div>
+                    <div class="header">{{ classe.getLibelleFr }}</div>
                     <div class="meta">{{ classe.niveau.getGroupeFormation.getLibelleFr }} </div>
                     <div class="description">
                       <div class="ui link list">
@@ -58,7 +58,7 @@
                   </div>
                   <div class="extra content">
                     <div class="ui buttons">
-                      <a href="{{path('isi_resultats_de_la_classe', {'as': asec, 'regime': regime, 'classeId': classe.getClasseId, 'examenId': examen.examenId})}}">
+                      <a href="{{path('isi_resultats_de_la_classe', {'as': asec, 'regime': regime, 'classeId': classe.id, 'examenId': examen.id})}}">
                         <div class="ui basic green button">{{ 'Voir les résulats'|trans }}</div>
                       </a>
                     </div>

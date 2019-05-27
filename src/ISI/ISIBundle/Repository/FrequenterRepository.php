@@ -16,7 +16,7 @@ class FrequenterRepository extends \Doctrine\ORM\EntityRepository
         $qb = $this->createQueryBuilder('f');
         // $admission = NULL;
         $qb->select('f')
-           ->where('f.anneeScolaire = :anneeId AND f.admission IS NULL')
+           ->where('f.annee = :anneeId AND f.admission IS NULL')
            ->setParameter('anneeId', $as);
         //    ->setParameter('admission', $admission);
 
@@ -36,7 +36,7 @@ class FrequenterRepository extends \Doctrine\ORM\EntityRepository
            ->addSelect('c')
            ->join('c.niveau', 'n')
            ->addSelect('n')
-           ->where('n.groupeFormation = :grp AND f.anneeScolaire = :as AND e.renvoye = 0')
+           ->where('n.groupeFormation = :grp AND f.annee = :as AND e.renvoye = 0')
            ->setParameter('grp', $grp)
            ->setParameter('as', $as);
 
@@ -52,7 +52,7 @@ class FrequenterRepository extends \Doctrine\ORM\EntityRepository
         $qb->select('f')
            ->join('f.eleve', 'e')
            ->addSelect('e')
-           ->where('e.eleveId = :eleveId') 
+           ->where('e.id = :eleveId') 
            ->orderBy('f.id', 'DESC')
            ->setFirstResult( $offset )
            ->setMaxResults( $limit )
@@ -71,7 +71,7 @@ class FrequenterRepository extends \Doctrine\ORM\EntityRepository
            ->addSelect('e')
            ->join('f.classe', 'c')
            ->addSelect('c')
-           ->where('e.renvoye = :renvoi AND c.classeId = :classeId') 
+           ->where('e.renvoye = :renvoi AND c.id = :classeId') 
            ->setParameter('renvoi', $renvoi)
            ->setParameter('classeId', $classeId)
          ;
@@ -87,7 +87,7 @@ class FrequenterRepository extends \Doctrine\ORM\EntityRepository
       $qb->select('f')
          ->join('f.eleve', 'e')
          ->addSelect('e')
-         ->where('f.eleve IN (:ids) AND f.anneeScolaire = :an AND e.renvoye = :renvoi')
+         ->where('f.eleve IN (:ids) AND f.annee = :an AND e.renvoye = :renvoi')
          ->setParameter('renvoi', $renvoi)
          ->setParameter('ids', $ids)
          ->setParameter('an', $as)

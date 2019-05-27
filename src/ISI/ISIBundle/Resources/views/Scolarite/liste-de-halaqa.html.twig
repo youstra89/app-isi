@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <title>
-        {% block title %} Impression {% endblock %}
+        {% block title %} Impression liste de halaqa{% endblock %}
     </title>
 
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
@@ -208,7 +208,7 @@
             <br />
             <div class="id-fiche">
                 <div class="classe">
-                    <span>الفصل : <span class="libelleClasse">{{classe.libelleClasseAr}}</span></span>
+                    <span>الفصل : <span class="libelleClasse">{{classe.libelleAr}}</span></span>
                 </div>
             </div>
             <br /> {# {{dump(eleves)}} #}
@@ -241,7 +241,7 @@
                             {% set color = '#efefef' %}
                         {% endif %}
                         {# Pour le sexe #}
-                        {% if eleve.sexeFr == 1 %}
+                        {% if eleve.sexe == 1 %}
                             {% set sexe = 'ذكر' %}
                         {% else %}
                             {% set sexe = 'أنثى' %}

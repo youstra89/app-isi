@@ -1,8 +1,8 @@
 {# ISIBundle/Ressources/views/Scolarite #}
-{% extends "::pdf.html.twig" %}
+{% extends "ISIBundle::pdf.html.twig" %}
 {% block title %}
     {% block pageTitle %}
-        Liste de classe | {{ classe.libelleClasseAr }}
+        Liste de classe | {{ classe.libelleAr }}
     {% endblock %}
 {% endblock %}
 
@@ -20,7 +20,7 @@
         <div class="id-fiche">
             <center>
                 <div class="classe">
-                    <span>الفصل : <span class="libelleClasse">{{ classe.libelleClasseAr }}</span></span>
+                    <span>الفصل : <span class="libelleClasse">{{ classe.libelleAr }}</span></span>
                 </div>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <div class="classe">
@@ -28,7 +28,7 @@
                 </div>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <div class="annee">
-                    <span>السنة الدراسية : <span class="libelleClasse">{{ annee.libelleAnneeScolaire }}</span></span>
+                    <span>السنة الدراسية : <span class="libelleClasse">{{ annee.libelle }}</span></span>
                 </div>
             </center>
         </div>
@@ -54,7 +54,7 @@
                         {% set color = '#efefef' %}
                     {% endif %}
                     {# Pour le sexe #}
-                    {% if moyenne.eleve.sexeFr == 1 %}
+                    {% if moyenne.eleve.sexe == 1 %}
                         {% set sexe = 'ذكر' %}
                     {% else %}
                         {% set sexe = 'أنثى' %}
@@ -90,7 +90,7 @@
                                     {% set color = '#efefef' %}
                                 {% endif %}
                                  <!--Pour le sexe  -->
-                                {% if moyenne.eleve.sexeFr == 1 %}
+                                {% if moyenne.eleve.sexe == 1 %}
                                     {% set sexe = 'Masculin' %}
                                 {% else %}
                                     {% set sexe = 'Féminin' %}

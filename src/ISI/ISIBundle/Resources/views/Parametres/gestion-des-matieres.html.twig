@@ -31,7 +31,7 @@
 				<div class="extra content">
 					<div class="ui two buttons">
 						{% if is_granted('ROLE_ADMIN_SCOLARITE') %}
-							<a href="{{ path('isi_edit_matiere', {'as': asec, 'matiereId': matiere.matiereId}) }}">
+							<a href="{{ path('isi_edit_matiere', {'as': asec, 'matiereId': matiere.id}) }}">
 								<div class="ui basic green button">{{ 'Modifier'|trans }}</div>
 							</a>
 							<a href="">

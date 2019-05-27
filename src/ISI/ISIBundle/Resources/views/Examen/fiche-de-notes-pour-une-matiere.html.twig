@@ -17,10 +17,10 @@
         <br />
         <div class="id-fiche">
             <div class="classe">
-                <span>الفصل : <span class="libelleClasse">{{classe.libelleClasseAr}}</span></span>
+                <span>الفصل : <span class="libelleClasse">{{ classe.libelleAr }}</span></span>
             </div>
             <div class="matiere">
-                <span>المادة: <span class="libelleMatiere nomAr">{{matiere.libelleMatiere}}</span></span>
+                <span>المادة: <span class="libelleMatiere nomAr">{{ matiere.libelle }}</span></span>
             </div>
         </div>
         <br />
@@ -47,19 +47,19 @@
                          {% set color = '#DCDCDC' %}
                     {% endif %}
                     {# Pour le sexe #}
-                    {% if eleve.sexeFr == 1 %}
+                    {% if eleve.sexe == 1 %}
                         {% set sexe = 'Masculin' %}
                     {% else %}
                         {% set sexe = 'Féminin' %}
                     {% endif %}
                     {% set numero = numero + 1 %}
-                    <tr class="line-table" bgcolor={{color}}>
+                    <tr class="line-table" bgcolor={{ color }}>
                         <td align="right"></td>
                         {# <td align="right">{{sexe}}</td> #}
-                        <td align="right">{{eleve.nomFr}} {{eleve.pnomFr}}</td>
-                        <td align="right" class="nomEleveAr">{{eleve.nomAr}} {{eleve.pnomAr}}</td>
-                        <td align="right">{{eleve.matricule}}</td>
-                        <td align="center">{{numero}}</td>
+                        <td align="right">{{ eleve.nomFr }} {{ eleve.pnomFr }}</td>
+                        <td align="right" class="nomEleveAr">{{ eleve.nomAr }} {{ eleve.pnomAr }}</td>
+                        <td align="right">{{ eleve.matricule }}</td>
+                        <td align="center">{{ numero }}</td>
                     </tr>
                     <!-- On divise le tableau pour mieux afficher la suite de la liste -->
                     {% if (numero % 24) == 0 %}
@@ -78,19 +78,17 @@
                         </thead>
                         <tbody>
                             {% if (numero % 2) == 0 %} {% set color = 'white' %} {% else %} {% set color = '#DCDCDC' %} {% endif %} {# Pour le sexe #}
-                            {% if eleve.sexeFr == 1 %} {% set sexe = 'Masculin' %} {% else %} {% set sexe = 'Féminin' %}
+                            {% if eleve.sexe == 1 %} {% set sexe = 'Masculin' %} {% else %} {% set sexe = 'Féminin' %}
                             {% endif %} {% set numero = numero %}
                             {% if loop.index == 24 %}
                                 {% set code = 1 %}
                             {% else %}
-                            <tr class="line-table" bgcolor={{color}}>
+                            <tr class="line-table" bgcolor={{ color }}>
                                 <td align="right"></td>
-                                {#
-                                <td align="right">{{sexe}}</td> #}
-                                <td align="right">{{eleve.nomFr}} {{eleve.pnomFr}}</td>
-                                <td align="right" class="nomEleveAr">{{eleve.pnomAr}} {{eleve.nomAr}} </td>
-                                <td align="right">{{eleve.matricule}}</td>
-                                <td align="center">{{numero}}</td>
+                                <td align="right">{{ eleve.nomFr }} {{ eleve.pnomFr }}</td>
+                                <td align="right" class="nomEleveAr">{{ eleve.pnomAr }} {{ eleve.nomAr }} </td>
+                                <td align="right">{{ eleve.matricule }}</td>
+                                <td align="center">{{ numero }}</td>
                             </tr>
                             {% endif %}
                         {% endif %}
@@ -98,7 +96,7 @@
             </tbody>
         </table>
         <br />
-        <center><span class="effectif">المجموع : {{numero}}</span> </center>
+        <center><span class="effectif">المجموع : {{ numero }}</span> </center>
     {% endif %}
 
 {% endblock %}

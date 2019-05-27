@@ -16,9 +16,9 @@ class ProblemeRepository extends \Doctrine\ORM\EntityRepository
     $problemes = $this->createQueryBuilder('p');
     $problemes->join('p.commettre', 'c')
               ->addSelect('c')
-              ->join('c.anneeScolaire', 'an')
+              ->join('c.annee', 'an')
               ->addSelect('an')
-              ->where('c.eleve = :eleve AND c.anneeScolaire = :as');
+              ->where('c.eleve = :eleve AND c.annee = :as');
 
     $problemes->setParameter('eleve', $eleve);
     $problemes->setParameter('as', $as);

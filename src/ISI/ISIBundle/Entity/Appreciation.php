@@ -24,14 +24,14 @@ class Appreciation
     /**
      * @var string
      *
-     * @ORM\Column(name="appreciation_fr", type="string", length=255, nullable=true)
+     * @ORM\Column(name="appreciation_fr", type="string", length=255, nullable=false)
      */
     private $appreciationFr;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="appreciation_ar", type="string", length=255, nullable=true)
+     * @ORM\Column(name="appreciation_ar", type="string", length=255, nullable=false)
      */
     private $appreciationAr;
 

@@ -1,0 +1,191 @@
+<?php
+
+namespace ISI\ORGBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
+/**
+ * Region
+ * @UniqueEntity("nom")
+ * @ORM\Table(name="ville")
+ * @ORM\Entity(repositoryClass="ISI\ORGBundle\Repository\VilleRepository")
+ */
+class Ville
+{
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\Length(min=3, max=255)
+     */
+    private $nom;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Region", inversedBy="villes")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $region;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updatedAt;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Commune", mappedBy="ville")
+     */
+    private $communes;
+
+
+    public function __construct()
+    {
+      $this->created_at = new \Datetime();
+      $this->communes = new ArrayCollection();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): self
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getRegion(): ?Region
+    {
+        return $this->region;
+    }
+
+    public function setRegion($region): self
+    {
+        $this->region = $region;
+
+        return $this;
+    }
+
+    public function getcreated_at(): ?\DateTimeInterface
+    {
+        return $this->created_at;
+    }
+
+    public function setcreated_at(\DateTimeInterface $createdAt): self
+    {
+        $this->created_at = $createdAt;
+
+        return $this;
+    }
+
+    public function getupdated_at(): ?\DateTimeInterface
+    {
+        return $this->updated_at;
+    }
+
+    public function setupdated_at(\DateTimeInterface $updated_at): self
+    {
+        $this->updated_at = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Commune[]
+     */
+    public function getCommunes(): Collection
+    {
+        return $this->communes;
+    }
+
+    public function addCommune(Commune $commune): self
+    {
+        if (!$this->communes->contains($commune)) {
+            $this->communes[] = $commune;
+            $commune->setVille($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommune(Commune $commune): self
+    {
+        if ($this->communes->contains($commune)) {
+            $this->communes->removeElement($commune);
+            // set the owning side to null (unless already changed)
+            if ($commune->getVille() === $this) {
+                $commune->setVille(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Ville
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->created_at = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt;
+     *
+     * @return Ville
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updated_at = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
+    }
+}

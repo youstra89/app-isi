@@ -13,7 +13,7 @@ class UserController extends Controller
   public function indexAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee = $em->getRepository('ISIBundle:Annee');
     $annee = $repoAnnee->find($as);
 
     // $request->query->get('as')

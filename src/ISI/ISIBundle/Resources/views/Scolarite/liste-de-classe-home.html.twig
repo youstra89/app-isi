@@ -36,7 +36,7 @@
         <tbody>
           {% set numero = 0 %}
           {% for classe in classes %} 
-            {% if classe.niveau.groupeFormation.referenceGrp is same as(regime) %}
+            {% if classe.niveau.groupeFormation.reference is same as(regime) %}
               {% set numero = numero + 1 %}
               {% set genre = '' %}
               {% if classe.genre == 'H' %}
@@ -54,23 +54,23 @@
                   <h4 class="ui image header">{{ classe.getNiveau.getLibelleFr }}</h4>
                 </td>
                 <td>
-                  <h4 class="ui image header">{{ classe.libelleclassefr }}</h4>
+                  <h4 class="ui image header">{{ classe.libellefr }}</h4>
                 </td>
                 <td>
                   <h4 class="ui image header">{{ classe.getNiveau.getLibelleAr }}</h4>
                 </td>
                 <td>
-                  <h4 class="ui image header">{{ classe.libelleclassear }}</h4>
+                  <h4 class="ui image header">{{ classe.libellear }}</h4>
                 </td>
                 <td>
                   <h4 class="ui image header">{{ genre }}</h4>
                 </td>
                 <td>
-                  <a href="{{path('isi_tirer_liste_de_la_classe_edition_sans_impression', {'as': asec, 'regime': regime, 'classeId': classe.classeId})}}">
+                  <a href="{{path('isi_tirer_liste_de_la_classe_edition_sans_impression', {'as': asec, 'regime': regime, 'classeId': classe.id})}}">
                     <i class="list icon"></i>
                   </a>
                   &nbsp;&nbsp;&nbsp;&nbsp;
-                  <a href="{{path('isi_tirer_liste_de_la_classe', {'as': asec, 'regime': regime, 'classeId': classe.classeId})}}">
+                  <a href="{{path('isi_tirer_liste_de_la_classe', {'as': asec, 'regime': regime, 'classeId': classe.id})}}">
                     <i class="print icon"></i>
                   </a>
                 </td>

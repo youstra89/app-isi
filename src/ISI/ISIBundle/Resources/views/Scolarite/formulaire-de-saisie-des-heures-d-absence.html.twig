@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-	<h3>{{ 'Enregistrement des heures d\'absence de'|trans }} {{ absence }} {{ 'de la classe'|trans }} {{ classe.libelleClasseFr }}{{ 'pour le mois de'|trans }} {{ mois.mois }} </h3>
+	<h3>{{ 'Enregistrement des heures d\'absence de'|trans }} {{ absence }} {{ 'de la classe'|trans }} {{ classe.libelleFr }}{{ 'pour le mois de'|trans }} {{ mois.mois }} </h3>
 	<table>
 		<div class="well">
 			<form action="" method="post" name="notes">
@@ -23,7 +23,7 @@
 				</div>
 				{% for eleve in eleves %}
 					{% set image = "" %}
-					{% if eleve.sexeFr == 1 %}
+					{% if eleve.sexe == 1 %}
 						{% set image = "/markaz/web/images/mark.png" %}
 					{% else %}
 						{% set image = "/markaz/web/images/molly.png" %}
@@ -32,12 +32,12 @@
 					{# {{dump(absencesDuMois)}} #}
 					{% for abs in absencesDuMois %}
 
-						{% if eleve.eleveId == abs.eleve.eleveId %}
+						{% if eleve.id == abs.eleve.id %}
 							<div class="item ui selectable">
 								<div class="right floated content">
 									<div class="">
 										<div class="ui right labeled input">
-											<input name="abs[{{eleve.eleveId}}]" type="integer">
+											<input name="abs[{{eleve.id}}]" type="integer">
 											<div class="ui basic label">{{ 'heures'|trans }}</div>
 										</div>
 									</div>

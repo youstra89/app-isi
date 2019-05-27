@@ -1,6 +1,6 @@
 <?php
 
-namespace ISIBundle\Entity;
+namespace ISI\ISIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Batiment
  *
  * @ORM\Table(name="batiment")
- * @ORM\Entity(repositoryClass="ISIBundle\Repository\BatimentRepository")
+ * @ORM\Entity(repositoryClass="ISI\ISIBundle\Repository\BatimentRepository")
  */
 class Batiment
 {
@@ -29,18 +29,32 @@ class Batiment
     private $nom;
 
     /**
-     * @var \DateTime
+     * @var string
      *
-     * @ORM\Column(name="dateSave", type="datetime")
+     * @ORM\Column(name="responsable", type="string", length=255, nullable=true)
      */
-    private $dateSave;
+    private $responsable;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="dateUpdate", type="datetime")
+     * @ORM\Column(name="utilisation", type="integer", nullable=false)
      */
-    private $dateUpdate;
+    private $utilisation;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_at", type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     */
+    private $updatedAt;
 
 
     /**
@@ -78,50 +92,99 @@ class Batiment
     }
 
     /**
-     * Set dateSave
+     * Set responsable
      *
-     * @param \DateTime $dateSave
+     * @param string $responsable
      *
      * @return Batiment
      */
-    public function setDateSave($dateSave)
+    public function setResponsable($responsable)
     {
-        $this->dateSave = $dateSave;
+        $this->responsable = $responsable;
 
         return $this;
     }
 
     /**
-     * Get dateSave
-     *
-     * @return \DateTime
-     */
-    public function getDateSave()
-    {
-        return $this->dateSave;
-    }
-
-    /**
-     * Set dateUpdate
-     *
-     * @param string $dateUpdate
-     *
-     * @return Batiment
-     */
-    public function setDateUpdate($dateUpdate)
-    {
-        $this->dateUpdate = $dateUpdate;
-
-        return $this;
-    }
-
-    /**
-     * Get dateUpdate
+     * Get responsable
      *
      * @return string
      */
-    public function getDateUpdate()
+    public function getResponsable()
     {
-        return $this->dateUpdate;
+        return $this->responsable;
+    }
+
+    /**
+     * Set created_at
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Batiment
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get created_at
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updated_at
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Batiment
+     */
+    public function setupdated_at($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updated_at
+     *
+     * @return \DateTime
+     */
+    public function getupdated_at()
+    {
+        return $this->updatedAt;
+    }
+
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Batiment
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
     }
 }

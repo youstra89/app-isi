@@ -9,7 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use ISI\ISIBundle\Entity\AnneeScolaire;
 use ISI\ISIBundle\Entity\Eleve;
 
-use ISI\ISIBundle\Repository\AnneescolaireRepository;
+use ISI\ISIBundle\Repository\AnneeRepository;
 use ISI\ISIBundle\Repository\EleveRepository;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -22,7 +22,7 @@ class CoranController extends Controller
     public function indexAction(Request $request, $as, $regime)
     {
         $em = $this->getDoctrine()->getManager();
-        $repoAnnee = $em->getRepository('ISIBundle:Anneescolaire');
+        $repoAnnee = $em->getRepository('ISIBundle:Annee');
         $repoEleve = $em->getRepository('ISIBundle:Eleve');
 
         $eleves = $repoEleve->findBy(['regime' => $regime]);

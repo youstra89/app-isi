@@ -38,7 +38,7 @@ class Enseignant
     /**
      * @var string
      *
-     * @ORM\Column(name="nom_ar", type="string", length=255, nullable=false)
+     * @ORM\Column(name="nom_ar", type="string", length=255, nullable=true)
      */
     private $nomAr;
 
@@ -52,35 +52,35 @@ class Enseignant
     /**
      * @var string
      *
-     * @ORM\Column(name="pnom_ar", type="string", length=255, nullable=false)
+     * @ORM\Column(name="pnom_ar", type="string", length=255, nullable=true)
      */
     private $pnomAr;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="sexe", type="string", length=255, nullable=false)
+     * @ORM\Column(name="sexe", type="string", length=255, nullable=true)
      */
     private $sexe;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_naissance", type="date", nullable=false)
+     * @ORM\Column(name="date_naissance", type="date", nullable=true)
      */
     private $dateNaissance;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="lieu_naissance", type="string", length=255, nullable=false)
+     * @ORM\Column(name="lieu_naissance", type="string", length=255, nullable=true)
      */
     private $lieuNaissance;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="reference_cni", type="string", length=255, nullable=false)
+     * @ORM\Column(name="reference_cni", type="string", length=255, nullable=true)
      */
     private $referenceCni;
 
@@ -101,21 +101,21 @@ class Enseignant
     /**
      * @var string
      *
-     * @ORM\Column(name="nationalite", type="string", length=255, nullable=false)
+     * @ORM\Column(name="nationalite", type="string", length=255, nullable=true)
      */
     private $nationalite;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="niveau_etude", type="string", length=255, nullable=false)
+     * @ORM\Column(name="niveau_etude", type="string", length=255, nullable=true)
      */
     private $niveauEtude;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="diplome_obtenu", type="string", length=255, nullable=false)
+     * @ORM\Column(name="diplome_obtenu", type="string", length=255, nullable=true)
      */
     private $diplomeObtenu;
 
@@ -129,35 +129,35 @@ class Enseignant
     /**
      * @var string
      *
-     * @ORM\Column(name="situation_matrimoniale", type="string", length=255, nullable=false)
+     * @ORM\Column(name="situation_matrimoniale", type="string", length=255, nullable=true)
      */
     private $situationMatrimoniale;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="residence", type="string", length=255, nullable=false)
+     * @ORM\Column(name="residence", type="string", length=255, nullable=true)
      */
     private $residence;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="langues_parlees", type="string", length=255, nullable=false)
+     * @ORM\Column(name="langues_parlees", type="string", length=255, nullable=true)
      */
     private $languesParlees;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="exp_professionnelle", type="integer", length=11, nullable=false)
+     * @ORM\Column(name="exp_professionnelle", type="integer", length=11, nullable=true)
      */
     private $expProfessionnelle;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="annee_obtention", type="string", length=255, nullable=false)
+     * @ORM\Column(name="annee_obtention", type="string", length=255, nullable=true)
      */
     private $anneeObtention;
 
@@ -171,23 +171,23 @@ class Enseignant
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_rupture", type="datetime", nullable=false)
+     * @ORM\Column(name="date_rupture", type="datetime", nullable=true)
      */
     private $dateRupture;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_save", type="datetime", nullable=false)
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private $dateSave;
+    private $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_update", type="datetime", nullable=false)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private $dateUpdate;
+    private $updatedAt;
 
 
 
@@ -610,54 +610,6 @@ class Enseignant
     }
 
     /**
-     * Set dateSave
-     *
-     * @param \DateTime $dateSave
-     *
-     * @return Enseignant
-     */
-    public function setDateSave($dateSave)
-    {
-        $this->dateSave = $dateSave;
-
-        return $this;
-    }
-
-    /**
-     * Get dateSave
-     *
-     * @return \DateTime
-     */
-    public function getDateSave()
-    {
-        return $this->dateSave;
-    }
-
-    /**
-     * Set dateUpdate
-     *
-     * @param \DateTime $dateUpdate
-     *
-     * @return Enseignant
-     */
-    public function setDateUpdate($dateUpdate)
-    {
-        $this->dateUpdate = $dateUpdate;
-
-        return $this;
-    }
-
-    /**
-     * Get dateUpdate
-     *
-     * @return \DateTime
-     */
-    public function getDateUpdate()
-    {
-        return $this->dateUpdate;
-    }
-
-    /**
      * Set autresCompetences
      *
      * @param string $autresCompetences
@@ -775,5 +727,53 @@ class Enseignant
     public function getExpProfessionnelle()
     {
         return $this->expProfessionnelle;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Enseignant
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Enseignant
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
     }
 }

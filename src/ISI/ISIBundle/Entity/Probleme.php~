@@ -1,6 +1,6 @@
 <?php
 
-namespace ISIBundle\Entity;
+namespace ISI\ISIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Probleme
  *
  * @ORM\Table(name="probleme")
- * @ORM\Entity(repositoryClass="ISIBundle\Repository\ProblemeRepository")
+ * @ORM\Entity(repositoryClass="ISI\ISIBundle\Repository\ProblemeRepository")
  */
 class Probleme
 {
@@ -19,7 +19,14 @@ class Probleme
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $problemeId;
+    private $id;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date", type="datetime")
+     */
+    private $date;
 
     /**
      * @var string
@@ -38,19 +45,19 @@ class Probleme
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_save", type="datetime", nullable=false)
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private $dateSave;
+    private $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_update", type="datetime", nullable=false)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private $dateUpdate;
+    private $updatedAt;
 
     /**
-     * @ORM\OneToMany(targetEntity="ISIBundle\Entity\Commettre", mappedBy="probleme")
+     * @ORM\OneToMany(targetEntity="ISI\ISIBundle\Entity\Commettre", mappedBy="probleme")
      */
     private $commettre;
 
@@ -61,9 +68,33 @@ class Probleme
      *
      * @return integer
      */
-    public function getProblemeId()
+    public function getId()
     {
-        return $this->problemeId;
+        return $this->id;
+    }
+
+    /**
+     * Set date
+     *
+     * @param \DateTime $date
+     *
+     * @return Probleme
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * Get date
+     *
+     * @return \DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
     }
 
     /**
@@ -115,50 +146,139 @@ class Probleme
     }
 
     /**
-     * Set dateSave
+     * Set created_at
      *
-     * @param \DateTime $dateSave
+     * @param \DateTime $createdAt
      *
      * @return Probleme
      */
-    public function setDateSave($dateSave)
+    public function setcreated_at($createdAt)
     {
-        $this->dateSave = $dateSave;
+        $this->created_at = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get dateSave
+     * Get created_at
      *
      * @return \DateTime
      */
-    public function getDateSave()
+    public function getcreated_at()
     {
-        return $this->dateSave;
+        return $this->created_at;
     }
 
     /**
-     * Set dateUpdate
+     * Set updated_at
      *
-     * @param \DateTime $dateUpdate
+     * @param \DateTime $updatedAt
      *
      * @return Probleme
      */
-    public function setDateUpdate($dateUpdate)
+    public function setupdated_at($updatedAt)
     {
-        $this->dateUpdate = $dateUpdate;
+        $this->updated_at = $updatedAt;
 
         return $this;
     }
 
     /**
-     * Get dateUpdate
+     * Get updated_at
      *
      * @return \DateTime
      */
-    public function getDateUpdate()
+    public function getupdated_at()
     {
-        return $this->dateUpdate;
+        return $this->updated_at;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->commettre = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add commettre
+     *
+     * @param \ISI\ISIBundle\Entity\Commettre $commettre
+     *
+     * @return Probleme
+     */
+    public function addCommettre(\ISI\ISIBundle\Entity\Commettre $commettre)
+    {
+        $this->commettre[] = $commettre;
+
+        return $this;
+    }
+
+    /**
+     * Remove commettre
+     *
+     * @param \ISI\ISIBundle\Entity\Commettre $commettre
+     */
+    public function removeCommettre(\ISI\ISIBundle\Entity\Commettre $commettre)
+    {
+        $this->commettre->removeElement($commettre);
+    }
+
+    /**
+     * Get commettre
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCommettre()
+    {
+        return $this->commettre;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Probleme
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->created_at = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Probleme
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updated_at = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
     }
 }

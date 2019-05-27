@@ -1,0 +1,29 @@
+{% extends 'ORGBundle:Disposition:index.html.twig'%}
+
+
+{% block stylesheets %}
+{% endblock %}
+
+
+{% block title 'Ajout d\'un nouveau bâtiment' %}
+
+
+
+{% block body %}
+  <h2>Ajout d'un nouveau bâtiment</h2>
+  <div>
+    <form action="" method="post" class="ui form">
+      <div class="two fields">
+        <div class="field">
+          <label for="nom">Nom du bâtiment</label>
+          <input type="text" name="nom" id="nom">
+        </div>
+      </div>
+      <button type="submit" class="ui positive button">Valider</button>
+    </form>
+  </div>
+{% endblock %}
+
+
+{% block javascripts %}
+{% endblock %}

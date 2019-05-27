@@ -43,13 +43,13 @@
                         {% if classe.niveau.id == niveau.id %}
                             <div class="item">
                                 <div class="right floated content">
-                                  <a class="ui button" href="{{ path('isi_flash_inscription_d_une_classe', {'as': asec, 'regime': regime, 'classeId': classe.classeId}) }}">
+                                  <a class="ui button" href="{{ path('isi_flash_inscription_d_une_classe', {'as': asec, 'regime': regime, 'classeId': classe.id}) }}">
                                     {{ 'Flash inscription'|trans }}
                                   </a>
                                 </div>
                                 <img class="ui avatar image" src="/markaz/web/images/logoISI-x.png">
                                 <div class="content">
-                                  {{ classe.libelleClasseFr }}
+                                  {{ classe.libelleFr }}
                                 </div>
                             </div>
                         {% endif %}

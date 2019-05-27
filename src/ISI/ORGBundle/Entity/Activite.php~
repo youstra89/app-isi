@@ -1,0 +1,376 @@
+<?php
+
+namespace ISI\ORGBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Activite
+ *
+ * @ORM\Table(name="activite")
+ * @ORM\Entity(repositoryClass="ISI\ORGBundle\Repository\ActiviteRepository")
+ */
+class Activite
+{
+    const TYPE = [
+      0 => 'Coférence',
+      1 => 'Séminaire',
+      2 => 'Prêche',
+    ];
+
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Commune", inversedBy="activites")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="commune", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $commune;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ActiviteCommune", mappedBy="activite")
+     */
+    private $communes;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date", type="datetime")
+     */
+    private $date;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="lieu", type="string", length=255)
+     */
+    private $lieu;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="heure", type="string", length=255)
+     */
+    private $heure;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="type", type="string", length=255)
+     */
+    private $type;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="theme", type="string", length=255)
+     */
+    private $theme;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_at", type="datetime")
+     */
+    private $created_at;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     */
+    private $updatedAt;
+
+
+    public function __construct()
+    {
+      $this->created_at = new \Datetime();
+    }
+
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getCommune(): ?Commune
+    {
+        return $this->commune;
+    }
+
+    public function setCommune($commune): self
+    {
+        $this->commune = $commune;
+
+        return $this;
+    }
+
+    /**
+     * Set date
+     *
+     * @param \DateTime $date
+     *
+     * @return Activite
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * Get date
+     *
+     * @return \DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    /**
+     * Set lieu
+     *
+     * @param string $lieu
+     *
+     * @return Activite
+     */
+    public function setLieu($lieu)
+    {
+        $this->lieu = $lieu;
+
+        return $this;
+    }
+
+    /**
+     * Get lieu
+     *
+     * @return string
+     */
+    public function getLieu()
+    {
+        return $this->lieu;
+    }
+
+    /**
+     * Set heure
+     *
+     * @param string $heure
+     *
+     * @return Activite
+     */
+    public function setHeure($heure)
+    {
+        $this->heure = $heure;
+
+        return $this;
+    }
+
+    /**
+     * Get heure
+     *
+     * @return string
+     */
+    public function getHeure()
+    {
+        return $this->heure;
+    }
+
+    /**
+     * Set type
+     *
+     * @param int $type
+     *
+     * @return Activite
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return int
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    public function getTypeType(): string
+    {
+      return self::TYPE[$this->type];
+    }
+
+    /**
+     * Set theme
+     *
+     * @param string $theme
+     *
+     * @return Activite
+     */
+    public function setTheme($theme)
+    {
+        $this->theme = $theme;
+
+        return $this;
+    }
+
+    /**
+     * Get theme
+     *
+     * @return string
+     */
+    public function getTheme()
+    {
+        return $this->theme;
+    }
+
+    /**
+     * Set created_at
+     *
+     * @param \DateTime $created_at
+     *
+     * @return Activite
+     */
+    public function setcreated_at($created_at)
+    {
+        $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    /**
+     * Get created_at
+     *
+     * @return \DateTime
+     */
+    public function getcreated_at()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * Set updated_at
+     *
+     * @param \DateTime $updated_at
+     *
+     * @return Activite
+     */
+    public function setupdated_at($updated_at)
+    {
+        $this->updated_at = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updated_at
+     *
+     * @return \DateTime
+     */
+    public function getupdated_at()
+    {
+        return $this->updated_at;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Activite
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->created_at = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt;
+     *
+     * @return Activite
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updated_at = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
+    }
+
+    /**
+     * Add commune
+     *
+     * @param \ISI\ORGBundle\Entity\ActiviteCommune $commune
+     *
+     * @return Activite
+     */
+    public function addCommune(\ISI\ORGBundle\Entity\ActiviteCommune $commune)
+    {
+        $this->communes[] = $commune;
+
+        return $this;
+    }
+
+    /**
+     * Remove commune
+     *
+     * @param \ISI\ORGBundle\Entity\ActiviteCommune $commune
+     */
+    public function removeCommune(\ISI\ORGBundle\Entity\ActiviteCommune $commune)
+    {
+        $this->communes->removeElement($commune);
+    }
+
+    /**
+     * Get communes
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCommunes()
+    {
+        return $this->communes;
+    }
+}

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Moyenneclasse
  *
- * @ORM\Table(name="moyenneclasse", uniqueConstraints={@ORM\UniqueConstraint(name="fichedenote", columns={"classe", "examen"})}, indexes={@ORM\Index(name="classe", columns={"classe"}), @ORM\Index(name="examen", columns={"examen"})})
+ * @ORM\Table(name="moyenneclasse", uniqueConstraints={@ORM\UniqueConstraint(name="fichedenote", columns={"classe_id", "examen_id"})}, indexes={@ORM\Index(name="classe_id", columns={"classe_id"}), @ORM\Index(name="examen_id", columns={"examen_id"})})
  * @ORM\Entity
  */
 class Moyenneclasse
@@ -40,7 +40,7 @@ class Moyenneclasse
      *
      * @ORM\ManyToOne(targetEntity="Classe")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="classe", referencedColumnName="classe_id")
+     *   @ORM\JoinColumn(name="classe_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $classe;
@@ -50,7 +50,7 @@ class Moyenneclasse
      *
      * @ORM\ManyToOne(targetEntity="Examen")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="examen", referencedColumnName="examen_id")
+     *   @ORM\JoinColumn(name="examen_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $examen;
@@ -58,16 +58,16 @@ class Moyenneclasse
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_save", type="datetime", nullable=false)
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private $dateSave;
+    private $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_update", type="datetime", nullable=false)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private $dateUpdate;
+    private $updatedAt;
 
 
 
@@ -179,52 +179,100 @@ class Moyenneclasse
     }
 
         /**
-     * Set dateSave
+     * Set created_at
      *
-     * @param \DateTime $dateSave
+     * @param \DateTime $createdAt
      *
      * @return Moyenne
      */
-    public function setDateSave($dateSave)
+    public function setcreated_at($createdAt)
     {
-        $this->dateSave = $dateSave;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get dateSave
+     * Get created_at
      *
      * @return \DateTime
      */
-    public function getDateSave()
+    public function getcreated_at()
     {
-        return $this->dateSave;
+        return $this->createdAt;
     }
 
     /**
-     * Set dateUpdate
+     * Set updated_at
      *
-     * @param \DateTime $dateUpdate
+     * @param \DateTime $updatedAt
      *
      * @return Moyenne
      */
-    public function setDateUpdate($dateUpdate)
+    public function setupdated_at($updatedAt)
     {
-        $this->dateUpdate = $dateUpdate;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
     /**
-     * Get dateUpdate
+     * Get updated_at
      *
      * @return \DateTime
      */
-    public function getDateUpdate()
+    public function getupdated_at()
     {
-        return $this->dateUpdate;
+        return $this->updatedAt;
     }
 
 
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Moyenneclasse
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Moyenneclasse
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
 }

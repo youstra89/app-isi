@@ -23,19 +23,19 @@ class Converti
 
     /**
      * @ORM\ManyToOne(targetEntity="Tournee", inversedBy="convertis")
-     * @ORM\JoinColumn(name="tournee", nullable=true)
+     * @ORM\JoinColumn(name="tournee_id", nullable=true)
      */
     private $tournee;
 
     /**
      * @ORM\ManyToOne(targetEntity="Commune", inversedBy="convertis")
-     * @ORM\JoinColumn(name="commune", nullable=true)
+     * @ORM\JoinColumn(name="commune_id", nullable=true)
      */
     private $commune;
 
     /**
      * @ORM\ManyToOne(targetEntity="Pays", inversedBy="convertis")
-     * @ORM\JoinColumn(name="pays", nullable=true)
+     * @ORM\JoinColumn(name="pays_id", nullable=true)
      */
     private $pays;
 
@@ -417,6 +417,54 @@ class Converti
     }
 
     /**
+     * Set created_at
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Converti
+     */
+    public function setcreated_at($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get created_at
+     *
+     * @return \DateTime
+     */
+    public function getcreated_at()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updated_at
+     *
+     * @param \DateTime $updated_at
+     *
+     * @return Converti
+     */
+    public function setupdated_at($updated_at)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updated_at
+     *
+     * @return \DateTime
+     */
+    public function getupdated_at()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
      * Set createdAt
      *
      * @param \DateTime $createdAt
@@ -443,7 +491,7 @@ class Converti
     /**
      * Set updatedAt
      *
-     * @param \DateTime $updatedAt
+     * @param \DateTime $updatedAt;
      *
      * @return Converti
      */

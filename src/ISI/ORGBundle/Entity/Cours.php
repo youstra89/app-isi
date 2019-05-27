@@ -259,6 +259,54 @@ class Cours
     }
 
     /**
+     * Set created_at
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Cours
+     */
+    public function setcreated_at($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get created_at
+     *
+     * @return \DateTime
+     */
+    public function getcreated_at()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updated_at
+     *
+     * @param \DateTime $updated_at
+     *
+     * @return Cours
+     */
+    public function setupdated_at($updated_at)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updated_at
+     *
+     * @return \DateTime
+     */
+    public function getupdated_at()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
      * Set createdAt
      *
      * @param \DateTime $createdAt
@@ -285,7 +333,7 @@ class Cours
     /**
      * Set updatedAt
      *
-     * @param \DateTime $updatedAt
+     * @param \DateTime $updatedAt;
      *
      * @return Cours
      */

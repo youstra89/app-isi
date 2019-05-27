@@ -3,7 +3,7 @@
 {% if regime == 'C' %}
   {% set template = 'ISIBundle:Coran:index.html.twig' %}
 {% else %}
-  {% set template = 'ISIBundle:Eleve:index.html.twig' %}
+  {% set template = 'ISIBundle:Parametres:index.html.twig' %}
 {% endif %}
 {% extends template %}
 {% block pageTitle %} Halaqas {% endblock %}
@@ -40,7 +40,7 @@
                          {% endif %}
                         <tr>
                             <td>
-                                <h4 class="ui image header">{{ halaqa.libelleHalaqa }} </h4>
+                                <h4 class="ui image header">{{ halaqa.libelle }} </h4>
                             </td>
                             <td>
                                 <h4 class="ui image header">{{ genre }}</h4>

@@ -16,11 +16,11 @@ class Eleve
     /**
      * @var integer
      *
-     * @ORM\Column(name="eleve_id", type="integer", nullable=false)
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $eleveId;
+    private $id;
 
     /**
      * @var string
@@ -60,9 +60,9 @@ class Eleve
     /**
      * @var string
      *
-     * @ORM\Column(name="sexe_fr", type="string", length=255, nullable=false)
+     * @ORM\Column(name="sexe", type="string", length=255, nullable=false)
      */
-    private $sexeFr;
+    private $sexe;
 
     /**
      * @var string
@@ -242,21 +242,26 @@ class Eleve
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_save", type="datetime", nullable=false)
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private $dateSave;
+    private $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_update", type="datetime", nullable=false)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private $dateUpdate;
+    private $updatedAt;
 
     /**
      * @ORM\OneToMany(targetEntity="ISI\ISIBundle\Entity\Frequenter", mappedBy="eleve")
      */
     private $frequenter;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ISI\ISIBundle\Entity\Moyenne", mappedBy="eleve")
+     */
+    private $moyenne; 
 
     /**
      * @ORM\OneToMany(targetEntity="ISI\ISIBundle\Entity\Memoriser", mappedBy="eleve")
@@ -276,13 +281,13 @@ class Eleve
 
 
     /**
-     * Get eleveId
+     * Get id
      *
      * @return integer
      */
-    public function getEleveId()
+    public function getId()
     {
-        return $this->eleveId;
+        return $this->id;
     }
 
     /**
@@ -403,30 +408,6 @@ class Eleve
     public function getPnomAr()
     {
         return $this->pnomAr;
-    }
-
-    /**
-     * Set sexeFr
-     *
-     * @param string $sexeFr
-     *
-     * @return Eleve
-     */
-    public function setSexeFr($sexeFr)
-    {
-        $this->sexeFr = $sexeFr;
-
-        return $this;
-    }
-
-    /**
-     * Get sexeFr
-     *
-     * @return string
-     */
-    public function getSexeFr()
-    {
-        return $this->sexeFr;
     }
 
     /**
@@ -1030,51 +1011,51 @@ class Eleve
     }
 
     /**
-     * Set dateSave
+     * Set created_at
      *
-     * @param \DateTime $dateSave
+     * @param \DateTime $createdAt
      *
      * @return Eleve
      */
-    public function setDateSave($dateSave)
+    public function setcreated_at($createdAt)
     {
-        $this->dateSave = $dateSave;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get dateSave
+     * Get created_at
      *
      * @return \DateTime
      */
-    public function getDateSave()
+    public function getcreated_at()
     {
-        return $this->dateSave;
+        return $this->createdAt;
     }
 
     /**
-     * Set dateUpdate
+     * Set updated_at
      *
-     * @param \DateTime $dateUpdate
+     * @param \DateTime $updatedAt
      *
      * @return Eleve
      */
-    public function setDateUpdate($dateUpdate)
+    public function setupdated_at($updatedAt)
     {
-        $this->dateUpdate = $dateUpdate;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
     /**
-     * Get dateUpdate
+     * Get updated_at
      *
      * @return \DateTime
      */
-    public function getDateUpdate()
+    public function getupdated_at()
     {
-        return $this->dateUpdate;
+        return $this->updatedAt;
     }
 
     public function getFrequenter()
@@ -1177,4 +1158,168 @@ class Eleve
     // {
     //     $this->eleveRenvoye->removeElement($eleveRenvoye);
     // }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Eleve
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Eleve
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * Add memosier
+     *
+     * @param \ISI\ISIBundle\Entity\Memoriser $memosier
+     *
+     * @return Eleve
+     */
+    public function addMemosier(\ISI\ISIBundle\Entity\Memoriser $memosier)
+    {
+        $this->memosier[] = $memosier;
+
+        return $this;
+    }
+
+    /**
+     * Remove memosier
+     *
+     * @param \ISI\ISIBundle\Entity\Memoriser $memosier
+     */
+    public function removeMemosier(\ISI\ISIBundle\Entity\Memoriser $memosier)
+    {
+        $this->memosier->removeElement($memosier);
+    }
+
+    /**
+     * Get memosier
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getMemosier()
+    {
+        return $this->memosier;
+    }
+
+    /**
+     * Add eleveRenvoye
+     *
+     * @param \ISI\ISIBundle\Entity\Eleverenvoye $eleveRenvoye
+     *
+     * @return Eleve
+     */
+    public function addEleveRenvoye(\ISI\ISIBundle\Entity\Eleverenvoye $eleveRenvoye)
+    {
+        $this->eleveRenvoye[] = $eleveRenvoye;
+
+        return $this;
+    }
+
+    /**
+     * Remove eleveRenvoye
+     *
+     * @param \ISI\ISIBundle\Entity\Eleverenvoye $eleveRenvoye
+     */
+    public function removeEleveRenvoye(\ISI\ISIBundle\Entity\Eleverenvoye $eleveRenvoye)
+    {
+        $this->eleveRenvoye->removeElement($eleveRenvoye);
+    }
+
+    /**
+     * Set sexe
+     *
+     * @param string $sexe
+     *
+     * @return Eleve
+     */
+    public function setSexe($sexe)
+    {
+        $this->sexe = $sexe;
+
+        return $this;
+    }
+
+    /**
+     * Get sexe
+     *
+     * @return string
+     */
+    public function getSexe()
+    {
+        return $this->sexe;
+    }
+
+    /**
+     * Add moyenne
+     *
+     * @param \ISI\ISIBundle\Entity\Moyenne $moyenne
+     *
+     * @return Eleve
+     */
+    public function addMoyenne(\ISI\ISIBundle\Entity\Moyenne $moyenne)
+    {
+        $this->moyenne[] = $moyenne;
+
+        return $this;
+    }
+
+    /**
+     * Remove moyenne
+     *
+     * @param \ISI\ISIBundle\Entity\Moyenne $moyenne
+     */
+    public function removeMoyenne(\ISI\ISIBundle\Entity\Moyenne $moyenne)
+    {
+        $this->moyenne->removeElement($moyenne);
+    }
+
+    /**
+     * Get moyenne
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getMoyenne()
+    {
+        return $this->moyenne;
+    }
 }

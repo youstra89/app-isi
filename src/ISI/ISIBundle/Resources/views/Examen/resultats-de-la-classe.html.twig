@@ -23,8 +23,8 @@
     <div class="">
         <div class="ui info message">
             <center>
-                <h2>{{ 'Résultats d\'examen'|trans }} : {{ classe.getLibelleClasseFr }}</h2>
-                <h3>{{ 'Session'|trans }} {{ examen.getSession }} : {{ examen.getAnneeScolaire.getLibelleAnneeScolaire }}</h3>
+                <h2>{{ 'Résultats d\'examen'|trans }} : {{ classe.getLibelleFr }}</h2>
+                <h3>{{ 'Session'|trans }} {{ examen.getSession }} : {{ examen.getAnnee.getLibelle }}</h3>
             </center>
         </div>
         {# Cette petite partie me permet de vérifier que le classemnt à été fait ou pas encore #}
@@ -43,31 +43,31 @@
         <!-- C'est pour cela qu'on va demander à l'utilisateur de faire le classement -->
         {% if uneMoyenne.rang == null %}
             <p>{{ 'Le classement n\'a pas encore été fait.'|trans }}
-                <a href=" {{path('isi_resultats_de_la_classe', {'as': asec, 'regime': regime, 'classeId': classe.getClasseId, 'examenId': examen.getExamenId})}} ">
+                <a href=" {{path('isi_resultats_de_la_classe', {'as': asec, 'regime': regime, 'classeId': classe.getId, 'examenId': examen.getId})}} ">
                     {{ 'Cliquer ici pour le faire'|trans }}
                 </a>
             </p>
         {% else %}
             <div>
                 {% if moyennes|length > 45 %}
-                    <a href="{{path('isi_bulletin', {'as': asec, 'regime': regime, 'classeId':classe.getClasseId, 'examenId': examen.getExamenId, 'partie': 1})}}">
+                    <a href="{{path('isi_bulletin', {'as': asec, 'regime': regime, 'classeId':classe.getId, 'examenId': examen.getId, 'partie': 1})}}">
                         <button class="ui teal basic button">{{ 'Voir / Imprimer les bulletins (1)'|trans }}</button>
                     </a>
-                    <a href="{{path('isi_bulletin', {'as': asec, 'regime': regime, 'classeId':classe.getClasseId, 'examenId': examen.getExamenId, 'partie': 2})}}">
+                    <a href="{{path('isi_bulletin', {'as': asec, 'regime': regime, 'classeId':classe.getId, 'examenId': examen.getId, 'partie': 2})}}">
                         <button class="ui teal basic button">{{ 'Voir / Imprimer les bulletins (2)'|trans }}</button>
                     </a>
                 {% else %}
-                    <a href="{{path('isi_bulletin', {'as': asec, 'regime': regime, 'classeId':classe.getClasseId, 'examenId': examen.getExamenId})}}">
+                    <a href="{{path('isi_bulletin', {'as': asec, 'regime': regime, 'classeId':classe.getId, 'examenId': examen.getId})}}">
                         <button class="ui teal basic button">{{ 'Voir / Imprimer les bulletins'|trans }}</button>
                     </a>
                 {% endif %}
-                <a href="{{path('isi_resultats_generaux_une_classe', {'as': asec, 'regime': regime, 'classeId':classe.getClasseId, 'examenId': examen.getExamenId})}}">
+                <a href="{{path('isi_resultats_generaux_une_classe', {'as': asec, 'regime': regime, 'classeId':classe.getId, 'examenId': examen.getId})}}">
                     <button class="ui blue basic button">{{ 'Résultats généraux & statistiques'|trans }}</button>
                 </a>
-                <a href="{{path('isi_notes_eleves_une_classe', {'as': asec, 'regime': regime, 'classeId':classe.getClasseId, 'examenId': examen.getExamenId})}}">
+                <a href="{{path('isi_notes_eleves_une_classe', {'as': asec, 'regime': regime, 'classeId':classe.getId, 'examenId': examen.getId})}}">
                     <button class="ui violet basic button">{{ 'Voir les notes des élèves'|trans }}</button>
                 </a>
-                <a href="{{path('isi_classement', {'as': asec, 'regime': regime, 'classeId':classe.getClasseId, 'examenId': examen.getExamenId})}}">
+                <a href="{{path('isi_classement', {'as': asec, 'regime': regime, 'classeId':classe.getId, 'examenId': examen.getId})}}">
                     <button class="ui violet basic button">{{ 'Classement'|trans }}</button>
                 </a>
             </div>
@@ -78,7 +78,7 @@
                     {% for eleve in eleves %}
                          <!--  Cette partie me permet seulement de sélectionner l'image qui se trouve à côte de l'élève  -->
                         {% set image = "" %}
-                        {% if eleve.getSexeFr == 1 %}
+                        {% if eleve.sexe == 1 %}
                             {% set image = "/markaz/web/images/mark.png" %}
                         {% else %}
                             {% set image = "/markaz/web/images/molly.png" %}
@@ -86,13 +86,13 @@
                         <!-- Ici on compare l'id de l'élève et la référence de l'élève dans l'objet moyenne -->
                         <!-- S'il y a égalité, on affiche l'élève et son rang -->
                         {% set nieme = '' %}
-                        {% if eleve.getEleveId == moyenne.getEleve.getEleveId %}
+                        {% if eleve.id == moyenne.getEleve.getId %}
                             <!-- On va formater l'affichage du rang -->
 
-                            {% if moyenne.getRang == 1 and eleve.getSexeFr == 1 %}
+                            {% if moyenne.getRang == 1 and eleve.sexe == 1 %}
                                 <!-- Dans ce cas, c'est un homme. Il faudra donc dire: Le premier -->
                                 {% set nieme = 'er' %}
-                            {% elseif moyenne.getRang == 1 and eleve.getSexeFr == 2 %}
+                            {% elseif moyenne.getRang == 1 and eleve.sexe == 2 %}
                                 <!-- Dans ce cas, c'est une femme. Il faudra donc dire: La première -->
                                 {% set nieme = 'ère' %}
                             {% else %}
@@ -101,13 +101,13 @@
                             {% endif %}
                             <div class="item">
                                 <div class="right floated content">
-                                    <a href="{{path('isi_bulletin_unique', {'as': asec, 'regime': regime, 'classeId': classe.getClasseId, 'examenId': examen.getExamenId, 'eleveId': eleve.getEleveId})}}">
+                                    <a href="{{path('isi_bulletin_unique', {'as': asec, 'regime': regime, 'classeId': classe.getId, 'examenId': examen.getId, 'eleveId': eleve.id})}}">
                                         <button class="ui red basic button">{{ 'Voir le bulletin'|trans }}</button>
                                     </a>
                                 </div>
                                 <img class="ui avatar image" src="{{ image }}">
                                 <div class="content">
-                                    <div class="header"> {{ eleve.getNomFr }} {{ eleve.getPnomFr }}</div>
+                                    <div class="header"> {{ eleve.nomFr }} {{ eleve.pnomFr }}</div>
                                     {{ moyenne.getRang }}<sup>{{ nieme }}</sup> {{ 'avec'|trans }} {{ moyenne.getMoyenne }} {{ 'de moyenne'|trans }}
                                 </div>
                             </div>

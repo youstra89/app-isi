@@ -36,7 +36,7 @@
         <tbody>
           {% set numero = 0 %}
           {% for classe in classes %} 
-            {% if classe.niveau.groupeFormation.referenceGrp is same as(regime) %}
+            {% if classe.niveau.groupeFormation.reference is same as(regime) %}
               {% set numero = numero + 1 %}
               {% set genre = '' %}
               {% if classe.genre == 'H' %}
@@ -54,13 +54,13 @@
                   <h4 class="ui image header">{{ classe.getNiveau.getLibelleFr }}</h4>
                 </td>
                 <td>
-                  <h4 class="ui image header">{{ classe.libelleclassefr }}</h4>
+                  <h4 class="ui image header">{{ classe.libellefr }}</h4>
                 </td>
                 <td>
                   <h4 class="ui image header">{{ classe.getNiveau.getLibelleAr }}</h4>
                 </td>
                 <td>
-                  <h4 class="ui image header">{{ classe.libelleclassear }}</h4>
+                  <h4 class="ui image header">{{ classe.libellear }}</h4>
                 </td>
                 <td>
                   <h4 class="ui image header">{{ genre }}</h4>
@@ -68,9 +68,9 @@
                 <td>
                 {% set lien = 'value' %}
                 {% if regime == 'A' %}
-                  {% set lien = path('isi_tirer_liste_d_appel_de_la_classe_academie', {'as': asec, 'regime': regime, 'classeId': classe.classeId}) %}
+                  {% set lien = path('isi_tirer_liste_d_appel_de_la_classe_academie', {'as': asec, 'regime': regime, 'classeId': classe.id}) %}
                 {% else %}
-                  {% set lien = path('isi_tirer_liste_d_appel_de_la_classe_formation', {'as': asec, 'regime': regime, 'classeId': classe.classeId}) %}
+                  {% set lien = path('isi_tirer_liste_d_appel_de_la_classe_formation', {'as': asec, 'regime': regime, 'classeId': classe.id}) %}
                 {% endif %}
                   <a href="{{ lien }}">
                     <i class="print icon"></i>

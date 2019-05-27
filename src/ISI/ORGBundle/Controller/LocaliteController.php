@@ -8,7 +8,7 @@ use ISI\ORGBundle\Entity\Ville;
 use ISI\ORGBundle\Form\VilleType;
 use ISI\ORGBundle\Entity\Commune;
 use ISI\ORGBundle\Form\CommuneType;
-use ISI\ISIBundle\Entity\Anneescolaire;
+use ISI\ISIBundle\Entity\Annee;
 use ISI\ISIBundle\Repository\AnneeContratRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,7 +31,7 @@ class LocaliteController extends Controller
   public function indexAction($as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $annee       = $repoAnnee->find($as);
     return $this->render('ORGBundle:Localite:index.html.twig', [
       'asec'  => $as,
@@ -46,7 +46,7 @@ class LocaliteController extends Controller
   public function regionsAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $annee       = $repoAnnee->find($as);
     $repoRegion = $em->getRepository(Region::class);
     $regions = $repoRegion->findAll();
@@ -65,7 +65,7 @@ class LocaliteController extends Controller
   public function regionAddAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $annee       = $repoAnnee->find($as);
     $region = new Region();
     $form = $this->createForm(RegionType::class, $region);
@@ -93,7 +93,7 @@ class LocaliteController extends Controller
   public function regionEditAction(Region $region, Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $annee       = $repoAnnee->find($as);
     $form = $this->createForm(RegionType::class, $region);
     $form->handleRequest($request);
@@ -119,7 +119,7 @@ class LocaliteController extends Controller
     public function villesAction(Request $request, $as)
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee   = $em->getRepository('ISIBundle:Annee');
       $annee       = $repoAnnee->find($as);
       $repoVille = $em->getRepository(Ville::class);
       $villes = $repoVille->findAll();
@@ -138,7 +138,7 @@ class LocaliteController extends Controller
     public function villeAddAction(Request $request, $as)
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee   = $em->getRepository('ISIBundle:Annee');
       $annee       = $repoAnnee->find($as);
       $ville = new Ville();
       $form = $this->createForm(VilleType::class, $ville);
@@ -167,7 +167,7 @@ class LocaliteController extends Controller
     public function villeEditAction(Ville $ville, Request $request, $as)
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee   = $em->getRepository('ISIBundle:Annee');
       $annee       = $repoAnnee->find($as);
       $form = $this->createForm(VilleType::class, $ville);
       $form->handleRequest($request);
@@ -195,7 +195,7 @@ class LocaliteController extends Controller
     public function communesAction(Request $request, $as)
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee   = $em->getRepository('ISIBundle:Annee');
       $annee       = $repoAnnee->find($as);
       $repoCommune = $em->getRepository(Commune::class);
       $communes = $repoCommune->findAll();
@@ -214,7 +214,7 @@ class LocaliteController extends Controller
     public function communeAddAction(Request $request, int $villeId, $as)
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee   = $em->getRepository('ISIBundle:Annee');
       $annee       = $repoAnnee->find($as);
       $repoVille = $em->getRepository(Ville::class);
       $ville = $repoVille->find($villeId);
@@ -247,7 +247,7 @@ class LocaliteController extends Controller
     public function communeEditAction(Commune $commune, Request $request, $as)
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee   = $em->getRepository('ISIBundle:Annee');
       $annee       = $repoAnnee->find($as);
       $form = $this->createForm(CommuneType::class, $commune);
       $form->handleRequest($request);

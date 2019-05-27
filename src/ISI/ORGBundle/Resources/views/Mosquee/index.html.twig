@@ -57,7 +57,11 @@
           <td>{{ mosquee.nom }}</td>
           <td>{{ mosquee.commune.nom }}</td>
           <td>{{ mosquee.quartier }}</td>
-          <td>{{ mosquee.imam.nom }} {{ mosquee.imam.nom }} ({{ mosquee.imam.numero }})</td>
+          <td>
+            {% if mosquee.imam != null %}
+              {{ mosquee.imam.pnom }} {{ mosquee.imam.nom }} ({{ mosquee.imam.numero }})
+            {% endif %}
+          </td>
           <td>
             {% if mosquee.responsable is empty %}
               Pas de responsable

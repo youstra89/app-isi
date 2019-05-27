@@ -1,6 +1,6 @@
 <?php
 
-namespace ISIBundle\Entity;
+namespace ISI\ISIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -58,16 +58,16 @@ class Moyenneclasse
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_save", type="datetime", nullable=false)
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private $dateSave;
+    private $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_update", type="datetime", nullable=false)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private $dateUpdate;
+    private $updatedAt;
 
 
 
@@ -85,11 +85,11 @@ class Moyenneclasse
     /**
      * Set classe
      *
-     * @param \ISIBundle\Entity\Classe $classe
+     * @param \ISI\ISIBundle\Entity\Classe $classe
      *
      * @return Fichedenote
      */
-    public function setClasse(\ISIBundle\Entity\Classe $classe = null)
+    public function setClasse(\ISI\ISIBundle\Entity\Classe $classe = null)
     {
         $this->classe = $classe;
 
@@ -99,7 +99,7 @@ class Moyenneclasse
     /**
      * Get classe
      *
-     * @return \ISIBundle\Entity\Classe
+     * @return \ISI\ISIBundle\Entity\Classe
      */
     public function getClasse()
     {
@@ -109,11 +109,11 @@ class Moyenneclasse
     /**
      * Set examen
      *
-     * @param \ISIBundle\Entity\Examen $examen
+     * @param \ISI\ISIBundle\Entity\Examen $examen
      *
      * @return Fichedenote
      */
-    public function setExamen(\ISIBundle\Entity\Examen $examen = null)
+    public function setExamen(\ISI\ISIBundle\Entity\Examen $examen = null)
     {
         $this->examen = $examen;
 
@@ -123,7 +123,7 @@ class Moyenneclasse
     /**
      * Get examen
      *
-     * @return \ISIBundle\Entity\Examen
+     * @return \ISI\ISIBundle\Entity\Examen
      */
     public function getExamen()
     {
@@ -179,52 +179,100 @@ class Moyenneclasse
     }
 
         /**
-     * Set dateSave
+     * Set created_at
      *
-     * @param \DateTime $dateSave
+     * @param \DateTime $createdAt
      *
      * @return Moyenne
      */
-    public function setDateSave($dateSave)
+    public function setcreated_at($createdAt)
     {
-        $this->dateSave = $dateSave;
+        $this->created_at = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get dateSave
+     * Get created_at
      *
      * @return \DateTime
      */
-    public function getDateSave()
+    public function getcreated_at()
     {
-        return $this->dateSave;
+        return $this->created_at;
     }
 
     /**
-     * Set dateUpdate
+     * Set updated_at
      *
-     * @param \DateTime $dateUpdate
+     * @param \DateTime $updatedAt
      *
      * @return Moyenne
      */
-    public function setDateUpdate($dateUpdate)
+    public function setupdated_at($updatedAt)
     {
-        $this->dateUpdate = $dateUpdate;
+        $this->updated_at = $updatedAt;
 
         return $this;
     }
 
     /**
-     * Get dateUpdate
+     * Get updated_at
      *
      * @return \DateTime
      */
-    public function getDateUpdate()
+    public function getupdated_at()
     {
-        return $this->dateUpdate;
+        return $this->updated_at;
     }
 
 
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Moyenneclasse
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->created_at = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Moyenneclasse
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updated_at = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
+    }
 }

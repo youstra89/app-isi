@@ -14,15 +14,15 @@
 			<div class="field">
 				<label for="">
 					{# Génération du label. #}
-					{{ form_label(form.libelleanneescolaire, "Année scolaire", {'label_attr': {'class': ''}}) }}
+					{{ form_label(form.libelle, "Année scolaire", {'label_attr': {'class': ''}}) }}
 
 					{# Affichage des erreurs pour ce champ précis. #}
-					{{ form_errors(form.libelleanneescolaire) }}
+					{{ form_errors(form.libelle) }}
 				</label>
 
 			    <div class="">
 			        {# Génération de l'input. #}
-			        {{ form_widget(form.libelleanneescolaire, {'attr': {'class': ''}}) }}
+			        {{ form_widget(form.libelle, {'attr': {'class': ''}}) }}
 			    </div>
 		    </div>
 

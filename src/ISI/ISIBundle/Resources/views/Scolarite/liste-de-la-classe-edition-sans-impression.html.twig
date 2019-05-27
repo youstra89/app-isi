@@ -19,7 +19,7 @@
         <br />
         <div class="id-fiche">
             <div class="classe">
-                <span><span class="libelleClasse">{{ classe.libelleClasseAr }}</span> : الفصل</span>
+                <span><span class="libelleClasse">{{ classe.libelleAr }}</span> : الفصل</span>
             </div>
         </div>
         <br />
@@ -45,7 +45,7 @@
                         {% set color = '#DCDCDC' %}
                     {% endif %}
                     {# Pour le sexe #}
-                    {% if eleve.sexeFr == 1 %}
+                    {% if eleve.sexe == 1 %}
                         {% set sexe = 'Masculin' %}
                     {% else %}
                         {% set sexe = 'Féminin' %}

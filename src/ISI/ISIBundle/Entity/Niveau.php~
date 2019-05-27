@@ -1,6 +1,6 @@
 <?php
 
-namespace ISIBundle\Entity;
+namespace ISI\ISIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Niveau
  *
  * @ORM\Table(name="niveau", uniqueConstraints={@ORM\UniqueConstraint(name="libelle_fr", columns={"libelle_fr"}), @ORM\UniqueConstraint(name="libelle_ar", columns={"libelle_ar"})}, indexes={@ORM\Index(name="groupe_formation_id", columns={"groupe_formation_id"})})
- * @ORM\Entity(repositoryClass="ISIBundle\Repository\NiveauRepository")
+ * @ORM\Entity(repositoryClass="ISI\ISIBundle\Repository\NiveauRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class Niveau
@@ -37,18 +37,25 @@ class Niveau
     private $libelleAr;
 
     /**
-     * @var \DateTime
+     * @var integer
      *
-     * @ORM\Column(name="date_save", type="datetime", nullable=false)
+     * @ORM\Column(name="succession", type="integer", nullable=false)
      */
-    private $dateSave;
+    private $succession;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_update", type="datetime", nullable=false)
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private $dateUpdate;
+    private $createdAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     */
+    private $updatedAt;
 
     /**
      * @var \Groupeformation
@@ -121,61 +128,85 @@ class Niveau
     }
 
     /**
-     * Set dateSave
+     * Set succession
      *
-     * @param \DateTime $dateSave
+     * @param integer $succession
      *
      * @return Niveau
      */
-    public function setDateSave($dateSave)
+    public function setSuccession($succession)
     {
-        $this->dateSave = $dateSave;
+        $this->succession = $succession;
 
         return $this;
     }
 
     /**
-     * Get dateSave
+     * Get succession
      *
-     * @return \DateTime
+     * @return integer
      */
-    public function getDateSave()
+    public function getSuccession()
     {
-        return $this->dateSave;
+        return $this->succession;
     }
 
     /**
-     * Set dateUpdate
+     * Set created_at
      *
-     * @param \DateTime $dateUpdate
+     * @param \DateTime $createdAt
      *
      * @return Niveau
      */
-    public function setDateUpdate($dateUpdate)
+    public function setcreated_at($createdAt)
     {
-        $this->dateUpdate = $dateUpdate;
+        $this->created_at = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get dateUpdate
+     * Get created_at
      *
      * @return \DateTime
      */
-    public function getDateUpdate()
+    public function getcreated_at()
     {
-        return $this->dateUpdate;
+        return $this->created_at;
+    }
+
+    /**
+     * Set updated_at
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Niveau
+     */
+    public function setupdated_at($updatedAt)
+    {
+        $this->updated_at = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updated_at
+     *
+     * @return \DateTime
+     */
+    public function getupdated_at()
+    {
+        return $this->updated_at;
     }
 
     /**
      * Set groupeFormation
      *
-     * @param \ISIBundle\Entity\Groupeformation $groupeFormation
+     * @param \ISI\ISIBundle\Entity\Groupeformation $groupeFormation
      *
      * @return Niveau
      */
-    public function setGroupeFormation(\ISIBundle\Entity\Groupeformation $groupeFormation = null)
+    public function setGroupeFormation(\ISI\ISIBundle\Entity\Groupeformation $groupeFormation = null)
     {
         $this->groupeFormation = $groupeFormation;
 
@@ -185,7 +216,7 @@ class Niveau
     /**
      * Get groupeFormation
      *
-     * @return \ISIBundle\Entity\Groupeformation
+     * @return \ISI\ISIBundle\Entity\Groupeformation
      */
     public function getGroupeFormation()
     {
@@ -198,7 +229,7 @@ class Niveau
      */
     public function saveDate()
     {
-      $this->setDateSave(new \Datetime());
+      $this->setcreated_at(new \Datetime());
     }
 
     /**
@@ -207,6 +238,54 @@ class Niveau
      */
     public function updateDate()
     {
-      $this->setDateUpdate(new \Datetime());
+      $this->setupdated_at(new \Datetime());
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Niveau
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->created_at = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Niveau
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updated_at = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
     }
 }

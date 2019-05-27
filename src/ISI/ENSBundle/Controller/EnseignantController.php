@@ -5,7 +5,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
-use ISI\ISIBundle\Entity\Anneescolaire;
+use ISI\ISIBundle\Entity\Annee;
 use ISI\ENSBundle\Entity\Contrat;
 use ISI\ENSBundle\Entity\Enseignant;
 use ISI\ENSBundle\Entity\AnneeContrat;
@@ -17,7 +17,7 @@ use ISI\ENSBundle\Form\AnneeContratType;
 use ISI\ENSBundle\Repository\ContratRepository;
 use ISI\ENSBundle\Repository\EnseignantRepository;
 use ISI\ISIBundle\Repository\AnneeContratRepository;
-use ISI\ISIBundle\Repository\AnneescolaireRepository;
+use ISI\ISIBundle\Repository\AnneeRepository;
 
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -30,7 +30,7 @@ class EnseignantController extends Controller
   public function indexAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee      = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoEnseignant = $em->getRepository('ENSBundle:Enseignant');
     $annee       = $repoAnnee->find($as);
     $enseignants = $repoEnseignant->findAll();
@@ -50,7 +50,7 @@ class EnseignantController extends Controller
   {
     $em = $this->getDoctrine()->getManager();
     $repoEnseignant = $em->getRepository('ENSBundle:Enseignant');
-    $repoAnnee = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee = $em->getRepository('ISIBundle:Annee');
 
     // Récupération du l'année pour le matricule le fameux /17
     $annee = $repoAnnee->anneeMatricule($as);
@@ -79,7 +79,7 @@ class EnseignantController extends Controller
   public function addEnseignantAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee = $em->getRepository('ISIBundle:Annee');
     $annee = $repoAnnee->find($as);
 
     $enseignant = new Enseignant();
@@ -98,8 +98,8 @@ class EnseignantController extends Controller
       $enseignant->setDateNaissance($date);
       $enseignant->setRupture(FALSE);
       $enseignant->setDateRupture(NULL);
-      $enseignant->setDateSave(new \Datetime());
-      $enseignant->setDateUpdate(new \Datetime());
+      $enseignant->setCreatedAt(new \Datetime());
+      $enseignant->setUpdatedAt(new \Datetime());
       $em->persist($enseignant);
       $em->flush();
 
@@ -125,7 +125,7 @@ class EnseignantController extends Controller
   public function editEnseignantAction(Request $request, $as, $enseignantId)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee  = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoEnseignant = $em->getRepository('ENSBundle:Enseignant');
 
     $annee  = $repoAnnee->find($as);
@@ -160,7 +160,7 @@ class EnseignantController extends Controller
   public function infoEnseignantAction(Request $request, $as, $enseignantId)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee      = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoContrat = $em->getRepository('ENSBundle:Contrat');
     $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
     $repoEnseignant = $em->getRepository('ENSBundle:Enseignant');
@@ -187,7 +187,7 @@ class EnseignantController extends Controller
   public function priseDeFonctionHomeAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee      = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoEnseignant = $em->getRepository('ENSBundle:Enseignant');
 
     $annee  = $repoAnnee->find($as);
@@ -229,7 +229,7 @@ class EnseignantController extends Controller
   public function priseDeFonctionAction(Request $request, $as, $enseignantId)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee      = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoContrat    = $em->getRepository('ENSBundle:Contrat');
     $repoEnseignant = $em->getRepository('ENSBundle:Enseignant');
     $enseignant = $repoEnseignant->find($enseignantId);
@@ -244,8 +244,8 @@ class EnseignantController extends Controller
 
     $contrat = new Contrat();
     $contrat->setEnseignant($enseignant);
-    $contrat->setDateSave(new \Datetime());
-    $contrat->setDateUpdate(new \Datetime());
+    $contrat->setCreatedAt(new \Datetime());
+    $contrat->setUpdatedAt(new \Datetime());
     $form  = $this->createForm(ContratType::class, $contrat);
 
     if($form->handleRequest($request)->isValid())
@@ -273,7 +273,7 @@ class EnseignantController extends Controller
   public function fonctionEnCoursAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoContrat = $em->getRepository('ENSBundle:Contrat');
 
     $annee    = $repoAnnee->find($as);
@@ -293,7 +293,7 @@ class EnseignantController extends Controller
   public function arretDeFonctionHomeAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee      = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoContrat    = $em->getRepository('ENSBundle:Contrat');
     $repoEnseignant = $em->getRepository('ENSBundle:Enseignant');
 
@@ -362,7 +362,7 @@ class EnseignantController extends Controller
   public function arretDeFonctionAction(Request $request, $as, $contratId)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee      = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoContrat    = $em->getRepository('ENSBundle:Contrat');
 
     $annee   = $repoAnnee->find($as);
@@ -382,7 +382,7 @@ class EnseignantController extends Controller
       $contrat->setFin($date);
       $contrat->setFini(TRUE);
       $contrat->setMotifFin($motif);
-      $contrat->setDateUpdate(new \Datetime());
+      $contrat->setUpdatedAt(new \Datetime());
       $em->flush();
 
       $request->getSession()->getFlashBag()->add('info', 'L\'arrêt de fonction de l\'enseignant '.$contrat->getEnseignant()->getNomFr().' '.$contrat->getEnseignant()->getPnomFr().' a s\'est effectué avec succès.');
@@ -403,7 +403,7 @@ class EnseignantController extends Controller
   public function enseignantsDeLAnneeAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoContrat = $em->getRepository('ENSBundle:Contrat');
     $repoAnneeContrat   = $em->getRepository('ENSBundle:AnneeContrat');
 
@@ -423,7 +423,7 @@ class EnseignantController extends Controller
   public function impressionListeDesEnseignantsDeLAnneeAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoContrat = $em->getRepository('ENSBundle:Contrat');
     $repoAnneeContrat   = $em->getRepository('ENSBundle:AnneeContrat');
 
@@ -478,7 +478,7 @@ class EnseignantController extends Controller
   public function ajouterEnseignantAnneeAction(Request $request, $as, $contratId)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoContrat = $em->getRepository('ENSBundle:Contrat');
     $repoAnneeContrat   = $em->getRepository('ENSBundle:AnneeContrat');
 
@@ -501,8 +501,8 @@ class EnseignantController extends Controller
     $newAnneeContrat = new AnneeContrat();
     $newAnneeContrat->setAnnee($annee);
     $newAnneeContrat->setContrat($contrat);
-    $newAnneeContrat->setDateSave(new \Datetime());
-    $newAnneeContrat->setDateUpdate(new \Datetime());
+    $newAnneeContrat->setCreatedAt(new \Datetime());
+    $newAnneeContrat->setUpdatedAt(new \Datetime());
     $form  = $this->createForm(AnneeContratType::class, $newAnneeContrat);
 
     if($form->handleRequest($request)->isValid())
@@ -530,7 +530,7 @@ class EnseignantController extends Controller
   public function modifierEnseignantAnneeAction(Request $request, $as, $anneeContratId)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoAnneeContrat   = $em->getRepository('ENSBundle:AnneeContrat');
 
     $annee    = $repoAnnee->find($as);

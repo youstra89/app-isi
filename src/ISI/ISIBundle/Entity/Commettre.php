@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Commettre
  *
- * @ORM\Table(name="commettre", uniqueConstraints={@ORM\UniqueConstraint(name="commettre", columns={"eleve_id", "annee_scolaire_id", "probleme_id"})}, indexes={@ORM\Index(name="probleme_id", columns={"probleme_id"}), @ORM\Index(name="annee_scolaire_id", columns={"annee_scolaire_id"}), @ORM\Index(name="eleve_id", columns={"eleve_id"})})
+ * @ORM\Table(name="commettre", uniqueConstraints={@ORM\UniqueConstraint(name="commettre", columns={"eleve_id", "annee_id", "probleme_id"})}, indexes={@ORM\Index(name="probleme_id", columns={"probleme_id"}), @ORM\Index(name="annee_id", columns={"annee_id"}), @ORM\Index(name="eleve_id", columns={"eleve_id"})})
  * @ORM\Entity
  */
 class Commettre
@@ -26,7 +26,7 @@ class Commettre
      *
      * @ORM\ManyToOne(targetEntity="Eleve")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="eleve_id", referencedColumnName="eleve_id")
+     *   @ORM\JoinColumn(name="eleve_id", referencedColumnName="id")
      * })
      */
     private $eleve;
@@ -36,20 +36,20 @@ class Commettre
      *
      * @ORM\ManyToOne(targetEntity="Probleme", inversedBy="commettre")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="probleme_id", referencedColumnName="probleme_id")
+     *   @ORM\JoinColumn(name="probleme_id", referencedColumnName="id")
      * })
      */
     private $probleme;
 
     /**
-     * @var \Anneescolaire
+     * @var \Annee
      *
-     * @ORM\ManyToOne(targetEntity="Anneescolaire")
+     * @ORM\ManyToOne(targetEntity="Annee")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="annee_scolaire_id", referencedColumnName="annee_scolaire_id")
+     *   @ORM\JoinColumn(name="annee_id", referencedColumnName="id")
      * })
      */
-    private $anneeScolaire;
+    private $annee;
 
 
 
@@ -112,26 +112,26 @@ class Commettre
     }
 
     /**
-     * Set anneeScolaire
+     * Set annee
      *
-     * @param \ISI\ISIBundle\Entity\Anneescolaire $anneeScolaire
+     * @param \ISI\ISIBundle\Entity\Annee $annee
      *
      * @return Commettre
      */
-    public function setAnneeScolaire(\ISI\ISIBundle\Entity\Anneescolaire $anneeScolaire = null)
+    public function setAnnee(\ISI\ISIBundle\Entity\Annee $annee = null)
     {
-        $this->anneeScolaire = $anneeScolaire;
+        $this->annee = $annee;
 
         return $this;
     }
 
     /**
-     * Get anneeScolaire
+     * Get annee
      *
-     * @return \ISI\ISIBundle\Entity\Anneescolaire
+     * @return \ISI\ISIBundle\Entity\Annee
      */
-    public function getAnneeScolaire()
+    public function getAnnee()
     {
-        return $this->anneeScolaire;
+        return $this->annee;
     }
 }

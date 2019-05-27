@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Memoriser
  *
- * @ORM\Table(name="memoriser", uniqueConstraints={@ORM\UniqueConstraint(name="memorisation", columns={"eleve", "halaqa", "annee_scolaire"})}, indexes={@ORM\Index(name="eleve", columns={"eleve"}), @ORM\Index(name="halaqa", columns={"halaqa"}), @ORM\Index(name="anneeScolaire", columns={"annee_scolaire"})})
+ * @ORM\Table(name="memoriser", uniqueConstraints={@ORM\UniqueConstraint(name="memorisation", columns={"eleve_id", "halaqa_id", "annee_id"})}, indexes={@ORM\Index(name="eleve_id", columns={"eleve_id"}), @ORM\Index(name="halaqa_id", columns={"halaqa_id"}), @ORM\Index(name="annee_id", columns={"annee_id"})})
  * @ORM\Entity(repositoryClass="ISI\ISIBundle\Repository\MemoriserRepository")
  */
 class Memoriser
@@ -26,7 +26,7 @@ class Memoriser
      *
      * @ORM\ManyToOne(targetEntity="ISI\ISIBundle\Entity\Eleve", inversedBy="memoriser")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="eleve", referencedColumnName="eleve_id")
+     *   @ORM\JoinColumn(name="eleve_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $eleve;
@@ -36,34 +36,34 @@ class Memoriser
      *
      * @ORM\ManyToOne(targetEntity="Halaqa")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="halaqa", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="halaqa_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $halaqa;
 
     /**
-     * @var \Anneescolaire
+     * @var \Annee
      *
-     * @ORM\ManyToOne(targetEntity="Anneescolaire")
+     * @ORM\ManyToOne(targetEntity="Annee")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="annee_scolaire", referencedColumnName="annee_scolaire_id")
+     *   @ORM\JoinColumn(name="annee_id", referencedColumnName="id", nullable=false)
      * })
      */
-    private $anneeScolaire;
+    private $annee;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_save", type="datetime", nullable=false)
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private $dateSave;
+    private $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_update", type="datetime", nullable=false)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private $dateUpdate;
+    private $updatedAt;
 
 
     /**
@@ -125,76 +125,124 @@ class Memoriser
         return $this->halaqa;
     }
 
+
     /**
-     * Set anneeScolaire
+     * Set created_at
      *
-     * @param \ISI\ISIBundle\Entity\Anneescolaire $anneeScolaire
+     * @param \DateTime $createdAt
      *
      * @return Memoriser
      */
-    public function setAnneeScolaire(\ISI\ISIBundle\Entity\Anneescolaire $anneeScolaire = null)
+    public function setcreated_at($createdAt)
     {
-        $this->anneeScolaire = $anneeScolaire;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get anneeScolaire
-     *
-     * @return \ISI\ISIBundle\Entity\Anneescolaire
-     */
-    public function getAnneeScolaire()
-    {
-        return $this->anneeScolaire;
-    }
-
-
-    /**
-     * Set dateSave
-     *
-     * @param \DateTime $dateSave
-     *
-     * @return Memoriser
-     */
-    public function setDateSave($dateSave)
-    {
-        $this->dateSave = $dateSave;
-
-        return $this;
-    }
-
-    /**
-     * Get dateSave
+     * Get created_at
      *
      * @return \DateTime
      */
-    public function getDateSave()
+    public function getcreated_at()
     {
-        return $this->dateSave;
+        return $this->createdAt;
     }
 
     /**
-     * Set dateUpdate
+     * Set updated_at
      *
-     * @param \DateTime $dateUpdate
+     * @param \DateTime $updatedAt
      *
      * @return Memoriser
      */
-    public function setDateUpdate($dateUpdate)
+    public function setupdated_at($updatedAt)
     {
-        $this->dateUpdate = $dateUpdate;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
     /**
-     * Get dateUpdate
+     * Get updated_at
      *
      * @return \DateTime
      */
-    public function getDateUpdate()
+    public function getupdated_at()
     {
-        return $this->dateUpdate;
+        return $this->updatedAt;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Memoriser
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Memoriser
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * Set annee
+     *
+     * @param \ISI\ISIBundle\Entity\Annee $annee
+     *
+     * @return Memoriser
+     */
+    public function setAnnee(\ISI\ISIBundle\Entity\Annee $annee = null)
+    {
+        $this->annee = $annee;
+
+        return $this;
+    }
+
+    /**
+     * Get annee
+     *
+     * @return \ISI\ISIBundle\Entity\Annee
+     */
+    public function getAnnee()
+    {
+        return $this->annee;
     }
 }

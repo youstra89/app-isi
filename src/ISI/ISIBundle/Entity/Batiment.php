@@ -1,6 +1,7 @@
 <?php
 
 namespace ISI\ISIBundle\Entity;
+use Doctrine\Common\Collections\Collection;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -31,23 +32,35 @@ class Batiment
     /**
      * @var string
      *
-     * @ORM\Column(name="responsable", type="string", length=255, unique=true)
+     * @ORM\Column(name="responsable", type="string", length=255, nullable=true)
      */
     private $responsable;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="utilisation", type="integer", nullable=false)
+     */
+    private $utilisation;
+
+    /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_save", type="datetime")
+     * @ORM\Column(name="created_at", type="datetime")
      */
-    private $dateSave;
+    private $createdAt;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="date_update", type="datetime")
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private $dateUpdate;
+    private $updatedAt;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Salle", mappedBy="batiment")
+     */
+    private $salles;
 
 
     /**
@@ -109,51 +122,107 @@ class Batiment
     }
 
     /**
-     * Set dateSave
+     * Set created_at
      *
-     * @param \DateTime $dateSave
+     * @param \DateTime $createdAt
      *
      * @return Batiment
      */
-    public function setDateSave($dateSave)
+    public function setCreatedAt($createdAt)
     {
-        $this->dateSave = $dateSave;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get dateSave
+     * Get created_at
      *
      * @return \DateTime
      */
-    public function getDateSave()
+    public function getCreatedAt()
     {
-        return $this->dateSave;
+        return $this->createdAt;
     }
 
     /**
-     * Set dateUpdate
+     * Set updated_at
      *
-     * @param \DateTime $dateUpdate
+     * @param \DateTime $updatedAt
      *
      * @return Batiment
      */
-    public function setDateUpdate($dateUpdate)
+    public function setupdated_at($updatedAt)
     {
-        $this->dateUpdate = $dateUpdate;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
     /**
-     * Get dateUpdate
+     * Get updated_at
      *
      * @return \DateTime
      */
-    public function getDateUpdate()
+    public function getupdated_at()
     {
-        return $this->dateUpdate;
+        return $this->updatedAt;
     }
 
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Batiment
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * Set utilisation
+     *
+     * @param integer $utilisation
+     *
+     * @return Batiment
+     */
+    public function setUtilisation($utilisation)
+    {
+        $this->utilisation = $utilisation;
+
+        return $this;
+    }
+
+    /**
+     * Get utilisation
+     *
+     * @return integer
+     */
+    public function getUtilisation()
+    {
+        return $this->utilisation;
+    }
+
+    /**
+     * @return Collection|Salle[]
+     */
+    public function getSalles(): Collection
+    {
+        return $this->salles;
+    }
 }

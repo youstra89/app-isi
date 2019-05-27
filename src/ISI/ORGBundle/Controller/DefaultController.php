@@ -5,7 +5,7 @@ namespace ISI\ORGBundle\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
-use ISI\ISIBundle\Entity\Anneescolaire;
+use ISI\ISIBundle\Entity\Annee;
 use ISI\ISIBundle\Repository\AnneeContratRepository;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -20,7 +20,7 @@ class DefaultController extends Controller
   public function indexAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $annee       = $repoAnnee->find($as);
 
 

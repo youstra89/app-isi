@@ -9,7 +9,7 @@ use ISI\ORGBundle\Entity\Tournee;
 use ISI\ORGBundle\Entity\Activite;
 use ISI\ORGBundle\Form\ActiviteType;
 use ISI\ORGBundle\Entity\TourneePays;
-use ISI\ISIBundle\Entity\Anneescolaire;
+use ISI\ISIBundle\Entity\Annee;
 use ISI\ORGBundle\Entity\TourneeCommune;
 use ISI\ORGBundle\Entity\ActiviteTournee;
 use ISI\ORGBundle\Entity\ActiviteCommune;
@@ -28,7 +28,7 @@ class ActiviteExterneController extends Controller
   public function indexTourneesAction(Request $request, int $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoTournee = $em->getRepository('ORGBundle:Tournee');
     $annee       = $repoAnnee->find($as);
     $paginator = $this->get('knp_paginator');
@@ -73,7 +73,7 @@ class ActiviteExterneController extends Controller
   public function addTourneesNationalesAction(Request $request, int $as, int $nationale)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoPays    = $em->getRepository('ORGBundle:Pays');
     $repoCommune = $em->getRepository('ORGBundle:Commune');
     $annee       = $repoAnnee->find($as);
@@ -164,7 +164,7 @@ class ActiviteExterneController extends Controller
   public function editTourneesNationalesAction(Request $request, int $as, int $id)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoCommune = $em->getRepository('ORGBundle:Commune');
     $repoTournee = $em->getRepository('ORGBundle:Tournee');
     $annee       = $repoAnnee->find($as);
@@ -225,7 +225,7 @@ class ActiviteExterneController extends Controller
   public function destinationPourAddActivitesTourneesNationaleAction(Request $request, int $as, int $id)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoTournee = $em->getRepository('ORGBundle:Tournee');
     $annee       = $repoAnnee->find($as);
     $tournee     = $repoTournee->find($id);
@@ -244,7 +244,7 @@ class ActiviteExterneController extends Controller
   public function destinationPourAddActivitesTourneesInternationaleAction(Request $request, int $as, int $id)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoTournee = $em->getRepository('ORGBundle:Tournee');
     $annee       = $repoAnnee->find($as);
     $tournee     = $repoTournee->find($id);
@@ -263,7 +263,7 @@ class ActiviteExterneController extends Controller
   public function destinationPourRemoveActivitesTourneesNationaleAction(Request $request, int $as, int $id)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoTournee = $em->getRepository('ORGBundle:Tournee');
     $annee       = $repoAnnee->find($as);
     $tournee     = $repoTournee->find($id);
@@ -301,7 +301,7 @@ class ActiviteExterneController extends Controller
   public function addActivitesTourneesNationaleAction(Request $request, int $as, int $id, int $communeId)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoTournee = $em->getRepository('ORGBundle:Tournee');
     $repoCommune = $em->getRepository('ORGBundle:Commune');
     $annee       = $repoAnnee->find($as);
@@ -354,7 +354,7 @@ class ActiviteExterneController extends Controller
   public function addActivitesTourneesInternationaleAction(Request $request, int $as, int $id, int $paysId)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoTournee = $em->getRepository('ORGBundle:Tournee');
     $repoPays = $em->getRepository('ORGBundle:Pays');
     $annee       = $repoAnnee->find($as);
@@ -407,7 +407,7 @@ class ActiviteExterneController extends Controller
   public function addActivitesInternationalesAction(Request $request, int $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $annee       = $repoAnnee->find($as);
 
 
@@ -425,7 +425,7 @@ class ActiviteExterneController extends Controller
   public function infoTourneeNationaleAction(Request $request, int $as, int $id)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee     = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee     = $em->getRepository('ISIBundle:Annee');
     $repoTournee   = $em->getRepository('ORGBundle:Tournee');
     $repoActiviteC = $em->getRepository('ORGBundle:ActiviteCommune');
     $annee         = $repoAnnee->find($as);
@@ -478,7 +478,7 @@ class ActiviteExterneController extends Controller
   public function infoTourneeInternationaleAction(Request $request, int $as, int $id)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee     = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee     = $em->getRepository('ISIBundle:Annee');
     $repoTournee   = $em->getRepository('ORGBundle:Tournee');
     $repoActiviteC = $em->getRepository('ORGBundle:ActiviteCommune');
     $annee         = $repoAnnee->find($as);

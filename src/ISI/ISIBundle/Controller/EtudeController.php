@@ -8,14 +8,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\File\File;
 
-use ISI\ISIBundle\Entity\Anneescolaire;
+use ISI\ISIBundle\Repository\AnneeRepository;
 use ISI\ISIBundle\Entity\Enseignement;
+use ISI\ISIBundle\Entity\Annee;
 use ISI\ISIBundle\Entity\Matiere;
 use ISI\ISIBundle\Entity\Niveau;
 use ISI\ISIBundle\Entity\Examen;
 use ISI\ISIBundle\Entity\Livre;
-
-use ISI\ISIBundle\Repository\AnneescolaireRepository;
 
 use ISI\ISIBundle\Form\EnseignementType;
 use ISI\ISIBundle\Form\MatiereType;
@@ -24,11 +23,11 @@ use ISI\ISIBundle\Form\ExamenType;
 use ISI\ISIBundle\Form\LivreType;
 use ISI\ISIBundle\Form\LivreEditionType;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class EtudeController extends Controller
 {
@@ -38,7 +37,7 @@ class EtudeController extends Controller
     public function indexAction(Request $request, $as)
     {
         $em = $this->getDoctrine()->getManager();
-        $repoAnnee = $em->getRepository('ISIBundle:Anneescolaire');
+        $repoAnnee = $em->getRepository('ISIBundle:Annee');
 
         $annee = $repoAnnee->find($as);
 
@@ -55,7 +54,7 @@ class EtudeController extends Controller
     public function progressionAccueilAction(Request $request, $as, $regime)
     {
         $em = $this->getDoctrine()->getManager();
-        $repoAnnee = $em->getRepository('ISIBundle:Anneescolaire');
+        $repoAnnee = $em->getRepository('ISIBundle:Annee');
         $repoNiveau = $em->getRepository('ISIBundle:Niveau');
 
         $annee = $repoAnnee->find($as);
@@ -76,7 +75,7 @@ class EtudeController extends Controller
     public function niveauxMatieresAction(Request $request, $as, $regime)
     {
         $em = $this->getDoctrine()->getManager();
-        $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+        $repoAnnee   = $em->getRepository('ISIBundle:Annee');
         $repoNiveau  = $em->getRepository('ISIBundle:Niveau');
         $repoMatiere = $em->getRepository('ISIBundle:Matiere');
 
@@ -99,7 +98,7 @@ class EtudeController extends Controller
     public function lierNiveauxMatieresAction(Request $request, $as, $niveauId, $regime)
     {
         $em = $this->getDoctrine()->getManager();
-        $repoAnnee  = $em->getRepository('ISIBundle:Anneescolaire');
+        $repoAnnee  = $em->getRepository('ISIBundle:Annee');
         $repoEleve  = $em->getRepository('ISIBundle:Eleve');
         $repoNiveau = $em->getRepository('ISIBundle:Niveau');
 
@@ -113,8 +112,8 @@ class EtudeController extends Controller
          **/
         if($annee->getAchevee() == TRUE)
         {
-            $request->getSession()->getFlashBag()->add('error', 'Impossible d\'ajouter d\'autres matières car l\'année scolaire '.$annee->getLibelleAnneeScolaire().' est achevée.');
-            return $this->redirect($this->generateUrl('etude_niveaux_matieres', ['as' => $as, 'regime' => $regime]));
+          $request->getSession()->getFlashBag()->add('error', 'Impossible d\'ajouter d\'autres matières car l\'année scolaire '.$annee->getLibelle().' est achevée.');
+          return $this->redirect($this->generateUrl('etude_niveaux_matieres', ['as' => $as, 'regime' => $regime]));
         }
 
         $niveau = $repoNiveau->find($niveauId);
@@ -122,9 +121,9 @@ class EtudeController extends Controller
 
         $enseignement = new Enseignement;
 
-        //Remplissage des champs niveau et anneeScolaire
+        //Remplissage des champs niveau et annee
         $enseignement->setNiveau($niveau);
-        $enseignement->setAnneeScolaire($annee);
+        $enseignement->setAnnee($annee);
 
         $form = $this->createForm(EnseignementType::class, $enseignement, [
             'as'             => $as,
@@ -136,11 +135,10 @@ class EtudeController extends Controller
         if($form->handleRequest($request)->isValid())
         {
             $em = $this->getDoctrine()->getManager();
-            // return new Response(var_dump($enseignement)); 
             $em->persist($enseignement);
             $em->flush();
 
-            $request->getSession()->getFlashBag()->add('info', 'La matière '.$enseignement->getMatiere()->getLibelleMatiere().' a été enregistrée pour le niveau '.$enseignement->getNiveau()->getLibelleAr());
+            $request->getSession()->getFlashBag()->add('info', 'La matière '.$enseignement->getMatiere()->getLibelle().' a été enregistrée pour le niveau '.$enseignement->getNiveau()->getLibelleAr());
             return $this->redirect($this->generateUrl('etude_lier_niveaux_matieres', [
                 'as'     => $as,
                 'regime' => $regime,
@@ -164,7 +162,7 @@ class EtudeController extends Controller
     public function listeMatieresNiveauxAction(Request $request, $as, $regime, $niveauId)
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee   = $em->getRepository('ISIBundle:Annee');
       $repoEns     = $em->getRepository('ISIBundle:Enseignement');
       $repoMatiere = $em->getRepository('ISIBundle:Matiere');
       $repoNiveau  = $em->getRepository('ISIBundle:Niveau');
@@ -172,7 +170,7 @@ class EtudeController extends Controller
       $matieres = $repoMatiere->lesMatieresDuNiveau($as, $niveauId);
       $niveau   = $repoNiveau->find($niveauId);
       $annee    = $repoAnnee->find($as);
-      $ens      = $repoEns->findBy(['anneeScolaire' => $as, 'niveau' => $niveauId]);
+      $ens      = $repoEns->findBy(['annee' => $as, 'niveau' => $niveauId]);
 
       return $this->render('ISIBundle:Etude:liste-des-matieres-du-niveau.html.twig', [
         'matieres' => $matieres,
@@ -191,7 +189,7 @@ class EtudeController extends Controller
     public function parametresAction(Request $request, $as)
     {
         $em = $this->getDoctrine()->getManager();
-        $repoAnnee  = $em->getRepository('ISIBundle:Anneescolaire');
+        $repoAnnee  = $em->getRepository('ISIBundle:Annee');
 
         $annee = $repoAnnee->find($as);
         return $this->render('ISIBundle:Etude:parametres.html.twig', [
@@ -207,7 +205,7 @@ class EtudeController extends Controller
     public function lesMatieresAction($as)
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee   = $em->getRepository('ISIBundle:Annee');
       $repoMatiere = $em->getRepository('ISIBundle:Matiere');
 
       $annee  = $repoAnnee->find($as);
@@ -227,7 +225,7 @@ class EtudeController extends Controller
     public function addMatiereAction(Request $request, $as)
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee  = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee  = $em->getRepository('ISIBundle:Annee');
 
       $annee  = $repoAnnee->find($as);
 
@@ -239,7 +237,7 @@ class EtudeController extends Controller
         $em->persist($matiere);
         $em->flush();
 
-        $request->getSession()->getFlashBag()->add('info', 'La matière '.$matiere->getLibelleMatiere().' a été ajoutée');
+        $request->getSession()->getFlashBag()->add('info', 'La matière '.$matiere->getLibelle().' a été ajoutée');
         return $this->redirect($this->generateUrl('etude_gestion_matieres', array(
           'as' => $as
         )));
@@ -259,14 +257,14 @@ class EtudeController extends Controller
     public function editMatiereAction(Request $request, $as, $matiereId)
     {
       $em = $this->getDoctrine()->getManager();
-      $annee   = $em->getRepository('ISIBundle:Anneescolaire')->find($as);
+      $annee   = $em->getRepository('ISIBundle:Annee')->find($as);
       $matiere = $em->getRepository('ISIBundle:Matiere')->find($matiereId);
 
       $form = $this->createForm(MatiereType::class, $matiere);
       if($form->handleRequest($request)->isValid())
       {
         $em->flush();
-        $request->getSession()->getFlashBag()->add('info', 'Mise à jour de la matière '.$matiere->getLibelleMatiere().' réussie.');
+        $request->getSession()->getFlashBag()->add('info', 'Mise à jour de la matière '.$matiere->getLibelle().' réussie.');
 
         return $this->redirect($this->generateUrl('etude_gestion_matieres', array('as' => $as)));
       }
@@ -285,7 +283,7 @@ class EtudeController extends Controller
     public function lesNiveauxAction($as, $regime)
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee  = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee  = $em->getRepository('ISIBundle:Annee');
       $repoNiveau = $em->getRepository('ISIBundle:Niveau');
 
       $niveaux = $repoNiveau->niveauxDuGroupe($regime);
@@ -305,7 +303,7 @@ class EtudeController extends Controller
     public function addNiveauAction(Request $request, $as, $regime)
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee           = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee           = $em->getRepository('ISIBundle:Annee');
       $repoNiveau          = $em->getRepository('ISIBundle:Niveau');
       $repoGroupeformation = $em->getRepository('ISIBundle:Groupeformation');
 
@@ -353,7 +351,7 @@ class EtudeController extends Controller
     public function editNiveauAction(Request $request, $as, $regime, $niveauId)
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee  = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee  = $em->getRepository('ISIBundle:Annee');
       $repoNiveau = $em->getRepository('ISIBundle:Niveau');
 
       $annee  = $repoAnnee->find($as);
@@ -387,7 +385,7 @@ class EtudeController extends Controller
     public function indexLivresAction(Request $request, $as)
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee  = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee  = $em->getRepository('ISIBundle:Annee');
       $repoLivre = $em->getRepository('ISIBundle:Livre');
 
       $annee  = $repoAnnee->find($as);
@@ -397,8 +395,7 @@ class EtudeController extends Controller
       // $liv->setnom('Nom');
       // $liv->setauteur('Auteur');
       // $liv->setdescription('Rien de spéciale');
-      // $liv->setdateSave(new \Datetime());
-      // $liv->setdateUpdate(new \Datetime());
+      // $liv->setCreatedAt(new \Datetime());
       $form = $this->createForm(LivreEditionType::class, $liv);
 
       if($form->handleRequest($request)->isValid())
@@ -430,7 +427,7 @@ class EtudeController extends Controller
           // instead of its contents
           $livre->setNomFichier($file->getClientOriginalName());
           $livre->setSupport($fileName);
-          $livre->setDateUpdate(new \Datetime());
+          $livre->setUpdatedAt(new \Datetime());
           $em->flush();
         }
         else{
@@ -457,7 +454,7 @@ class EtudeController extends Controller
     public function addLivreAction(Request $request, $as)
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee = $em->getRepository('ISIBundle:Annee');
       $annee     = $repoAnnee->find($as);
 
       $livre = new Livre();
@@ -491,8 +488,7 @@ class EtudeController extends Controller
           $livre->setSupport($fileName);
         }
 
-        $livre->setDateSave(new \Datetime());
-        $livre->setDateUpdate(new \Datetime());
+        $livre->setCreatedAt(new \Datetime());
         // return new Response(var_dump($niveau));
         $em->persist($livre);
         $em->flush();
@@ -524,7 +520,7 @@ class EtudeController extends Controller
     public function editLivreAction(Request $request, $as, $livreId)
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee  = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee  = $em->getRepository('ISIBundle:Annee');
       $repoLivre = $em->getRepository('ISIBundle:Livre');
 
       $annee  = $repoAnnee->find($as);
@@ -533,7 +529,7 @@ class EtudeController extends Controller
       $form = $this->createForm(LivreType::class, $livre);
       if($form->handleRequest($request)->isValid())
       {
-        $livre->setDateUpdate(new \Datetime());
+        $livre->setUpdatedAt(new \Datetime());
         $em->flush();
         $request->getSession()->getFlashBag()->add('info', 'Mise à jour du livre '.$livre->getNom().' réussie.');
 
@@ -555,7 +551,7 @@ class EtudeController extends Controller
     public function examenAction($as)
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee  = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee  = $em->getRepository('ISIBundle:Annee');
       $repoExamen = $em->getRepository('ISIBundle:Examen');
 
       $examens = $repoExamen->lesExamensDeLAnnee($as);
@@ -575,19 +571,18 @@ class EtudeController extends Controller
     public function addExamenAction(Request $request, $as)
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee  = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee  = $em->getRepository('ISIBundle:Annee');
       $repoClasse = $em->getRepository('ISIBundle:Classe');
       $repoExamen = $em->getRepository('ISIBundle:Examen');
-      $repoAnnee  = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee  = $em->getRepository('ISIBundle:Annee');
 
       // Sélection de l'année scolaire
       $annee  = $repoAnnee->find($as);
 
       $examen = new Examen();
       $annee = $repoAnnee->find($as);
-      $examen->setAnneeScolaire($annee);
-      $examen->setDateSave(new \Datetime());
-      $examen->setDateUpdate(new \Datetime());
+      $examen->setAnnee($annee);
+      $examen->setCreatedAt(new \Datetime());
 
       $form = $this->createForm(ExamenType::class, $examen);
       if($form->handleRequest($request)->isValid())
@@ -623,8 +618,8 @@ class EtudeController extends Controller
         else {
 
           // Ici, la session du dernier examen est 1 et celui de $examen est 2
-          $datetime1 = $dernierExamenDeLAnnee->getDateSave();
-          $datetime2 = $examen->getDateSave();
+          $datetime1 = $dernierExamenDeLAnnee->getCreatedAt();
+          $datetime2 = $examen->getCreatedAt();
 
           // A ce stade du travail, on doit vérifier qu'il y a bien une période d'au moins quatre moins entre les deux examens.
           // $interval = $datetime1->diff($datetime2);

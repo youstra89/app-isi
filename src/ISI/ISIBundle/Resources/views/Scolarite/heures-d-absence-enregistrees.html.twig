@@ -3,11 +3,11 @@
 {% extends "ISIBundle:Scolarite:index.html.twig" %}
 
 {% block pageTitle %}
-	Heures enregistrées - {{ classe.getLibelleClasseFr }}
+	Heures enregistrées - {{ classe.getLibelleFr }}
 {% endblock %}
 
 {% block content %}
-	<h3>{{ 'Heures d\'absences enregistrées '|trans }} {{ '"' ~ absence ~ '"' }} {{ ' de la classe'|trans }} {{ classe.getLibelleClasseFr }} </h3>
+	<h3>{{ 'Heures d\'absences enregistrées '|trans }} {{ '"' ~ absence ~ '"' }} {{ ' de la classe'|trans }} {{ classe.getLibelleFr }} </h3>
 	<table class="">
 		<thead>
 			<tr style="background-color: #efefef">
@@ -19,7 +19,7 @@
 				{% for mois in moisAbsences %}
 					<th colspan="" class="">
 						{{ mois.getMois.getMois }}<br>
-						<a href="{{path('isi_modification_des_heures_d_absence', {'as': asec, 'regime': regime, 'classeId': classe.classeId, 'absence': absence, 'moisId': mois.getMois.getId })}}" data-tooltip="Modifier les heures d'absence de {{ mois.getMois.getMois }}">
+						<a href="{{path('isi_modification_des_heures_d_absence', {'as': asec, 'regime': regime, 'classeId': classe.id, 'absence': absence, 'moisId': mois.getMois.getId })}}" data-tooltip="Modifier les heures d'absence de {{ mois.getMois.getMois }}">
 							<i class="edit teal icon"></i>
 						</a>
 					</th>
@@ -37,21 +37,21 @@
 					{% set color = '#efefef' %}
 				{% endif %}
 				{# Pour le sexe #}
-				{% if eleve.getSexeFr == 1 %}
+				{% if eleve.sexe == 1 %}
 					{% set sexe = 'ذكر' %}
 				{% else %}
 					{% set sexe = 'أنثى' %}
 				{% endif %}
 				{% set numero = numero + 1 %}
-				<tr class="line-table" bgcolor={{color}}>
+				<tr class="line-table" bgcolor={{ color }}>
 					<td align="center">{{ numero }}</td>
-					<td align="right" class="matricule">{{ eleve.getMatricule }}</td>
-					<td align="right" class="nomEleveAr">{{ eleve.getPnomAr }} {{ eleve.getNomAr }}</td>
-					<td align="right" class="nomEleveFr">{{ eleve.getNomFr  }} {{  eleve.getPnomFr }}</td>
+					<td align="right" class="matricule">{{ eleve.matricule }}</td>
+					<td align="right" class="nomEleveAr">{{ eleve.pnomAr }} {{ eleve.nomAr }}</td>
+					<td align="right" class="nomEleveFr">{{ eleve.nomFr  }} {{  eleve.pnomFr }}</td>
 					<td align="center">{{ sexe }}</td>
 					{% for abs in moisAbsences %}
 						{% for absEleve in absences %}
-							{% if abs.getMois.getId == absEleve.getMois.getId and eleve.getEleveId == absEleve.getEleve.getEleveId %}
+							{% if abs.getMois.getId == absEleve.getMois.getId and eleve.id == absEleve.getEleve.getId %}
 								{% set heuresAbsences = 0 %}
 								{% if absence == 'Cours' %}
 									{% set heuresAbsences = absEleve.getHeureCours %}

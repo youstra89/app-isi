@@ -1,0 +1,202 @@
+<?php
+
+namespace ISI\ISIBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Annee
+ *
+ * @ORM\Table(name="annee", indexes={@ORM\Index(name="libelle", columns={"libelle"})})
+ * @ORM\Entity(repositoryClass="ISI\ISIBundle\Repository\AnneeRepository")
+ * @ORM\HasLifecycleCallbacks()
+ */
+class Annee
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="libelle", type="string", length=255, nullable=false)
+     */
+    private $libelle;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="achevee", type="boolean", nullable=false)
+     */
+    private $achevee = FALSE;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
+     */
+    private $createdAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     */
+    private $updatedAt;
+
+
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set label
+     *
+     * @param string $label
+     *
+     * @return Annee
+     */
+    public function setLabel($label)
+    {
+        $this->label = $label;
+
+        return $this;
+    }
+
+    /**
+     * Get label
+     *
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
+    /**
+     * Set achevee
+     *
+     * @param string $achevee
+     *
+     * @return Annee
+     */
+    public function setAchevee($achevee)
+    {
+        $this->achevee = $achevee;
+
+        return $this;
+    }
+
+    /**
+     * Get achevee
+     *
+     * @return string
+     */
+    public function getAchevee()
+    {
+        return $this->achevee;
+    }
+
+    /**
+     * Set created_at
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Annee
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->created_at = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get created_at
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * Set updated_at
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Annee
+     */
+    public function setupdated_at($updatedAt)
+    {
+        $this->updated_at = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updated_at
+     *
+     * @return \DateTime
+     */
+    public function getupdated_at()
+    {
+        return $this->updated_at;
+    }
+
+    //Méthode de mise à jour de la date de création
+    /**
+     * @ORM\PrePersist
+     */
+    public function saveDate()
+    {
+      $this->setCreatedAt(new \Datetime());
+    }
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function updateDate()
+    {
+      $this->setupdated_at(new \Datetime());
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Annee
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updated_at = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
+    }
+}

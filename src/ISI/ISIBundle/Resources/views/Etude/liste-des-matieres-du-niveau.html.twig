@@ -38,15 +38,15 @@
                 {{ numero }}
               </td>
               <td>
-                <h4 class="ui image header">{{ matiere.libelleMatiere }}</h4>
+                <h4 class="ui image header">{{ matiere.libelle }}</h4>
               </td>
               <td>
-                <h4 class="ui image header">{{ matiere.referenceLangue.libelleLangue }}</h4>
+                <h4 class="ui image header">{{ matiere.referenceLangue.libelle }}</h4>
               </td>
               <td>
                 {% for en in ens %}
-                  {% if en.matiere.matiereId == matiere.matiereId and en.statuMatiere == TRUE %}
-                    <h4 class="ui image header" data-tooltip="{{ matiere.libelleMatiere }} est une matière spécifique au {{ niveau.libelleFr }}"> <i class="star outline icon"></i> </h4>
+                  {% if en.matiere.id == matiere.id and en.statu == TRUE %}
+                    <h4 class="ui image header" data-tooltip="{{ matiere.libelle }} est une matière spécifique au {{ niveau.libelleFr }}"> <i class="star outline icon"></i> </h4>
                   {% endif %}
                 {% endfor %}
               </td>

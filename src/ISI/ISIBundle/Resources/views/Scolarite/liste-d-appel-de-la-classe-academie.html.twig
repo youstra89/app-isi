@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <title>
-        {% block title %} Impression liste d'appel | {{ classe.getLibelleClasseAr }} {% endblock %}
+        {% block title %} Impression liste d'appel | {{ classe.getLibelleAr }} {% endblock %}
     </title>
 
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
@@ -186,7 +186,7 @@
             <div class="id-fiche">
                 <center>
                     <div class="classe">
-                        <span>الفصل : <span class="libelleClasse">{{ classe.libelleClasseAr }}</span></span>
+                        <span>الفصل : <span class="libelleClasse">{{ classe.libelleAr }}</span></span>
                     </div>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -196,7 +196,7 @@
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <div class="annee">
-                        <span>السنة الدراسية : <span class="libelleClasse">{{ annee.libelleAnneeScolaire }}</span></span>
+                        <span>السنة الدراسية : <span class="libelleClasse">{{ annee.libelle }}</span></span>
                     </div>
                 </center> 
             </div>
@@ -228,7 +228,7 @@
                             {% set color = '#efefef' %}
                         {% endif %}
                         {# Pour le sexe #}
-                        {% if eleve.sexeFr == 1 %}
+                        {% if eleve.sexe == 1 %}
                             {% set sexe = 'ذكر' %}
                         {% else %}
                             {% set sexe = 'أنثى' %}
@@ -241,8 +241,8 @@
                             <td align="right" class="nomEleveFr">{{ eleve.nomFr  }} {{  eleve.pnomFr }}</td>
                             {# On va faire ici la sélection de la halaqa #}
                             {% for eleveH in elevesH %}
-                                {% if eleve.getEleveId == eleveH.GetEleve.getEleveId %}
-                                    <td align="right" class="nomDeHalaqa">{{ eleveH.getHalaqa.getLibelleHalaqa }}</td>
+                                {% if eleve.id == eleveH.getEleve.getId %}
+                                    <td align="right" class="nomDeHalaqa">{{ eleveH.getHalaqa.getLibelle }}</td>
                                 {% endif %}
                             {% endfor %}
                         {# Fin de la sélection de la halaqa #}
@@ -280,7 +280,7 @@
                         {% set color = 'gray' %}
                     {% endif %}
                     <!--Pour le sexe  -->
-                    {% if eleve.sexeFr == 1 %}
+                    {% if eleve.sexe == 1 %}
                         {% set sexe = 'ذكر' %}
                     {% else %}
                         {% set sexe = 'أنثى' %}
@@ -296,8 +296,8 @@
 								<td align="right" class="nomEleveFr">{{ eleve.nomFr }} {{ eleve.pnomFr }}</td>
                                 {# On va faire ici la sélection de la halaqa #}
                                     {% for eleveH in elevesH %}
-                                        {% if eleve.getEleveId == eleveH.GetEleve.getEleveId %}
-                                            <td align="right" class="nomDeHalaqa">{{ eleveH.getHalaqa.getLibelleHalaqa }}</td>
+                                        {% if eleve.id == eleveH.getEleve.getId %}
+                                            <td align="right" class="nomDeHalaqa">{{ eleveH.getHalaqa.getLibelle }}</td>
                                         {% endif %}
                                     {% endfor %}
                                 {# Fin de la sélection de la halaqa #}

@@ -7,7 +7,7 @@
 {% block content %}
     <div class="ui info message">
         <center>
-            <h3>{{ 'Statistiques annuelles de la classe'|trans }} : {{ classe.getLibelleClasseFr }}</h3>
+            <h3>{{ 'Statistiques annuelles de la classe'|trans }} : {{ classe.getLibelleFr }}</h3>
         </center>
     </div>
     {# {{dump(app)}} #}
@@ -24,6 +24,7 @@
             <table class="ui selectable celled table">
                 <thead>
                     <tr>
+                        <th>{{ 'N°'|trans }}</th>
                         <th>{{ 'Matricule'|trans }}</th>
                         <th>{{ 'Nom & Prénom'|trans }}</th>
                         <th>{{ 'Total annuel'|trans }}</th>
@@ -33,18 +34,20 @@
                 </thead>
                 <tbody>
                     {# On va afficher les moyennes #}
+                    {% set i = 0 %}
                     {% for moyenne2 in moyennes2 %}
                         {% for moyenne1 in moyennes1 %}
                             {% for fq in frequenter %}
-                                {% if moyenne1.getEleve.eleveId == moyenne2.getEleve.getEleveId and moyenne1.getEleve.getEleveId == fq.getEleve.getEleveId %}
+                                {% if moyenne1.getEleve.id == moyenne2.getEleve.getId and moyenne1.getEleve.getId == fq.getEleve.getId %}
+                                    {% set i = i + 1 %}
                                     {% set total = 0 %}
                                     {% set total = moyenne1.getTotalPoints + moyenne2.getTotalPoints %}
                                     {# Afficher ème en exposant #}
                                     {% set nieme = '' %}
-                                    {% if moyenne2.getClassementAnnuel == 1 and moyenne2.getEleve.getSexeFr == 1 %}
+                                    {% if moyenne2.getClassementAnnuel == 1 and moyenne2.getEleve.getSexe == 1 %}
                                         <!-- Dans ce cas, c'est un homme. Il faudra donc dire: Le premier -->
                                         {% set nieme = 'er' %}
-                                    {% elseif moyenne2.getClassementAnnuel == 1 and moyenne2.getEleve.getSexeFr == 2 %}
+                                    {% elseif moyenne2.getClassementAnnuel == 1 and moyenne2.getEleve.getSexe == 2 %}
                                         <!-- Dans ce cas, c'est une femme. Il faudra donc dire: La première -->
                                         {% set nieme = 'ère' %}
                                     {% else %}
@@ -56,6 +59,7 @@
                                     {% if fq.admission == 1 %}
                                         {% set nbrTotalAdmis = nbrTotalAdmis + 1 %}
                                         <tr bgcolor="">
+                                        <td>{{ i }}</td>
                                         <td>{{ moyenne2.getEleve.getMatricule }}</td>
                                         <td>{{ moyenne2.getEleve.getNomFr }} {{ moyenne2.getEleve.getPnomFr }}</td>
                                         <td>{{ total }}</td>
@@ -65,6 +69,7 @@
                                     {% elseif fq.admission == 0 %}
                                         {% set nbrTotalRecales = nbrTotalRecales + 1 %}
                                         <tr class="error">
+                                        <td>{{ i }}</td>
                                             <td>{{ moyenne2.getEleve.getMatricule }}</td>
                                             <td>{{ moyenne2.getEleve.getNomFr }} {{ moyenne2.getEleve.getPnomFr }}</td>
                                             <td>{{ total }}</td>

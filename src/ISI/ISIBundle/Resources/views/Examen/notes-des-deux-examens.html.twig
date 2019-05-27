@@ -1,11 +1,11 @@
 {# Page d'ajout d'un nouvel examen #}
 {% extends "ISIBundle:Scolarite:index.html.twig" %}
 {% block pageTitle %}
-    Cumul des notes en {{ classe.getLibelleClasseFr }}
+    Cumul des notes en {{ classe.getLibelleFr }}
 {% endblock %}
 
 {% block content %}
-<h3>{{ 'Total des notes des élèves de'|trans }} : {{ classe.getLibelleClasseFr }}</h3>
+<h3>{{ 'Total des notes des élèves de'|trans }} : {{ classe.getLibelleFr }}</h3>
     <div class="">
         {% set numero = 0 %}
         {# {{ dump(notes1) }}  #}
@@ -22,7 +22,7 @@
                     <th>{{ 'Nom & Prénom'|trans }}</th>
                     {# On va maintenant afficher les matières de la classe #}
                     {% for matiere in matieres %}
-                        <th>{{ matiere.getLibelleMatiere }}</th>
+                        <th>{{ matiere.getLibelle }}</th>
                     {% endfor %}
                 </tr>
             </thead>

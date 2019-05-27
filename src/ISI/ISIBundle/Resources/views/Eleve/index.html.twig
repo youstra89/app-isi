@@ -138,16 +138,16 @@
             <font color={{ color }}>
               <div class="ui grid">
                 <div class="wide column" data-tooltip="Modifier les information de l'élève">
-                  <a href="{{ path('isi_edit_eleve', {'as': asec, 'regime': regime, 'eleveId': eleve.eleveId}) }}"><i class="edit icon"></i></a>
+                  <a href="{{ path('isi_edit_eleve', {'as': asec, 'regime': regime, 'eleveId': eleve.id}) }}"><i class="edit icon"></i></a>
                 </div>
                 <div class="wide column" data-tooltip="Voir les informations de l'élève">
-                  <a href="{{ path('isi_info_eleve', {'as': asec, 'regime': regime, 'eleveId': eleve.eleveId}) }}"><i class="info circle icon"></i></a>
+                  <a href="{{ path('isi_info_eleve', {'as': asec, 'regime': regime, 'eleveId': eleve.id}) }}"><i class="info circle icon"></i></a>
                 </div>
                 <div class="wide column" data-tooltip="Enregistrer une conduite de l'élève">
-                  <a href="{{ path('isi_enregistrer_conduite', {'as': asec, 'regime': regime, 'eleveId': eleve.eleveId}) }}"><i class="certificate icon"></i></a>
+                  <a href="{{ path('isi_enregistrer_conduite', {'as': asec, 'regime': regime, 'eleveId': eleve.id}) }}"><i class="certificate icon"></i></a>
                 </div>
                 {% for eleveI in elevesI %}
-                    {% if eleve.eleveId == eleveI.getEleveId %}
+                    {% if eleve.id == eleveI.getId %}
                         <div class="wide column" data-tooltip="Inscrit(e) à l'internat">
                           <i class="bed icon"></i>
                         </div>

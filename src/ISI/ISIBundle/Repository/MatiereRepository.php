@@ -20,10 +20,10 @@ class MatiereRepository extends \Doctrine\ORM\EntityRepository
        ->addSelect('ens')
        ->join('ens.niveau', 'n')
        ->addSelect('n')
-       ->join('ens.anneeScolaire', 'an')
+       ->join('ens.annee', 'an')
        ->addSelect('an')
-       ->where('an.anneeScolaireId = :annee AND n.id = :niveau')
-       ->orderBy('an.anneeScolaireId', 'DESC');
+       ->where('an.id = :annee AND n.id = :niveau')
+       ->orderBy('an.id', 'DESC');
     $qb->setParameters(['annee' => $as, 'niveau' => $niveauId]);
     return $qb
       ->getQuery()

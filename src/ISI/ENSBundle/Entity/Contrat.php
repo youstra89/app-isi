@@ -31,14 +31,14 @@ class Contrat
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="fin", type="date")
+     * @ORM\Column(name="fin", type="date", nullable=true)
      */
     private $fin;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="duree", type="integer")
+     * @ORM\Column(name="duree", type="integer", nullable=true)
      */
     private $duree;
 
@@ -53,21 +53,21 @@ class Contrat
     private $enseignant;
 
     /**
-     * @var \Anneescolaire
+     * @var \Annee
      *
-     * @ORM\ManyToOne(targetEntity="\ISI\ISIBundle\Entity\Anneescolaire")
+     * @ORM\ManyToOne(targetEntity="\ISI\ISIBundle\Entity\Annee")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="annee_debut", referencedColumnName="annee_scolaire_id")
+     *   @ORM\JoinColumn(name="annee_debut", referencedColumnName="id")
      * })
      */
     private $anneeDebut;
 
     /**
-     * @var \Anneescolaire
+     * @var \Annee
      *
-     * @ORM\ManyToOne(targetEntity="\ISI\ISIBundle\Entity\Anneescolaire")
+     * @ORM\ManyToOne(targetEntity="\ISI\ISIBundle\Entity\Annee")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="annee_fin", referencedColumnName="annee_scolaire_id")
+     *   @ORM\JoinColumn(name="annee_fin", referencedColumnName="id")
      * })
      */
     private $anneeFin;
@@ -89,23 +89,23 @@ class Contrat
     /**
      * @var string
      *
-     * @ORM\Column(name="motif_fin", type="string", length=255, nullable=false)
+     * @ORM\Column(name="motif_fin", type="string", length=255, nullable=true)
      */
     private $motifFin;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_save", type="datetime", nullable=false)
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private $dateSave;
+    private $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_update", type="datetime", nullable=false)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private $dateUpdate;
+    private $updatedAt;
 
 
     /**
@@ -217,7 +217,7 @@ class Contrat
     /**
      * Set anneeDebut
      *
-     * @param \ISI\ISIBundle\Entity\Anneescolaire $anneeDebut
+     * @param \ISI\ISIBundle\Entity\Annee $anneeDebut
      *
      * @return Contrat
      */
@@ -231,7 +231,7 @@ class Contrat
     /**
      * Get anneeDebut
      *
-     * @return \ISI\ISIBundle\Entity\Anneescolaire
+     * @return \ISI\ISIBundle\Entity\Annee
      */
     public function getAnneeDebut()
     {
@@ -241,7 +241,7 @@ class Contrat
     /**
      * Set anneeFin
      *
-     * @param \ISI\ISIBundle\Entity\Anneescolaire $anneeFin
+     * @param \ISI\ISIBundle\Entity\Annee $anneeFin
      *
      * @return Contrat
      */
@@ -255,59 +255,11 @@ class Contrat
     /**
      * Get anneeFin
      *
-     * @return \ISI\ISIBundle\Entity\Anneescolaire
+     * @return \ISI\ISIBundle\Entity\Annee
      */
     public function getAnneeFin()
     {
         return $this->anneeFin;
-    }
-
-    /**
-     * Set dateSave
-     *
-     * @param \DateTime $dateSave
-     *
-     * @return Contrat
-     */
-    public function setDateSave($dateSave)
-    {
-        $this->dateSave = $dateSave;
-
-        return $this;
-    }
-
-    /**
-     * Get dateSave
-     *
-     * @return \DateTime
-     */
-    public function getDateSave()
-    {
-        return $this->dateSave;
-    }
-
-    /**
-     * Set dateUpdate
-     *
-     * @param \DateTime $dateUpdate
-     *
-     * @return Contrat
-     */
-    public function setDateUpdate($dateUpdate)
-    {
-        $this->dateUpdate = $dateUpdate;
-
-        return $this;
-    }
-
-    /**
-     * Get dateUpdate
-     *
-     * @return \DateTime
-     */
-    public function getDateUpdate()
-    {
-        return $this->dateUpdate;
     }
 
     /**
@@ -380,5 +332,53 @@ class Contrat
     public function getMotifFin()
     {
         return $this->motifFin;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Contrat
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Contrat
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
     }
 }

@@ -33,7 +33,7 @@
         <tbody>
           {% set numero = 0 %}
           {% for classe in classes %} 
-            {% if classe.niveau.groupeFormation.referenceGrp is same as(regime) %}
+            {% if classe.niveau.groupeFormation.reference is same as(regime) %}
               {% set numero = numero + 1 %}
               <tr>
                 <td>
@@ -43,16 +43,16 @@
                   <h4 class="ui image header">{{ classe.getNiveau.getLibelleFr }}</h4>
                 </td>
                 <td>
-                  <h4 class="ui image header">{{ classe.libelleclasseFr }}</h4>
+                  <h4 class="ui image header">{{ classe.libelleFr }}</h4>
                 </td>
                 <td>
                   <h4 class="ui image header">{{ classe.getNiveau.getLibelleAr }}</h4>
                 </td>
                 <td>
-                  <h4 class="ui image header">{{ classe.libelleclasseAr }}</h4>
+                  <h4 class="ui image header">{{ classe.libelleAr }}</h4>
                 </td>
                 <td>
-                  <a href="{{ path('isi_edit_classe', {'as': classe.anneescolaire.anneeScolaireId, 'classeId': classe.classeId, 'regime': regime}) }}">
+                  <a href="{{ path('isi_edit_classe', {'as': classe.annee.id, 'classeId': classe.id, 'regime': regime}) }}">
                     <i class="edit icon"></i>
                   </a>
                   <a>

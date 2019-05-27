@@ -55,18 +55,18 @@ class NoteRepository extends \Doctrine\ORM\EntityRepository
   public function elevesSansNotes($classeId, $examenId)
   {
     $query = $this->_em->createQuery(
-      'SELECT DISTINCT(e1.eleveId)
+      'SELECT DISTINCT(e1.id)
         FROM ISIBundle:Eleve e1
         JOIN ISIBundle:Frequenter f
         JOIN ISIBundle:Classe c
-        WHERE c.classeId = :classeId AND e1.eleveId NOT IN
+        WHERE c.id = :classeId AND e1.id NOT IN
           (
             SELECT DISTINCT(e.eleveId)
             FROM ISIBundle:Eleve e
             JOIN ISIBundle:Note n
             JOIN ISIBundle:Frequenter fq
             JOIN ISIBundle:Classe cl
-            WHERE cl.classeId = :classeId AND n.eleve = fq.eleve AND fq.classe = cl.classeId AND n.examen = :examenId
+            WHERE cl.id = :classeId AND n.eleve = fq.eleve AND fq.classe = cl.id AND n.examen = :examenId
           )'
         );
     $query->setParameter('classeId', $classeId);
@@ -82,8 +82,8 @@ class NoteRepository extends \Doctrine\ORM\EntityRepository
     $qb = $this->createQueryBuilder('n');
     $qb->join('n.eleve', 'e')
        ->join('n.examen', 'ex')
-       ->join('ex.anneeScolaire', 'an')
-       ->where('e.eleveId = :id AND an.anneeScolaireId = :an AND ex.session = :session')
+       ->join('ex.annee', 'an')
+       ->where('e.id = :id AND an.id = :an AND ex.session = :session')
        ->setParameter('id', $id)
        ->setParameter('an', $as)
        ->setParameter('session', $session);

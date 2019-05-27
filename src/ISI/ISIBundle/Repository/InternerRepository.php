@@ -16,9 +16,9 @@ class InternerRepository extends \Doctrine\ORM\EntityRepository
     $internes = $this->createQueryBuilder('i');
     $internes->join('i.eleve', 'e')
              ->addSelect('e')
-             ->join('i.anneeScolaire', 'an')
+             ->join('i.annee', 'an')
              ->addSelect('an')
-             ->where('an.anneeScolaireId = :as AND i.renvoye = 1');
+             ->where('an.id = :as AND i.renvoye = 1');
 
     $internes->setParameter('as', $as);
 
@@ -31,9 +31,9 @@ class InternerRepository extends \Doctrine\ORM\EntityRepository
     $internes = $this->createQueryBuilder('i');
     $internes->join('i.eleve', 'e')
              ->addSelect('e')
-             ->join('i.anneeScolaire', 'an')
+             ->join('i.annee', 'an')
              ->addSelect('an')
-             ->where('an.anneeScolaireId = :as AND e.renvoye = FALSE');
+             ->where('an.id = :as AND e.renvoye = FALSE');
 
     $internes->setParameter('as', $as);
 

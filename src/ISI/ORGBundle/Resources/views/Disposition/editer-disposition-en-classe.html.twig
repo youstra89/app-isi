@@ -1,0 +1,73 @@
+{% extends 'ORGBundle:Disposition:index.html.twig'%}
+
+
+{% block stylesheets %}
+{% endblock %}
+
+
+{% block title 'Edition de disposition de classe dans une salle' %}
+
+
+{% block notification %}
+  {% set notif = app.session.flashbag.get('error') %}
+  {% if notif is not empty %}
+    <div class="ui red message">
+      <div class="header">{{ 'Attention'|trans }}</div>
+      <ul class="list">
+        {% for message in notif %}
+          <li>{{ message }}.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+  {% for message in app.session.flashbag.get('info') %}
+  <div class="ui green message">
+    <div class="header">{{ 'Notification'|trans }}: </div>
+    <ul class="list">
+      <li>{{ message }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+{% endblock %}
+
+
+{% block body %}
+  <h2>Disposition de classe dans la salle : {{ salle.nom }} - {{ salle.batiment.nom }} - {{ salle.localisation }}</h2>
+  <div>
+    <form action="" method="post" class="ui form">
+      <div class="three fields">
+        <div class="field">
+          <label for="classeA">Classe Académie</label>
+          <select class="ui fluid dropdown" name="classeA" id="classeA">
+              <option value="">{{ 'Sélectionner une classe'|trans }}</option>
+              {% for cl in classesA %}
+                {% if academie|length != 0 and academie.classe == cl %}
+                  <option value="{{ cl.id }}" selected>{{ cl.libelleFr }}</option>
+                {% else %}
+                  <option value="{{ cl.id }}">{{ cl.libelleFr }}</option>
+                {% endif %}
+              {% endfor %}
+          </select>
+        </div>
+        <div class="field">
+          <label for="classeF">Classe Centre de formation</label>
+          <select class="ui fluid dropdown" name="classeF" id="classeF">
+              <option value="">{{ 'Sélectionner une classe'|trans }}</option>
+              {% for cl in classesF %}
+                {% if centreformation|length != 0 and centreformation.classe == cl %}
+                  <option value="{{ cl.id }}" selected>{{ cl.libelleFr }}</option>
+                {% else %}
+                  <option value="{{ cl.id }}">{{ cl.libelleFr }}</option>
+                {% endif %}
+              {% endfor %}
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="ui positive button">Valider</button>
+    </form>
+  </div>
+{% endblock %}
+
+
+{% block javascripts %}
+{% endblock %}

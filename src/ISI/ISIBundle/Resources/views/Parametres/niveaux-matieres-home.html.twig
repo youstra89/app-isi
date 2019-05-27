@@ -14,12 +14,12 @@
 {% else %}
   <div class="ui cards">
       {% for niveau in niveaux %}
-        {% if niveau.groupeFormation.referenceGrp is same as(regime) %}
+        {% if niveau.groupeFormation.reference is same as(regime) %}
           <div class="card">
             <div class="content">
               <img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
               <div class="header">{{ niveau.libelleFr }}</div>
-              <div class="meta">{{ niveau.groupeFormation.referenceGrp }} </div>
+              <div class="meta">{{ niveau.groupeFormation.reference }} </div>
               <div class="description">
                 <div class="ui link list">
                   <a href="{{path('isi_liste_niveaux_matieres', {'as': asec, 'niveauId': niveau.id, 'regime': regime})}}">

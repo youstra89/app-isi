@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Absence
  *
- * @ORM\Table(name="absence", uniqueConstraints={@ORM\UniqueConstraint(name="absence", columns={"mois_id", "eleve_id", "annee_scolaire_id"})}, indexes={@ORM\Index(name="eleve_id", columns={"eleve_id"}), @ORM\Index(name="annee_scolaire_id", columns={"annee_scolaire_id"}), @ORM\Index(name="mois_id", columns={"mois_id"})})
+ * @ORM\Table(name="absence", uniqueConstraints={@ORM\UniqueConstraint(name="absence", columns={"mois_id", "eleve_id", "annee_id"})}, indexes={@ORM\Index(name="eleve_id", columns={"eleve_id"}), @ORM\Index(name="annee_id", columns={"annee_id"}), @ORM\Index(name="mois_id", columns={"mois_id"})})
  * @ORM\Entity(repositoryClass="ISI\ISIBundle\Repository\AbsenceRepository")
  */
 class Absence
@@ -38,26 +38,26 @@ class Absence
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_save", type="datetime", nullable=false)
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private $dateSave;
+    private $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_update", type="datetime", nullable=false)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private $dateUpdate;
+    private $updatedAt;
 
     /**
-     * @var \Anneescolaire
+     * @var \Annee
      *
-     * @ORM\ManyToOne(targetEntity="Anneescolaire")
+     * @ORM\ManyToOne(targetEntity="Annee")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="annee_scolaire_id", referencedColumnName="annee_scolaire_id")
+     *   @ORM\JoinColumn(name="annee_id", referencedColumnName="id")
      * })
      */
-    private $anneeScolaire;
+    private $annee;
 
     /**
      * @var \Mois
@@ -74,7 +74,7 @@ class Absence
      *
      * @ORM\ManyToOne(targetEntity="Eleve")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="eleve_id", referencedColumnName="eleve_id")
+     *   @ORM\JoinColumn(name="eleve_id", referencedColumnName="id")
      * })
      */
     private $eleve;
@@ -139,75 +139,51 @@ class Absence
     }
 
     /**
-     * Set dateSave
+     * Set created_at
      *
-     * @param \DateTime $dateSave
+     * @param \DateTime $createdAt
      *
      * @return Absence
      */
-    public function setDateSave($dateSave)
+    public function setCreatedAt($createdAt)
     {
-        $this->dateSave = $dateSave;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get dateSave
+     * Get created_at
      *
      * @return \DateTime
      */
-    public function getDateSave()
+    public function getCreatedAt()
     {
-        return $this->dateSave;
+        return $this->createdAt;
     }
 
     /**
-     * Set dateUpdate
+     * Set updated_at
      *
-     * @param \DateTime $dateUpdate
+     * @param \DateTime $updatedAt
      *
      * @return Absence
      */
-    public function setDateUpdate($dateUpdate)
+    public function setupdated_at($updatedAt)
     {
-        $this->dateUpdate = $dateUpdate;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
     /**
-     * Get dateUpdate
+     * Get updated_at
      *
      * @return \DateTime
      */
-    public function getDateUpdate()
+    public function getupdated_at()
     {
-        return $this->dateUpdate;
-    }
-
-    /**
-     * Set anneeScolaire
-     *
-     * @param \ISI\ISIBundle\Entity\Anneescolaire $anneeScolaire
-     *
-     * @return Absence
-     */
-    public function setAnneeScolaire(\ISI\ISIBundle\Entity\Anneescolaire $anneeScolaire = null)
-    {
-        $this->anneeScolaire = $anneeScolaire;
-
-        return $this;
-    }
-
-    /**
-     * Get anneeScolaire
-     *
-     * @return \ISI\ISIBundle\Entity\Anneescolaire
-     */
-    public function getAnneeScolaire()
-    {
-        return $this->anneeScolaire;
+        return $this->updatedAt;
     }
 
     /**
@@ -258,4 +234,52 @@ class Absence
         return $this->mois;
     }
 
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Absence
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * Set annee
+     *
+     * @param \ISI\ISIBundle\Entity\Annee $annee
+     *
+     * @return Absence
+     */
+    public function setAnnee(\ISI\ISIBundle\Entity\Annee $annee = null)
+    {
+        $this->annee = $annee;
+
+        return $this;
+    }
+
+    /**
+     * Get annee
+     *
+     * @return \ISI\ISIBundle\Entity\Annee
+     */
+    public function getAnnee()
+    {
+        return $this->annee;
+    }
 }

@@ -89,8 +89,8 @@ class DisciplineController extends Controller
       $conduite->setAnnee($annee);
       $conduite->setContrat($contrat);
       $conduite->setDate($date);
-      $conduite->setDateSave(new \Datetime());
-      $conduite->setDateUpdate(new \Datetime());
+      $conduite->setCreatedAt(new \Datetime());
+      $conduite->setUpdatedAt(new \Datetime());
       $em->persist($conduite);
       $em->flush();
 
@@ -233,8 +233,8 @@ class DisciplineController extends Controller
       $convocation->setDate($date);
       $convocation->setInstance($instance);
       $convocation->setMotif($motif);
-      $convocation->setDateSave(new \Datetime());
-      $convocation->setDateUpdate(new \Datetime());
+      $convocation->setCreatedAt(new \Datetime());
+      $convocation->setUpdatedAt(new \Datetime());
       $em->persist($convocation);
 
       foreach($ids as $id)
@@ -244,8 +244,8 @@ class DisciplineController extends Controller
         $convoque->setAnnee($annee);
         $convoque->setContrat($contrat);
         $convoque->setConvocation($convocation);
-        $convoque->setDateSave(new \Datetime());
-        $convoque->setDateUpdate(new \Datetime());
+        $convoque->setCreatedAt(new \Datetime());
+        $convoque->setUpdatedAt(new \Datetime());
         $em->persist($convoque);
       }
       $request->getSession()->getFlashBag()->add('info', 'Convocation enregistrée avec succès.');
@@ -293,7 +293,7 @@ class DisciplineController extends Controller
 
       $convocation->setAudition($audition);
       $convocation->setVerdict($verdict);
-      $convocation->setDateUpdate(new \Datetime());
+      $convocation->setUpdatedAt(new \Datetime());
       $em->flush();
       $request->getSession()->getFlashBag()->add('info', 'Le verdict pour l\'esnseignant '.$convocation->getContrat()->getEnseignant()->getNomFr().' '.$convocation->getContrat()->getEnseignant()->getPnomFr().' a bien été enregistré.');
       return $this->redirectToRoute('ens_convocation_home', ['as' => $as]);
@@ -390,8 +390,8 @@ class DisciplineController extends Controller
         $sanction->setContrat($contrat);
         $sanction->setAnnee($annee);
         $sanction->setDate($date);
-        $sanction->setDateSave(new \Datetime());
-        $sanction->setDateUpdate(new \Datetime());
+        $sanction->setCreatedAt(new \Datetime());
+        $sanction->setUpdatedAt(new \Datetime());
         $em->persist($sanction);
         $em->flush();
 
@@ -436,8 +436,8 @@ class DisciplineController extends Controller
     $newAnneeContrat = new AnneeContrat();
     $newAnneeContrat->setAnnee($annee);
     $newAnneeContrat->setContrat($contrat);
-    $newAnneeContrat->setDateSave(new \Datetime());
-    $newAnneeContrat->setDateUpdate(new \Datetime());
+    $newAnneeContrat->setCreatedAt(new \Datetime());
+    $newAnneeContrat->setUpdatedAt(new \Datetime());
     $form  = $this->createForm(AnneeContratType::class, $newAnneeContrat);
 
     if($form->handleRequest($request)->isValid())

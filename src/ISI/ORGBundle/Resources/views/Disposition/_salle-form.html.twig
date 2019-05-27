@@ -1,0 +1,19 @@
+{{ form_start(form, { 'attr': {'class': 'ui form'} }) }}
+    <div class="field">
+        {{ form_row(form.nom) }}
+    </div>
+    <div class="three fields">
+      <div class="field">
+          {{ form_row(form.batiment) }}
+      </div>
+      <div class="field">
+          {{ form_row(form.nombrePlace) }}
+      </div>
+      <div class="field">
+          {{ form_row(form.localisation) }}
+      </div>
+    </div>
+    {{ form_rest(form) }}
+    <button class="ui primary button">{{ button|default('Enregistrer') }}</button>
+  </div><br>
+{{ form_end(form) }}

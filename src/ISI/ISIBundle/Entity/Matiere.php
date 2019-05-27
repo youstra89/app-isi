@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Matiere
  *
- * @ORM\Table(name="matiere", indexes={@ORM\Index(name="languematiere_matiere_fk", columns={"reference_langue"})})
+ * @ORM\Table(name="matiere", indexes={@ORM\Index(name="languematiere_fk", columns={"reference_langue"})})
  * @ORM\Entity(repositoryClass="ISI\ISIBundle\Repository\MatiereRepository")
  * @ORM\HasLifecycleCallbacks()
  */
@@ -16,39 +16,39 @@ class Matiere
     /**
      * @var integer
      *
-     * @ORM\Column(name="matiere_id", type="integer", nullable=false)
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $matiereId;
+    private $id;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="libelle_matiere", type="string", length=255, nullable=false, unique=true)
+     * @ORM\Column(name="libelle", type="string", length=255, nullable=false, unique=true)
      */
-    private $libelleMatiere;
+    private $libelle;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_save", type="datetime", nullable=false)
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private $dateSave;
+    private $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_update", type="datetime", nullable=false)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private $dateUpdate;
+    private $updatedAt;
 
     /**
      * @var \Languematiere
      *
      * @ORM\ManyToOne(targetEntity="Languematiere")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="reference_langue", referencedColumnName="reference_langue")
+     *   @ORM\JoinColumn(name="reference_langue", referencedColumnName="reference")
      * })
      */
     private $referenceLangue;
@@ -65,81 +65,57 @@ class Matiere
      *
      * @return integer
      */
-    public function getMatiereId()
+    public function getId()
     {
-        return $this->matiereId;
+        return $this->id;
     }
 
     /**
-     * Set libelleMatiere
+     * Set created_at
      *
-     * @param string $libelleMatiere
+     * @param \DateTime $createdAt
      *
      * @return Matiere
      */
-    public function setLibelleMatiere($libelleMatiere)
+    public function setcreated_at($createdAt)
     {
-        $this->libelleMatiere = $libelleMatiere;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get libelleMatiere
-     *
-     * @return string
-     */
-    public function getLibelleMatiere()
-    {
-        return $this->libelleMatiere;
-    }
-
-    /**
-     * Set dateSave
-     *
-     * @param \DateTime $dateSave
-     *
-     * @return Matiere
-     */
-    public function setDateSave($dateSave)
-    {
-        $this->dateSave = $dateSave;
-
-        return $this;
-    }
-
-    /**
-     * Get dateSave
+     * Get created_at
      *
      * @return \DateTime
      */
-    public function getDateSave()
+    public function getcreated_at()
     {
-        return $this->dateSave;
+        return $this->createdAt;
     }
 
     /**
-     * Set dateUpdate
+     * Set updated_at
      *
-     * @param \DateTime $dateUpdate
+     * @param \DateTime $updatedAt
      *
      * @return Matiere
      */
-    public function setDateUpdate($dateUpdate)
+    public function setupdated_at($updatedAt)
     {
-        $this->dateUpdate = $dateUpdate;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
     /**
-     * Get dateUpdate
+     * Get updated_at
      *
      * @return \DateTime
      */
-    public function getDateUpdate()
+    public function getupdated_at()
     {
-        return $this->dateUpdate;
+        return $this->updatedAt;
     }
 
     /**
@@ -172,7 +148,7 @@ class Matiere
      */
     public function dateEnregistrement()
     {
-      $this->setDateSave(new \Datetime());
+      $this->setcreated_at(new \Datetime());
     }
 
     /**
@@ -181,7 +157,7 @@ class Matiere
      */
     public function dateModification()
     {
-      $this->setDateUpdate(new \Datetime());
+      $this->setupdated_at(new \Datetime());
     }
     /**
      * Constructor
@@ -223,5 +199,77 @@ class Matiere
     public function getEnseignements()
     {
         return $this->enseignements;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Matiere
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Matiere
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * Set libelle
+     *
+     * @param string $libelle
+     *
+     * @return Matiere
+     */
+    public function setLibelle($libelle)
+    {
+        $this->libelle = $libelle;
+
+        return $this;
+    }
+
+    /**
+     * Get libelle
+     *
+     * @return string
+     */
+    public function getLibelle()
+    {
+        return $this->libelle;
     }
 }

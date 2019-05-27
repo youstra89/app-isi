@@ -14,12 +14,12 @@ use ISI\ISIBundle\Entity\Examen;
 use ISI\ISIBundle\Entity\Matiere;
 use ISI\ISIBundle\Entity\Halaqa;
 use ISI\ISIBundle\Entity\Enseignement;
-use ISI\ISIBundle\Entity\Anneescolaire;
+use ISI\ISIBundle\Entity\Annee;
 use ISI\ISIBundle\Repository\ExamenRepository;
 use ISI\ISIBundle\Repository\NiveauRepository;
 use ISI\ISIBundle\Repository\MatiereRepository;
 use ISI\ISIBundle\Repository\EnseignementRepository;
-use ISI\ISIBundle\Repository\AnneescolaireRepository;
+use ISI\ISIBundle\Repository\AnneeRepository;
 
 use ISI\ISIBundle\Form\ExamenType;
 use ISI\ISIBundle\Form\NiveauType;
@@ -27,7 +27,7 @@ use ISI\ISIBundle\Form\ClasseType;
 use ISI\ISIBundle\Form\HalaqaType;
 use ISI\ISIBundle\Form\MatiereType;
 use ISI\ISIBundle\Form\EnseignementType;
-use ISI\ISIBundle\Form\AnneescolaireType;
+use ISI\ISIBundle\Form\AnneeType;
 
 use ServicesBundle\Services\UserConnexion;
 use ServicesBundle\DependencyInjection;
@@ -55,7 +55,7 @@ class ParametresController extends Controller
     }
     else {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee  = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee  = $em->getRepository('ISIBundle:Annee');
 
       $annee = $repoAnnee->find($as);
 
@@ -73,16 +73,16 @@ class ParametresController extends Controller
   public function nouvelleAnneeAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee      = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoEleve      = $em->getRepository('ISIBundle:Eleve');
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
 
     // Si $as vaut 0, cela veut dire que nous sommes à la création de la première année scolaire
     if($as == 0)
     {
-      $annee = new Anneescolaire();
+      $annee = new Annee();
       $annee->setAchevee(true);
-      $annee->setLibelleAnneeScolaire("En cours d'insertion...");
+      $annee->setLibelleAnnee("En cours d'insertion...");
     }
     else{
       $nbr = 0;
@@ -90,7 +90,7 @@ class ParametresController extends Controller
       $frequentation = $repoFrequenter->frequenterValidee($as);
       // return new Response($frequentation);
       // foreach ($eleves as $eleve) {
-      //   $frequente       = $repoFrequenter->findOneBy(['eleve' => $eleve->getEleveId(), 'anneeScolaire' => $as]);
+      //   $frequente       = $repoFrequenter->findOneBy(['eleve' => $eleve->getEleveId(), 'annee' => $as]);
       //   $frequentation[] = $frequente;
 
       //   if($frequente->getValidation() == NULL)
@@ -100,26 +100,26 @@ class ParametresController extends Controller
         if($annee->getAchevee() == FALSE)
         {
           // return new Response(var_dump($frequentation));
-          $request->getSession()->getFlashBag()->add("error", "L'année scolaire en cours(".$annee->getLibelleAnneeScolaire().") n'est pas encore terminée.");
+          $request->getSession()->getFlashBag()->add("error", "L'année scolaire en cours(".$annee->getLibelle().") n'est pas encore terminée.");
           return $this->redirect($this->generateUrl('isi_parametres',
-              array('as' => $annee->getAnneeScolaireId())
+              array('as' => $annee->getId())
             ));
         }
       }
       else {
         // On peut donc créer une nouvelle année
         $annee->setAchevee(TRUE);
-        $annee->setDateUpdate(new \Datetime());
+        $annee->setUpdatedAt(new \Datetime());
         $em->flush();
         // return new Response("C'est cool");
       }
       // return new Response(var_dump($frequentation));
     }
 
-  	$nouvelleAnnee = new Anneescolaire();
+  	$nouvelleAnnee = new Annee();
 
-  	// $form = $this->get('form.factory')->create(new Anneescolaire, $nouvelleAnnee);
-  	$form = $this->createForm(AnneescolaireType::class, $nouvelleAnnee);
+  	// $form = $this->get('form.factory')->create(new Annee, $nouvelleAnnee);
+  	$form = $this->createForm(AnneeType::class, $nouvelleAnnee);
 
   	if($form->handleRequest($request)->isValid())
   	{
@@ -133,11 +133,11 @@ class ParametresController extends Controller
 
       // On redirige l'utilisateur vers index paramèTraversable
       return $this->redirect($this->generateUrl('isi_parametres',
-          array('as' => $nouvelleAnnee->getAnneeScolaireId())
+          array('as' => $nouvelleAnnee->getId())
         ));
   	}
 
-  	return $this->render('ISIBundle:Parametres:addAnneeScolaire.html.twig', array(
+  	return $this->render('ISIBundle:Parametres:addAnnee.html.twig', array(
         'asec'  => $as,
         'annee' => $annee,
   			'form'  => $form->createView()
@@ -151,7 +151,7 @@ class ParametresController extends Controller
   public function anneesPrecedentesAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee = $em->getRepository("ISIBundle:Anneescolaire");
+    $repoAnnee = $em->getRepository("ISIBundle:Annee");
     $annee = $repoAnnee->find($as);
     $annees = $repoAnnee->toutesLesAnnees();
 
@@ -193,7 +193,7 @@ class ParametresController extends Controller
   public function editClasseAction(Request $request, $as, $classeId, $regime)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee  = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoClasse = $em->getRepository('ISIBundle:Classe');
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
 
@@ -207,7 +207,7 @@ class ParametresController extends Controller
      **/
     if($annee->getAchevee() == TRUE)
     {
-       $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des classes car l\'année scolaire '.$annee->getLibelleAnneeScolaire().' est achevée.');
+       $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des classes car l\'année scolaire '.$annee->getLibelle().' est achevée.');
        return $this->redirect($this->generateUrl('isi_gestion_classes', ['as' => $as, 'regime' => $regime]));
     }
 
@@ -225,15 +225,15 @@ class ParametresController extends Controller
       $fq = $repoFrequenter->findBy(['classe' => $classe->getClasseId()]);
       if (count($fq) != 0 && $genre != $data->getGenre()) {
         # code...
-        $request->getSession()->getFlashBag()->add('error', 'Vous ne pouvez pas modifier le genre de la classe '.$classe->getLibelleClasseFr().'. Des élèves y sont déjà inscrits.');
+        $request->getSession()->getFlashBag()->add('error', 'Vous ne pouvez pas modifier le genre de la classe '.$classe->getLibelleFr().'. Des élèves y sont déjà inscrits.');
         return $this->redirect($this->generateUrl('isi_gestion_classes', [
         'as' => $as,
         'regime' => $regime
       ]));
       }
-      $classe->setDateUpdate(new \Datetime());
+      $classe->setUpdatedAt(new \Datetime());
       $em->flush();
-      $request->getSession()->getFlashBag()->add('info', 'La classe '.$classe->getLibelleClasseFr().' a été mise à jour avec succès.');
+      $request->getSession()->getFlashBag()->add('info', 'La classe '.$classe->getLibelleFr().' a été mise à jour avec succès.');
 
       return $this->redirect($this->generateUrl('isi_gestion_classes', [
         'as' => $as,
@@ -255,7 +255,7 @@ class ParametresController extends Controller
   public function editHalaqaAction(Request $request, $as, $halaqaId, $regime)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee  = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoHalaqa = $em->getRepository('ISIBundle:Halaqa');
 
     $halaqa = $repoHalaqa->find($halaqaId);
@@ -267,14 +267,14 @@ class ParametresController extends Controller
      **/
     if($annee->getAchevee() == TRUE)
     {
-      $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des halaqas car l\'année scolaire '.$annee->getLibelleAnneeScolaire().' est achevée.');
+      $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des halaqas car l\'année scolaire '.$annee->getLibelle().' est achevée.');
       return $this->redirect($this->generateUrl('isi_gestion_halaqas', ['as' => $as, 'regime' => $regime]));
     }
 
     $form = $this->createForm(HalaqaType::class, $halaqa);
     if($form->handleRequest($request)->isValid())
     {
-      $halaqa->setDateUpdate(new \Datetime());
+      $halaqa->setUpdatedAt(new \Datetime());
       $em->flush();
       $request->getSession()->getFlashBag()->add('info', 'Halaqa mise à jour avec sussès.');
 
@@ -299,13 +299,13 @@ class ParametresController extends Controller
   public function lesClassesAction($as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee  = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoClasse = $em->getRepository('ISIBundle:Classe');
     $repoNiveau = $em->getRepository('ISIBundle:Niveau');
 
     $annee   = $repoAnnee->find($as);
     $niveaux = $repoNiveau->niveauxDuGroupe($regime);
-    $classes = $repoClasse->findBy(['anneeScolaire' => $as]);
+    $classes = $repoClasse->findBy(['annee' => $as]);
 
     return $this->render('ISIBundle:Parametres:gestion-des-classes.html.twig', array(
       'asec'    => $as,
@@ -324,13 +324,13 @@ class ParametresController extends Controller
   public function lesHalaqasAction($as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee  = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoHalaqa = $em->getRepository('ISIBundle:Halaqa');
 
     $annee  = $repoAnnee->find($as);
     $regimeMiniscule = strtolower($regime);
 
-    $listHalaqas = $repoHalaqa->findBy(['anneeScolaire' => $as, 'regime' => $regime]);
+    $listHalaqas = $repoHalaqa->findBy(['annee' => $as, 'regime' => $regime]);
 
     return $this->render('ISIBundle:Parametres:gestionDesHalaqas.html.twig', array(
       'asec'    => $as,
@@ -347,7 +347,7 @@ class ParametresController extends Controller
   public function addClasseAction(Request $request, $as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee  = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoNiveau = $em->getRepository('ISIBundle:Niveau');
 
     $annee   = $repoAnnee->find($as);
@@ -359,9 +359,9 @@ class ParametresController extends Controller
      **/
     if($annee->getAchevee() == TRUE)
     {
-      $request->getSession()->getFlashBag()->add('error', 'Impossible d\'ajouter des classes car l\'année scolaire '.$annee->getLibelleAnneeScolaire().' est achevée.');
+      $request->getSession()->getFlashBag()->add('error', 'Impossible d\'ajouter des classes car l\'année scolaire '.$annee->getLibelle().' est achevée.');
       return $this->redirect($this->generateUrl('isi_gestion_classes', ['as' => $as, 'regime' => $regime]));
-    }
+    } 
 
     $classe = new Classe;
     $form = $this->createForm(ClasseType::class, $classe, ['regime' => $regime]);
@@ -370,16 +370,16 @@ class ParametresController extends Controller
     if($form->handleRequest($request)->isValid())
     {
       $em = $this->getDoctrine()->getManager();
-      $classe->setAnneeScolaire($annee);
+      $classe->setAnnee($annee);
       $niveauId = $classe->getNiveau()->getId();
       $niveau   = $repoNiveau->find($niveauId);
-      $classe->setLibelleClasseFr($niveau->getLibelleFr().' - '.$classe->getLibelleClasseFr());
-      $classe->setLibelleClasseAr($niveau->getLibelleAr().' - '.$classe->getLibelleClasseAr());
+      $classe->setLibelleFr($niveau->getLibelleFr().' - '.$classe->getLibelleFr());
+      $classe->setLibelleAr($niveau->getLibelleAr().' - '.$classe->getLibelleAr());
       // return new Response(var_dump($classe));
       $em->persist($classe);
       $em->flush();
 
-      $request->getSession()->getFlashBag()->add('info', 'La classe '.$classe->getLibelleClasseFr().' a été bien sauvegardée.');
+      $request->getSession()->getFlashBag()->add('info', 'La classe '.$classe->getLibelleFr().' a été bien sauvegardée.');
 
       return $this->redirect($this->generateUrl('isi_gestion_classes', array(
         'as'     => $as,
@@ -402,7 +402,7 @@ class ParametresController extends Controller
   public function addHalaqaAction(Request $request, $as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee  = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee  = $em->getRepository('ISIBundle:Annee');
 
     $annee  = $repoAnnee->find($as);
 
@@ -412,7 +412,7 @@ class ParametresController extends Controller
      **/
     if($annee->getAchevee() == TRUE)
     {
-      $request->getSession()->getFlashBag()->add('error', 'Impossible d\'ajouter des halaqass car l\'année scolaire '.$annee->getLibelleAnneeScolaire().' est achevée.');
+      $request->getSession()->getFlashBag()->add('error', 'Impossible d\'ajouter des halaqass car l\'année scolaire '.$annee->getLibelle().' est achevée.');
       return $this->redirect($this->generateUrl('isi_gestion_halaqas', ['as' => $as, 'regime' => $regime]));
     } 
 
@@ -421,14 +421,13 @@ class ParametresController extends Controller
 
     if($form->handleRequest($request)->isValid())
     {
-      $halaqa->setAnneeScolaire($annee);
+      $halaqa->setAnnee($annee);
       $halaqa->setRegime($regime);
-      $halaqa->setDateSave(new \Datetime());
-      $halaqa->setDateUpdate(new \Datetime());
+      $halaqa->setCreatedAt(new \Datetime());
       $em->persist($halaqa);
       $em->flush();
 
-      $request->getSession()->getFlashBag()->add('info', 'La halaqa '.$halaqa->getLibelleHalaqa().' a été bien sauvegardée.');
+      $request->getSession()->getFlashBag()->add('info', 'La halaqa '.$halaqa->getLibelle().' a été bien sauvegardée.');
 
       return $this->redirect($this->generateUrl('isi_gestion_halaqas', array(
         'as'     => $as,
@@ -450,7 +449,7 @@ class ParametresController extends Controller
   public function niveauxMatieresAction($as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoNiveau  = $em->getRepository('ISIBundle:Niveau');
     $repoMatiere = $em->getRepository('ISIBundle:Matiere');
 
@@ -473,7 +472,7 @@ class ParametresController extends Controller
   public function listeMatieresNiveauxAction(Request $request, $as, $regime, $niveauId)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoEns     = $em->getRepository('ISIBundle:Enseignement');
     $repoMatiere = $em->getRepository('ISIBundle:Matiere');
     $repoNiveau  = $em->getRepository('ISIBundle:Niveau');
@@ -481,7 +480,7 @@ class ParametresController extends Controller
     $matieres = $repoMatiere->lesMatieresDuNiveau($as, $niveauId);
     $niveau   = $repoNiveau->find($niveauId);
     $annee    = $repoAnnee->find($as);
-    $ens      = $repoEns->findBy(['anneeScolaire' => $as, 'niveau' => $niveauId]);
+    $ens      = $repoEns->findBy(['annee' => $as, 'niveau' => $niveauId]);
 
     return $this->render('ISIBundle:Parametres:liste-des-matieres-du-niveau.html.twig', [
       'matieres' => $matieres,
@@ -500,7 +499,7 @@ class ParametresController extends Controller
   public function examenAction($as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee  = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoExamen = $em->getRepository('ISIBundle:Examen');
 
     $examens = $repoExamen->examensAnneeEnCours($as);
@@ -520,13 +519,12 @@ class ParametresController extends Controller
   public function addExamenAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee  = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee  = $em->getRepository('ISIBundle:Annee');
 
     $examen = new Examen();
     $annee = $repoAnnee->find($as);
-    $examen->setAnneeScolaire($annee);
-    $examen->setDateSave(new \Datetime());
-    $examen->setDateUpdate(new \Datetime());
+    $examen->setAnnee($annee);
+    $examen->setCreatedAt(new \Datetime());
 
     $form = $this->createForm(ExamenType::class, $examen);
     if($form->handleRequest($request)->isValid())

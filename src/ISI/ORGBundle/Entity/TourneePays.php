@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * TourneePays
- * @ORM\Table(name="tourneePays")
+ * @ORM\Table(name="tourneepays")
  * @ORM\Entity(repositoryClass="ISI\ORGBundle\Repository\TourneePaysRepository")
  */
 class TourneePays
@@ -23,7 +23,7 @@ class TourneePays
     /**
      * @ORM\ManyToOne(targetEntity="Tournee", inversedBy="pays")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="tournee", referencedColumnName="id", nullable=false)
+     *   @ORM\JoinColumn(name="tournee_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $tournee;
@@ -31,7 +31,7 @@ class TourneePays
     /**
      * @ORM\ManyToOne(targetEntity="Pays")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="pays", referencedColumnName="id", nullable=false)
+     *   @ORM\JoinColumn(name="pays_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $pays;

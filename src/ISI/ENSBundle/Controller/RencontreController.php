@@ -5,7 +5,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
-use ISI\ISIBundle\Entity\Anneescolaire;
+use ISI\ISIBundle\Entity\Annee;
 use ISI\ENSBundle\Entity\Contrat;
 use ISI\ENSBundle\Entity\Rencontre;
 use ISI\ENSBundle\Entity\Enseignant;
@@ -66,7 +66,7 @@ class RencontreController extends Controller
      **/
     if($annee->getAchevee() == TRUE)
     {
-       $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des classes car l\'année scolaire '.$annee->getLibelleAnneeScolaire().' est achevée.');
+       $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des classes car l\'année scolaire '.$annee->getLibelle().' est achevée.');
        return $this->redirect($this->generateUrl('ens_rencontre_home', ['as' => $as]));
     }
 
@@ -78,8 +78,8 @@ class RencontreController extends Controller
       $date = new \Datetime($date);
       $rencontre->setAnnee($annee);
       $rencontre->setDate($date);
-      $rencontre->setDateSave(new \Datetime());
-      $rencontre->setDateUpdate(new \Datetime());
+      $rencontre->setCreatedAt(new \Datetime());
+      $rencontre->setUpdatedAt(new \Datetime());
       $em->persist($rencontre);
       $em->flush();
       $request->getSession()->getFlashBag()->add('info', 'La rencontre à été bien enregistrée');
@@ -107,7 +107,7 @@ class RencontreController extends Controller
 
     if($annee->getAchevee() == TRUE)
     {
-      $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des classes car l\'année scolaire '.$annee->getLibelleAnneeScolaire().' est achevée.');
+      $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des classes car l\'année scolaire '.$annee->getLibelleAnnee().' est achevée.');
       return $this->redirect($this->generateUrl('ens_rencontre_home', ['as' => $as]));
     }
 
@@ -173,8 +173,8 @@ class RencontreController extends Controller
           $EnsRencontre->setAnnee($annee);
           $EnsRencontre->setContrat($contrat);
           $EnsRencontre->setRencontre($rencontre);
-          $EnsRencontre->setDateSave(new \Datetime());
-          $EnsRencontre->setDateUpdate(new \Datetime());
+          $EnsRencontre->setCreatedAt(new \Datetime());
+          $EnsRencontre->setUpdatedAt(new \Datetime());
           $em->persist($EnsRencontre);
         }
         $em->flush();

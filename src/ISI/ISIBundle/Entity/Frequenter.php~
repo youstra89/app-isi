@@ -1,6 +1,6 @@
 <?php
 
-namespace ISIBundle\Entity;
+namespace ISI\ISIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -9,10 +9,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * Frequenter
  *
- * @ORM\Table(name="frequenter", uniqueConstraints={@ORM\UniqueConstraint(name="frequenter", columns={"annee_scolaire_id", "eleve_id", "classe_id", "matiere_id"})}, indexes={@ORM\Index(name="eleve_id", columns={"eleve_id"}), @ORM\Index(name="classe_id", columns={"classe_id"}), @ORM\Index(name="matiere_id", columns={"matiere_id"}), @ORM\Index(name="annee_scolaire_id", columns={"annee_scolaire_id"})})
- * @ORM\Entity
+ * @ORM\Table(name="frequenter", uniqueConstraints={@ORM\UniqueConstraint(name="frequenter", columns={"annee_id", "eleve_id", "classe_id"})}, indexes={@ORM\Index(name="eleve_id", columns={"eleve_id"}), @ORM\Index(name="classe_id", columns={"classe_id"}), @ORM\Index(name="annee_id", columns={"annee_id"})})
+ * @ORM\Entity(repositoryClass="ISI\ISIBundle\Repository\FrequenterRepository")
  * @UniqueEntity(
- *     fields={"eleve", "anneeScolaire", "matiere"},
+ *     fields={"eleve", "anneeScolaire", "classe"},
  *     errorPath="classe",
  *     message="Cet élève est déjà inscrit."
  * )
@@ -33,72 +33,55 @@ class Frequenter
      *
      * @ORM\Column(name="admission", type="string", length=255, nullable=false)
      */
-    private $admission;
+    private $admission = NULL;
 
     /**
      * @var boolean
      *
-     * @ORM\Column(name="validation", type="boolean", nullable=false)
+     * @ORM\Column(name="redouble", type="boolean", nullable=false)
      */
-    private $validation;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="moyenne", type="float", nullable=true)
-     */
-    private $moyenne;
+    private $redouble;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_save", type="datetime", nullable=false)
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private $dateSave;
+    private $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_update", type="datetime", nullable=false)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private $dateUpdate;
+    private $updatedAt;
 
     /**
      * @var \Eleve
      *
-     * @ORM\ManyToOne(targetEntity="ISIBundle\Entity\Eleve", inversedBy="frequenter")
+     * @ORM\ManyToOne(targetEntity="ISI\ISIBundle\Entity\Eleve", inversedBy="frequenter")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="eleve_id", referencedColumnName="eleve_id")
+     *   @ORM\JoinColumn(name="eleve_id", referencedColumnName="id")
      * })
      */
     private $eleve;
 
     /**
-     * @var \Anneescolaire
+     * @var \Annee
      *
-     * @ORM\ManyToOne(targetEntity="Anneescolaire")
+     * @ORM\ManyToOne(targetEntity="Annee")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="annee_scolaire_id", referencedColumnName="annee_scolaire_id")
+     *   @ORM\JoinColumn(name="annee_id", referencedColumnName="id")
      * })
      */
-    private $anneeScolaire;
-
-    /**
-     * @var \Matiere
-     *
-     * @ORM\ManyToOne(targetEntity="Matiere")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="matiere_id", referencedColumnName="matiere_id")
-     * })
-     */
-    private $matiere;
+    private $annee;
 
     /**
      * @var \Classe
      *
      * @ORM\ManyToOne(targetEntity="Classe")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="classe_id", referencedColumnName="classe_id")
+     *   @ORM\JoinColumn(name="classe_id", referencedColumnName="id")
      * })
      */
     private $classe;
@@ -139,110 +122,86 @@ class Frequenter
         return $this->admission;
     }
 
-    /**
-     * Set validation
+        /**
+     * Set redouble
      *
-     * @param boolean $validation
+     * @param boolean $redouble
      *
      * @return Frequenter
      */
-    public function setValidation($validation)
+    public function setRedouble($redouble)
     {
-        $this->validation = $validation;
+        $this->redouble = $redouble;
 
         return $this;
     }
 
     /**
-     * Get validation
+     * Get redouble
      *
      * @return boolean
      */
-    public function getValidation()
+    public function getRedouble()
     {
-        return $this->validation;
+        return $this->redouble;
     }
 
     /**
-     * Set moyenne
+     * Set created_at
      *
-     * @param float $moyenne
+     * @param \DateTime $createdAt
      *
      * @return Frequenter
      */
-    public function setMoyenne($moyenne)
+    public function setcreated_at($createdAt)
     {
-        $this->moyenne = $moyenne;
+        $this->created_at = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get moyenne
+     * Get created_at
      *
      * @return \DateTime
      */
-    public function getMoyenne()
+    public function getcreated_at()
     {
-        return $this->moyenne;
+        return $this->created_at;
     }
 
     /**
-     * Set dateSave
+     * Set updated_at
      *
-     * @param \DateTime $dateSave
+     * @param \DateTime $updatedAt
      *
      * @return Frequenter
      */
-    public function setDateSave($dateSave)
+    public function setupdated_at($updatedAt)
     {
-        $this->dateSave = $dateSave;
+        $this->updated_at = $updatedAt;
 
         return $this;
     }
 
     /**
-     * Get dateSave
+     * Get updated_at
      *
      * @return \DateTime
      */
-    public function getDateSave()
+    public function getupdated_at()
     {
-        return $this->dateSave;
-    }
-
-    /**
-     * Set dateUpdate
-     *
-     * @param \DateTime $dateUpdate
-     *
-     * @return Frequenter
-     */
-    public function setDateUpdate($dateUpdate)
-    {
-        $this->dateUpdate = $dateUpdate;
-
-        return $this;
-    }
-
-    /**
-     * Get dateUpdate
-     *
-     * @return \DateTime
-     */
-    public function getDateUpdate()
-    {
-        return $this->dateUpdate;
+        return $this->updated_at;
     }
 
     /**
      * Set eleve
      *
-     * @param \ISIBundle\Entity\Eleve $eleve
+     * @param \ISI\ISIBundle\Entity\Eleve $eleve
      *
      * @return Frequenter
      */
-    public function setEleve(\ISIBundle\Entity\Eleve $eleve = null)
+    public function setEleve(\ISI\ISIBundle\Entity\Eleve $eleve = null)
     {
         $this->eleve = $eleve;
 
@@ -252,7 +211,7 @@ class Frequenter
     /**
      * Get eleve
      *
-     * @return \ISIBundle\Entity\Eleve
+     * @return \ISI\ISIBundle\Entity\Eleve
      */
     public function getEleve()
     {
@@ -262,11 +221,11 @@ class Frequenter
     /**
      * Set anneeScolaire
      *
-     * @param \ISIBundle\Entity\Anneescolaire $anneeScolaire
+     * @param \ISI\ISIBundle\Entity\Anneescolaire $anneeScolaire
      *
      * @return Frequenter
      */
-    public function setAnneeScolaire(\ISIBundle\Entity\Anneescolaire $anneeScolaire = null)
+    public function setAnneeScolaire(\ISI\ISIBundle\Entity\Anneescolaire $anneeScolaire = null)
     {
         $this->anneeScolaire = $anneeScolaire;
 
@@ -276,7 +235,7 @@ class Frequenter
     /**
      * Get anneeScolaire
      *
-     * @return \ISIBundle\Entity\Anneescolaire
+     * @return \ISI\ISIBundle\Entity\Anneescolaire
      */
     public function getAnneeScolaire()
     {
@@ -284,37 +243,13 @@ class Frequenter
     }
 
     /**
-     * Set matiere
-     *
-     * @param \ISIBundle\Entity\Matiere $matiere
-     *
-     * @return Frequenter
-     */
-    public function setMatiere(\ISIBundle\Entity\Matiere $matiere = null)
-    {
-        $this->matiere = $matiere;
-
-        return $this;
-    }
-
-    /**
-     * Get matiere
-     *
-     * @return \ISIBundle\Entity\Matiere
-     */
-    public function getMatiere()
-    {
-        return $this->matiere;
-    }
-
-    /**
      * Set classe
      *
-     * @param \ISIBundle\Entity\Classe $classe
+     * @param \ISI\ISIBundle\Entity\Classe $classe
      *
      * @return Frequenter
      */
-    public function setClasse(\ISIBundle\Entity\Classe $classe = null)
+    public function setClasse(\ISI\ISIBundle\Entity\Classe $classe = null)
     {
         $this->classe = $classe;
 
@@ -324,10 +259,82 @@ class Frequenter
     /**
      * Get classe
      *
-     * @return \ISIBundle\Entity\Classe
+     * @return \ISI\ISIBundle\Entity\Classe
      */
     public function getClasse()
     {
         return $this->classe;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Frequenter
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->created_at = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Frequenter
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updated_at = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
+    }
+
+    /**
+     * Set annee
+     *
+     * @param \ISI\ISIBundle\Entity\Annee $annee
+     *
+     * @return Frequenter
+     */
+    public function setAnnee(\ISI\ISIBundle\Entity\Annee $annee = null)
+    {
+        $this->annee = $annee;
+
+        return $this;
+    }
+
+    /**
+     * Get annee
+     *
+     * @return \ISI\ISIBundle\Entity\Annee
+     */
+    public function getAnnee()
+    {
+        return $this->annee;
     }
 }

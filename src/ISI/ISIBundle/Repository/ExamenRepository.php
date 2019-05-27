@@ -17,9 +17,9 @@ class ExamenRepository extends \Doctrine\ORM\EntityRepository
     $offset = 0;
     $limit = 1;
     $examen  = $this->createQueryBuilder('e')
-                    ->join('e.anneeScolaire', 'a')
-                    ->where('a.anneeScolaireId = :as')
-                    ->orderBy('e.examenId', 'DESC')
+                    ->join('e.annee', 'a')
+                    ->where('a.id = :as')
+                    ->orderBy('e.id', 'DESC')
                     ->setFirstResult( $offset )
                     ->setMaxResults( $limit );
 
@@ -32,8 +32,8 @@ class ExamenRepository extends \Doctrine\ORM\EntityRepository
   public function lesExamensDeLAnnee($as)
   {
     $examens = $this->createQueryBuilder('e')
-                    ->where('e.anneeScolaire = :as')
-                    ->orderBy('e.examenId', 'ASC');
+                    ->where('e.annee = :as')
+                    ->orderBy('e.id', 'ASC');
 
     $examens->setParameter('as', $as);
     return $examens->getQuery()

@@ -26,7 +26,7 @@ class Chambre
      *
      * @ORM\ManyToOne(targetEntity="Batiment", fetch="EAGER")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="batiment", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="batiment_id", referencedColumnName="id")
      * })
      */
     private $batiment;
@@ -34,9 +34,9 @@ class Chambre
     /**
      * @var string
      *
-     * @ORM\Column(name="libelle_chambre", type="string", length=255, nullable=true)
+     * @ORM\Column(name="libelle", type="string", length=255, nullable=true)
      */
-    private $libelleChambre;
+    private $libelle;
 
     /**
      * @var string
@@ -62,16 +62,16 @@ class Chambre
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_save", type="datetime", nullable=false)
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private $dateSave;
+    private $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_update", type="datetime", nullable=false)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private $dateUpdate;
+    private $updatedAt;
 
 
 
@@ -110,27 +110,27 @@ class Chambre
     }
 
     /**
-     * Set libelleChambre
+     * Set libelle
      *
-     * @param string $libelleChambre
+     * @param string $libelle
      *
      * @return Chambre
      */
-    public function setLibelleChambre($libelleChambre)
+    public function setLibelle($libelle)
     {
-        $this->libelleChambre = $libelleChambre;
+        $this->libelle = $libelle;
 
         return $this;
     }
 
     /**
-     * Get libelleChambre
+     * Get libelle
      *
      * @return string
      */
-    public function getLibelleChambre()
+    public function getLibelle()
     {
-        return $this->libelleChambre;
+        return $this->libelle;
     }
 
     /**
@@ -206,50 +206,74 @@ class Chambre
     }
 
     /**
-     * Set dateSave
+     * Set created_at
      *
-     * @param \DateTime $dateSave
+     * @param \DateTime $createdAt
      *
      * @return Chambre
      */
-    public function setDateSave($dateSave)
+    public function setCreatedAt($createdAt)
     {
-        $this->dateSave = $dateSave;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get dateSave
+     * Get created_at
      *
      * @return \DateTime
      */
-    public function getDateSave()
+    public function getCreatedAt()
     {
-        return $this->dateSave;
+        return $this->createdAt;
     }
 
     /**
-     * Set dateUpdate
+     * Set updated_at
      *
-     * @param \DateTime $dateUpdate
+     * @param \DateTime $updatedAt
      *
      * @return Chambre
      */
-    public function setDateUpdate($dateUpdate)
+    public function setupdated_at($updatedAt)
     {
-        $this->dateUpdate = $dateUpdate;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
     /**
-     * Get dateUpdate
+     * Get updated_at
      *
      * @return \DateTime
      */
-    public function getDateUpdate()
+    public function getupdated_at()
     {
-        return $this->dateUpdate;
+        return $this->updatedAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Chambre
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
     }
 }

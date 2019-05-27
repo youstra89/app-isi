@@ -16,7 +16,7 @@
       <select name="classe">
         <option value="">Choisir une classe</option>
         <?php
-          $req = $db->prepare("SELECT c.classe_id, c.libelle_classe_fr, n.libelle_fr FROM classe c JOIN niveau n ON c.niveau_id = n.id WHERE n.groupe_formation_id = 2");
+          $req = $db->prepare("SELECT c.classe_id, c.libelle_fr, n.libelle_fr FROM classe c JOIN niveau n ON c.niveau_id = n.id WHERE n.groupe_formation_id = 2");
           $req->execute();
           $rows = $req->fetchall();
           foreach ($rows as $row) {

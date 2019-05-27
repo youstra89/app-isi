@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
-use ISI\ISIBundle\Repository\AnneescolaireRepository;
+use ISI\ISIBundle\Repository\AnneeRepository;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
@@ -18,10 +18,10 @@ class AdminController extends Controller
     public function indexAction(Request $request, $as)
     {
         $em = $this->getDoctrine()->getManager();
-        $repoAnnee = $em->getRepository('ISIBundle:Anneescolaire');
+        $repoAnnee = $em->getRepository('ISIBundle:Annee');
         $annee = $repoAnnee->anneeEnCours();
         return $this->render('ISIBundle:Admin:index.html.twig', [
-            'asec' => $annee->getAnneeScolaireId(),
+            'asec' => $annee->getId(),
             'annee' => $annee
         ]);
     }
@@ -32,7 +32,7 @@ class AdminController extends Controller
     public function indexUsersAction(Request $request, $as)
     {
         $em = $this->getDoctrine()->getManager();
-        $repoAnnee = $em->getRepository('ISIBundle:Anneescolaire');
+        $repoAnnee = $em->getRepository('ISIBundle:Annee');
         $annee = $repoAnnee->find($as);
 
         // Pour récupérer le service UserManager du bundle
@@ -65,7 +65,7 @@ class AdminController extends Controller
     public function addRolesUserAction(Request $request, $as, $userId)
     {
         $em = $this->getDoctrine()->getManager();
-        $repoAnnee = $em->getRepository('ISIBundle:Anneescolaire');
+        $repoAnnee = $em->getRepository('ISIBundle:Annee');
         $annee = $repoAnnee->find($as);
 
         $roles = ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN_SCOLARITE', 'ROLE_SCOLARITE', 'ROLE_INTERNAT', 'ROLE_ENSEIGNANT'];

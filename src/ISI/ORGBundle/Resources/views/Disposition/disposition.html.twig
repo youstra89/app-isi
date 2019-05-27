@@ -1,0 +1,125 @@
+{% extends "ORGBundle::layout.html.twig" %}
+
+{% block title %}
+  Disposition des classes
+{% endblock %}
+
+{% block contextual_menu %}
+  {# {% include('ORGBundle::contextual-menu.html.twig') %} #}
+{% endblock %}
+
+
+{% block titre_page %}
+  <i class="users icon"></i>{{ 'Disposition'|trans }}
+{% endblock %}
+
+
+{% block notification %}
+  {% set notif = app.session.flashbag.get('error') %}
+  {% if notif is not empty %}
+    <div class="ui red message">
+      <div class="header">{{ 'Attention'|trans }}</div>
+      <ul class="list">
+        {% for message in notif %}
+          <li>{{ message }}.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+  {% for message in app.session.flashbag.get('info') %}
+  <div class="ui green message">
+    <div class="header">{{ 'Notification'|trans }}: </div>
+    <ul class="list">
+      <li>{{ message }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+{% endblock %}
+
+
+{% block corps %}
+  <h2>Disposition des classes par salle</h2>
+  <table class="" id="salles">
+    <thead>
+      <tr>
+        <th>N°</th>
+        <th>Nom</th>
+        <th>Batiment</th>
+        <th>Localisation</th>
+        <th>Académie</th>
+        <th>Centre de formation</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% set i = 0 %}
+      {% for salle in salles %}
+        {% set i = i + 1 %}
+        {% set editMode = false %}
+        <tr>
+          <td>{{ i }}</td>
+          <td>{{ salle.nom }}</td>
+          <td>{{ salle.batiment.nom }}</td>
+          <td>{{ salle.localisation }}</td>
+          <td>
+            {% for sal in sallesClasses %}
+              {% if salle.id == sal.salle.id and sal.classe.niveau.groupeFormation.id == 1 %}
+                {{ sal.classe.libelleFr }}
+                {% set editMode = true %}
+              {% endif %}
+            {% endfor %}
+          </td>
+          <td>
+            {% for sal in sallesClasses %}
+              {% if salle.id == sal.salle.id and sal.classe.niveau.groupeFormation.id == 2 %}
+                {{ sal.classe.libelleFr }}
+                {% set editMode = true %}
+              {% endif %}
+            {% endfor %}
+          </td>
+          <td>
+            {% if editMode == false %}
+              <a href="{{ path('disposition_add', {as: asec, id: salle.id}) }}" data-tooltip="Ajouter des classes"><i class="plus teal icon"></i></a>
+            {% else %}
+              <a href="{{ path('disposition_edit', {as: asec, id: salle.id}) }}" data-tooltip="Modifier la disposition"><i class="edit red icon"></i></a>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+
+
+{% block javascript %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+      col_0: 'none',
+      col_2: 'select',
+      col_3: 'select',
+      col_6: 'none',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string',
+        'string', 'string', 'string',
+      ],
+      col_widths: [
+        // '25px', '330px', '270px'
+      ],
+      extensions: [{ name: 'sort' }]
+    };
+
+    var tf = new TableFilter('salles', filtersConfig);
+    tf.init();
+  </script>
+{% endblock %}

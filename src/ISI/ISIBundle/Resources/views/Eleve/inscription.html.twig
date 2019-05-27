@@ -112,7 +112,7 @@
               {% else %}
                  {% set genre = 'مزدوج' %}
               {% endif %}
-              <option value="{{ halaqa.getId }}">{{ halaqa.getLibelleHalaqa }} - {{ genre }}</option>
+              <option value="{{ halaqa.getId }}">{{ halaqa.getLibelle }} - {{ genre }}</option>
             {% endfor %}
           </select>
         </div>
@@ -123,7 +123,7 @@
             <option value="">{{ 'Veuillez choisir une halaqa'|trans }}</option>
             {% for halaqa in halaqas %}
               <!-- Si halaqa.genre == 1 alors on affiche homme, sinon femme -->
-              <option value="{{ halaqa.getId }}">{{ halaqa.getLibelleHalaqa }}</option>
+              <option value="{{ halaqa.getId }}">{{ halaqa.getLibelle }}</option>
             {% endfor %}
           </select>
         </div>

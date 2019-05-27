@@ -23,15 +23,15 @@ class ActivitePays
     /**
      * @ORM\ManyToOne(targetEntity="Pays", inversedBy="activites")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="pays", referencedColumnName="id", nullable=false)
+     *   @ORM\JoinColumn(name="pays_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $pays;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Activite", inversedBy="payss")
+     * @ORM\ManyToOne(targetEntity="Activite")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="activite", referencedColumnName="id", nullable=false)
+     *   @ORM\JoinColumn(name="activite_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $activite;

@@ -1,7 +1,7 @@
 {% extends 'ISIBundle:Scolarite:index.html.twig' %}
 
 {% block pageTitle %}
-    Réaménagement de {{ classe.niveau.libelleFr }} - {{ classe.libelleClasseFr}}
+    Réaménagement de{{ classe.libelleFr}}
 {% endblock %}
 
 {% block content %}
@@ -11,31 +11,59 @@
     {% else %}
       {% set grp = 'Formation' %}
     {% endif %}
-    <h3>{{ 'Réaménagement de la classe'|trans }} {{ classe.libelleClasseFr}} </h3>
-    <form class="ui form" action="{{ path('isi_appliquer_reamenagement', {'as': asec, 'regime': regime, 'classeId': classe.classeId}) }}" method="post">
+    <h3>{{ 'Réaménagement de la classe'|trans }} {{ classe.libelleFr}} </h3>
+    <form class="ui form" action="{{ path('isi_appliquer_reamenagement', {'as': asec, 'regime': regime, 'classeId': classe.id}) }}" method="post">
         <button class="ui small primary labeled icon button">
           <i class="save icon"></i> {{ 'Appliquer les changements'|trans }}
         </button>
-        <div class="ui middle aligned selection list">
-          {% for eleve in eleves %}
-              <div class="item">
-                <div class="right floated content">
-                    <select class="ui fluid dropdown" name="classe[{{ eleve.eleveId }}]">
-                        <option value="">{{ 'Sélectionner une classe'|trans }}</option>
-                        {% for cl in classes %}
-                            {% if cl.genre == 'M' or (cl.genre == 'H' and eleve.sexeFr == 1) or (cl.genre == 'F' and eleve.sexeFr == 2) %}
-                                <option value="{{ cl.classeId }}">{{ cl.niveau.libelleFr }} - {{ cl.libelleClasseFr }}</option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
-                </div>
-                <img class="ui avatar image" src="/markaz/web/images/logoISI-x.png" />
-                <div class="content">
-                  {{ eleve.matricule }} <i class="next icon"></i> {{ eleve.nomFr }} {{ eleve.pnomFr }}
-                </div>
-              </div>
-          {% endfor %}
-        </div>
+        <table class="ui very basic table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Avatar</th>
+                    <th>Matricule</th>
+                    <th>Nom & Prénom</th>
+                    <th>Classe</th>
+                    {% if regime == 'A' %}
+                        <th>Halaqa</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% set i = 0 %}
+                {% for eleve in eleves %}
+                    {% set i = i + 1 %}
+                    <tr class="positive">
+                        <td>{{ i }}</td> 
+                        <td><img class="ui avatar image" src="/markaz/web/images/logoISI-x.png" /></td> 
+                        <td>{{ eleve.matricule }}</td> 
+                        <td>{{ eleve.nomFr }} {{ eleve.pnomFr }}</td> 
+                        <td>
+                            <select class="ui fluid dropdown" name="classe[{{ eleve.id }}]">
+                                <option value="">{{ 'Sélectionner une classe'|trans }}</option>
+                                {% for cl in classes %}
+                                    {% if cl.genre == 'M' or (cl.genre == 'H' and eleve.sexe == 1) or (cl.genre == 'F' and eleve.sexe == 2) %}
+                                        <option value="{{ cl.id }}">{{ cl.libelleFr }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </td>  
+                        {% if regime == 'A' %}
+                            <td>
+                                <select class="ui fluid dropdown" name="halaqa[{{ eleve.id }}]">
+                                    <option value="">{{ 'Sélectionner une halaqa'|trans }}</option>
+                                    {% for halaqa in halaqas %}
+                                        {% if halaqa.genre == 'M' or (halaqa.genre == 'H' and eleve.sexe == 1) or (halaqa.genre == 'F' and eleve.sexe == 2) %}
+                                            <option value="{{ halaqa.id }}">{{ halaqa.libelle }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </td> 
+                        {% endif %}
+                    </tr>              
+                {% endfor %}               
+            <tbody>
+        <table>
         <button class="ui right floated small primary labeled icon massive button">
           <i class="save icon"></i> {{ 'Appliquer les changements'|trans }}
         </button>

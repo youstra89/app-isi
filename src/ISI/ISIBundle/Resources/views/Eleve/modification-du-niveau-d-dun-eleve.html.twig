@@ -4,7 +4,7 @@
 
 {% block content %}
     <h3>{{ 'Modification dniveau de'|trans }} {{ eleve.getNomFr }} {{ eleve.getPnomfr }} </h3>
-    <p>{{ 'Classe actuelle'|trans }}: {{ classeActuelle.getLibelleClasseFr }} </p>
+    <p>{{ 'Classe actuelle'|trans }}: {{ classeActuelle.getLibelleFr }} </p>
     <form action="" class="ui form" method="post">
         <div class="two fields">
             <div class="field">
@@ -13,7 +13,7 @@
                     <option value="">{{ 'Choisir la nouvelle classe pour'|trans }} {{ eleve.getNomFr }} {{ eleve.getPnomfr }}</option>
                     {% for classe in classes %}
                         {% if (classe.getGenre == 'M' or classe.getGenre == classeActuelle.getGenre) and classe.getNiveau.getId != classeActuelle.getNiveau.getId %}
-                            <option value="{{ classe.getClasseId }}">{{ classe.getLibelleClasseFr }}</option>
+                            <option value="{{ classe.getId }}">{{ classe.getLibelleFr }}</option>
                         {% endif %}
                     {% endfor %}
                 </select>
@@ -24,7 +24,7 @@
                     <select name="halaqa" id="">
                         <option value="">{{ 'Choisir la nouvelle halaqa'|trans }} {{ eleve.getNomFr }} {{ eleve.getPnomfr }}</option>
                         {% for halaqa in halaqas %}
-                            <option value="{{ halaqa.getId }}">{{ halaqa.getLibelleHalaqa }}</option>
+                            <option value="{{ halaqa.getId }}">{{ halaqa.getLibelle }}</option>
                         {% endfor %}
                     </select>
                 </div>

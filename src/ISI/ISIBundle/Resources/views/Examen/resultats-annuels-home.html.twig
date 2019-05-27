@@ -21,16 +21,16 @@
       <div class="niveau"> 
         {% for classe in classes %}
           {% for key, mc in moyenneC %}
-            {% if niveau.getId == classe.getNiveau.getId and key == classe.getClasseId and mc == FALSE %}
-              <a href="{{ path('isi_resultats_annuels_d_une_classe', {'as': asec, 'regime': regime, 'classeId': classe.getClasseId}) }}">
+            {% if niveau.getId == classe.getNiveau.getId and key == classe.getId and mc == FALSE %}
+              <a href="{{ path('isi_resultats_annuels_d_une_classe', {'as': asec, 'regime': regime, 'classeId': classe.getId}) }}">
                 <div class="classe-n" data-tooltip="Les moyennes ne sont pas encore calculées">
-                  <center>{{ classe.getLibelleClasseFr }}</center>
+                  <center>{{ classe.getLibelleFr }}</center>
                 </div>
               </a>
-            {% elseif niveau.getId == classe.getNiveau.getId and key == classe.getClasseId and mc == TRUE %}
-              <a href="{{ path('isi_classement_annuel', {'as': asec, 'regime': regime, 'classeId': classe.getClasseId}) }}">
+            {% elseif niveau.getId == classe.getNiveau.getId and key == classe.getId and mc == TRUE %}
+              <a href="{{ path('isi_classement_annuel', {'as': asec, 'regime': regime, 'classeId': classe.getId}) }}">
                 <div class="classe">
-                  <center>{{ classe.getLibelleClasseFr }}</center>
+                  <center>{{ classe.getLibelleFr }}</center>
                 </div>
               </a>
             {% endif %}

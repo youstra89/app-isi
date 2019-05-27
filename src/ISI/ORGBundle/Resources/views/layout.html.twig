@@ -77,6 +77,13 @@
             </a>
           </div>
         </div>
+        <div class="ui input">
+          <div class="ui simple dropdown item">
+            <a href="{{ path('disposition_home', {'as': asec}) }}">
+              <h4 class="ui header"><span class="style-main-menu"><i class="tasks icon"></i>{{ 'Disposition classes'|trans }}</span></h4>
+            </a>
+          </div>
+        </div>
         <div class="{{ dir2 }} item">
           <div class="ui input">
             <div class="ui simple dropdown item">
@@ -104,7 +111,7 @@
         <div class="row">
           <div class="three wide column">
             <div class="ui tertiary segment">
-              {{ 'Année scolaire'|trans }}: <strong>{{ annee.libelleAnneeScolaire }}</strong>
+              {{ 'Année scolaire'|trans }}: <strong>{{ annee.libelle }}</strong>
             </div>
 
               {% if is_granted('ROLE_SUPER_ADMIN') %}

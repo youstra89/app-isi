@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block content %}
-<h3>{{ 'Résultats de'|trans }} : {{ classe.libelleClasseFr }}</h3>    
+<h3>{{ 'Résultats de'|trans }} : {{ classe.libelleFr }}</h3>    
     <div class="">
         {# Cette petite partie me permet de vérifier que le classemnt à été fait ou pas encore #}
         <!--
@@ -30,21 +30,21 @@
             <div>
                 <h4>{{ 'Classement annuel'|trans }}</h4>
                 {% if moyennes|length > 45 %}
-                    <a href="{{ path('isi_bulletins_moyennes_annuelles', {'as': asec, 'regime': regime, 'classeId': classe.classeId, 'partie': 1}) }}">
+                    <a href="{{ path('isi_bulletins_moyennes_annuelles', {'as': asec, 'regime': regime, 'classeId': classe.id, 'partie': 1}) }}">
                         <button class="ui teal basic button">{{ 'Voir / Imprimer les bulletins annuels (1)'|trans }}</button>
                     </a>
-                    <a href="{{ path('isi_bulletins_moyennes_annuelles', {'as': asec, 'regime': regime, 'classeId': classe.classeId, 'partie': 2}) }}">
+                    <a href="{{ path('isi_bulletins_moyennes_annuelles', {'as': asec, 'regime': regime, 'classeId': classe.id, 'partie': 2}) }}">
                         <button class="ui teal basic button">{{ 'Voir / Imprimer les bulletins annuels (2)'|trans }}</button>
                     </a>
                 {% else %}
-                    <a href="{{ path('isi_bulletins_moyennes_annuelles', {'as': asec, 'regime': regime, 'classeId': classe.classeId}) }}">
+                    <a href="{{ path('isi_bulletins_moyennes_annuelles', {'as': asec, 'regime': regime, 'classeId': classe.id}) }}">
                         <button class="ui teal basic button">{{ 'Voir / Imprimer les bulletins annuels'|trans }}</button>
                     </a>
                 {% endif %}
-                <a href="{{path('isi_statistiques_annuelles', {'as': asec, 'regime': regime, 'classeId':classe.classeId})}}">
+                <a href="{{path('isi_statistiques_annuelles', {'as': asec, 'regime': regime, 'classeId':classe.id})}}">
                     <button class="ui blue basic button">{{ 'Résultats généraux & statistiques'|trans }}</button>
                 </a>
-                <a href="{{ path('isi_notes_des_deux_examens', {'as': asec, 'regime': regime, 'classeId': classe.classeId}) }}">
+                <a href="{{ path('isi_notes_des_deux_examens', {'as': asec, 'regime': regime, 'classeId': classe.id}) }}">
                     <button class="ui violet basic button">{{ 'Voir les notes des élèves'|trans }}</button>
                 </a>
             </div>
@@ -55,7 +55,7 @@
                     {% for eleve in eleves %}
                          <!--  Cette partie me permet seulement de sélectionner l'image qui se trouve à côte de l'élève  -->
                         {% set image = "" %}
-                        {% if eleve.sexeFr == 1 %}
+                        {% if eleve.sexe == 1 %}
                             {% set image = "/markaz/web/images/mark.png" %}
                         {% else %}
                             {% set image = "/markaz/web/images/molly.png" %}
@@ -63,13 +63,13 @@
                         <!-- Ici on compare l'id de l'élève et la référence de l'élève dans l'objet moyenne -->
                         <!-- S'il y a égalité, on affiche l'élève et son rang -->
                         {% set nieme = '' %}
-                        {% if eleve.eleveId == moyenne.eleve.eleveId %}
+                        {% if eleve.id == moyenne.eleve.id %}
                             <!-- On va formater l'affichage du rang -->
 
-                            {% if moyenne.classementAnnuel == 1 and eleve.sexeFr == 1 %}
+                            {% if moyenne.classementAnnuel == 1 and eleve.sexe == 1 %}
                                 <!-- Dans ce cas, c'est un homme. Il faudra donc dire: Le premier -->
                                 {% set nieme = 'er' %}
-                            {% elseif moyenne.classementAnnuel == 1 and eleve.sexeFr == 2 %}
+                            {% elseif moyenne.classementAnnuel == 1 and eleve.sexe == 2 %}
                                 <!-- Dans ce cas, c'est une femme. Il faudra donc dire: La première -->
                                 {% set nieme = 'ère' %}
                             {% else %}
@@ -78,7 +78,7 @@
                             {% endif %}
                             <div class="item">
                                 <div class="right floated content">
-                                    <a href="{{ path('isi_bulletin_annuel_individuel', {'as': asec, 'regime': regime, 'classeId': classe.classeId, 'eleveId': eleve.eleveId, 'eleveId': eleve.eleveId}) }}">
+                                    <a href="{{ path('isi_bulletin_annuel_individuel', {'as': asec, 'regime': regime, 'classeId': classe.id, 'eleveId': eleve.id}) }}">
                                         <button class="ui red basic button">{{ 'Voir le bulletin annuel'|trans }}</button>
                                     </a>
                                 </div>

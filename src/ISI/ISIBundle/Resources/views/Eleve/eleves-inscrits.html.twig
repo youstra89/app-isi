@@ -52,7 +52,7 @@
               <td><span>{{eleve.getEleve.pnomAr}} {{eleve.getEleve.nomAr}}</span></td>
               <td>
                 <div data-tooltip="{{eleve.getEleve.getNomFr}} {{eleve.getEleve.getPnomFr}} est de sexe ">
-                  {% if eleve.getEleve.getSexeFr == 1 %} 
+                  {% if eleve.getEleve.getSexe == 1 %} 
                     {{ 'ذكر' }}
                   {% else %}
                     {{ 'أنثى' }} 
@@ -60,17 +60,17 @@
                 </div>
               </td>
               <td>{{ eleve.getEleve.getDateNaissance|date("d-m-Y") }}</td>
-              <td>{{ eleve.getClasse.getLibelleClasseAr }}</td>
+              <td>{{ eleve.getClasse.getLibelleAr }}</td>
               <td>
                 <div class="ui grid">
                   <div class="wide column" data-tooltip="Modifier les information de l'élève">
-                    <a href="{{ path('isi_edit_eleve', {'as': asec, 'regime': regime, 'eleveId': eleve.getEleve.getEleveId}) }}"><i class="edit icon"></i></a>
+                    <a href="{{ path('isi_edit_eleve', {'as': asec, 'regime': regime, 'eleveId': eleve.getEleve.getId}) }}"><i class="edit icon"></i></a>
                   </div>
                   <div class="wide column" data-tooltip="Voir les informations de l'élève">
-                    <a href="{{ path('isi_info_eleve', {'as': asec, 'regime': regime, 'eleveId': eleve.getEleve.getEleveId}) }}"><i class="info circle icon"></i></a>
+                    <a href="{{ path('isi_info_eleve', {'as': asec, 'regime': regime, 'eleveId': eleve.getEleve.getId}) }}"><i class="info circle icon"></i></a>
                   </div>
                   <div class="wide column" data-tooltip="Enregistrer une conduite de l'élève">
-                    <a href="{{ path('isi_enregistrer_conduite', {'as': asec, 'regime': regime, 'eleveId': eleve.getEleve.getEleveId}) }}"><i class="certificate{{ ''|trans }} icon"></i></a>
+                    <a href="{{ path('isi_enregistrer_conduite', {'as': asec, 'regime': regime, 'eleveId': eleve.getEleve.getId}) }}"><i class="certificate{{ ''|trans }} icon"></i></a>
                   </div>
                   
                 </div>

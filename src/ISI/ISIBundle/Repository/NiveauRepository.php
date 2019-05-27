@@ -17,7 +17,7 @@ class NiveauRepository extends \Doctrine\ORM\EntityRepository
     $query = $this->_em->createQuery(
       'SELECT n FROM ISIBundle:Niveau n
       JOIN n.groupeFormation grp
-      WHERE grp.referenceGrp = :regime');
+      WHERE grp.reference = :regime');
     $query->setParameter('regime', $regime);
 
     return $query->getResult();
@@ -29,7 +29,7 @@ class NiveauRepository extends \Doctrine\ORM\EntityRepository
     $query = $this->_em->createQuery(
       'SELECT n FROM ISIBundle:Niveau n
       JOIN n.groupeFormation grp
-      WHERE grp.referenceGrp = :regime');
+      WHERE grp.reference = :regime');
     $query->setParameter('regime', $regime);
     return $query->getResult();
   }

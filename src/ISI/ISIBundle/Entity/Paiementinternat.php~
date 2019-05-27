@@ -1,14 +1,14 @@
 <?php
 
-namespace ISIBundle\Entity;
+namespace ISI\ISIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Paiementinternat
  *
- * @ORM\Table(name="paiementinternat", uniqueConstraints={@ORM\UniqueConstraint(name="paiement_unique", columns={"interner", "mois"})}, indexes={@ORM\Index(name="interner", columns={"interner"}), @ORM\Index(name="mois", columns={"mois"})})
- * @ORM\Entity(repositoryClass="ISIBundle\Repository\PaiementinternatRepository")
+ * @ORM\Table(name="paiementinternat", uniqueConstraints={@ORM\UniqueConstraint(name="paiement_unique", columns={"interner_id", "moisdepaiement_id"})})
+ * @ORM\Entity(repositoryClass="ISI\ISIBundle\Repository\PaiementinternatRepository")
  */
 class Paiementinternat
 {
@@ -26,7 +26,7 @@ class Paiementinternat
      *
      * @ORM\ManyToOne(targetEntity="Interner")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="interner", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="interner_id", referencedColumnName="id")
      * })
      */
     private $interner;
@@ -36,7 +36,7 @@ class Paiementinternat
      *
      * @ORM\ManyToOne(targetEntity="Moisdepaiementinternat")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="moisdepaiement", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="moisdepaiement_id", referencedColumnName="id")
      * })
      */
     private $moisdepaiement;
@@ -51,16 +51,16 @@ class Paiementinternat
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_save", type="datetime", nullable=false)
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private $dateSave;
+    private $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_update", type="datetime", nullable=false)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private $dateUpdate;
+    private $updatedAt;
 
 
     /**
@@ -77,11 +77,11 @@ class Paiementinternat
     /**
      * Set interner
      *
-     * @param \ISIBundle\Entity\Interner $interner
+     * @param \ISI\ISIBundle\Entity\Interner $interner
      *
      * @return Paiementinternat
      */
-    public function setInterner(\ISIBundle\Entity\Interner $interner = null)
+    public function setInterner(\ISI\ISIBundle\Entity\Interner $interner = null)
     {
         $this->interner = $interner;
 
@@ -91,7 +91,7 @@ class Paiementinternat
     /**
      * Get interner
      *
-     * @return \ISIBundle\Entity\Interner
+     * @return \ISI\ISIBundle\Entity\Interner
      */
     public function getInterner()
     {
@@ -101,11 +101,11 @@ class Paiementinternat
     /**
      * Set moisdepaiement
      *
-     * @param \ISIBundle\Entity\Moisdepaiement $mois
+     * @param \ISI\ISIBundle\Entity\Moisdepaiement $mois
      *
      * @return Paiementinternat
      */
-    public function setMoisdepaiement(\ISIBundle\Entity\Moisdepaiement $moisdepaiement = null)
+    public function setMoisdepaiement(\ISI\ISIBundle\Entity\Moisdepaiementinternat $moisdepaiement = null)
     {
         $this->moisdepaiement = $moisdepaiement;
 
@@ -115,7 +115,7 @@ class Paiementinternat
     /**
      * Get moisdepaiement
      *
-     * @return \ISIBundle\Entity\Moisdepaiement
+     * @return \ISI\ISIBundle\Entity\Moisdepaiement
      */
     public function getMoisdepaiement()
     {
@@ -147,74 +147,98 @@ class Paiementinternat
     }
 
     /**
-     * Set datePaiement
+     * Set created_at
      *
-     * @param \DateTime $datePaiement
+     * @param \DateTime $createdAt
      *
      * @return Paiementinternat
      */
-    public function setDatePaiement($datePaiement)
+    public function setcreated_at($createdAt)
     {
-        $this->datePaiement = $datePaiement;
+        $this->created_at = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get datePaiement
+     * Get created_at
      *
      * @return \DateTime
      */
-    public function getDatePaiement()
+    public function getcreated_at()
     {
-        return $this->datePaiement;
+        return $this->created_at;
     }
 
     /**
-     * Set dateSave
+     * Set updated_at
      *
-     * @param \DateTime $dateSave
+     * @param \DateTime $updatedAt
      *
      * @return Paiementinternat
      */
-    public function setDateSave($dateSave)
+    public function setupdated_at($updatedAt)
     {
-        $this->dateSave = $dateSave;
+        $this->updated_at = $updatedAt;
 
         return $this;
     }
 
     /**
-     * Get dateSave
+     * Get updated_at
      *
      * @return \DateTime
      */
-    public function getDateSave()
+    public function getupdated_at()
     {
-        return $this->dateSave;
+        return $this->updated_at;
     }
 
     /**
-     * Set dateUpdate
+     * Set createdAt
      *
-     * @param \DateTime $dateUpdate
+     * @param \DateTime $createdAt
      *
      * @return Paiementinternat
      */
-    public function setDateUpdate($dateUpdate)
+    public function setCreatedAt($createdAt)
     {
-        $this->dateUpdate = $dateUpdate;
+        $this->created_at = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get dateUpdate
+     * Get createdAt
      *
      * @return \DateTime
      */
-    public function getDateUpdate()
+    public function getCreatedAt()
     {
-        return $this->dateUpdate;
+        return $this->created_at;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Paiementinternat
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updated_at = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
     }
 }

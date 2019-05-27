@@ -30,7 +30,7 @@
     </div>
   {% endfor %}
   <center>
-    <form class="ui form" action="{{ path('isi_changer_regime_eleve', { 'as': asec, 'regime': regime, 'eleveId': eleve.eleveId }) }}" method="post">
+    <form class="ui form" action="{{ path('isi_changer_regime_eleve', { 'as': asec, 'regime': regime, 'eleveId': eleve.id }) }}" method="post">
       <button class="blue ui button">
         <i class="edit icon"></i>
         {{ 'Changer le regime de formation de '|trans }} {{ eleve.nomFr }} {{ eleve.pnomFr }}

@@ -45,7 +45,7 @@
           <select name="examen" id="examen">
             <option value="">{{ 'Sélectionner un examen'|trans }}</option>
             {% for examen in examens %}
-              <option value="{{ examen.examenId }}">{{examen.libelleFr}}</option>
+              <option value="{{ examen.id }}">{{examen.libelleFr}}</option>
             {% endfor %}
           </select>
         </div>

@@ -58,7 +58,7 @@ class Message
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="read_at", type="datetime")
+     * @ORM\Column(name="read_at", type="datetime", nullable=true)
      */
     private $readAt;
 

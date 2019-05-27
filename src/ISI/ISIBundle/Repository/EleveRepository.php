@@ -18,11 +18,11 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
     $qb = $this->createQueryBuilder('e');
     $qb->join('e.frequenter', 'f')
        ->addSelect('f')
-       ->join('f.anneeScolaire', 'an')
+       ->join('f.annee', 'an')
        ->addSelect('an')
        ->join('f.classe', 'cl')
        ->addSelect('cl')
-       ->where('an.anneeScolaireId = :as AND e.regime = :regime AND e.renvoye = 0')
+       ->where('an.id = :as AND e.regime = :regime AND e.renvoye = 0')
        ->setParameter('regime', $regime)
        ->setParameter('as', $as)
        ->orderBy('e.nomFr', 'ASC')
@@ -38,11 +38,11 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
     $qb = $this->createQueryBuilder('e');
     $qb->join('e.frequenter', 'f')
        ->addSelect('f')
-       ->join('f.anneeScolaire', 'an')
+       ->join('f.annee', 'an')
        ->addSelect('an')
        ->join('f.classe', 'cl')
        ->addSelect('cl')
-       ->where('an.anneeScolaireId = :as AND e.renvoye = 0')
+       ->where('an.id = :as AND e.renvoye = 0')
        ->setParameter('as', $as)
        ->orderBy('e.nomFr', 'ASC')
        ->addOrderBy('e.pnomFr', 'ASC');
@@ -57,13 +57,13 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
     $qb = $this->createQueryBuilder('e');
     $qb->join('e.frequenter', 'f')
        ->addSelect('f')
-       ->join('f.anneeScolaire', 'an')
+       ->join('f.annee', 'an')
        ->addSelect('an')
        ->join('f.classe', 'cl')
        ->addSelect('cl')
        ->join('cl.niveau', 'n')
        ->addSelect('n')
-       ->where('an.anneeScolaireId = :as AND n.id = :niveauId AND e.renvoye = 0')
+       ->where('an.id = :as AND n.id = :niveauId AND e.renvoye = 0')
        ->setParameter('as', $as)
        ->setParameter('niveauId', $niveauId)
        ->orderBy('e.nomFr', 'ASC')
@@ -124,24 +124,32 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
   public function lesElevesDeLaClasse($as, $classeId)
   {
     $em = $this->getEntityManager();
-    $sql = 'SELECT e.eleve_id AS eleveId, e.matricule AS matricule, e.nom_fr AS nomFr, e.pnom_fr AS pnomFr, e.nom_ar AS nomAr, e.pnom_ar AS pnomAr, e.sexe_fr AS sexeFr, IF(er.eleve IS NULL, FALSE, TRUE) AS renvoye FROM eleve_renvoye er RIGHT JOIN eleve e ON er.eleve = e.eleve_id AND er.annee_scolaire = :an JOIN frequenter f ON f.eleve_id = e.eleve_id JOIN classe c ON c.classe_id = f.classe_id WHERE f.annee_scolaire_id = :an AND c.classe_id = :classeId;';
+    $sql = 'SELECT e.id AS id, e.matricule AS matricule, e.nom_fr AS nomFr, e.pnom_fr AS pnomFr, e.nom_ar AS nomAr, e.pnom_ar AS pnomAr, e.sexe AS sexe, IF(er.eleve_id IS NULL OR e.renvoye = 0, FALSE, TRUE) AS renvoye FROM eleve_renvoye er RIGHT JOIN eleve e ON er.eleve_id = e.id AND er.annee_id = :an JOIN frequenter f ON f.eleve_id = e.id JOIN classe c ON c.id = f.classe_id WHERE f.annee_id = :an AND c.id = :classeId;';
     $statement = $em->getConnection()->prepare($sql);
     $statement->bindValue('classeId', $classeId);
     $statement->bindValue('an', $as);
     $statement->execute();
     $eleves = $statement->fetchAll();
-    foreach ($eleves as $key => $value) {
-      if ($eleves[$key]['renvoye'] == true) {
-        unset($eleves[array_search($eleves[$key], $eleves)]);
+    if(!empty($eleves)){
+      foreach ($eleves as $key => $value) {
+        if ($value['renvoye'] == true) {
+          unset($eleves[array_search($value, $eleves)]);
+        }
+        else {
+          # code...
+          $nom[$key]  = $value['nomFr'];
+          $pnom[$key]  = $value['pnomFr'];
+        }
       }
+      array_multisort($nom, SORT_ASC, $pnom, SORT_ASC, $eleves);
     }
     return $eleves;
 
     $qb = $this->createQueryBuilder('e');
     $qb->join('e.frequenter', 'f')
        ->join('f.classe', 'c')
-       ->join('c.anneeScolaire', 'an')
-       ->where('an.anneeScolaireId = :as AND c.classeId = :classeId AND e.renvoye = 0')
+       ->join('c.annee', 'an')
+       ->where('an.id = :as AND c.id = :classeId AND e.renvoye = 0')
        ->orderBy('e.nomFr', 'ASC')
        ->addOrderBy('e.pnomFr', 'ASC')
        ->setParameter('as', $as)
@@ -157,8 +165,8 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.memoriser', 'm')
             ->join('m.halaqa', 'h')
-            ->join('c.anneeScolaire', 'an')
-            ->where('an.anneeScolaireId = :as AND m.eleve = :eleveId AND e.renvoye = 0')
+            ->join('c.annee', 'an')
+            ->where('an.id = :as AND m.eleve = :eleveId AND e.renvoye = 0')
             ->orderBy('e.nomFr', 'ASC')
             ->addOrderBy('e.pnomFr', 'ASC')
             ->setParameter('as', $as)
@@ -173,9 +181,9 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
     $qb = $this->createQueryBuilder('e');
     $qb->join('e.frequenter', 'f')
        ->join('f.classe', 'c')
-       ->join('c.anneeScolaire', 'an')
+       ->join('c.annee', 'an')
        ->join('c.niveau', 'n')
-       ->where('an.anneeScolaireId = :as AND n.id = :niveauId AND e.renvoye = 0')
+       ->where('an.id = :as AND n.id = :niveauId AND e.renvoye = 0')
        ->orderBy('e.nomFr', 'ASC')
        ->addOrderBy('e.pnomFr', 'ASC')
        ->setParameter('as', $as)
@@ -205,11 +213,11 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
     $qb = $this->createQueryBuilder('e');
     $qb->join('e.interner', 'i')
        ->addSelect('i')
-       ->join('i.anneeScolaire', 'an')
+       ->join('i.annee', 'an')
        ->addSelect('an')
        ->join('i.chambre', 'ch')
        ->addSelect('ch')
-       ->where('an.anneeScolaireId = :as AND e.renvoye = 0 AND i.renvoye = 0')
+       ->where('an.id = :as AND e.renvoye = 0 AND i.renvoye = 0')
        ->setParameter('as', $as)
        ->orderBy('e.nomFr', 'ASC')
        ->addOrderBy('e.pnomFr', 'ASC');
@@ -224,11 +232,11 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
     $qb = $this->createQueryBuilder('e');
     $qb->join('e.interner', 'i')
        ->addSelect('i')
-       ->join('i.anneeScolaire', 'an')
+       ->join('i.annee', 'an')
        ->addSelect('an')
        ->join('i.chambre', 'ch')
        ->addSelect('ch')
-       ->where('an.anneeScolaireId = :as AND e.renvoye = 0 AND i.renvoye = 1')
+       ->where('an.id = :as AND e.renvoye = 0 AND i.renvoye = 1')
        ->setParameter('as', $as)
        ->orderBy('e.nomFr', 'ASC')
        ->addOrderBy('e.pnomFr', 'ASC');

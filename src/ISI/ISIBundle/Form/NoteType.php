@@ -21,13 +21,6 @@ class NoteType extends AbstractType
     {
         $builder
             ->add('note', NumberType::class);
-            // ->add('appreciationFr')
-            // ->add('appreciationAr')
-            // ->add('dateSave')
-            // ->add('dateUpdate')
-            // ->add('examen')
-            // ->add('eleve')
-            // ->add('matiere');
     }
     
     /**

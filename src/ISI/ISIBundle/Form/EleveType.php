@@ -30,7 +30,7 @@ class EleveType extends AbstractType
           ->add('nomAr',  TextType::class, ['required' => FALSE])
           ->add('pnomFr', TextType::class)
           ->add('pnomAr', TextType::class, ['required' => FALSE])
-          ->add('sexeFr', ChoiceType::class, array(
+          ->add('sexe', ChoiceType::class, array(
             'choices' => array(
               'Selectionner le genre' => '',
               'Homme'                 => 1,
@@ -88,7 +88,7 @@ class EleveType extends AbstractType
             $eleve = $event->getData();
             $form = $event->getForm();
 
-            if (!$eleve || null === $eleve->getEleveId()) {
+            if (!$eleve || null === $eleve->getId()) {
               $form
                 ->add('save', SubmitType::class, array('label' => 'Préinscrire l\'élève'));
             }

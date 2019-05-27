@@ -40,7 +40,7 @@ class EnseignementType extends AbstractType
       // ->add('niveau',        HiddenType::class, ['data' => $niveau])
       // ->add('anneeScolaire', HiddenType::class, ['data' => $as])
       ->add('coefficient',     NumberType::class)
-      ->add('statuMatiere',    CheckboxType::class, ['required' => false])
+      ->add('statu',    CheckboxType::class, ['required' => false])
       ->add('matiere',         EntityType::class,
           array(
             'class'         => 'ISIBundle:Matiere',
@@ -49,9 +49,9 @@ class EnseignementType extends AbstractType
                               {
                                 $subquery = $matiere->lesMatieresDuNiveau($as, $niveauId);
                                 $qb = $matiere->createQueryBuilder('m');
-                                $qb->where($qb->expr()->notIn('m.matiereId', '$subquery'));
+                                $qb->where($qb->expr()->notIn('m.id', '$subquery'));
                               },
-            'choice_label'  => 'libelleMatiere',
+            'choice_label'  => 'libelle',
             'multiple'      => false
         ))
         ->add('livre', EntityType::class, [

@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block corps %}
-    <h2>{{ 'Enseignants de l\'année '|trans }} {{ annee.libelleAnneeScolaire }}</h2>
+    <h2>{{ 'Enseignants de l\'année '|trans }} {{ annee.libelle }}</h2>
     {% if contrats is not defined %}
         <p>{{ 'Il n y a auccun enseignant enregistré pour le moment'|trans }}</p>
     {% else %}

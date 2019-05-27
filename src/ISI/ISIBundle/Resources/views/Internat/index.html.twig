@@ -45,7 +45,7 @@
                 <td>{{ interne.getEleve.getNomFr }} {{ interne.getEleve.getPnomFr }}</td>
                 <td>{{ interne.getEleve.getNomAr }} {{ interne.getEleve.getPnomAr }}</td>
                 <td>
-                  {% if interne.getEleve.getSexeFr == 1 %}
+                  {% if interne.getEleve.getSexe == 1 %}
                     {{ 'ذكر' }}
                   {% else %}
                     {{ 'أنثى' }}
@@ -53,11 +53,11 @@
                 </td>
                 <td>{{ interne.getEleve.dateNaissance|date("d-m-Y") }}</td>
                 <td>{{ interne.getChambre.getBatiment.getResponsable }}</td>
-                <td>{{ interne.getChambre.getLibelleChambre }}</td>
+                <td>{{ interne.getChambre.getLibelle }}</td>
                 <td>
                   <div class="ui grid">
                     <div class="home-eleve wide column" data-tooltip="Modifier les informations de l'élève">
-                      <a href="{{ path('internat_info_eleve', {'as': asec, 'id':interne.getEleve.getEleveId}) }}"><i class="info circle icon"></i></a>
+                      <a href="{{ path('internat_info_eleve', {'as': asec, 'id':interne.getEleve.getId}) }}"><i class="info circle icon"></i></a>
                     </div>
                   </div>
                 </td>

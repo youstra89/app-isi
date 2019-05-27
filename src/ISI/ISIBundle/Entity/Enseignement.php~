@@ -1,14 +1,14 @@
 <?php
 
-namespace ISIBundle\Entity;
+namespace ISI\ISIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Enseignement
  *
- * @ORM\Table(name="enseignement", uniqueConstraints={@ORM\UniqueConstraint(name="enseignement", columns={"niveau_id", "annee_scolaire_id", "matiere_id"})}, indexes={@ORM\Index(name="annee_scolaire_id", columns={"annee_scolaire_id"}), @ORM\Index(name="matiere_id", columns={"matiere_id"}), @ORM\Index(name="classe_id", columns={"niveau_id"})})
- * @ORM\Entity(repositoryClass="ISIBundle\Repository\EnseignementRepository")
+ * @ORM\Table(name="enseignement", uniqueConstraints={@ORM\UniqueConstraint(name="enseignement", columns={"niveau_id", "annee_id", "matiere_id"})}, indexes={@ORM\Index(name="annee_id", columns={"annee_id"}), @ORM\Index(name="matiere_id", columns={"matiere_id"}), @ORM\Index(name="niveau_id", columns={"niveau_id"})})
+ * @ORM\Entity(repositoryClass="ISI\ISIBundle\Repository\EnseignementRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class Enseignement
@@ -27,45 +27,45 @@ class Enseignement
      *
      * @ORM\Column(name="coefficient", type="integer", nullable=false)
      */
-    private $coefficient = '1';
+    private $coefficient = 1;
 
     /**
      * @var boolean
      *
-     * @ORM\Column(name="statu_matiere", type="boolean", nullable=false)
+     * @ORM\Column(name="statu", type="boolean", nullable=false)
      */
-    private $statuMatiere;
+    private $statu;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_save", type="datetime", nullable=false)
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private $dateSave;
+    private $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_update", type="datetime", nullable=false)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private $dateUpdate;
+    private $updatedAt;
 
     /**
-     * @var \Anneescolaire
+     * @var \Annee
      *
-     * @ORM\ManyToOne(targetEntity="Anneescolaire")
+     * @ORM\ManyToOne(targetEntity="Annee")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="annee_scolaire_id", referencedColumnName="annee_scolaire_id")
+     *   @ORM\JoinColumn(name="annee_id", referencedColumnName="id")
      * })
      */
-    private $anneeScolaire;
+    private $annee;
 
     /**
      * @var \Matiere
      *
      * @ORM\ManyToOne(targetEntity="Matiere", inversedBy="enseignements")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="matiere_id", referencedColumnName="matiere_id")
+     *   @ORM\JoinColumn(name="matiere_id", referencedColumnName="id")
      * })
      */
     private $matiere;
@@ -79,6 +79,16 @@ class Enseignement
      * })
      */
     private $niveau;
+
+    /**
+     * @var \Livre
+     *
+     * @ORM\ManyToOne(targetEntity="Livre")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="livre_id", referencedColumnName="id")
+     * })
+     */
+    private $livre;
 
 
 
@@ -141,85 +151,85 @@ class Enseignement
     }
 
     /**
-     * Set dateSave
+     * Set created_at
      *
-     * @param \DateTime $dateSave
+     * @param \DateTime $createdAt
      *
      * @return Enseignement
      */
-    public function setDateSave($dateSave)
+    public function setcreated_at($createdAt)
     {
-        $this->dateSave = $dateSave;
+        $this->created_at = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get dateSave
+     * Get created_at
      *
      * @return \DateTime
      */
-    public function getDateSave()
+    public function getcreated_at()
     {
-        return $this->dateSave;
+        return $this->created_at;
     }
 
     /**
-     * Set dateUpdate
+     * Set updated_at
      *
-     * @param \DateTime $dateUpdate
+     * @param \DateTime $updatedAt
      *
      * @return Enseignement
      */
-    public function setDateUpdate($dateUpdate)
+    public function setupdated_at($updatedAt)
     {
-        $this->dateUpdate = $dateUpdate;
+        $this->updated_at = $updatedAt;
 
         return $this;
     }
 
     /**
-     * Get dateUpdate
+     * Get updated_at
      *
      * @return \DateTime
      */
-    public function getDateUpdate()
+    public function getupdated_at()
     {
-        return $this->dateUpdate;
+        return $this->updated_at;
     }
 
     /**
-     * Set anneeScolaire
+     * Set annee
      *
-     * @param \ISIBundle\Entity\Anneescolaire $anneeScolaire
+     * @param \ISI\ISIBundle\Entity\Anneescolaire $annee
      *
      * @return Enseignement
      */
-    public function setAnneeScolaire(\ISIBundle\Entity\Anneescolaire $anneeScolaire = null)
+    public function setAnnee(\ISI\ISIBundle\Entity\Annee $annee = null)
     {
-        $this->anneeScolaire = $anneeScolaire;
+        $this->annee = $annee;
 
         return $this;
     }
 
     /**
-     * Get anneeScolaire
+     * Get annee
      *
-     * @return \ISIBundle\Entity\Anneescolaire
+     * @return \ISI\ISIBundle\Entity\Annee
      */
-    public function getAnneeScolaire()
+    public function getAnnee()
     {
-        return $this->anneeScolaire;
+        return $this->annee;
     }
 
     /**
      * Set matiere
      *
-     * @param \ISIBundle\Entity\Matiere $matiere
+     * @param \ISI\ISIBundle\Entity\Matiere $matiere
      *
      * @return Enseignement
      */
-    public function setMatiere(\ISIBundle\Entity\Matiere $matiere = null)
+    public function setMatiere(\ISI\ISIBundle\Entity\Matiere $matiere = null)
     {
         $this->matiere = $matiere;
 
@@ -229,7 +239,7 @@ class Enseignement
     /**
      * Get matiere
      *
-     * @return \ISIBundle\Entity\Matiere
+     * @return \ISI\ISIBundle\Entity\Matiere
      */
     public function getMatiere()
     {
@@ -239,11 +249,11 @@ class Enseignement
     /**
      * Set niveau
      *
-     * @param \ISIBundle\Entity\Niveau $niveau
+     * @param \ISI\ISIBundle\Entity\Niveau $niveau
      *
      * @return Enseignement
      */
-    public function setNiveau(\ISIBundle\Entity\Niveau $niveau = null)
+    public function setNiveau(\ISI\ISIBundle\Entity\Niveau $niveau = null)
     {
         $this->niveau = $niveau;
 
@@ -253,11 +263,35 @@ class Enseignement
     /**
      * Get niveau
      *
-     * @return \ISIBundle\Entity\Niveau
+     * @return \ISI\ISIBundle\Entity\Niveau
      */
     public function getNiveau()
     {
         return $this->niveau;
+    }
+
+    /**
+     * Set livre
+     *
+     * @param \ISI\ISIBundle\Entity\Livre $livre
+     *
+     * @return Enseignement
+     */
+    public function setLivre(\ISI\ISIBundle\Entity\Livre $livre = null)
+    {
+        $this->livre = $livre;
+
+        return $this;
+    }
+
+    /**
+     * Get livre
+     *
+     * @return \ISI\ISIBundle\Entity\Livre
+     */
+    public function getLivre()
+    {
+        return $this->livre;
     }
 
     //Mes méthodes personnelles
@@ -266,7 +300,7 @@ class Enseignement
      */
     public function dateEnregistrement()
     {
-      $this->setDateSave(new \Datetime());
+      $this->setcreated_at(new \Datetime());
     }
 
     /**
@@ -275,6 +309,54 @@ class Enseignement
      */
     public function dateModification()
     {
-      $this->setDateUpdate(new \Datetime());
+      $this->setupdated_at(new \Datetime());
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Enseignement
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->created_at = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Enseignement
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updated_at = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
     }
 }

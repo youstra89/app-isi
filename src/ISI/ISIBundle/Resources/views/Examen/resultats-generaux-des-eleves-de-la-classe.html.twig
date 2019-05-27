@@ -6,9 +6,9 @@
 
 {% block content %}
 {% if examen.getSession == 1 %}
-    <h3>Résultats de la 1<sup>ère</sup> session de la classe : {{ classe.getLibelleClasseFr }}</h3>
+    <h3>Résultats de la 1<sup>ère</sup> session de la classe : {{ classe.getLibelleFr }}</h3>
 {% else %}
-    <h3>Résultats de la 2<sup>ème</sup> session de la classe : {{ classe.getLibelleClasseFr }}</h3>
+    <h3>Résultats de la 2<sup>ème</sup> session de la classe : {{ classe.getLibelleFr }}</h3>
 {% endif %}
 {# {{dump(app)}} #}
     <div class="">
@@ -48,6 +48,7 @@
         <table class="ui celled table">
             <thead>
                 <tr>
+                    <th>{{ 'N°'|trans }}</th>
                     <th>{{ 'Matricule'|trans }}</th>
                     <th>{{ 'Nom & Prénom'|trans }}</th>
                     <th>{{ 'Total'|trans }}</th>
@@ -57,13 +58,15 @@
             </thead>
             <tbody>
                 {# On va afficher les moyennes #}
+                {% set i = 0 %}
                 {% for moyenne in moyennes %}
+                    {% set i = i + 1 %}
                     {# Afficher ème en exposant #}
                     {% set nieme = '' %}
-                    {% if moyenne.getRang == 1 and moyenne.getEleve.getSexeFr == 1 %}
+                    {% if moyenne.getRang == 1 and moyenne.getEleve.getSexe == 1 %}
                         <!-- Dans ce cas, c'est un homme. Il faudra donc dire: Le premier -->
                         {% set nieme = 'er' %}
-                    {% elseif moyenne.getRang == 1 and moyenne.getEleve.getSexeFr == 2 %}
+                    {% elseif moyenne.getRang == 1 and moyenne.getEleve.getSexe == 2 %}
                         <!-- Dans ce cas, c'est une femme. Il faudra donc dire: La première -->
                         {% set nieme = 'ère' %}
                     {% else %}
@@ -73,6 +76,7 @@
                     {# Fin afficher ème en exposant #}
                     {% if moyenne.getMoyenne > 5 %}
                         <tr bgcolor="">
+                            <td>{{ i }}</td>
                             <td>{{ moyenne.getEleve.getMatricule }}</td>
                             <td>{{ moyenne.getEleve.getNomFr }} {{ moyenne.getEleve.getPnomFr }}</td>
                             <td>{{ moyenne.getTotalPoints }}</td>
@@ -81,6 +85,7 @@
                         </tr>
                     {% else %}
                         <tr class="error">
+                            <td>{{ i }}</td>
                             <td>{{ moyenne.getEleve.getMatricule }}</td>
                             <td>{{ moyenne.getEleve.getNomFr }} {{ moyenne.getEleve.getPnomFr }}</td>
                             <td>{{ moyenne.getTotalPoints }}</td>

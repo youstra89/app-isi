@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 use ISI\ORGBundle\Entity\Vendredi;
 use ISI\ORGBundle\Form\VendrediType;
-use ISI\ISIBundle\Entity\Anneescolaire;
+use ISI\ISIBundle\Entity\Annee;
 use ISI\ORGBundle\Repository\VendrediRepository;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -22,7 +22,7 @@ class VendrediController extends Controller
   public function indexAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee    = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee    = $em->getRepository('ISIBundle:Annee');
     $repoVendredi = $em->getRepository('ORGBundle:Vendredi');
     $annee       = $repoAnnee->find($as);
     $requete_des_vendredis = "SELECT v.id, v.date, i.nom AS imam_nom, i.pnom AS imam_pnom, m.nom AS mosquee_nom, c.nom AS commune_nom FROM vendredi v JOIN imam i ON v.imam = i.id JOIN mosquee m ON m.id = v.mosquee JOIN commune c ON c.id = m.commune_id ORDER BY v.id DESC;";
@@ -43,7 +43,7 @@ class VendrediController extends Controller
   public function addAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee    = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee    = $em->getRepository('ISIBundle:Annee');
     $repoVendredi = $em->getRepository('ORGBundle:Vendredi');
     $annee       = $repoAnnee->find($as);
     $vendredi = new Vendredi();
@@ -109,7 +109,7 @@ class VendrediController extends Controller
   public function editAction(Request $request, $as, $id)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee    = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee    = $em->getRepository('ISIBundle:Annee');
     $repoVendredi = $em->getRepository('ORGBundle:Vendredi');
     $annee       = $repoAnnee->find($as);
     // $requete_du_vendredi = "SELECT * FROM vendredi;";

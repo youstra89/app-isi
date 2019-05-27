@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block corps %}
-    <div class="ui container">
+    <div class="">
         <h3>{{ 'Règlement des droits d\'un(e) interne'|trans }}</h3>
         {% if moisdepaie is empty %}
           <a href="{{ path('internat_add_mois_de_paiement', {'as': asec}) }}" class="ui button">{{ 'Vous devez définir les mois pris en charge pour cette année à l\'internat'|trans }}</a>
@@ -38,7 +38,7 @@
                     <td>{{ interne.eleve.matricule }}</td>
                     <td>{{ interne.eleve.nomFr }} {{ interne.eleve.pnomFr }}</td>
                     <td>
-                      {% if interne.eleve.sexeFr == 1 %}
+                      {% if interne.eleve.sexe == 1 %}
                         Garçon
                       {% else %}
                         Fille
@@ -52,19 +52,19 @@
                             {% for paiement in paiements %}
                               {% if paiement.interner.id == interne.id and m.id == paiement.moisdepaiement.id %}
                                 {% set pay = FALSE %}
-                                <a href="{{ path('internat_recu_de_paiement', {'as': asec, 'eleveId':interne.eleve.eleveId , 'moisId':m.id , 'paiementId': paiement.id}) }}" class="item">
+                                <a href="{{ path('internat_recu_de_paiement', {'as': asec, 'eleveId':interne.eleve.id , 'moisId':m.id , 'paiementId': paiement.id}) }}" class="item">
                                     {{ m.mois.mois[:3] }}
                                    <div class="floating ui green label"><i class="check icon"></i></div>
                                 </a>
                               {% elseif paiement.interner.id == interne.id and m.id == paiement.moisdepaiement.id and pay == TRUE %}
-                                <a href="{{ path('internat_pay_mois', {'as': asec, 'eleveId': interne.eleve.eleveId, 'moisId': m.id}) }}" class="item">
+                                <a href="{{ path('internat_pay_mois', {'as': asec, 'eleveId': interne.eleve.id, 'moisId': m.id}) }}" class="item">
                                     {{ m.mois.mois[:3] }}
                                    {#<div class="floating ui positive label"><i class="check icon"></i></div>#}
                                 </a>
                               {% endif %}
                             {% endfor %}
                             {% if pay == TRUE %}
-                              <a href="{{ path('internat_pay_mois', {'as': asec, 'eleveId': interne.eleve.eleveId, 'moisId': m.id}) }}" class="item">
+                              <a href="{{ path('internat_pay_mois', {'as': asec, 'eleveId': interne.eleve.id, 'moisId': m.id}) }}" class="item">
                                   {{ m.mois.mois[:3] }}
                                  {#<div class="floating ui positive label"><i class="check icon"></i></div>#}
                               </a>

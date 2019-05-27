@@ -18,7 +18,7 @@ class HalaqaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('libelleHalaqa', TextType::class)
+            ->add('libelle', TextType::class)
             ->add('genre', ChoiceType::class, array(
                 'choices' => array(
                     'Choisir le genre de la classe' => '',

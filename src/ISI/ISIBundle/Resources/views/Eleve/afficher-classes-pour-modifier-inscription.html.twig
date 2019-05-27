@@ -19,9 +19,9 @@
           {% if niveau.getId == classe.getNiveau.getId %}
             <div class="card">
                 <div class="content">
-                    <div class="header">{{ classe.getLibelleClasseFr }}</div>
+                    <div class="header">{{ classe.getLibelleFr }}</div>
                     <div class="meta"></div>
-                    <a href="{{path('isi_modifier_inscription_d_un_eleve', {'as': asec, 'regime': regime, 'classeId': classe.getClasseId})}}">
+                    <a href="{{path('isi_modifier_inscription_d_un_eleve', {'as': asec, 'regime': regime, 'classeId': classe.getId})}}">
                       <div class="description">{{ 'Accéder à la liste des élèves'|trans }}</div>
                     </a>
                 </div>

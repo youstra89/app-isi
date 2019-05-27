@@ -50,12 +50,12 @@ class Commune
     /**
      * @ORM\Column(type="datetime")
      */
-    private $created_at;
+    private $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $updated_at;
+    private $updatedAt;
 
     /**
      * @ORM\OneToMany(targetEntity="ISI\ORGBundle\Entity\Mosquee", mappedBy="commune")
@@ -75,7 +75,7 @@ class Commune
 
     public function __construct()
     {
-      $this->created_at = new \Datetime();
+      $this->createdAt = new \Datetime();
       // $this->mosquees = new ArrayCollection();
     }
 
@@ -132,26 +132,26 @@ class Commune
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getcreated_at(): ?\DateTimeInterface
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $created_at): self
+    public function setcreated_at(\DateTimeInterface $createdAt): self
     {
-        $this->created_at = $created_at;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getupdated_at(): ?\DateTimeInterface
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $updated_at): self
+    public function setupdated_at(\DateTimeInterface $updated_at): self
     {
-        $this->updated_at = $updated_at;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
@@ -186,5 +186,121 @@ class Commune
         }
 
         return $this;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Commune
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt;
+     *
+     * @return Commune
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * Add activite
+     *
+     * @param \ISI\ORGBundle\Entity\Activite $activite
+     *
+     * @return Commune
+     */
+    public function addActivite(\ISI\ORGBundle\Entity\Activite $activite)
+    {
+        $this->activites[] = $activite;
+
+        return $this;
+    }
+
+    /**
+     * Remove activite
+     *
+     * @param \ISI\ORGBundle\Entity\Activite $activite
+     */
+    public function removeActivite(\ISI\ORGBundle\Entity\Activite $activite)
+    {
+        $this->activites->removeElement($activite);
+    }
+
+    /**
+     * Get activites
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getActivites()
+    {
+        return $this->activites;
+    }
+
+    /**
+     * Add converti
+     *
+     * @param \ISI\ORGBundle\Entity\Converti $converti
+     *
+     * @return Commune
+     */
+    public function addConverti(\ISI\ORGBundle\Entity\Converti $converti)
+    {
+        $this->convertis[] = $converti;
+
+        return $this;
+    }
+
+    /**
+     * Remove converti
+     *
+     * @param \ISI\ORGBundle\Entity\Converti $converti
+     */
+    public function removeConverti(\ISI\ORGBundle\Entity\Converti $converti)
+    {
+        $this->convertis->removeElement($converti);
+    }
+
+    /**
+     * Get convertis
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getConvertis()
+    {
+        return $this->convertis;
     }
 }

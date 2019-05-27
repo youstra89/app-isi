@@ -15,7 +15,7 @@ class GroupeformationRepository extends \Doctrine\ORM\EntityRepository
   {
     $query = $this->_em->createQuery(
       'SELECT grp FROM ISIBundle:Groupeformation grp
-      JOIN grp.referenceRegime r
+      JOIN grp.reference r
       WHERE r.regimeRef = :regime');
     $query->setParameter('regime', $regime);
 

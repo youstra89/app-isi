@@ -24,21 +24,21 @@ class Halaqa
     private $id;
 
     /**
-     * @var \Anneescolaire
+     * @var \Annee
      *
-     * @ORM\ManyToOne(targetEntity="Anneescolaire")
+     * @ORM\ManyToOne(targetEntity="Annee")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="annee_scolaire_id", referencedColumnName="annee_scolaire_id")
+     *   @ORM\JoinColumn(name="annee_id", referencedColumnName="id", nullable=false)
      * })
      */
-    private $anneeScolaire;
+    private $annee;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="libelle_halaqa", type="string", length=255, nullable=false)
+     * @ORM\Column(name="libelle", type="string", length=255, nullable=false)
      */
-    private $libelleHalaqa;
+    private $libelle;
 
     /**
      * @var string
@@ -57,16 +57,16 @@ class Halaqa
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_save", type="datetime", nullable=false)
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private $dateSave;
+    private $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_update", type="datetime", nullable=false)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private $dateUpdate;
+    private $updatedAt;
 
 
     /**
@@ -77,54 +77,6 @@ class Halaqa
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set anneeScolaire
-     *
-     * @param \ISI\ISIBundle\Entity\Anneescolaire $anneeScolaire
-     *
-     * @return Halaqa
-     */
-    public function setAnneeScolaire(\ISI\ISIBundle\Entity\Anneescolaire $anneeScolaire = null)
-    {
-        $this->anneeScolaire = $anneeScolaire;
-
-        return $this;
-    }
-
-    /**
-     * Get anneeScolaire
-     *
-     * @return \ISI\ISIBundle\Entity\Anneescolaire
-     */
-    public function getAnneeScolaire()
-    {
-        return $this->anneeScolaire;
-    }
-
-    /**
-     * Set libelleHalaqa
-     *
-     * @param string $libelleHalaqa
-     *
-     * @return Halaqa
-     */
-    public function setLibelleHalaqa($libelleHalaqa)
-    {
-        $this->libelleHalaqa = $libelleHalaqa;
-
-        return $this;
-    }
-
-    /**
-     * Get libelleHalaqa
-     *
-     * @return string
-     */
-    public function getLibelleHalaqa()
-    {
-        return $this->libelleHalaqa;
     }
 
     /**
@@ -176,51 +128,147 @@ class Halaqa
     }
 
     /**
-     * Set dateSave
+     * Set created_at
      *
-     * @param \DateTime $dateSave
+     * @param \DateTime $createdAt
      *
      * @return Halaqa
      */
-    public function setDateSave($dateSave)
+    public function setcreated_at($createdAt)
     {
-        $this->dateSave = $dateSave;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get dateSave
+     * Get created_at
      *
      * @return \DateTime
      */
-    public function getDateSave()
+    public function getcreated_at()
     {
-        return $this->dateSave;
+        return $this->createdAt;
     }
 
     /**
-     * Set dateUpdate
+     * Set updated_at
      *
-     * @param \DateTime $dateUpdate
+     * @param \DateTime $updatedAt
      *
      * @return Halaqa
      */
-    public function setDateUpdate($dateUpdate)
+    public function setupdated_at($updatedAt)
     {
-        $this->dateUpdate = $dateUpdate;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
     /**
-     * Get dateUpdate
+     * Get updated_at
      *
      * @return \DateTime
      */
-    public function getDateUpdate()
+    public function getupdated_at()
     {
-        return $this->dateUpdate;
+        return $this->updatedAt;
     }
 
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Halaqa
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Halaqa
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * Set libelle
+     *
+     * @param string $libelle
+     *
+     * @return Halaqa
+     */
+    public function setLibelle($libelle)
+    {
+        $this->libelle = $libelle;
+
+        return $this;
+    }
+
+    /**
+     * Get libelle
+     *
+     * @return string
+     */
+    public function getLibelle()
+    {
+        return $this->libelle;
+    }
+
+    /**
+     * Set annee
+     *
+     * @param \ISI\ISIBundle\Entity\Annee $annee
+     *
+     * @return Halaqa
+     */
+    public function setAnnee(\ISI\ISIBundle\Entity\Annee $annee = null)
+    {
+        $this->annee = $annee;
+
+        return $this;
+    }
+
+    /**
+     * Get annee
+     *
+     * @return \ISI\ISIBundle\Entity\Annee
+     */
+    public function getAnnee()
+    {
+        return $this->annee;
+    }
 }

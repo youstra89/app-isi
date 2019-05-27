@@ -1,6 +1,6 @@
 <?php
 
-namespace ISIBundle\Entity;
+namespace ISI\ISIBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Halaqa
  *
  * @ORM\Table(name="halaqa")
- * @ORM\Entity(repositoryClass="ISIBundle\Repository\HalaqaRepository")
+ * @ORM\Entity(repositoryClass="ISI\ISIBundle\Repository\HalaqaRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class Halaqa
@@ -24,11 +24,21 @@ class Halaqa
     private $id;
 
     /**
+     * @var \Annee
+     *
+     * @ORM\ManyToOne(targetEntity="Annee")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="annee_scolaire_id", referencedColumnName="annee_scolaire_id")
+     * })
+     */
+    private $annee;
+
+    /**
      * @var string
      *
-     * @ORM\Column(name="libelle_halaqa", type="string", length=255, nullable=false)
+     * @ORM\Column(name="libelle", type="string", length=255, nullable=false)
      */
-    private $libelleHalaqa;
+    private $libelle;
 
     /**
      * @var string
@@ -38,18 +48,25 @@ class Halaqa
     private $genre;
 
     /**
-     * @var \DateTime
+     * @var string
      *
-     * @ORM\Column(name="date_save", type="datetime", nullable=false)
+     * @ORM\Column(name="regime", type="string", length=255, nullable=false)
      */
-    private $dateSave;
+    private $regime;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_update", type="datetime", nullable=false)
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private $dateUpdate;
+    private $createdAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     */
+    private $updatedAt;
 
 
     /**
@@ -60,6 +77,30 @@ class Halaqa
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set anneeScolaire
+     *
+     * @param \ISI\ISIBundle\Entity\Anneescolaire $anneeScolaire
+     *
+     * @return Halaqa
+     */
+    public function setAnneeScolaire(\ISI\ISIBundle\Entity\Anneescolaire $anneeScolaire = null)
+    {
+        $this->anneeScolaire = $anneeScolaire;
+
+        return $this;
+    }
+
+    /**
+     * Get anneeScolaire
+     *
+     * @return \ISI\ISIBundle\Entity\Anneescolaire
+     */
+    public function getAnneeScolaire()
+    {
+        return $this->anneeScolaire;
     }
 
     /**
@@ -111,51 +152,123 @@ class Halaqa
     }
 
     /**
-     * Set dateSave
+     * Set regime
      *
-     * @param \DateTime $dateSave
+     * @param string $regime
      *
      * @return Halaqa
      */
-    public function setDateSave($dateSave)
+    public function setRegime($regime)
     {
-        $this->dateSave = $dateSave;
+        $this->regime = $regime;
 
         return $this;
     }
 
     /**
-     * Get dateSave
+     * Get regime
      *
      * @return \DateTime
      */
-    public function getDateSave()
+    public function getRegime()
     {
-        return $this->dateSave;
+        return $this->regime;
     }
 
     /**
-     * Set dateUpdate
+     * Set created_at
      *
-     * @param \DateTime $dateUpdate
+     * @param \DateTime $createdAt
      *
      * @return Halaqa
      */
-    public function setDateUpdate($dateUpdate)
+    public function setcreated_at($createdAt)
     {
-        $this->dateUpdate = $dateUpdate;
+        $this->created_at = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get dateUpdate
+     * Get created_at
      *
      * @return \DateTime
      */
-    public function getDateUpdate()
+    public function getcreated_at()
     {
-        return $this->dateUpdate;
+        return $this->created_at;
     }
 
+    /**
+     * Set updated_at
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Halaqa
+     */
+    public function setupdated_at($updatedAt)
+    {
+        $this->updated_at = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updated_at
+     *
+     * @return \DateTime
+     */
+    public function getupdated_at()
+    {
+        return $this->updated_at;
+    }
+
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Halaqa
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->created_at = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Halaqa
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updated_at = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
+    }
 }

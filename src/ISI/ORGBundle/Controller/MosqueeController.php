@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 use ISI\ORGBundle\Entity\Mosquee;
 use ISI\ORGBundle\Form\MosqueeType;
-use ISI\ISIBundle\Entity\Anneescolaire;
+use ISI\ISIBundle\Entity\Annee;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -21,7 +21,7 @@ class MosqueeController extends Controller
   public function indexAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee      = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoMosquee    = $em->getRepository('ORGBundle:Mosquee');
     $annee       = $repoAnnee->find($as);
     $mosquees       = $repoMosquee->findAll();
@@ -41,7 +41,7 @@ class MosqueeController extends Controller
     public function addAction(Request $request, $as): Response
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee   = $em->getRepository('ISIBundle:Annee');
       $annee       = $repoAnnee->find($as);
       $mosquee = new Mosquee();
       $form = $this->createForm(MosqueeType::class, $mosquee);
@@ -70,7 +70,7 @@ class MosqueeController extends Controller
     public function editAction(Request $request, Mosquee $mosquee, $as): Response
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee   = $em->getRepository('ISIBundle:Annee');
       $annee       = $repoAnnee->find($as);
       $form = $this->createForm(MosqueeType::class, $mosquee);
       $form->handleRequest($request);
@@ -97,7 +97,7 @@ class MosqueeController extends Controller
     public function informationsAction(Request $request, Mosquee $mosquee, $as): Response
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee   = $em->getRepository('ISIBundle:Annee');
       $annee       = $repoAnnee->find($as);
       return $this->render('ORGBundle:Mosquee:mosquee-info.html.twig', [
         'asec'  => $as,

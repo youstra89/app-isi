@@ -1,11 +1,11 @@
 {# Page d'ajout d'un nouvel examen #}
 {% extends "ISIBundle:Scolarite:index.html.twig" %}
 {% block pageTitle %}
-    Les notes de {{ classe.getLibelleClasseFr }} | {{ parent() }}
+    Les notes de {{ classe.getLibelleFr }} | {{ parent() }}
 {% endblock %}
 
 {% block content %}
-<h2>{{ 'Notes de la classe'|trans }} : {{ classe.getLibelleClasseFr }}</h2>
+<h2>{{ 'Notes de la classe'|trans }} : {{ classe.getLibelleFr }}</h2>
 <h3>{{ 'Session '|trans }} : {{ examen.getSession }}</h3>
 
     <div class="">
@@ -17,7 +17,7 @@
                     <th>{{ 'Nom & Prénom'|trans }}</th>
                     {# On va maintenant afficher les matières de la classe #}
                     {% for matiere in matieres %}
-                        <th>{{ matiere.getLibelleMatiere }}</th>
+                        <th>{{ matiere.libelle }}</th>
                     {% endfor %}
                 </tr>
             </thead>
@@ -27,29 +27,29 @@
                     {% set numero = numero + 1 %}
                     <tr>
                         <td>{{ numero }}</td>
-                        <td>{{ eleve.getNomFr }} {{ eleve.getPnomFr }}</td>
+                        <td>{{ eleve.nomFr }} {{ eleve.pnomFr }}</td>
                         {# On sélectionne à nouveau les matieres de la classe #}
                         {% for matiere in matieres %}
                             {# On sélectionne les notes maintenant #}
                             {% for note in notes %}
                                 {# C'est ici qu'on va conditionner l'affichage des notes #}
                                 {# On va généraliser la condition d'affichage de la note #}
-                                {% if eleve.getEleveId == note.getEleve.getEleveId and matiere.getMatiereId == note.getMatiere.getMatiereId %}
+                                {% if eleve.id == note.getEleve.getId and matiere.getId == note.getMatiere.getId %}
                                     {# si le note est vide on affiche un message pour en informer l'utilisateur #}
                                     {% if note.getNote is empty %}
                                         <td align="center">
-                                            <div data-tooltip="La note de {{ eleve.getNomFr }} {{ eleve.getPnomFr }} n'a pas encore été saisie en {{ matiere.getLibelleMatiere }}">
+                                            <div data-tooltip="La note de {{ eleve.getNomFr }} {{ eleve.getPnomFr }} n'a pas encore été saisie en {{ matiere.getLibelle }}">
                                                 ---
                                             </div>
                                         </td>
                                     {% elseif note.getNote is not empty %}
                                         {% if note.getParticipation == TRUE and note.getNote < 5 %}
-                                            <td align="center" class="error" data-tooltip="{{ matiere.getLibelleMatiere }}">{{ note.getNote }}</td>
+                                            <td align="center" class="error" data-tooltip="{{ matiere.getLibelle }}">{{ note.getNote }}</td>
                                         {% elseif note.getParticipation == TRUE and note.getNote >= 5 %}
-                                            <td align="center" data-tooltip="{{ matiere.getLibelleMatiere }}">{{ note.getNote }}</td>
+                                            <td align="center" data-tooltip="{{ matiere.getLibelle }}">{{ note.getNote }}</td>
                                         {% elseif note.getParticipation == FALSE %}
                                             <td align="center">
-                                                <div data-tooltip="{{ eleve.getNomFr }} {{ eleve.getPnomFr }} n'a pas composé en {{ matiere.getLibelleMatiere }}">
+                                                <div data-tooltip="{{ eleve.getNomFr }} {{ eleve.getPnomFr }} n'a pas composé en {{ matiere.getLibelle }}">
                                                     Null
                                                 </div>
                                             </td>

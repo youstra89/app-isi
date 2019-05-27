@@ -5,8 +5,8 @@ namespace ISI\ISIBundle\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use ISI\ISIBundle\Entity\Anneescolaire;
-use ISI\ISIBundle\Repository\AnneescolaireRepository;
+use ISI\ISIBundle\Entity\Annee;
+use ISI\ISIBundle\Repository\AnneeRepository;
 
 use Doctrine\ORM\EntityRepository;
 
@@ -17,7 +17,7 @@ class DefaultController extends Controller
     public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $repoAnnee = $em->getRepository('ISIBundle:Anneescolaire');
+        $repoAnnee = $em->getRepository('ISIBundle:Annee');
         $annee = $repoAnnee->anneeEnCours();
 
         // Cette condition ne sera vraie que lorsque nous seront à la toute première exécution du programme
@@ -29,10 +29,10 @@ class DefaultController extends Controller
                 return $this->redirect($this->generateUrl('isi_nouvelle_annee', ['as' => 0]));
             }
 
-            return $this->redirect($this->generateUrl('admin_home', ['as' => $annee->getAnneeScolaireId()]));
+            return $this->redirect($this->generateUrl('admin_home', ['as' => $annee->getId()]));
 
             // return $this->render('ISIBundle:Admin:index.html.twig', [
-            //     'asec'  => $annee->getAnneeScolaireId(),
+            //     'asec'  => $annee->getId(),
             //     'annee' => $annee
             // ]);
         }
@@ -59,35 +59,35 @@ class DefaultController extends Controller
             if(empty($annee))
                 return new Response('Vous ne pouvez pas utiliser l\'application avant votre directeur!!!');
 
-            return $this->redirectToRoute('isi_home_note', ['as' => $annee->getAnneeScolaireId()]);
+            return $this->redirectToRoute('isi_home_note', ['as' => $annee->getId()]);
         }
         elseif($this->get('security.authorization_checker')->isGranted('ROLE_INTERNAT'))
         {
             if(empty($annee))
                 return new Response('Vous ne pouvez pas utiliser l\'application avant le directeur des affaires écolières/scolaires!!!');
 
-            return $this->redirectToRoute('internat_home', ['as' => $annee->getAnneeScolaireId()]);
+            return $this->redirectToRoute('internat_home', ['as' => $annee->getId()]);
         }
         elseif($this->get('security.authorization_checker')->isGranted('ROLE_ENSEIGNANT'))
         {
             if(empty($annee))
                 return new Response('Vous ne pouvez pas utiliser l\'application avant le directeur des affaires écolières/scolaires!!!');
 
-            return $this->redirectToRoute('ens_home', ['as' => $annee->getAnneeScolaireId()]);
+            return $this->redirectToRoute('ens_home', ['as' => $annee->getId()]);
         }
         elseif($this->get('security.authorization_checker')->isGranted('ROLE_ETUDE'))
         {
             if(empty($annee))
                 return new Response('Vous ne pouvez pas utiliser l\'application avant le directeur des affaires écolières/scolaires!!!');
 
-            return $this->redirectToRoute('etude_home', ['as' => $annee->getAnneeScolaireId()]);
+            return $this->redirectToRoute('etude_home', ['as' => $annee->getId()]);
         }
         elseif($this->get('security.authorization_checker')->isGranted('ROLE_ORGANISATION'))
         {
             if(empty($annee))
                 return new Response('Vous ne pouvez pas utiliser l\'application avant le directeur des affaires écolières/scolaires!!!');
 
-            return $this->redirectToRoute('org_homepage', ['as' => $annee->getAnneeScolaireId()]);
+            return $this->redirectToRoute('org_homepage', ['as' => $annee->getId()]);
         }
         else
             return new Response("Authentification parfaite. Mais, vous n'avez pas de rôle pour le moment.");

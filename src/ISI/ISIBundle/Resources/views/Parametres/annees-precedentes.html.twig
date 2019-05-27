@@ -13,13 +13,13 @@
 			<div class="card">
 				<div class="content">
 					<img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
-					<div class="header">{{ anneeP.libelleAnneeScolaire }} </div>
+					<div class="header">{{ anneeP.libelle }} </div>
 				</div>
 				{% set route_params = "5" %}
 				<div class="extra content">
 					<div class="ui buttons">
-						<a href="{{ path('isi_parametres', {'as': anneeP.anneeScolaireId}) }}">
-							<div class="ui basic green button">{{ 'Revenir en '|trans }}{{ anneeP.libelleAnneeScolaire}} </div>
+						<a href="{{ path('isi_parametres', {'as': anneeP.id}) }}">
+							<div class="ui basic green button">{{ 'Revenir en '|trans }}{{ anneeP.libelle}} </div>
 						</a>
 					</div>
 				</div>

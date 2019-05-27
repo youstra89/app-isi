@@ -59,10 +59,10 @@
 			</div> #}
 			<div class="field">
 				<label for="">
-					{{ form_label(form.statuMatiere, "Cocher si c'est une matière spécifique", {'label_attr': {'class': ''}}) }} 
-					{{ form_errors(form.statuMatiere) }}
+					{{ form_label(form.statu, "Cocher si c'est une matière spécifique", {'label_attr': {'class': ''}}) }} 
+					{{ form_errors(form.statu) }}
 				</label>
-				{{ form_widget(form.statuMatiere, {'attr' : {'class' : 'ui toggle checkbox'}}) }}
+				{{ form_widget(form.statu, {'attr' : {'class' : 'ui toggle checkbox'}}) }}
 			</div>
 		</div>
 		{{ form_widget(form.save, {'attr': {'class': 'ui primary button'}}) }}

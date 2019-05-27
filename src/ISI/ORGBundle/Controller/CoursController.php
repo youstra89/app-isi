@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use ISI\ORGBundle\Entity\Cours;
 use ISI\ORGBundle\Form\CoursType;
 use ISI\ORGBundle\Repository\CoursRepository;
-use ISI\ISIBundle\Entity\Anneescolaire;
+use ISI\ISIBundle\Entity\Annee;
 use ISI\ISIBundle\Repository\AnneeContratRepository;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -39,7 +39,7 @@ class CoursController extends Controller
       2 => 'Après Asr',
       3 => 'Entre Maghreb et Icha',
     ];
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoCours   = $em->getRepository('ORGBundle:Cours');
     $annee       = $repoAnnee->find($as);
     $requete_des_cours = "SELECT c.id, c.discipline, c.livre, c.heure, c.jour, c.annee_debut, cm.nom, m.nom, m.quartier FROM cours c JOIN mosquee m ON c.mosquee = m.id JOIN commune cm ON m.commune_id = cm.id";
@@ -64,7 +64,7 @@ class CoursController extends Controller
     public function addAction(Request $request,$as): Response
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee      = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee      = $em->getRepository('ISIBundle:Annee');
       $annee       = $repoAnnee->find($as);
       $cours = new Cours();
       $form = $this->createForm(CoursType::class, $cours);
@@ -91,7 +91,7 @@ class CoursController extends Controller
     public function editAction(Request $request, Cours $cours, $as): Response
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee   = $em->getRepository('ISIBundle:Annee');
       $annee       = $repoAnnee->find($as);
       $form = $this->createForm(CoursType::class, $cours);
       $form->handleRequest($request);

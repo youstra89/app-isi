@@ -9,8 +9,8 @@
 {% block content %}
 	<div class="ui info message" style="width:75%">
 		<center>
-			<h2>{{ 'Modification des notes de'|trans }} {{classe.libelleClasseFr}} en {{matiere.libelleMatiere}}</h2>
-			<h3>{{ 'Session'|trans }} {{ examen.session }} : {{ examen.anneeScolaire.libelleAnneeScolaire }}</h3>
+			<h2>{{ 'Modification des notes de'|trans }} {{ classe.libelleFr }} en {{ matiere.libelle }}</h2>
+			<h3>{{ 'Session'|trans }} {{ examen.session }} : {{ examen.annee.libelle }}</h3>
 		</center>
 	</div>
 
@@ -36,7 +36,7 @@
 				{% for eleve in eleves %}
 					{% set i = i + 1 %}
 					{% set image = "" %}
-					{% if eleve.sexeFr == 1 %}
+					{% if eleve.sexe == 1 %}
 						{% set image = "/markaz/web/images/mark.png" %}
 					{% else %}
 						{% set image = "/markaz/web/images/molly.png" %}
@@ -44,12 +44,12 @@
 					{# Pour chaque note #}
 					{% for note in notes %}
 					{# {{dump(note.eleve)}} #}
-						{% if eleve.eleveId == note.eleve.eleveId %}
+						{% if eleve.id == note.eleve.id %}
 							<div class="item ui teal selectable ui middle aligned selection list">
 								<div class="right floated content">
 									<div class="">
 										<div class="ui right labeled input">
-											<input name="note[{{ eleve.eleveId }}]" type="integer" value="{{ note.note }}" class="noteSelectionnee">
+											<input name="note[{{ eleve.id }}]" type="integer" value="{{ note.note }}" class="noteSelectionnee">
 											<div class="ui basic label">{{ 'points'|trans }}</div>
 										</div>
 									</div>
@@ -67,7 +67,7 @@
 			</form>
 		</div>
 		{# {{dump(notes)}}
-		{{dump(eleves)}} #}
+		{{ dump(eleves) }} #}
 
 		{# {{dump(form.notes.parent.vars.value[0])}} #}
 	</table>

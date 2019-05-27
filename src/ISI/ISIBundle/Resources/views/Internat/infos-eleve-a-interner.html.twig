@@ -18,7 +18,7 @@
         <select class="" name="chambre">
           <option value="">{{ 'Choisir une chambre pour l\'élève'|trans }}</option>
           {% for chambre in chambres %}
-            <option value="{{ chambre.id }}">{{ chambre.libelleChambre }}</option>
+            <option value="{{ chambre.id }}">{{ chambre.libelle }}</option>
           {% endfor %}
         </select>
       </form>
@@ -53,7 +53,7 @@
               <td>
                 <strong>{{ 'Sexe'|trans }} : </strong>
               </td>
-              {% if eleve.sexeFr == 1 %}
+              {% if eleve.sexe == 1 %}
               <td>{{ 'Homme'|trans }}</td>
               {% else %}
               <td>{{ 'Femme'|trans }}</td>

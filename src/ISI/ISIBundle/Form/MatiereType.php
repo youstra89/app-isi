@@ -25,7 +25,7 @@ class MatiereType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-          ->add('libelleMatiere',  TextType::class)
+          ->add('libelle',  TextType::class)
           // ->add('dateSave')
           // ->add('dateUpdate')
           ;
@@ -35,7 +35,7 @@ class MatiereType extends AbstractType
               $matiere = $event->getData();
               $form = $event->getForm();
 
-              if (!$matiere || null === $matiere->getMatiereId()) {
+              if (!$matiere || null === $matiere->getId()) {
                 $form
                 ->add('referenceLangue', EntityType:: class, array(
                   'class'        => 'ISIBundle:Languematiere',

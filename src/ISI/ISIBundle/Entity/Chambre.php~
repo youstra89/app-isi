@@ -1,6 +1,6 @@
 <?php
 
-namespace ISIBundle\Entity;
+namespace ISI\ISIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -8,21 +8,21 @@ use Doctrine\ORM\Mapping as ORM;
  * Chambre
  *
  * @ORM\Table(name="chambre")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="ISI\ISIBundle\Repository\ChambreRepository")
  */
 class Chambre
 {
     /**
      * @var integer
      *
-     * @ORM\Column(name="chambre_id", type="integer", nullable=false)
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $chambreId;
+    private $id;
 
     /**
-     * @var \Niveau
+     * @var \Batiment
      *
      * @ORM\ManyToOne(targetEntity="Batiment", fetch="EAGER")
      * @ORM\JoinColumns({
@@ -34,9 +34,9 @@ class Chambre
     /**
      * @var string
      *
-     * @ORM\Column(name="libelle_chambre", type="string", length=255, nullable=true)
+     * @ORM\Column(name="libelle", type="string", length=255, nullable=true)
      */
-    private $libelleChambre;
+    private $libelle;
 
     /**
      * @var string
@@ -48,44 +48,51 @@ class Chambre
     /**
      * @var integer
      *
-     * @ORM\Column(name="nombre_de_placesnombreDePlaces", type="integer", nullable=false)
+     * @ORM\Column(name="nombre_de_places", type="integer", nullable=false)
      */
     private $nombreDePlaces;
 
     /**
-     * @var \DateTime
+     * @var integer
      *
-     * @ORM\Column(name="date_save", type="datetime", nullable=false)
+     * @ORM\Column(name="places_disponibles", type="integer", nullable=false)
      */
-    private $dateSave;
+    private $placesDisponibles;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_update", type="datetime", nullable=false)
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private $dateUpdate;
+    private $createdAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     */
+    private $updatedAt;
 
 
 
     /**
-     * Get chambreId
+     * Get id
      *
      * @return integer
      */
-    public function getChambreId()
+    public function getId()
     {
-        return $this->chambreId;
+        return $this->id;
     }
 
     /**
      * Set batiment
      *
-     * @param \ISIBundle\Entity\Batiment $niveau
+     * @param \ISI\ISIBundle\Entity\Batiment $niveau
      *
      * @return Chambre
      */
-    public function setBatiment(\ISIBundle\Entity\Batiment $batiment = null)
+    public function setBatiment(\ISI\ISIBundle\Entity\Batiment $batiment = null)
     {
         $this->batiment = $batiment;
 
@@ -95,35 +102,35 @@ class Chambre
     /**
      * Get batiment
      *
-     * @return \ISIBundle\Entity\Batiment
+     * @return \ISI\ISIBundle\Entity\Batiment
      */
-    public function getBatiment()
+    public function getBatiment() 
     {
         return $this->batiment;
     }
 
     /**
-     * Set libelleChambre
+     * Set libelle
      *
-     * @param string $libelleChambre
+     * @param string $libelle
      *
      * @return Chambre
      */
-    public function setLibelleChambre($libelleChambre)
+    public function setLibelle($libelle)
     {
-        $this->libelleChambre = $libelleChambre;
+        $this->libelle = $libelle;
 
         return $this;
     }
 
     /**
-     * Get libelleChambre
+     * Get libelle
      *
      * @return string
      */
-    public function getLibelleChambre()
+    public function getLibelle()
     {
-        return $this->libelleChambre;
+        return $this->libelle;
     }
 
     /**
@@ -175,50 +182,98 @@ class Chambre
     }
 
     /**
-     * Set dateSave
+     * Set placesDisponibles
      *
-     * @param \DateTime $dateSave
+     * @param float $placesDisponibles
      *
      * @return Chambre
      */
-    public function setDateSave($dateSave)
+    public function setPlacesDisponibles($placesDisponibles)
     {
-        $this->dateSave = $dateSave;
+        $this->placesDisponibles = $placesDisponibles;
 
         return $this;
     }
 
     /**
-     * Get dateSave
+     * Get placesDisponibles
      *
-     * @return \DateTime
+     * @return float
      */
-    public function getDateSave()
+    public function getPlacesDisponibles()
     {
-        return $this->dateSave;
+        return $this->placesDisponibles;
     }
 
     /**
-     * Set dateUpdate
+     * Set created_at
      *
-     * @param \DateTime $dateUpdate
+     * @param \DateTime $createdAt
      *
      * @return Chambre
      */
-    public function setDateUpdate($dateUpdate)
+    public function setCreatedAt($createdAt)
     {
-        $this->dateUpdate = $dateUpdate;
+        $this->created_at = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get dateUpdate
+     * Get created_at
      *
      * @return \DateTime
      */
-    public function getDateUpdate()
+    public function getCreatedAt()
     {
-        return $this->dateUpdate;
+        return $this->created_at;
+    }
+
+    /**
+     * Set updated_at
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Chambre
+     */
+    public function setupdated_at($updatedAt)
+    {
+        $this->updated_at = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updated_at
+     *
+     * @return \DateTime
+     */
+    public function getupdated_at()
+    {
+        return $this->updated_at;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Chambre
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updated_at = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
     }
 }

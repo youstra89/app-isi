@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 use ISI\ORGBundle\Entity\Activite;
 use ISI\ORGBundle\Form\ActiviteType;
-use ISI\ISIBundle\Entity\Anneescolaire;
+use ISI\ISIBundle\Entity\Annee;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use ISI\ISIBundle\Repository\AnneeContratRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -22,7 +22,7 @@ class ActiviteLocaleController extends Controller
   public function indexActivitesLocalesAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoActivite   = $em->getRepository('ORGBundle:Activite');
     $annee       = $repoAnnee->find($as);
     $paginator = $this->get('knp_paginator');
@@ -47,7 +47,7 @@ class ActiviteLocaleController extends Controller
   public function choixDeLaCommuneActivitesLocalesAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $annee       = $repoAnnee->find($as);
     $repoCommune = $em->getRepository('ORGBundle:Commune');
     $communes    = $repoCommune->findBy(['ville' => 105]);
@@ -65,7 +65,7 @@ class ActiviteLocaleController extends Controller
   public function addActivitesLocalesAction(Request $request, int $as, int $communeId)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoCommune = $em->getRepository('ORGBundle:Commune');
     $annee       = $repoAnnee->find($as);
     $commune     = $repoCommune->find($communeId);
@@ -100,7 +100,7 @@ class ActiviteLocaleController extends Controller
   public function editActivitesLocalesAction(Request $request, int $as, int $id)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoActivite = $em->getRepository('ORGBundle:Activite');
     $annee       = $repoAnnee->find($as);
     $activite     = $repoActivite->find($id);
@@ -132,7 +132,7 @@ class ActiviteLocaleController extends Controller
   public function infoActivitesLocalesAction(Request $request, int $as, int $id)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoActivite = $em->getRepository('ORGBundle:Activite');
     $annee       = $repoAnnee->find($as);
     $activite     = $repoActivite->find($id);

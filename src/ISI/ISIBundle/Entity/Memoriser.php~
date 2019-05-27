@@ -1,14 +1,14 @@
 <?php
 
-namespace ISIBundle\Entity;
+namespace ISI\ISIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Memoriser
  *
- * @ORM\Table(name="memoriser", uniqueConstraints={@ORM\UniqueConstraint(name="memorisation", columns={"eleve", "halaqa", "annee_scolaire"})}, indexes={@ORM\Index(name="eleve", columns={"eleve"}), @ORM\Index(name="halaqa", columns={"halaqa"}), @ORM\Index(name="anneeScolaire", columns={"annee_scolaire"})})
- * @ORM\Entity(repositoryClass="ISIBundle\Repository\MemoriserRepository")
+ * @ORM\Table(name="memoriser", uniqueConstraints={@ORM\UniqueConstraint(name="memorisation", columns={"eleve_id", "halaqa_id", "annee_id"})}, indexes={@ORM\Index(name="eleve", columns={"eleve_id"}), @ORM\Index(name="halaqa", columns={"halaqa_id"}), @ORM\Index(name="annee", columns={"annee_id"})})
+ * @ORM\Entity(repositoryClass="ISI\ISIBundle\Repository\MemoriserRepository")
  */
 class Memoriser
 {
@@ -24,9 +24,9 @@ class Memoriser
     /**
      * @var \Eleve
      *
-     * @ORM\ManyToOne(targetEntity="Eleve")
+     * @ORM\ManyToOne(targetEntity="ISI\ISIBundle\Entity\Eleve", inversedBy="memoriser")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="eleve", referencedColumnName="eleve_id")
+     *   @ORM\JoinColumn(name="eleve_id", referencedColumnName="id")
      * })
      */
     private $eleve;
@@ -36,34 +36,34 @@ class Memoriser
      *
      * @ORM\ManyToOne(targetEntity="Halaqa")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="halaqa", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="halaqa_id", referencedColumnName="id")
      * })
      */
     private $halaqa;
 
     /**
-     * @var \Anneescolaire
+     * @var \Annee
      *
-     * @ORM\ManyToOne(targetEntity="Anneescolaire")
+     * @ORM\ManyToOne(targetEntity="Annee")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="annee_scolaire", referencedColumnName="annee_scolaire_id")
+     *   @ORM\JoinColumn(name="annee_id", referencedColumnName="id")
      * })
      */
-    private $anneeScolaire;
+    private $annee;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_save", type="datetime", nullable=false)
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private $dateSave;
+    private $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_update", type="datetime", nullable=false)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private $dateUpdate;
+    private $updatedAt;
 
 
     /**
@@ -80,11 +80,11 @@ class Memoriser
     /**
      * Set eleve
      *
-     * @param \ISIBundle\Entity\Eleve $eleve
+     * @param \ISI\ISIBundle\Entity\Eleve $eleve
      *
      * @return Memoriser
      */
-    public function setEleve(\ISIBundle\Entity\Eleve $eleve = null)
+    public function setEleve(\ISI\ISIBundle\Entity\Eleve $eleve = null)
     {
         $this->eleve = $eleve;
 
@@ -94,7 +94,7 @@ class Memoriser
     /**
      * Get eleve
      *
-     * @return \ISIBundle\Entity\Eleve
+     * @return \ISI\ISIBundle\Entity\Eleve
      */
     public function getEleve()
     {
@@ -104,11 +104,11 @@ class Memoriser
     /**
      * Set halaqa
      *
-     * @param \ISIBundle\Entity\Halaqa $halaqa
+     * @param \ISI\ISIBundle\Entity\Halaqa $halaqa
      *
      * @return Memoriser
      */
-    public function setHalaqa(\ISIBundle\Entity\Halaqa $halaqa = null)
+    public function setHalaqa(\ISI\ISIBundle\Entity\Halaqa $halaqa = null)
     {
         $this->halaqa = $halaqa;
 
@@ -118,7 +118,7 @@ class Memoriser
     /**
      * Get halaqa
      *
-     * @return \ISIBundle\Entity\Halaqa
+     * @return \ISI\ISIBundle\Entity\Halaqa
      */
     public function getHalaqa()
     {
@@ -128,11 +128,11 @@ class Memoriser
     /**
      * Set anneeScolaire
      *
-     * @param \ISIBundle\Entity\Anneescolaire $anneeScolaire
+     * @param \ISI\ISIBundle\Entity\Annee $anneeScolaire
      *
      * @return Memoriser
      */
-    public function setAnneeScolaire(\ISIBundle\Entity\Anneescolaire $anneeScolaire = null)
+    public function setAnneeScolaire(\ISI\ISIBundle\Entity\Annee $anneeScolaire = null)
     {
         $this->anneeScolaire = $anneeScolaire;
 
@@ -142,7 +142,7 @@ class Memoriser
     /**
      * Get anneeScolaire
      *
-     * @return \ISIBundle\Entity\Anneescolaire
+     * @return \ISI\ISIBundle\Entity\Annee
      */
     public function getAnneeScolaire()
     {
@@ -151,50 +151,122 @@ class Memoriser
 
 
     /**
-     * Set dateSave
+     * Set created_at
      *
-     * @param \DateTime $dateSave
+     * @param \DateTime $createdAt
      *
      * @return Memoriser
      */
-    public function setDateSave($dateSave)
+    public function setcreated_at($createdAt)
     {
-        $this->dateSave = $dateSave;
+        $this->created_at = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get dateSave
+     * Get created_at
      *
      * @return \DateTime
      */
-    public function getDateSave()
+    public function getcreated_at()
     {
-        return $this->dateSave;
+        return $this->created_at;
     }
 
     /**
-     * Set dateUpdate
+     * Set updated_at
      *
-     * @param \DateTime $dateUpdate
+     * @param \DateTime $updatedAt
      *
      * @return Memoriser
      */
-    public function setDateUpdate($dateUpdate)
+    public function setupdated_at($updatedAt)
     {
-        $this->dateUpdate = $dateUpdate;
+        $this->updated_at = $updatedAt;
 
         return $this;
     }
 
     /**
-     * Get dateUpdate
+     * Get updated_at
      *
      * @return \DateTime
      */
-    public function getDateUpdate()
+    public function getupdated_at()
     {
-        return $this->dateUpdate;
+        return $this->updated_at;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Memoriser
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->created_at = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Memoriser
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updated_at = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
+    }
+
+    /**
+     * Set annee
+     *
+     * @param \ISI\ISIBundle\Entity\Annee $annee
+     *
+     * @return Memoriser
+     */
+    public function setAnnee(\ISI\ISIBundle\Entity\Annee $annee = null)
+    {
+        $this->annee = $annee;
+
+        return $this;
+    }
+
+    /**
+     * Get annee
+     *
+     * @return \ISI\ISIBundle\Entity\Annee
+     */
+    public function getAnnee()
+    {
+        return $this->annee;
     }
 }

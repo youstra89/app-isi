@@ -1,0 +1,74 @@
+{% extends "ORGBundle::layout.html.twig" %}
+
+{% block title %}
+  Dispositions
+{% endblock %}
+
+{% block contextual_menu %}
+  {# {% include('ORGBundle::contextual-menu.html.twig') %} #}
+{% endblock %}
+
+
+{% block notification %}
+  {% for message in app.session.flashbag.get('error') %}
+  <div class="ui red message">
+    <div class="header">{{ 'Attention'|trans }} !!! </div>
+    <ul class="list">
+      <li>{{ message }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+  {% for message in app.session.flashbag.get('info') %}
+  <div class="ui green message">
+    <div class="header">{{ 'Notification'|trans }}: </div>
+    <ul class="list">
+      <li>{{ message }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+{% endblock %}
+
+
+{% block titre_page %}
+  <i class="users icon"></i>{{ 'Bâtiments'|trans }}
+{% endblock %}
+
+
+{% block body %}
+  <h2 class="ui header">
+    {# <img src="/images/icons/plugin.png"> #}
+    <div class="content">
+      Bâtiments
+      <div class="sub header">Gestion des bâtiments</div>
+    </div>
+  </h2>
+  <div>
+    <a href="{{ path('batiment_add', {'as' : asec}) }}" class="ui primary button">Ajouter un bâtiment</a>
+  </div>
+  <br>
+  <div class="ui cards">
+    {% for batiment in batiments %}
+      <div class="card">
+        <div class="content">
+          <div class="header">{{ batiment.nom }}
+            <a href="{{ path('batiment_edit', {'as': asec, 'id': batiment.id}) }}"><i class="ui edit icon"></i></a>
+          </div>
+          <div class="description">
+            Nombre de salle de cours : {{ batiment.salles|length }}
+          </div>
+        </div>
+        <a href="{{ path('salle_add', {'as': asec, 'id': batiment.id}) }}">
+          <div class="ui bottom attached button">
+            <i class="add icon"></i>
+            Ajouter une salle de cours
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}
+
+
+
+{% block javascript %}
+{% endblock %}

@@ -22,11 +22,11 @@ class AnneeContratAbsence
     private $id;
 
     /**
-     * @var \Anneescolaire
+     * @var \Annee
      *
-     * @ORM\ManyToOne(targetEntity="\ISI\ISIBundle\Entity\Anneescolaire")
+     * @ORM\ManyToOne(targetEntity="\ISI\ISIBundle\Entity\Annee")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="annee", referencedColumnName="annee_scolaire_id")
+     *   @ORM\JoinColumn(name="annee_id", referencedColumnName="id")
      * })
      */
     private $annee;
@@ -36,7 +36,7 @@ class AnneeContratAbsence
      *
      * @ORM\ManyToOne(targetEntity="Contrat")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="contrat", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="contrat_id", referencedColumnName="id")
      * })
      */
     private $contrat;
@@ -67,7 +67,7 @@ class AnneeContratAbsence
      *
      * @ORM\Column(name="autorisation", type="boolean")
      */
-    private $autorisation;
+    private $autorisation = FALSE;
 
     /**
      * @var \DateTime
@@ -79,16 +79,16 @@ class AnneeContratAbsence
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_save", type="datetime")
+     * @ORM\Column(name="created_at", type="datetime")
      */
-    private $dateSave;
+    private $createdAt; 
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_update", type="datetime")
+     * @ORM\Column(name="date_update", type="datetime", nullable=true)
      */
-    private $dateUpdate;
+    private $updatedAt;
 
 
     /**
@@ -220,5 +220,148 @@ class AnneeContratAbsence
     {
         return $this->dateDemande;
     }
-}
 
+    /**
+     * Set created_at
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return AnneeContratAbsence
+     */
+    public function setcreated_at($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get created_at
+     *
+     * @return \DateTime
+     */
+    public function getcreated_at()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updated_at
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return AnneeContratAbsence
+     */
+    public function setupdated_at($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updated_at
+     *
+     * @return \DateTime
+     */
+    public function getupdated_at()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * Set annee
+     *
+     * @param \ISI\ISIBundle\Entity\Annee $annee
+     *
+     * @return AnneeContratAbsence
+     */
+    public function setAnnee(\ISI\ISIBundle\Entity\Annee $annee = null)
+    {
+        $this->annee = $annee;
+
+        return $this;
+    }
+
+    /**
+     * Get annee
+     *
+     * @return \ISI\ISIBundle\Entity\Annee
+     */
+    public function getAnnee()
+    {
+        return $this->annee;
+    }
+
+    /**
+     * Set contrat
+     *
+     * @param \ISI\ENSBundle\Entity\Contrat $contrat
+     *
+     * @return AnneeContratAbsence
+     */
+    public function setContrat(\ISI\ENSBundle\Entity\Contrat $contrat = null)
+    {
+        $this->contrat = $contrat;
+
+        return $this;
+    }
+
+    /**
+     * Get contrat
+     *
+     * @return \ISI\ENSBundle\Entity\Contrat
+     */
+    public function getContrat()
+    {
+        return $this->contrat;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return AnneeContratAbsence
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return AnneeContratAbsence
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+}

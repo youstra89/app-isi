@@ -136,7 +136,7 @@
           <div class="ui rail row">
             <div class="ui sticky three wide column" style="left: 0px; top: 0px;">
               <div class="ui tertiary segment">
-                <p>{{ 'Année scolaire'|trans }}: <strong>{{ annee.libelleAnneeScolaire }}</strong></p>
+                <p>{{ 'Année scolaire'|trans }}: <strong>{{ annee.libelle }}</strong></p>
               </div>
               <p>
                 {% if is_granted('ROLE_SUPER_ADMIN') %}
@@ -160,7 +160,6 @@
         </div>
       </div>
     </body>
-    <script src="{{ asset('js/push.js') }}"></script>
     <script>
       {# Push.create("Un nouvel article a été publié sur ShevArezo`blog !", {
           body: "CanIUse en ligne de commande",

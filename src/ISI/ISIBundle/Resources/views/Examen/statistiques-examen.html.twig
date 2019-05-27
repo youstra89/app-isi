@@ -37,14 +37,14 @@
         {% set admisNiveau = 0 %}
         {% set recalesNiveau = 0 %}
         {% for classe in moyennesClasses %}<tr>
-          {% if niveau.id == classe.classe.niveau.id %}
+          {% set effectif = classe.admis + classe.recales %}
+          {% if niveau.id == classe.classe.niveau.id and effectif != 0 %}
             {% set admisNiveau = admisNiveau + classe.admis %}
             {% set recalesNiveau = recalesNiveau + classe.recales %}
             <div class="column">
-              <h4>{{classe.classe.libelleClasseFr}}</h4>
+              <h4>{{classe.classe.libelleFr}}</h4>
               {{ 'Admis'|trans }}: <a class="ui green tag label">{{ classe.admis }}</a> <br>
               {{ 'Recalés'|trans }}: <a class="ui red tag label">{{ classe.recales }}</a> <br>
-              {% set effectif = classe.admis + classe.recales %}
               {% set pourcentageAdmis = (classe.admis * 100) / effectif %}
               {{ 'Pourcentage d\'admis'|trans }}: {{ pourcentageAdmis|number_format(2, ',') }} %
               <p></p>
@@ -55,21 +55,23 @@
         {# End for classe in classes #}
       </div>
       {% set nbrElevesNiveau = admisNiveau + recalesNiveau %}
-      {% set pourcentageAdmission = (admisNiveau * 100) / nbrElevesNiveau %}
-      <table class="ui table">
-        <tr>
-          <th align="center">{{ 'Nombre total d\'élèves'|trans }}</th>
-          <th align="center">{{ 'Nombre d\'admis'|trans }}</th>
-          <th align="center">{{ 'Nombre de recalés'|trans }}</th>
-          <th align="center">{{ 'Pourcentage de réussite à l\'examen'|trans }}</th>
-        </tr>
-        <tr>
-          <td><center>{{ nbrElevesNiveau }}</center></td>
-          <td><center>{{ admisNiveau }}</center></td>
-          <td><center>{{ recalesNiveau }}</center></td>
-          <td><center>{{ pourcentageAdmission|number_format(2, ',') }} %</center></td>
-        </tr>
-      </table>
-      <br>
+      {% if nbrElevesNiveau != 0 %}
+        {% set pourcentageAdmission = (admisNiveau * 100) / nbrElevesNiveau %}
+        <table class="ui table">
+          <tr>
+            <th align="center">{{ 'Nombre total d\'élèves'|trans }}</th>
+            <th align="center">{{ 'Nombre d\'admis'|trans }}</th>
+            <th align="center">{{ 'Nombre de recalés'|trans }}</th>
+            <th align="center">{{ 'Pourcentage de réussite à l\'examen'|trans }}</th>
+          </tr>
+          <tr>
+            <td><center>{{ nbrElevesNiveau }}</center></td>
+            <td><center>{{ admisNiveau }}</center></td>
+            <td><center>{{ recalesNiveau }}</center></td>
+            <td><center>{{ pourcentageAdmission|number_format(2, ',') }} %</center></td>
+          </tr>
+        </table>
+        <br>
+      {% endif %}
     {% endfor %}
 {% endblock %}

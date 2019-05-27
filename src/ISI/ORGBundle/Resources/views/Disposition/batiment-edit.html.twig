@@ -1,0 +1,30 @@
+{% extends 'ORGBundle:Imam:index.html.twig'%}
+
+
+{% block stylesheets %}
+{% endblock %}
+
+
+{% block title %}
+  Edition informations bâtiment {{ batiment.nom }}
+{% endblock %}
+
+
+{% block body %}
+  <h2>Edition du bâtiment {{ batiment.nom }}</h2>
+  <div>
+    <form action="" method="post" class="ui form">
+      <div class="two fields">
+        <div class="field">
+          <label for="nom">Nom du bâtiment</label>
+          <input type="text" name="nom" id="nom" value="{{ batiment.nom }}">
+        </div>
+      </div>
+      <button type="submit" class="ui default button">Valider</button>
+    </form>
+  </div>
+{% endblock %}
+
+
+{% block javascripts %}
+{% endblock %}

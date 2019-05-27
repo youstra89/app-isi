@@ -32,7 +32,7 @@
     {% endfor %}
     <div class="ui cards">
       {% if moyennesPretes == FALSE %}
-        <a class="ui card" href="{{ path('isi_classement_annuel', {'as': asec, 'regime': regime, 'classeId': classe.classeId}) }}">
+        <a class="ui card" href="{{ path('isi_classement_annuel', {'as': asec, 'regime': regime, 'classeId': classe.id}) }}">
           <div class="content">
             <div class="header">{{ 'Calcul des résultats annuels'|trans }}</div>
             <div class="meta">
@@ -46,7 +46,7 @@
           </div>
         </a>
       {% else %}
-        <a class="ui card" href="{{ path('isi_notes_des_deux_examens', {'as': asec, 'regime': regime, 'classeId': classe.classeId}) }}">
+        <a class="ui card" href="{{ path('isi_notes_des_deux_examens', {'as': asec, 'regime': regime, 'classeId': classe.id}) }}">
           <div class="content">
             <div class="header">{{ 'Les notes des examens'|trans }}</div>
             <div class="meta">
@@ -59,7 +59,7 @@
             </div>
           </div>
         </a>
-        <a class="ui card" href="{{ path('isi_classement_annuel', {'as': asec, 'regime': regime, 'classeId': classe.classeId}) }}">
+        <a class="ui card" href="{{ path('isi_classement_annuel', {'as': asec, 'regime': regime, 'classeId': classe.id}) }}">
           <div class="content">
             <div class="header">{{ 'Classement annuel'|trans }}</div>
             <div class="meta">
@@ -72,7 +72,7 @@
             </div>
           </div>
         </a>
-        <a class="ui card" href="{{ path('isi_statistiques_annuelles', {'as': asec, 'regime': regime, 'classeId': classe.classeId}) }}">
+        <a class="ui card" href="{{ path('isi_statistiques_annuelles', {'as': asec, 'regime': regime, 'classeId': classe.id}) }}">
           <div class="content">
             <div class="header">{{ 'Les statistiques'|trans }}</div>
             <div class="meta">

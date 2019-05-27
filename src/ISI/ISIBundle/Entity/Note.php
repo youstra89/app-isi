@@ -38,23 +38,23 @@ class Note
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_save", type="datetime", nullable=false)
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private $dateSave;
+    private $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_update", type="datetime", nullable=false)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private $dateUpdate;
+    private $updatedAt;
 
     /**
      * @var \Examen
      *
      * @ORM\ManyToOne(targetEntity="Examen")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="examen_id", referencedColumnName="examen_id")
+     *   @ORM\JoinColumn(name="examen_id", referencedColumnName="id")
      * })
      */
     private $examen;
@@ -64,7 +64,7 @@ class Note
      *
      * @ORM\ManyToOne(targetEntity="Eleve")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="eleve_id", referencedColumnName="eleve_id")
+     *   @ORM\JoinColumn(name="eleve_id", referencedColumnName="id")
      * })
      */
     private $eleve;
@@ -74,7 +74,7 @@ class Note
      *
      * @ORM\ManyToOne(targetEntity="Matiere")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="matiere_id", referencedColumnName="matiere_id")
+     *   @ORM\JoinColumn(name="matiere_id", referencedColumnName="id")
      * })
      */
     private $matiere;
@@ -84,7 +84,7 @@ class Note
      *
      * @ORM\ManyToOne(targetEntity="Appreciation")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="appreciation", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="appreciation_id", referencedColumnName="id")
      * })
      */
     private $appreciation;
@@ -151,51 +151,51 @@ class Note
     }
 
     /**
-     * Set dateSave
+     * Set created_at
      *
-     * @param \DateTime $dateSave
+     * @param \DateTime $createdAt
      *
      * @return Note
      */
-    public function setDateSave($dateSave)
+    public function setcreated_at($createdAt)
     {
-        $this->dateSave = $dateSave;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get dateSave
+     * Get created_at
      *
      * @return \DateTime
      */
-    public function getDateSave()
+    public function getcreated_at()
     {
-        return $this->dateSave;
+        return $this->createdAt;
     }
 
     /**
-     * Set dateUpdate
+     * Set updated_at
      *
-     * @param \DateTime $dateUpdate
+     * @param \DateTime $updatedAt
      *
      * @return Note
      */
-    public function setDateUpdate($dateUpdate)
+    public function setupdated_at($updatedAt)
     {
-        $this->dateUpdate = $dateUpdate;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
     /**
-     * Get dateUpdate
+     * Get updated_at
      *
      * @return \DateTime
      */
-    public function getDateUpdate()
+    public function getupdated_at()
     {
-        return $this->dateUpdate;
+        return $this->updatedAt;
     }
 
     /**
@@ -304,5 +304,53 @@ class Note
             return 0;
         }
         return ($al > $bl) ? +1 : -1;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Note
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Note
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
     }
 }

@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Vendredi
- * @ORM\Table(name="vendredi")
+ * @ORM\Table(name="vendredi", uniqueConstraints={@ORM\UniqueConstraint(name="vendredi_idx", columns={"imam_id", "mosquee_id"})})
  * @ORM\Entity(repositoryClass="ISI\ORGBundle\Repository\VendrediRepository")
  */
 class Vendredi
@@ -28,7 +28,7 @@ class Vendredi
     /**
      * @ORM\ManyToOne(targetEntity="Imam")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="imam", referencedColumnName="id", nullable=false)
+     *   @ORM\JoinColumn(name="imam_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $imam;
@@ -36,7 +36,7 @@ class Vendredi
     /**
      * @ORM\ManyToOne(targetEntity="Mosquee")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="mosquee", referencedColumnName="id", nullable=false)
+     *   @ORM\JoinColumn(name="mosquee_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $mosquee;
@@ -44,17 +44,17 @@ class Vendredi
     /**
      * @ORM\Column(type="datetime")
      */
-    private $created_at;
+    private $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $updated_at;
+    private $updatedAt;
 
 
     public function __construct()
     {
-      $this->created_at = new \Datetime();
+      $this->createdAt = new \Datetime();
     }
 
     public function getId(): ?int
@@ -98,27 +98,75 @@ class Vendredi
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getcreated_at(): ?\DateTimeInterface
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $created_at): self
+    public function setcreated_at(\DateTimeInterface $createdAt): self
     {
-        $this->created_at = $created_at;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getupdated_at(): ?\DateTimeInterface
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $updated_at): self
+    public function setupdated_at(\DateTimeInterface $updated_at): self
     {
-        $this->updated_at = $updated_at;
+        $this->updatedAt = $updatedAt;
 
         return $this;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Vendredi
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt;
+     *
+     * @return Vendredi
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
     }
 }

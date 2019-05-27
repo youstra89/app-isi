@@ -28,7 +28,7 @@ class ChambreType extends AbstractType
                   'choice_label'  => 'nom',
                   'multiple'      => false
                 ])
-                ->add('libelleChambre', TextType::class)
+                ->add('libelle', TextType::class)
                 ->add('genre', ChoiceType::class, [
                   'choices' => [
                     'Garçon' => 1,

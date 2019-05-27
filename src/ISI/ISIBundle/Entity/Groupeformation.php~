@@ -1,6 +1,6 @@
 <?php
 
-namespace ISIBundle\Entity;
+namespace ISI\ISIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Groupeformation
  *
  * @ORM\Table(name="groupeformation", uniqueConstraints={@ORM\UniqueConstraint(name="libelle_ar", columns={"libelle_ar"}), @ORM\UniqueConstraint(name="libelle_fr", columns={"libelle_fr"})})
- * @ORM\Entity(repositoryClass="ISIBundle\Repository\GroupeformationRepository")
+ * @ORM\Entity(repositoryClass="ISI\ISIBundle\Repository\GroupeformationRepository")
  */
 class Groupeformation
 {
@@ -38,9 +38,9 @@ class Groupeformation
     /**
      * @var string
      *
-     * @ORM\Column(name="reference_grp", type="string", length=255, nullable=false)
+     * @ORM\Column(name="reference", type="string", length=255, nullable=false)
      */
-     private $referenceGrp;
+     private $reference;
 
 
     /**

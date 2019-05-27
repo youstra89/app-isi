@@ -6,7 +6,7 @@
 
 
 {% block corps %}
-    <div class="ui container">
+    <div class="">
         <h3>{{ 'Liste des élèves retirés'|trans }}</h3>
         {% if internes is not defined %}
             <p>{{ 'Aucun élève n\'a été renvoyé de l\'internat cette année.'|trans }}</p>
@@ -37,14 +37,14 @@
                     <td>{{ interne.eleve.matricule }}</td>
                     <td>{{ interne.eleve.nomFr }} {{ interne.eleve.pnomFr }}</td>
                     <td>
-                      {% if interne.eleve.sexeFr == 1 %}
+                      {% if interne.eleve.sexe == 1 %}
                         Garçon
                       {% else %}
                         Fille
                       {% endif %}
                     </td>
                     <td>{{ interne.eleve.dateNaissance|localizeddate('full', 'none', 'locale') }}</td>
-                    <td>{{ interne.chambre.libelleChambre }}</td>
+                    <td>{{ interne.chambre.libelle }}</td>
                     <td>{{ interne.dateRenvoi|localizeddate('full', 'none', 'locale') }} à {{ interne.dateRenvoi|localizeddate('none', 'full', 'locale') }}</td>
                     <td>
                       <a href="#">

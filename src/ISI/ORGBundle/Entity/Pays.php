@@ -37,7 +37,7 @@ class Pays
 
     public function __construct()
     {
-      $this->created_at = new \Datetime();
+      $this->createdAt = new \Datetime();
       // $this->mosquees = new ArrayCollection();
     }
 
@@ -56,5 +56,39 @@ class Pays
         $this->nom = $nom;
 
         return $this;
+    }
+
+    /**
+     * Add converti
+     *
+     * @param \ISI\ORGBundle\Entity\Converti $converti
+     *
+     * @return Pays
+     */
+    public function addConverti(\ISI\ORGBundle\Entity\Converti $converti)
+    {
+        $this->convertis[] = $converti;
+
+        return $this;
+    }
+
+    /**
+     * Remove converti
+     *
+     * @param \ISI\ORGBundle\Entity\Converti $converti
+     */
+    public function removeConverti(\ISI\ORGBundle\Entity\Converti $converti)
+    {
+        $this->convertis->removeElement($converti);
+    }
+
+    /**
+     * Get convertis
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getConvertis()
+    {
+        return $this->convertis;
     }
 }

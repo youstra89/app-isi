@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <title>
-        {% block title %} Impression halaqa | {{ halaqa.getLibelleHalaqa }} {% endblock %}
+        {% block title %} Impression halaqa | {{ halaqa.getLibelle }} {% endblock %}
     </title>
 
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
@@ -212,7 +212,7 @@
             <div class="id-fiche">
                 <center>
                     <div class="halaqa">
-                        <span>الفصل : <span class="libelleClasse">{{ halaqa.libellehalaqa }}</span></span>
+                        <span>الفصل : <span class="libelleClasse">{{ halaqa.libelle }}</span></span>
                     </div>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -222,7 +222,7 @@
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <div class="annee">
-                        <span>السنة الدراسية : <span class="libelleClasse">{{ annee.libelleAnneeScolaire }}</span></span>
+                        <span>السنة الدراسية : <span class="libelleClasse">{{ annee.libelle }}</span></span>
                     </div>
                 </center>
             </div>
@@ -260,7 +260,7 @@
                                 {% set color = '#efefef' %}
                             {% endif %}
                             {# Pour le sexe #}
-                            {% if eleve.getEleve.getSexeFr == 1 %}
+                            {% if eleve.getEleve.getSexe == 1 %}
                                 {% set sexe = 'ذكر' %}
                             {% else %}
                                 {% set sexe = 'أنثى' %}
@@ -273,8 +273,8 @@
                                 <td align="right" class="nomEleveFr">{{ eleve.getEleve.getNomFr  }} {{ eleve.getEleve.getPnomFr }}</td>
                                 {% if regime == 'A' %}
                                     {% for classe in classes %}
-                                        {% if eleve.getEleve.getEleveId == classe.getEleve.getEleveId %}
-                                            <td align="center" class="classe">{{ classe.getClasse.getLibelleClasseAr }}</td>
+                                        {% if eleve.getEleve.getId == classe.getEleve.getId %}
+                                            <td align="center" class="classe">{{ classe.getClasse.getLibelleAr }}</td>
                                         {% endif %}
                                     {% endfor %}
                                 {% endif %}
@@ -317,7 +317,7 @@
                             {% set color = 'gray' %}
                         {% endif %}
                         <!--Pour le sexe  -->
-                        {% if eleve.getEleve.getSexeFr == 1 %}
+                        {% if eleve.getEleve.getSexe == 1 %}
                             {% set sexe = 'ذكر' %}
                         {% else %}
                             {% set sexe = 'أنثى' %}
@@ -333,8 +333,8 @@
                                     <td align="right" class="nomEleveFr">{{ eleve.getEleve.getNomFr }} {{ eleve.getEleve.getPnomFr }}</td>
                                     {% if regime == 'A' %}
                                         {% for classe in classes %}
-                                            {% if eleve.getEleve.getEleveId == classe.getEleve.getEleveId %}
-                                                <td align="center" class="classe">{{ classe.getClasse.getLibelleClasseAr }}</td>
+                                            {% if eleve.getEleve.getId == classe.getEleve.getId %}
+                                                <td align="center" class="classe">{{ classe.getClasse.getLibelleAr }}</td>
                                             {% endif %}
                                         {% endfor %}
                                     {% endif %}

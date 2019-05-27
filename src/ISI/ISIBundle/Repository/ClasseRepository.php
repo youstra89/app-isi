@@ -18,9 +18,9 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
        ->join('c.niveau', 'n')
        ->join('n.groupeFormation', 'grp')
       //  ->join('grp.referenceRegime', 'r')
-       ->join('c.anneeScolaire', 'a')
-       ->where('a.anneeScolaireId = :as')
-       ->andWhere('grp.referenceGrp = :regime')
+       ->join('c.annee', 'a')
+       ->where('a.id = :as')
+       ->andWhere('grp.reference = :regime')
        ->setParameter('as', $as)
        ->setParameter('regime', $regime)
     ;
@@ -34,9 +34,9 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
   public function lesClassesDuNiveau($as, $niveau)
   {
     $qb = $this->createQueryBuilder('c')
-              ->join('c.anneeScolaire', 'a')
+              ->join('c.annee', 'a')
               ->where('c.niveau = :niveau')
-              ->andWhere('a.anneeScolaireId = :annee')
+              ->andWhere('a.id = :annee')
               ->setParameter('niveau', $niveau)
               ->setParameter('annee', $as);
 
@@ -47,7 +47,7 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
   public function classeInscription()
   {
     $dql = $this->_em->createQuery(
-                    "SELECT c.classeId, CONCAT(n.libelleFr, ' ', c.libelleClasseFr) nomClasse
+                    "SELECT c.id, CONCAT(n.libelleFr, ' ', c.libelleFr) nomClasse
                     FROM ISIBundle:Classe c
                     JOIN c.niveau n"
     );
@@ -59,10 +59,10 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
   public function myFindGrpFormationClasse($classeId)
   {
     $qb = $this->createQueryBuilder('c');
-    $qb->select('grpF.referenceGrp')
+    $qb->select('grpF.reference')
        ->join('c.niveau', 'n')
        ->join('n.groupeFormation', 'grpF')
-       ->where('c.classeId = :classe')
+       ->where('c.id = :classe')
        ->setParameter('classe', $classeId);
 
     return $qb->getQuery()
@@ -75,8 +75,8 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
     $qb = $this->createQueryBuilder('c');
     $qb->join('c.niveau', 'n')
        ->join('n.groupeFormation', 'grpF')
-       ->join('c.anneeScolaire', 'an')
-       ->where('grpF.referenceGrp = :regime AND an.anneeScolaireId = :an')
+       ->join('c.annee', 'an')
+       ->where('grpF.reference = :regime AND an.id = :an')
        ->setParameter('regime', $regime)
        ->setParameter('an', $as)
     ;
@@ -89,8 +89,8 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
     $qb = $this->createQueryBuilder('c');
     $qb->join('c.niveau', 'n')
        ->join('n.groupeFormation', 'grpF')
-       ->join('c.anneeScolaire', 'an')
-       ->where('grpF.referenceGrp = :regime AND an.anneeScolaireId = :an AND n.succession = :succession')
+       ->join('c.annee', 'an')
+       ->where('grpF.reference = :regime AND an.id = :an AND n.succession = :succession')
        ->setParameter('succession', $succession)
        ->setParameter('regime', $regime)
        ->setParameter('an', $as)
@@ -104,8 +104,8 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
   {
     $qb = $this->createQueryBuilder('c');
     $qb->join('c.niveau', 'n')
-       ->join('c.anneeScolaire', 'an')
-       ->where('an.anneeScolaireId = :an')
+       ->join('c.annee', 'an')
+       ->where('an.id = :an')
        ->setParameter('an', $as)
     ;
     return $qb->getQuery()
@@ -120,8 +120,8 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
         ->join('c.niveau', 'n')
         ->join('n.groupeFormation', 'grpF')
         ->join('fiche.examen', 'exam')
-        ->join('c.anneeScolaire', 'an')
-        ->where('an.anneeScolaireId = :as AND exam.examenId = :examen AND grpF.referenceGrp = :regime')
+        ->join('c.annee', 'an')
+        ->where('an.id = :as AND exam.id = :examen AND grpF.reference = :regime')
         ->setParameter('as', $as)
         ->setParameter('examen', $examen)
         ->setParameter('regime', $regime);

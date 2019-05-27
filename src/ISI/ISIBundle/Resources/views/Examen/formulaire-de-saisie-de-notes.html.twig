@@ -15,7 +15,7 @@
 	</div>
 	<table>
 		<div class="well" style="width:75%">
-			<form action="{{path('isi_saisie_de_notes_de_la_classe_pour_une_matiere', {'as': asec, 'regime': regime, 'classeId': classe.classeId, 'examenId': examen.examenId, 'matiereId': matiere.matiereId, 'note': 1})}}" method="post" name="notes">
+			<form action="{{path('isi_saisie_de_notes_de_la_classe_pour_une_matiere', {'as': asec, 'regime': regime, 'classeId': classe.id, 'examenId': examen.id, 'matiereId': matiere.id, 'note': 1})}}" method="post" name="notes">
 				<div class="ui middle aligned divided list">
 				{# Pour chaque élève #}
 				<div class="item">
@@ -39,19 +39,19 @@
 				{% for eleve in eleves %}
 					{% set i = i + 1 %}
 					{% set image = "" %}
-					{% if eleve.sexeFr == 1 %}
+					{% if eleve.sexe == 1 %}
 						{% set image = "/markaz/web/images/mark.png" %}
 					{% else %}
 						{% set image = "/markaz/web/images/molly.png" %}
 					{% endif %}
 					{% for note in notes %}
-						{% if eleve.eleveId is same as(note.eleve.eleveId) %}
+						{% if eleve.id is same as(note.eleve.id) %}
 							{% set num = num + 1 %}
 							<div class="item ui selectable">
 								<div class="right floated content">
 									<div class="">
 										<div class="ui right labeled input">
-											<input name="note[{{ eleve.eleveId }}]" type="integer" id="{{ num }}" class="note">
+											<input name="note[{{ eleve.id }}]" type="integer" id="{{ num }}" class="note">
 											<div class="ui basic label">{{ 'points'|trans }}</div>
 										</div>
 									</div>

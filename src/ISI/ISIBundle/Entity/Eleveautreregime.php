@@ -9,10 +9,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * Eleveautreregime
  *
- * @ORM\Table(name="eleve_autre_regime", uniqueConstraints={@ORM\UniqueConstraint(name="eleve_annee", columns={"annee_scolaire", "eleve"})}, indexes={@ORM\Index(name="eleve", columns={"eleve"}), @ORM\Index(name="annee_scolaire", columns={"annee_scolaire"})})
+ * @ORM\Table(name="eleve_autre_regime", uniqueConstraints={@ORM\UniqueConstraint(name="eleve_annee", columns={"annee_id", "eleve_id"})}, indexes={@ORM\Index(name="eleve_id", columns={"eleve_id"}), @ORM\Index(name="annee_id", columns={"annee_id"})})
  * @ORM\Entity(repositoryClass="ISI\ISIBundle\Repository\EleveautreregimeRepository")
  * @UniqueEntity(
- *     fields={"eleve", "anneeScolaire"},
+ *     fields={"eleve", "annee"},
  *     errorPath="eleve",
  *     message="Le regime de cet(te) élève a déjà été changé."
  * )
@@ -38,36 +38,36 @@ class Eleveautreregime
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_save", type="datetime", nullable=false)
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private $dateSave;
+    private $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_update", type="datetime", nullable=false)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private $dateUpdate;
+    private $updatedAt;
 
     /**
      * @var \Eleve
      *
      * @ORM\ManyToOne(targetEntity="ISI\ISIBundle\Entity\Eleve")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="eleve", referencedColumnName="eleve_id")
+     *   @ORM\JoinColumn(name="eleve_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $eleve;
 
     /**
-     * @var \Anneescolaire
+     * @var \Annee
      *
-     * @ORM\ManyToOne(targetEntity="Anneescolaire")
+     * @ORM\ManyToOne(targetEntity="Annee")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="annee_scolaire", referencedColumnName="annee_scolaire_id")
+     *   @ORM\JoinColumn(name="annee_id", referencedColumnName="id", nullable=false)
      * })
      */
-    private $anneeScolaire;
+    private $annee;
 
 
     /**
@@ -81,51 +81,51 @@ class Eleveautreregime
     }
 
     /**
-     * Set dateSave
+     * Set created_at
      *
-     * @param \DateTime $dateSave
+     * @param \DateTime $createdAt
      *
      * @return Frequenter
      */
-    public function setDateSave($dateSave)
+    public function setcreated_at($createdAt)
     {
-        $this->dateSave = $dateSave;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get dateSave
+     * Get created_at
      *
      * @return \DateTime
      */
-    public function getDateSave()
+    public function getcreated_at()
     {
-        return $this->dateSave;
+        return $this->createdAt;
     }
 
     /**
-     * Set dateUpdate
+     * Set updated_at
      *
-     * @param \DateTime $dateUpdate
+     * @param \DateTime $updatedAt
      *
      * @return Frequenter
      */
-    public function setDateUpdate($dateUpdate)
+    public function setupdated_at($updatedAt)
     {
-        $this->dateUpdate = $dateUpdate;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
     /**
-     * Get dateUpdate
+     * Get updated_at
      *
      * @return \DateTime
      */
-    public function getDateUpdate()
+    public function getupdated_at()
     {
-        return $this->dateUpdate;
+        return $this->updatedAt;
     }
 
     /**
@@ -153,30 +153,6 @@ class Eleveautreregime
     }
 
     /**
-     * Set anneeScolaire
-     *
-     * @param \ISI\ISIBundle\Entity\Anneescolaire $anneeScolaire
-     *
-     * @return Frequenter
-     */
-    public function setAnneeScolaire(\ISI\ISIBundle\Entity\Anneescolaire $anneeScolaire = null)
-    {
-        $this->anneeScolaire = $anneeScolaire;
-
-        return $this;
-    }
-
-    /**
-     * Get anneeScolaire
-     *
-     * @return \ISI\ISIBundle\Entity\Anneescolaire
-     */
-    public function getAnneeScolaire()
-    {
-        return $this->anneeScolaire;
-    }
-
-    /**
      * Set motif
      *
      * @param string $motif
@@ -200,4 +176,76 @@ class Eleveautreregime
         return $this->motif;
     }
 
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Eleveautreregime
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Eleveautreregime
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * Set annee
+     *
+     * @param \ISI\ISIBundle\Entity\Annee $annee
+     *
+     * @return Eleveautreregime
+     */
+    public function setAnnee(\ISI\ISIBundle\Entity\Annee $annee = null)
+    {
+        $this->annee = $annee;
+
+        return $this;
+    }
+
+    /**
+     * Get annee
+     *
+     * @return \ISI\ISIBundle\Entity\Annee
+     */
+    public function getAnnee()
+    {
+        return $this->annee;
+    }
 }

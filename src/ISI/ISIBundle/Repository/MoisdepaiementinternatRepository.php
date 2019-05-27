@@ -19,9 +19,9 @@ class MoisdepaiementinternatRepository extends \Doctrine\ORM\EntityRepository
     $qb = $this->createQueryBuilder('mdp');
     $qb->join('mdp.mois', 'm')
        ->addSelect('m')
-       ->join('mdp.anneeScolaire', 'an')
+       ->join('mdp.annee', 'an')
        ->addSelect('an')
-       ->where('an.anneeScolaireId = :as')
+       ->where('an.id = :as')
        ->orderBy('mdp.id', 'DESC')
        ->setFirstResult( $offset )
        ->setMaxResults( $limit );

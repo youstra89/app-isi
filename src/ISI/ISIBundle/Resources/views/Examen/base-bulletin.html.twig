@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>Impression des bulletins | {{classe.niveau.libelleFr}} - {{classe.libelleClasseFr}} </title>
+    <title>Impression des bulletins | {{classe.libelleFr}} </title>
     {% block stylesheets %}
 
     <lin rel="stylesheet" href="{{ asset('../vendor/twbs/bootstrap/dist/css/bootstrap.min.css') }}" /> {% endblock %}
@@ -273,7 +273,7 @@
                     <td>رقم الطالب</td>
                     <td><span class="matricule">{{ eleve.matricule }}</span></td>
                     <td>العام الدراسي</td>
-                    <td>{{ examen.anneeScolaire.libelleAnneeScolaire }}</td>
+                    <td>{{ examen.annee.libelle }}</td>
                 </tr>
             </table>
         </div>
@@ -293,7 +293,7 @@
                 </tr>
                 <!-- Ici on va déterminer les sexe -->
                 {% set sexe = '' %}
-                {% if eleve.sexeFr == 1 %}
+                {% if eleve.sexe == 1 %}
                     {% set sexe = 'ذكر' %}
                 {% else %}
                     {% set sexe = 'أنثى' %}
@@ -304,7 +304,7 @@
                 </tr>
                 <tr class="infos-identification-eleve">
                     <td class="titre-info-eleve">المستوى الدراسي</td>
-                    <td class="info-eleve-db">{{ classe.getLibelleClasseAr }}
+                    <td class="info-eleve-db">{{ classe.getLibelleAr }}
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <span class="effectif">عدد الطلاب : {{ effectif }}</span>
                     </td>
@@ -389,7 +389,7 @@
                             <center>
                                 <img src="{{ app.request.scheme ~'://' ~ app.request.httpHost ~ asset('../web/images/cachet-exam_2.png') }}" alt="" class="cache2"
                                     width="400px" height="">
-                            </center>
+                            </center> 
                         </div>
                     </td>
                 </tr>

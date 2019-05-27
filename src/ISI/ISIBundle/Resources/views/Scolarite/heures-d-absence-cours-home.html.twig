@@ -14,7 +14,7 @@
   {% else %}
     {% set grp = 'Formation' %}
   {% endif %}
-  <h3>{{ 'Heures d\'absence'|trans }} : {{classe.libelleClasseFr}} [{{absence}}]</h3>
+  <h3>{{ 'Heures d\'absence'|trans }} : {{classe.libelleFr}} [{{absence}}]</h3>
   {# Cas de fiches de notes déjà éditées #}
     {% for message in app.session.flashbag.get('error') %}
       <div class="ui red message">
@@ -39,7 +39,7 @@
       <div class="card">
         <div class="content">
 
-          <a href="{{ path('isi_saisie_des_heures_d_absence', {'as': asec, 'regime': regime, 'classeId': classe.classeId, 'absence': absence, 'moisId': m.id}) }}">
+          <a href="{{ path('isi_saisie_des_heures_d_absence', {'as': asec, 'regime': regime, 'classeId': classe.id, 'absence': absence, 'moisId': m.id}) }}">
             <div class="content">
               <img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
               <div class="header"><h4>{{ m.mois }}</h4> </div>

@@ -3,11 +3,11 @@
 {% extends "ISIBundle:Eleve:index.html.twig" %}
 
 {% block pageTitle %}
-  Changement de classe | {{ classe.libelleClasseFr }}
+  Changement de classe | {{ classe.libelleFr }}
 {% endblock %}
 
 {% block content %}
-  <h3>{{ 'Modifier l\'inscription d\'un(e) élève de'|trans }} {{classe.libelleClasseFr}} </h3>
+  <h3>{{ 'Modifier l\'inscription d\'un(e) élève de'|trans }} {{classe.libelleFr}} </h3>
    {% for message in app.session.flashbag.get('info') %}
     <div class="ui green message">
       <div class="header">{{ 'Notification'|trans }}: </div>
@@ -33,7 +33,7 @@
       {% for eleve in elevesClasse %}
         {% set image = "" %}
         {% set i = i + 1 %}
-        {% if eleve.getSexeFr == 1 %}
+        {% if eleve.sexe == 1 %}
           {% set image = "/markaz/web/images/mark.png" %}
         {% else %}
           {% set image = "/markaz/web/images/molly.png" %}
@@ -43,13 +43,13 @@
             <img src="{{image}}">
           </div>
           <div class="content">
-            <h4>{{ eleve.getNomFr }} {{ eleve.getPnomFr }}
-            <br />{{ eleve.getMatricule }}</h4>
-            <a class="" href="{{path('isi_modifier_classe_eleve',{'as': asec, 'regime': regime, 'classeId': classe.getClasseId, 'eleveId': eleve.getEleveId})}}">
+            <h4>{{ eleve.nomFr }} {{ eleve.pnomFr }}
+            <br />{{ eleve.matricule }}</h4>
+            <a class="" href="{{path('isi_modifier_classe_eleve',{'as': asec, 'regime': regime, 'classeId': classe.getId, 'eleveId': eleve.id})}}">
               {{ 'Modifier la classe'|trans }}
             </a>
             {% if is_granted('ROLE_ADMIN_SCOLARITE') %}
-              <a class="ui button" href="{{path('isi_modifier_niveau_eleve',{'as': asec, 'regime': regime, 'classeId': classe.getClasseId, 'eleveId': eleve.getEleveId})}}">
+              <a class="ui button" href="{{path('isi_modifier_niveau_eleve',{'as': asec, 'regime': regime, 'classeId': classe.getId, 'eleveId': eleve.id})}}">
                 {{ 'Modifier le niveau'|trans }}
               </a>
             {% endif %}

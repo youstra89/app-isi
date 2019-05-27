@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Examen
  *
- * @ORM\Table(name="examen", indexes={@ORM\Index(name="anneescolaire_examen_fk", columns={"annee_scolaire_id"})})
+ * @ORM\Table(name="examen", indexes={@ORM\Index(name="anneescolaire_examen_fk", columns={"annee_id"})})
  * @ORM\Entity(repositoryClass="ISI\ISIBundle\Repository\ExamenRepository")
  */
 class Examen
@@ -15,11 +15,11 @@ class Examen
     /**
      * @var integer
      *
-     * @ORM\Column(name="examen_id", type="integer", nullable=false)
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $examenId;
+    private $id;
 
     /**
      * @var integer
@@ -50,40 +50,28 @@ class Examen
     private $dateProclamationResultats;
 
     /**
-     * @var \Anneescolaire
+     * @var \Annee
      *
-     * @ORM\ManyToOne(targetEntity="Anneescolaire")
+     * @ORM\ManyToOne(targetEntity="Annee")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="annee_scolaire_id", referencedColumnName="annee_scolaire_id")
+     *   @ORM\JoinColumn(name="annee_id", referencedColumnName="id")
      * })
      */
-    private $anneeScolaire;
+    private $annee;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_save", type="datetime", nullable=false)
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private $dateSave;
+    private $createdAt;
      
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_update", type="datetime", nullable=false)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private $dateUpdate;
-
-
-
-    /**
-     * Get examenId
-     *
-     * @return integer
-     */
-    public function getExamenId()
-    {
-        return $this->examenId;
-    }
+    private $updatedAt;
 
     /**
      * Set session
@@ -180,74 +168,132 @@ class Examen
     }
 
     /**
-     * Set anneeScolaire
+     * Set annee
      *
-     * @param \ISI\ISIBundle\Entity\Anneescolaire $anneeScolaire
+     * @param \ISI\ISIBundle\Entity\Annee $annee
      *
      * @return Examen
      */
-    public function setAnneeScolaire(\ISI\ISIBundle\Entity\Anneescolaire $anneeScolaire = null)
+    public function setAnnee(\ISI\ISIBundle\Entity\Annee $annee = null)
     {
-        $this->anneeScolaire = $anneeScolaire;
+        $this->annee = $annee;
 
         return $this;
     }
 
     /**
-     * Get anneeScolaire
+     * Get annee
      *
-     * @return \ISI\ISIBundle\Entity\Anneescolaire
+     * @return \ISI\ISIBundle\Entity\Annee
      */
-    public function getAnneeScolaire()
+    public function getAnnee()
     {
-        return $this->anneeScolaire;
+        return $this->annee;
     }
 
     /**
-     * Set dateSave
+     * Set created_at
      *
-     * @param \DateTime $dateSave
+     * @param \DateTime $createdAt
      *
      * @return Examen
      */
-    public function setDateSave($dateSave)
+    public function setcreated_at($createdAt)
     {
-        $this->dateSave = $dateSave;
+        $this->createdAt = $createdAt;
  
         return $this;
     }
  
     /**
-     * Get dateSave
+     * Get created_at
      *
      * @return \DateTime
      */
-    public function getDateSave()
+    public function getcreated_at()
     {
-        return $this->dateSave;
+        return $this->createdAt;
     }
  
     /**
-     * Set dateUpdate
+     * Set updated_at
      *
-     * @param \DateTime $dateUpdate
+     * @param \DateTime $updatedAt
      *
      * @return Examen
      */
-    public function setDateUpdate($dateUpdate)
+    public function setupdated_at($updatedAt)
     {
-        $this->dateUpdate = $dateUpdate;
+        $this->updatedAt = $updatedAt;
  
         return $this;
     }
  
     /**
-     * Get dateUpdate
+     * Get updated_at
      *
      * @return \DateTime
      */
-    public function getDateUpdate()
+    public function getupdated_at()
     {
-        return $this->dateUpdate;
+        return $this->updatedAt;
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Examen
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Examen
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
     }
 }

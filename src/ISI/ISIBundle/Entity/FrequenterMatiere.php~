@@ -1,0 +1,281 @@
+<?php
+
+namespace ISI\ISIBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
+/**
+ * FrequenterMatiere
+ *
+ * @ORM\Table(name="frequenter_matiere", uniqueConstraints={@ORM\UniqueConstraint(name="frequenter_matiere", columns={"frequenter", "matiere"})}, indexes={@ORM\Index(name="frequenter", columns={"frequenter"}), @ORM\Index(name="matiere", columns={"matiere"})})
+ * @ORM\Entity
+ * @UniqueEntity(
+ *     fields={"frequenter", "matiere"}
+ * )
+ */
+class FrequenterMatiere
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="validation", type="boolean", nullable=false)
+     */
+    private $validation;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="moyenne", type="float", nullable=true)
+     */
+    private $moyenne;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
+     */
+    private $createdAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     */
+    private $updatedAt;
+
+    /**
+     * @var \Frequenter
+     *
+     * @ORM\ManyToOne(targetEntity="Frequenter")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="frequenter", referencedColumnName="id")
+     * })
+     */
+    private $frequenter;
+
+    /**
+     * @var \Matiere
+     *
+     * @ORM\ManyToOne(targetEntity="Matiere")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="matiere", referencedColumnName="id")
+     * })
+     */
+    private $matiere;
+
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+
+    /**
+     * Set validation
+     *
+     * @param boolean $validation
+     *
+     * @return FrequenterMatiere
+     */
+    public function setValidation($validation)
+    {
+        $this->validation = $validation;
+
+        return $this;
+    }
+
+    /**
+     * Get validation
+     *
+     * @return boolean
+     */
+    public function getValidation()
+    {
+        return $this->validation;
+    }
+
+    /**
+     * Set moyenne
+     *
+     * @param float $moyenne
+     *
+     * @return FrequenterMatiere
+     */
+    public function setMoyenne($moyenne)
+    {
+        $this->moyenne = $moyenne;
+
+        return $this;
+    }
+
+    /**
+     * Get moyenne
+     *
+     * @return \DateTime
+     */
+    public function getMoyenne()
+    {
+        return $this->moyenne;
+    }
+
+    /**
+     * Set created_at
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return FrequenterMatiere
+     */
+    public function setcreated_at($createdAt)
+    {
+        $this->created_at = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get created_at
+     *
+     * @return \DateTime
+     */
+    public function getcreated_at()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * Set updated_at
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return FrequenterMatiere
+     */
+    public function setupdated_at($updatedAt)
+    {
+        $this->updated_at = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updated_at
+     *
+     * @return \DateTime
+     */
+    public function getupdated_at()
+    {
+        return $this->updated_at;
+    }
+
+
+    /**
+     * Set frequenter
+     *
+     * @param \ISI\ISIBundle\Entity\Frequenter $frequenter
+     *
+     * @return FrequenterMatiere
+     */
+    public function setFrequenter(\ISI\ISIBundle\Entity\Frequenter $frequenter = null)
+    {
+        $this->frequenter = $frequenter;
+
+        return $this;
+    }
+
+    /**
+     * Get frequenter
+     *
+     * @return \ISI\ISIBundle\Entity\Frequenter
+     */
+    public function getFrequenter()
+    {
+        return $this->frequenter;
+    }
+
+    /**
+     * Set matiere
+     *
+     * @param \ISI\ISIBundle\Entity\Matiere $matiere
+     *
+     * @return FrequenterMatiere
+     */
+    public function setMatiere(\ISI\ISIBundle\Entity\Matiere $matiere = null)
+    {
+        $this->matiere = $matiere;
+
+        return $this;
+    }
+
+    /**
+     * Get matiere
+     *
+     * @return \ISI\ISIBundle\Entity\Matiere
+     */
+    public function getMatiere()
+    {
+        return $this->matiere;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return FrequenterMatiere
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->created_at = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return FrequenterMatiere
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updated_at = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
+    }
+}
