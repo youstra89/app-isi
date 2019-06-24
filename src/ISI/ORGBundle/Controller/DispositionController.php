@@ -72,6 +72,7 @@ class DispositionController extends Controller
         $batiment = new Batiment();
         $batiment->setNom($nom);
         $batiment->setUtilisation(1);
+        $batiment->setCreatedBy($this->getUser());
         $batiment->setCreatedAt(new \DateTime());
         $em->persist($batiment);
         $em->flush();
@@ -102,6 +103,7 @@ class DispositionController extends Controller
           $this->addFlash('error', 'Le nom d\'un bâtiment ne doit pas être vide.');
           return $this->redirectToRoute('batiment_edit', ['as' => $as, 'id' => $batiment->getId()]);
         }
+        $batiment->setUpdatedBy($this->getUser());
         $batiment->setUpdatedAt(new \DateTime());
         $em->flush();
         $this->addFlash('info', 'Les informations sur le batiment '.$batiment->getNom().' ont été mises à jour avec succès.');
@@ -146,6 +148,7 @@ class DispositionController extends Controller
       $form->handleRequest($request);
       if($form->isSubmitted() && $form->isValid())
       {
+        $salle->setCreatedBy($this->getUser());
         $salle->setCreatedAt(new \DateTime());
         $em->persist($salle);
         $em->flush();
@@ -172,6 +175,7 @@ class DispositionController extends Controller
       $form->handleRequest($request);
       if($form->isSubmitted() && $form->isValid())
       {
+        $salle->setUpdatedBy($this->getUser());
         $salle->setUpdatedAt(new \DateTime());
         $em->persist($salle);
         $em->flush();
@@ -270,6 +274,7 @@ class DispositionController extends Controller
           $disposition->setSalle($salle);
           $disposition->setAnnee($annee);
           $disposition->setRegime($regime);
+          $disposition->setCreatedBy($this->getUser());
           $disposition->setCreatedAt(new \DateTime());
           $em->persist($disposition);
           $enregistrement = true;
@@ -286,6 +291,7 @@ class DispositionController extends Controller
           $disposition->setSalle($salle);
           $disposition->setAnnee($annee);
           $disposition->setRegime($regime);
+          $disposition->setCreatedBy($this->getUser());
           $disposition->setCreatedAt(new \DateTime());
           $em->persist($disposition);
           $enregistrement = true;
@@ -381,12 +387,14 @@ class DispositionController extends Controller
             $disposition->setSalle($salle);
             $disposition->setAnnee($annee);
             $disposition->setRegime($regime);
+            $disposition->setCreatedBy($this->getUser());
             $disposition->setCreatedAt(new \DateTime());
             $em->persist($disposition);
           }
           else{
             // return new Response("Modification");
             $academie->setClasse($classe);
+            $academie->setUpdatedBy($this->getUser());
             $academie->setUpdatedAt(new \DateTime());
           }
           $enregistrement = true;
@@ -406,12 +414,14 @@ class DispositionController extends Controller
             $disposition->setSalle($salle);
             $disposition->setAnnee($annee);
             $disposition->setRegime($regime);
+            $disposition->setCreatedBy($this->getUser());
             $disposition->setCreatedAt(new \DateTime());
             $em->persist($disposition);
           }
           else{
             // return new Response("Modification");
             $centreformation->setClasse($classe);
+            $centreformation->setUpdatedBy($this->getUser());
             $centreformation->setUpdatedAt(new \DateTime());
           }
           $enregistrement = true;

@@ -16,8 +16,16 @@
           {{ 'Retirer'|trans }} {{ eleve.nomFr }} {{ eleve.pnomFr }} {{ 'de l\'internat'|trans }}
         </button>
         <br /><br />
-        <label for="">{{ 'Motif du renvoi'|trans }}</label>
-        <textarea name="motifRenvoi" rows="2" cols="30"></textarea>
+          <div class="two fields">
+            <div class="field">
+              <label for="">{{ 'Motif du renvoi'|trans }}</label>
+              <textarea name="motifRenvoi" rows="2" cols="30"></textarea>
+            </div>
+            <div class="field">
+              <label for="date">{{ 'Date d\'inscription à l\'internat'|trans }}</label>
+              <input class="" id="date" name="date" value="{{ 'now'|date('Y-m-d') }}" type="date">
+            </div>
+          </div>
         <br /><br />
       </form>
     </center><br>

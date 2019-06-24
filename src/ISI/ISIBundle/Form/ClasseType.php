@@ -42,7 +42,7 @@ class ClasseType extends AbstractType
         //Ecoute de l'évènement
       $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event)
       {
-        dump($event->getForm()->getConfig()->getOptions()['regime']);
+        // dump($event->getForm()->getConfig()->getOptions()['regime']);
         $regime = $event->getForm()->getConfig()->getOptions()['regime'];
         $classe = $event->getData();
         $form   = $event->getForm();

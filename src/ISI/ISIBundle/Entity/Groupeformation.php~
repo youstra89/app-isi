@@ -102,26 +102,26 @@ class Groupeformation
     }
 
     /**
-     * Set referenceGrp
+     * Set reference
      *
-     * @param string $referenceGrp
+     * @param string $reference
      *
      * @return Groupeformation
      */
-    public function setReferenceGrp($referenceGrp)
+    public function setReference($reference)
     {
-        $this->referenceGrp = $referenceGrp;
+        $this->reference = $reference;
 
         return $this;
     }
 
     /**
-     * Get referenceGrp
+     * Get reference
      *
      * @return string
      */
-    public function getReferenceGrp()
+    public function getReference()
     {
-        return $this->referenceGrp;
+        return $this->reference;
     }
 }

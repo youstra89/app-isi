@@ -27,9 +27,9 @@ class ContratType extends AbstractType
             ->add('debut',      DateType::class, ['required' => TRUE])
             ->add('duree',      IntegerType::class, ['required' => FALSE])
             ->add('anneeDebut', EntityType::class, [
-                'class'         => 'ISIBundle:Anneescolaire',
+                'class'         => 'ISIBundle:Annee',
                 'placeholder'   => 'Choisir l\'année de début',
-                'choice_label'  => 'libelleAnneeScolaire',
+                'choice_label'  => 'libelle',
                 'multiple'      => FALSE
               ], ['required' => TRUE])
             ->add('commentaire', TextareaType::class, ['required' => TRUE])

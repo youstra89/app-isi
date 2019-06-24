@@ -47,7 +47,7 @@ class Cours
 
     /**
      * @ORM\ManyToOne(targetEntity="Mosquee")
-     * @ORM\JoinColumn(name="mosquee")
+     * @ORM\JoinColumn(name="mosquee_id")
      */
     private $mosquee;
 
@@ -80,6 +80,26 @@ class Cours
     private $anneeDebut;
 
     /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $createdBy;
+
+    /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="updated_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $updatedBy;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_at", type="datetime")
@@ -95,7 +115,7 @@ class Cours
 
     public function __construct()
     {
-      $this->created_at = new \DateTime();
+      $this->createdAt = new \DateTime();
     }
 
     /**
@@ -267,7 +287,7 @@ class Cours
      */
     public function setcreated_at($createdAt)
     {
-        $this->created_at = $createdAt;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -279,7 +299,7 @@ class Cours
      */
     public function getcreated_at()
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
     /**
@@ -291,7 +311,7 @@ class Cours
      */
     public function setupdated_at($updated_at)
     {
-        $this->updated_at = $updatedAt;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
@@ -303,7 +323,7 @@ class Cours
      */
     public function getupdated_at()
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
     /**
@@ -315,7 +335,7 @@ class Cours
      */
     public function setCreatedAt($createdAt)
     {
-        $this->created_at = $createdAt;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -327,7 +347,7 @@ class Cours
      */
     public function getCreatedAt()
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
     /**
@@ -339,7 +359,7 @@ class Cours
      */
     public function setUpdatedAt($updatedAt)
     {
-        $this->updated_at = $updatedAt;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
@@ -351,6 +371,6 @@ class Cours
      */
     public function getUpdatedAt()
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 }

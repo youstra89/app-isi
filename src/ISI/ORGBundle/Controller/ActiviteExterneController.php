@@ -108,6 +108,7 @@ class ActiviteExterneController extends Controller
         $tournee->setCommentaire($commentaire);
         $tournee->setDebut($debut);
         $tournee->setFin($fin);
+        $tournee->setCreatedBy($this->getUser());
         $tournee->setCreatedAt(new \DateTime());
         $em->persist($tournee);
         if($nationale == 1){
@@ -191,6 +192,7 @@ class ActiviteExterneController extends Controller
         $tournee->setCommentaire($commentaire);
         $tournee->setDebut($debut);
         $tournee->setFin($fin);
+        $tournee->setUpdatedBy($this->getUser());
         $tournee->setUpdatedAt(new \DateTime());
         if(isset($data['destination'])){
           $destinations = $data['destination'];
@@ -320,6 +322,7 @@ class ActiviteExterneController extends Controller
         $this->addFlash('error', 'La date saisie n\'est pas inclue dans la durée de la tournée.');
         return $this->redirectToRoute('activite.tournee.add', ['as' => $as, 'id' => $id, 'communeId' => $communeId]);
       }
+      $activite->setCreatedBy($this->getUser());
       $activite->setCreatedAt(new \DateTime());
       $activite->setDate($date);
       $em->persist($activite);
@@ -373,6 +376,7 @@ class ActiviteExterneController extends Controller
         $this->addFlash('error', 'La date saisie n\'est pas inclue dans la durée de la tournée.');
         return $this->redirectToRoute('activite.tournee.add', ['as' => $as, 'id' => $id, 'communeId' => $communeId]);
       }
+      $activite->setCreatedBy($this->getUser());
       $activite->setCreatedAt(new \DateTime());
       $activite->setDate($date);
       $em->persist($activite);

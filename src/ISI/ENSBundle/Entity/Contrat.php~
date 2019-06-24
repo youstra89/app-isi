@@ -47,7 +47,7 @@ class Contrat
      *
      * @ORM\ManyToOne(targetEntity="Enseignant")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="enseignant", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="enseignant_id", referencedColumnName="id")
      * })
      */
     private $enseignant;
@@ -94,6 +94,26 @@ class Contrat
     private $motifFin;
 
     /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $createdBy;
+
+    /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="updated_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $updatedBy;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_at", type="datetime", nullable=false)
@@ -103,7 +123,7 @@ class Contrat
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_update", type="datetime", nullable=true)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     private $updatedAt;
 
@@ -260,54 +280,6 @@ class Contrat
     public function getAnneeFin()
     {
         return $this->anneeFin;
-    }
-
-    /**
-     * Set created_at
-     *
-     * @param \DateTime $createdAt
-     *
-     * @return Contrat
-     */
-    public function setcreated_at($createdAt)
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * Get created_at
-     *
-     * @return \DateTime
-     */
-    public function getcreated_at()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * Set updated_at
-     *
-     * @param \DateTime $updatedAt
-     *
-     * @return Contrat
-     */
-    public function setupdated_at($updatedAt)
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * Get updated_at
-     *
-     * @return \DateTime
-     */
-    public function getupdated_at()
-    {
-        return $this->updatedAt;
     }
 
     /**

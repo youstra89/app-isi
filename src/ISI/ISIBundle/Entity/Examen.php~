@@ -15,7 +15,7 @@ class Examen
     /**
      * @var integer
      *
-     * @ORM\Column(name="examen_id", type="integer", nullable=false)
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
@@ -60,6 +60,26 @@ class Examen
     private $annee;
 
     /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $createdBy;
+
+    /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="updated_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $updatedBy;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_at", type="datetime", nullable=false)
@@ -72,18 +92,6 @@ class Examen
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     private $updatedAt;
-
-
-
-    /**
-     * Get examenId
-     *
-     * @return integer
-     */
-    public function getExamenId()
-    {
-        return $this->examenId;
-    }
 
     /**
      * Set session
@@ -212,7 +220,7 @@ class Examen
      */
     public function setcreated_at($createdAt)
     {
-        $this->created_at = $createdAt;
+        $this->createdAt = $createdAt;
  
         return $this;
     }
@@ -224,7 +232,7 @@ class Examen
      */
     public function getcreated_at()
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
  
     /**
@@ -236,7 +244,7 @@ class Examen
      */
     public function setupdated_at($updatedAt)
     {
-        $this->updated_at = $updatedAt;
+        $this->updatedAt = $updatedAt;
  
         return $this;
     }
@@ -248,7 +256,7 @@ class Examen
      */
     public function getupdated_at()
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
     /**
@@ -270,7 +278,7 @@ class Examen
      */
     public function setCreatedAt($createdAt)
     {
-        $this->created_at = $createdAt;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -282,7 +290,7 @@ class Examen
      */
     public function getCreatedAt()
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
     /**
@@ -294,7 +302,7 @@ class Examen
      */
     public function setUpdatedAt($updatedAt)
     {
-        $this->updated_at = $updatedAt;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
@@ -306,6 +314,6 @@ class Examen
      */
     public function getUpdatedAt()
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 }

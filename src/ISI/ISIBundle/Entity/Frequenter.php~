@@ -9,11 +9,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * Frequenter
  *
- * @ORM\Table(name="frequenter", uniqueConstraints={@ORM\UniqueConstraint(name="frequenter", columns={"annee_id", "eleve_id", "classe_id"})}, indexes={@ORM\Index(name="eleve_id", columns={"eleve_id"}), @ORM\Index(name="classe_id", columns={"classe_id"}), @ORM\Index(name="annee_id", columns={"annee_id"})})
+ * @ORM\Table(name="frequenter", uniqueConstraints={@ORM\UniqueConstraint(name="frequenter", columns={"annee_id", "eleve_id"})})
  * @ORM\Entity(repositoryClass="ISI\ISIBundle\Repository\FrequenterRepository")
  * @UniqueEntity(
- *     fields={"eleve", "anneeScolaire", "classe"},
- *     errorPath="classe",
+ *     fields={"eleve_id", "annee_id"},
+ *     errorPath="eleve",
  *     message="Cet élève est déjà inscrit."
  * )
  */
@@ -31,7 +31,7 @@ class Frequenter
     /**
      * @var string
      *
-     * @ORM\Column(name="admission", type="string", length=255, nullable=false)
+     * @ORM\Column(name="admission", type="string", length=255, nullable=true)
      */
     private $admission = NULL;
 
@@ -41,6 +41,26 @@ class Frequenter
      * @ORM\Column(name="redouble", type="boolean", nullable=false)
      */
     private $redouble;
+
+    /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $createdBy;
+
+    /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="updated_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $updatedBy;
 
     /**
      * @var \DateTime
@@ -155,7 +175,7 @@ class Frequenter
      */
     public function setcreated_at($createdAt)
     {
-        $this->created_at = $createdAt;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -167,7 +187,7 @@ class Frequenter
      */
     public function getcreated_at()
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
     /**
@@ -179,7 +199,7 @@ class Frequenter
      */
     public function setupdated_at($updatedAt)
     {
-        $this->updated_at = $updatedAt;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
@@ -191,7 +211,7 @@ class Frequenter
      */
     public function getupdated_at()
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
     /**
@@ -216,30 +236,6 @@ class Frequenter
     public function getEleve()
     {
         return $this->eleve;
-    }
-
-    /**
-     * Set anneeScolaire
-     *
-     * @param \ISI\ISIBundle\Entity\Anneescolaire $anneeScolaire
-     *
-     * @return Frequenter
-     */
-    public function setAnneeScolaire(\ISI\ISIBundle\Entity\Anneescolaire $anneeScolaire = null)
-    {
-        $this->anneeScolaire = $anneeScolaire;
-
-        return $this;
-    }
-
-    /**
-     * Get anneeScolaire
-     *
-     * @return \ISI\ISIBundle\Entity\Anneescolaire
-     */
-    public function getAnneeScolaire()
-    {
-        return $this->anneeScolaire;
     }
 
     /**
@@ -275,7 +271,7 @@ class Frequenter
      */
     public function setCreatedAt($createdAt)
     {
-        $this->created_at = $createdAt;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -287,7 +283,7 @@ class Frequenter
      */
     public function getCreatedAt()
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
     /**
@@ -299,7 +295,7 @@ class Frequenter
      */
     public function setUpdatedAt($updatedAt)
     {
-        $this->updated_at = $updatedAt;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
@@ -311,7 +307,7 @@ class Frequenter
      */
     public function getUpdatedAt()
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
     /**

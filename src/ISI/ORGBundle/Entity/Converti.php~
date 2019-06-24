@@ -23,19 +23,19 @@ class Converti
 
     /**
      * @ORM\ManyToOne(targetEntity="Tournee", inversedBy="convertis")
-     * @ORM\JoinColumn(name="tournee", nullable=true)
+     * @ORM\JoinColumn(name="tournee_id", nullable=true)
      */
     private $tournee;
 
     /**
      * @ORM\ManyToOne(targetEntity="Commune", inversedBy="convertis")
-     * @ORM\JoinColumn(name="commune", nullable=true)
+     * @ORM\JoinColumn(name="commune_id", nullable=true)
      */
     private $commune;
 
     /**
      * @ORM\ManyToOne(targetEntity="Pays", inversedBy="convertis")
-     * @ORM\JoinColumn(name="pays", nullable=true)
+     * @ORM\JoinColumn(name="pays_id", nullable=true)
      */
     private $pays;
 
@@ -110,6 +110,26 @@ class Converti
     private $commentaire;
 
     /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $createdBy;
+
+    /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="updated_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $updatedBy;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_at", type="datetime")
@@ -126,7 +146,7 @@ class Converti
 
     public function __construct()
     {
-      $this->created_at = new \Datetime();
+      $this->createdAt = new \Datetime();
     }
 
 
@@ -425,7 +445,7 @@ class Converti
      */
     public function setcreated_at($createdAt)
     {
-        $this->created_at = $createdAt;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -437,7 +457,7 @@ class Converti
      */
     public function getcreated_at()
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
     /**
@@ -449,7 +469,7 @@ class Converti
      */
     public function setupdated_at($updated_at)
     {
-        $this->updated_at = $updatedAt;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
@@ -461,7 +481,7 @@ class Converti
      */
     public function getupdated_at()
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
     /**
@@ -473,7 +493,7 @@ class Converti
      */
     public function setCreatedAt($createdAt)
     {
-        $this->created_at = $createdAt;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -485,7 +505,7 @@ class Converti
      */
     public function getCreatedAt()
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
     /**
@@ -497,7 +517,7 @@ class Converti
      */
     public function setUpdatedAt($updatedAt)
     {
-        $this->updated_at = $updatedAt;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
@@ -509,6 +529,6 @@ class Converti
      */
     public function getUpdatedAt()
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 }

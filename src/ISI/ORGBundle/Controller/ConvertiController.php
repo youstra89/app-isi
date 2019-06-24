@@ -104,6 +104,7 @@ class ConvertiController extends Controller
           $url = $this->redirectToRoute('tournee.info', ['as' => $as, 'id' => $tourneeId]);
         elseif(isset($tourneeId) and $nationale == 0)
           $url = $this->redirectToRoute('tournee.internationale.info', ['as' => $as, 'id' => $tourneeId]);
+        $converti->setUpdatedBy($this->getUser());
         $converti->setUpdatedAt(new \DateTime());
         $em->flush();
         $this->addFlash('info', 'Les informations sur l\'converti '.$converti->getNom().' '.$converti->getPnom().' ont été mises à jour avec succès.');

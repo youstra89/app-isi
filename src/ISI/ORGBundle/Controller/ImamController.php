@@ -74,6 +74,7 @@ class ImamController extends Controller
       $form->handleRequest($request);
       if($form->isSubmitted() && $form->isValid())
       {
+        $mosquee->setUpdatedBy($this->getUser());
         $mosquee->setUpdatedAt(new \DateTime());
         $em->flush();
         $this->addFlash('info', 'Les informations sur l\'imam '.$imam->getNom().' '.$imam->getPnom().' ont été mises à jour avec succès.');

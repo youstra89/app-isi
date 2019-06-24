@@ -100,7 +100,7 @@ class ParametresController extends Controller
         if($annee->getAchevee() == FALSE)
         {
           // return new Response(var_dump($frequentation));
-          $request->getSession()->getFlashBag()->add("error", "L'année scolaire en cours(".$annee->getLibelle().") n'est pas encore terminée.");
+          $request->getSession()->getFlashBag()->add("error", "L'année scolaire en cours(<strong>".$annee->getLibelle()."</strong>) n'est pas encore terminée.");
           return $this->redirect($this->generateUrl('isi_parametres',
               array('as' => $annee->getId())
             ));
@@ -109,6 +109,7 @@ class ParametresController extends Controller
       else {
         // On peut donc créer une nouvelle année
         $annee->setAchevee(TRUE);
+        $annee->setUpdatedBy($this->getUser());
         $annee->setUpdatedAt(new \Datetime());
         $em->flush();
         // return new Response("C'est cool");
@@ -207,7 +208,7 @@ class ParametresController extends Controller
      **/
     if($annee->getAchevee() == TRUE)
     {
-       $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des classes car l\'année scolaire '.$annee->getLibelle().' est achevée.');
+       $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des classes car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
        return $this->redirect($this->generateUrl('isi_gestion_classes', ['as' => $as, 'regime' => $regime]));
     }
 
@@ -222,18 +223,19 @@ class ParametresController extends Controller
       // return new Response(var_dump($data->getGenre()));
       // A la modofication de la classe, si l'on veut changer le genre alors qu'il y a déjà des élèves inscrits, 
       // on bloque de code
-      $fq = $repoFrequenter->findBy(['classe' => $classe->getClasseId()]);
+      $fq = $repoFrequenter->findBy(['classe' => $classe->getId()]);
       if (count($fq) != 0 && $genre != $data->getGenre()) {
         # code...
-        $request->getSession()->getFlashBag()->add('error', 'Vous ne pouvez pas modifier le genre de la classe '.$classe->getLibelleFr().'. Des élèves y sont déjà inscrits.');
+        $request->getSession()->getFlashBag()->add('error', 'Vous ne pouvez pas modifier le genre de la classe <strong>'.$classe->getLibelleFr().'</strong>. Des élèves y sont déjà inscrits.');
         return $this->redirect($this->generateUrl('isi_gestion_classes', [
         'as' => $as,
         'regime' => $regime
       ]));
       }
+      $classe->setUpdatedBy($this->getUser());
       $classe->setUpdatedAt(new \Datetime());
       $em->flush();
-      $request->getSession()->getFlashBag()->add('info', 'La classe '.$classe->getLibelleFr().' a été mise à jour avec succès.');
+      $request->getSession()->getFlashBag()->add('info', 'La classe <strong>'.$classe->getLibelleFr().'</strong> a été mise à jour avec succès.');
 
       return $this->redirect($this->generateUrl('isi_gestion_classes', [
         'as' => $as,
@@ -267,13 +269,14 @@ class ParametresController extends Controller
      **/
     if($annee->getAchevee() == TRUE)
     {
-      $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des halaqas car l\'année scolaire '.$annee->getLibelle().' est achevée.');
+      $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des halaqas car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
       return $this->redirect($this->generateUrl('isi_gestion_halaqas', ['as' => $as, 'regime' => $regime]));
     }
 
     $form = $this->createForm(HalaqaType::class, $halaqa);
     if($form->handleRequest($request)->isValid())
     {
+      $halaqa->setUpdatedBy($this->getUser());
       $halaqa->setUpdatedAt(new \Datetime());
       $em->flush();
       $request->getSession()->getFlashBag()->add('info', 'Halaqa mise à jour avec sussès.');
@@ -359,7 +362,7 @@ class ParametresController extends Controller
      **/
     if($annee->getAchevee() == TRUE)
     {
-      $request->getSession()->getFlashBag()->add('error', 'Impossible d\'ajouter des classes car l\'année scolaire '.$annee->getLibelle().' est achevée.');
+      $request->getSession()->getFlashBag()->add('error', 'Impossible d\'ajouter des classes car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
       return $this->redirect($this->generateUrl('isi_gestion_classes', ['as' => $as, 'regime' => $regime]));
     } 
 
@@ -379,7 +382,7 @@ class ParametresController extends Controller
       $em->persist($classe);
       $em->flush();
 
-      $request->getSession()->getFlashBag()->add('info', 'La classe '.$classe->getLibelleFr().' a été bien sauvegardée.');
+      $request->getSession()->getFlashBag()->add('info', 'La classe <strong>'.$classe->getLibelleFr().'</strong> a été bien sauvegardée.');
 
       return $this->redirect($this->generateUrl('isi_gestion_classes', array(
         'as'     => $as,
@@ -412,7 +415,7 @@ class ParametresController extends Controller
      **/
     if($annee->getAchevee() == TRUE)
     {
-      $request->getSession()->getFlashBag()->add('error', 'Impossible d\'ajouter des halaqass car l\'année scolaire '.$annee->getLibelle().' est achevée.');
+      $request->getSession()->getFlashBag()->add('error', 'Impossible d\'ajouter des halaqass car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
       return $this->redirect($this->generateUrl('isi_gestion_halaqas', ['as' => $as, 'regime' => $regime]));
     } 
 
@@ -423,11 +426,12 @@ class ParametresController extends Controller
     {
       $halaqa->setAnnee($annee);
       $halaqa->setRegime($regime);
+      $halaqa->setCreatedBy($this->getUser());
       $halaqa->setCreatedAt(new \Datetime());
       $em->persist($halaqa);
       $em->flush();
 
-      $request->getSession()->getFlashBag()->add('info', 'La halaqa '.$halaqa->getLibelle().' a été bien sauvegardée.');
+      $request->getSession()->getFlashBag()->add('info', 'La halaqa <strong>'.$halaqa->getLibelle().'</strong> a été bien sauvegardée.');
 
       return $this->redirect($this->generateUrl('isi_gestion_halaqas', array(
         'as'     => $as,
@@ -524,6 +528,7 @@ class ParametresController extends Controller
     $examen = new Examen();
     $annee = $repoAnnee->find($as);
     $examen->setAnnee($annee);
+    $examen->setCreatedBy($this->getUser());
     $examen->setCreatedAt(new \Datetime());
 
     $form = $this->createForm(ExamenType::class, $examen);

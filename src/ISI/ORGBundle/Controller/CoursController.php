@@ -97,6 +97,7 @@ class CoursController extends Controller
       $form->handleRequest($request);
       if($form->isSubmitted() && $form->isValid())
       {
+        $mosquee->setUpdatedBy($this->getUser());
         $mosquee->setUpdatedAt(new \DateTime());
         $em->flush();
         $this->addFlash('info', 'Les informations sur l\'cours '.$cours->getNom().' '.$cours->getPnom().' ont été mises à jour avec succès.');

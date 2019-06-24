@@ -31,7 +31,7 @@ class Activite
     /**
      * @ORM\ManyToOne(targetEntity="Commune", inversedBy="activites")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="commune", referencedColumnName="id", nullable=true)
+     *   @ORM\JoinColumn(name="commune_id", referencedColumnName="id", nullable=true)
      * })
      */
     private $commune;
@@ -77,11 +77,31 @@ class Activite
     private $theme;
 
     /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $createdBy;
+
+    /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="updated_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $updatedBy;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_at", type="datetime")
      */
-    private $created_at;
+    private $createdAt;
 
     /**
      * @var \DateTime
@@ -93,7 +113,7 @@ class Activite
 
     public function __construct()
     {
-      $this->created_at = new \Datetime();
+      $this->createdAt = new \Datetime();
     }
 
 
@@ -245,54 +265,6 @@ class Activite
     }
 
     /**
-     * Set created_at
-     *
-     * @param \DateTime $created_at
-     *
-     * @return Activite
-     */
-    public function setcreated_at($created_at)
-    {
-        $this->created_at = $created_at;
-
-        return $this;
-    }
-
-    /**
-     * Get created_at
-     *
-     * @return \DateTime
-     */
-    public function getcreated_at()
-    {
-        return $this->created_at;
-    }
-
-    /**
-     * Set updated_at
-     *
-     * @param \DateTime $updated_at
-     *
-     * @return Activite
-     */
-    public function setupdated_at($updated_at)
-    {
-        $this->updated_at = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * Get updated_at
-     *
-     * @return \DateTime
-     */
-    public function getupdated_at()
-    {
-        return $this->updated_at;
-    }
-
-    /**
      * Set createdAt
      *
      * @param \DateTime $createdAt
@@ -301,7 +273,7 @@ class Activite
      */
     public function setCreatedAt($createdAt)
     {
-        $this->created_at = $createdAt;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -313,7 +285,7 @@ class Activite
      */
     public function getCreatedAt()
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
     /**
@@ -325,7 +297,7 @@ class Activite
      */
     public function setUpdatedAt($updatedAt)
     {
-        $this->updated_at = $updatedAt;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
@@ -337,7 +309,7 @@ class Activite
      */
     public function getUpdatedAt()
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
     /**

@@ -62,7 +62,7 @@ class Region
 
      public function __construct()
      {
-       $this->created_at = new \Datetime();
+       $this->createdAt = new \Datetime();
        $this->villes = new ArrayCollection();
      }
 
@@ -102,24 +102,24 @@ class Region
 
      public function getcreated_at(): ?\DateTimeInterface
      {
-         return $this->created_at;
+         return $this->createdAt;
      }
 
      public function setcreated_at(\DateTimeInterface $createdAt): self
      {
-         $this->created_at = $createdAt;
+         $this->createdAt = $createdAt;
 
          return $this;
      }
 
      public function getupdated_at(): ?\DateTimeInterface
      {
-         return $this->updated_at;
+         return $this->updatedAt;
      }
 
      public function setupdated_at(\DateTimeInterface $updated_at): self
      {
-         $this->updated_at = $updatedAt;
+         $this->updatedAt = $updatedAt;
 
          return $this;
      }
@@ -164,7 +164,7 @@ class Region
      */
     public function setCreatedAt($createdAt)
     {
-        $this->created_at = $createdAt;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -176,7 +176,7 @@ class Region
      */
     public function getCreatedAt()
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
     /**
@@ -188,7 +188,7 @@ class Region
      */
     public function setUpdatedAt($updatedAt)
     {
-        $this->updated_at = $updatedAt;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
@@ -200,6 +200,6 @@ class Region
      */
     public function getUpdatedAt()
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 }

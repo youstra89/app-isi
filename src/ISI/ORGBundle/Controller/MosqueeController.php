@@ -76,6 +76,7 @@ class MosqueeController extends Controller
       $form->handleRequest($request);
       if($form->isSubmitted() && $form->isValid())
       {
+        $mosquee->setUpdatedBy($this->getUser());
         $mosquee->setUpdatedAt(new \DateTime());
         $em->flush();
         $this->addFlash('info', 'Les informations sur la mosquée '.$mosquee->getNom().' à '.$mosquee->getCommune()->getNom().' ont été mises à jour avec succès.');

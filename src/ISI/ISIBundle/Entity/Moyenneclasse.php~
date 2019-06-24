@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Moyenneclasse
  *
- * @ORM\Table(name="moyenneclasse", uniqueConstraints={@ORM\UniqueConstraint(name="fichedenote", columns={"classe", "examen"})}, indexes={@ORM\Index(name="classe", columns={"classe"}), @ORM\Index(name="examen", columns={"examen"})})
+ * @ORM\Table(name="moyenneclasse", uniqueConstraints={@ORM\UniqueConstraint(name="fichedenote", columns={"classe_id", "examen_id"})}, indexes={@ORM\Index(name="classe_id", columns={"classe_id"}), @ORM\Index(name="examen_id", columns={"examen_id"})})
  * @ORM\Entity
  */
 class Moyenneclasse
@@ -40,7 +40,7 @@ class Moyenneclasse
      *
      * @ORM\ManyToOne(targetEntity="Classe")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="classe", referencedColumnName="classe_id")
+     *   @ORM\JoinColumn(name="classe_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $classe;
@@ -50,10 +50,30 @@ class Moyenneclasse
      *
      * @ORM\ManyToOne(targetEntity="Examen")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="examen", referencedColumnName="examen_id")
+     *   @ORM\JoinColumn(name="examen_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $examen;
+
+    /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $createdBy;
+
+    /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="updated_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $updatedBy;
 
     /**
      * @var \DateTime
@@ -187,7 +207,7 @@ class Moyenneclasse
      */
     public function setcreated_at($createdAt)
     {
-        $this->created_at = $createdAt;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -199,7 +219,7 @@ class Moyenneclasse
      */
     public function getcreated_at()
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
     /**
@@ -211,7 +231,7 @@ class Moyenneclasse
      */
     public function setupdated_at($updatedAt)
     {
-        $this->updated_at = $updatedAt;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
@@ -223,7 +243,7 @@ class Moyenneclasse
      */
     public function getupdated_at()
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
 
@@ -237,7 +257,7 @@ class Moyenneclasse
      */
     public function setCreatedAt($createdAt)
     {
-        $this->created_at = $createdAt;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -249,7 +269,7 @@ class Moyenneclasse
      */
     public function getCreatedAt()
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
     /**
@@ -261,7 +281,7 @@ class Moyenneclasse
      */
     public function setUpdatedAt($updatedAt)
     {
-        $this->updated_at = $updatedAt;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
@@ -273,6 +293,6 @@ class Moyenneclasse
      */
     public function getUpdatedAt()
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 }

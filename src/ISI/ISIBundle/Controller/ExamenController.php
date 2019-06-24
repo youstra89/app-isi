@@ -326,6 +326,7 @@ class ExamenController extends Controller
         $note->setExamen($examen);
         $note->setEleve($eleve);
         $note->setMatiere($matiere);
+        $note->setCreatedBy($this->getUser());
         $note->setCreatedAt(new \Datetime());
         $em->persist($note);
 
@@ -335,6 +336,7 @@ class ExamenController extends Controller
           $moyenne = new Moyenne();
           $moyenne->setEleve($eleve);
           $moyenne->setExamen($examen);
+          $moyenne->setCreatedBy($this->getUser());
           $moyenne->setCreatedAt(new \Datetime());
           $em->persist($moyenne);
         }
@@ -359,6 +361,7 @@ class ExamenController extends Controller
         $moyenne = new Moyenne();
         $moyenne->setEleve($eleve);
         $moyenne->setExamen($examen);
+        $moyenne->setCreatedBy($this->getUser());
         $moyenne->setCreatedAt(new \Datetime());
         $em->persist($moyenne);
       }
@@ -413,6 +416,7 @@ class ExamenController extends Controller
               $note->setNote(0);
               $note->setParticipation(FALSE);
             }
+            $note->setUpdatedBy($this->getUser());
             $note->setUpdatedAt(new \Datetime());
               // return new Response("C'est OK");
           }
@@ -536,6 +540,7 @@ class ExamenController extends Controller
                 $note->setNote(0);
                 $note->setParticipation(FALSE);
               }
+              $note->setUpdatedBy($this->getUser());
               $note->setUpdatedAt(new \Datetime());
 
               // Si la session de l'examen en cours vaut 2, alors il faudra calculer la moyenne annuelle pour la matière
@@ -551,6 +556,7 @@ class ExamenController extends Controller
                 {
                   $fm->setMoyenne($moyenneDeLaMatiere);
                   $fm->setValidation($validation);
+                  $fm->setUpdatedBy($this->getUser());
                   $fm->setUpdatedAt(new \Datetime());
                 }
                 // return new Response("C'est OK");
@@ -571,6 +577,7 @@ class ExamenController extends Controller
             $moyenne->setTotalPoints(NULL);
             $moyenne->setMoyenne(NULL);
             $moyenne->setRang(NULL);
+            $moyenne->setUpdatedBy($this->getUser());
             $moyenne->setUpdatedAt(new \Datetime());
           }
         }
@@ -580,6 +587,7 @@ class ExamenController extends Controller
         {
           $moyenneClasse->setAdmis(NULL);
           $moyenneClasse->setRecales(NULL);
+          $moyenneClasse->setUpdatedBy($this->getUser());
           $moyenneClasse->setUpdatedAt(new \Datetime());
         }
 
@@ -959,6 +967,7 @@ class ExamenController extends Controller
                $fm->setMatiere($matiere);
                $fm->setMoyenne($moyenneDeLaMatiere);
                $fm->setValidation($validation);
+               $fm->setCreatedBy($this->getUser());
                $fm->setCreatedAt(new \Datetime());
                $em->persist($fm);
              }
@@ -969,6 +978,7 @@ class ExamenController extends Controller
         // Maintenant on va déternimer l'admission de l'élève es classe supérieure
         $decision = $this->admission($nmsr, $nmr);
         $frequenter->setAdmission($decision);
+        $frequenter->setUpdatedBy($this->getUser());
         $frequenter->setUpdatedAt(new \Datetime());
 
         // Séquence 3:
@@ -987,6 +997,7 @@ class ExamenController extends Controller
         $moyenne->setExamen($examen);
         $moyenne->setTotalPoints($totalNote);
         $moyenne->setMoyenne($moy);
+        $moyenne->setCreatedBy($this->getUser());
         $moyenne->setCreatedAt(new \Datetime());
 
         // On va flusher l'entité moyenne
@@ -1005,6 +1016,7 @@ class ExamenController extends Controller
       $moyenneClasse->setExamen($examen);
       $moyenneClasse->setAdmis($admis);
       $moyenneClasse->setRecales($recales);
+      $moyenneClasse->setCreatedBy($this->getUser());
       $moyenneClasse->setCreatedAt(new \Datetime());
       // return new Response(var_dump($admis, $recales, $moyenneClasse));
       $em->persist($moyenneClasse);
@@ -1097,12 +1109,14 @@ class ExamenController extends Controller
                 $fm->setMatiere($matiere);
                 $fm->setMoyenne($moyenneDeLaMatiere);
                 $fm->setValidation($validation);
+                $fm->setCreatedBy($this->getUser());
                 $fm->setCreatedAt(new \Datetime());
                 $em->persist($fm);
                }
                else{
                 $fm->setMoyenne($moyenneDeLaMatiere);
                 $fm->setValidation($validation);
+                $fm->setUpdatedBy($this->getUser());
                 $fm->setUpdatedAt(new \Datetime());
                }
              }
@@ -1113,6 +1127,7 @@ class ExamenController extends Controller
         // Maintenant on va déternimer l'admission de l'élève es classe supérieure
         $decision = $this->admission($nmsr, $nmr);
         $frequenter->setAdmission($decision);
+        $frequenter->setUpdatedBy($this->getUser());
         $frequenter->setUpdatedAt(new \Datetime());
 
         // Séquence 3:
@@ -1131,6 +1146,7 @@ class ExamenController extends Controller
         $moyenne->setExamen($examen);
         $moyenne->setTotalPoints($totalNote);
         $moyenne->setMoyenne($moy);
+        $moyenne->setUpdatedBy($this->getUser());
         $moyenne->setUpdatedAt(new \Datetime());
 
         if($moy > 5)
@@ -1148,6 +1164,7 @@ class ExamenController extends Controller
         $moyenneClasse->setExamen($examen);
         $moyenneClasse->setAdmis($admis);
         $moyenneClasse->setRecales($recales);
+        $moyenneClasse->setCreatedBy($this->getUser());
         $moyenneClasse->setCreatedAt(new \Datetime());
         //return new Response(var_dump($admis, $recales, $moyenneClasse));
         $em->persist($moyenneClasse);
@@ -1156,6 +1173,7 @@ class ExamenController extends Controller
       $moyenneClasse->setExamen($examen);
       $moyenneClasse->setAdmis($admis);
       $moyenneClasse->setRecales($recales);
+      $moyenneClasse->setUpdatedBy($this->getUser());
       $moyenneClasse->setUpdatedAt(new \Datetime());
       $em->flush();
 
@@ -1332,6 +1350,7 @@ class ExamenController extends Controller
              $nbrEx = $nbrEx;
            }
           // return new Response("Le rang de ".$rang['eleve']->getNomFr()." est ".$key." avec ".$rang['moyenne']." de moyenne.");
+          $rang->setUpdatedBy($this->getUser());
           $rang->setUpdatedAt(new \Datetime());
           $rang->setRang($r);
         }
@@ -1344,6 +1363,7 @@ class ExamenController extends Controller
           else {
             $r = $key + 1;
           }
+          $rang->setUpdatedBy($this->getUser());
           $rang->setUpdatedAt(new \Datetime());
           $rang->setRang($r);
           $request->getSession()->getFlashBag()->add("info", "Le classement de la deuxième session à été fait.");
@@ -1399,6 +1419,7 @@ class ExamenController extends Controller
              $nbrEx = $nbrEx;
            }
           // return new Response("Le rang de ".$rang['eleve']->getNomFr()." est ".$key." avec ".$rang['moyenne']." de moyenne.");
+          $rang->setUpdatedBy($this->getUser());
           $rang->setUpdatedAt(new \Datetime());
           $rang->setClassementAnnuel($r);
         }
@@ -1411,6 +1432,7 @@ class ExamenController extends Controller
           else {
             $r = $key + 1;
           }
+          $rang->setUpdatedBy($this->getUser());
           $rang->setUpdatedAt(new \Datetime());
           $rang->setClassementAnnuel($r);
           $request->getSession()->getFlashBag()->add("info", "Le classement annuel aussi à été fait.");
@@ -1931,6 +1953,7 @@ class ExamenController extends Controller
         $moyenne->setExamen($examen);
         $moyenne->setTotalPoints($totalNote);
         $moyenne->setMoyenne($moy);
+        $moyenne->setCreatedBy($this->getUser());
         $moyenne->setCreatedAt(new \Datetime());
 
         // On va flusher l'entité moyenne
@@ -1949,6 +1972,7 @@ class ExamenController extends Controller
       $moyenneClasse->setExamen($examen);
       $moyenneClasse->setAdmis($admis);
       $moyenneClasse->setRecales($recales);
+      $moyenneClasse->setCreatedBy($this->getUser());
       $moyenneClasse->setCreatedAt(new \Datetime());
       // return new Response(var_dump($admis, $recales, $moyenneClasse));
       $em->persist($moyenneClasse);
@@ -2021,6 +2045,7 @@ class ExamenController extends Controller
           $moyenne->setExamen($examen);
           $moyenne->setTotalPoints($totalNote);
           $moyenne->setMoyenne($moy);
+          $moyenne->setCreatedBy($this->getUser());
           $moyenne->setCreatedAt(new \Datetime());
           $em->persist($moyenne);
         }
@@ -2029,6 +2054,7 @@ class ExamenController extends Controller
           $moyenne->setExamen($examen);
           $moyenne->setTotalPoints($totalNote);
           $moyenne->setMoyenne($moy);
+          $moyenne->setUpdatedBy($this->getUser());
           $moyenne->setUpdatedAt(new \Datetime());
         }
 
@@ -2047,6 +2073,7 @@ class ExamenController extends Controller
         $moyenneClasse->setExamen($examen);
         $moyenneClasse->setAdmis($admis);
         $moyenneClasse->setRecales($recales);
+        $moyenneClasse->setCreatedBy($this->getUser());
         $moyenneClasse->setCreatedAt(new \Datetime());
         $em->persist($moyenneClasse);
       }
@@ -2056,6 +2083,7 @@ class ExamenController extends Controller
         $moyenneClasse->setExamen($examen);
         $moyenneClasse->setAdmis($admis);
         $moyenneClasse->setRecales($recales);
+        $moyenneClasse->setUpdatedBy($this->getUser());
         $moyenneClasse->setUpdatedAt(new \Datetime());
       }
       $em->flush();
@@ -2165,6 +2193,7 @@ class ExamenController extends Controller
              $nbrEx = $nbrEx;
            }
           // return new Response("Le rang de ".$rang['eleve']->getNomFr()." est ".$key." avec ".$rang['moyenne']." de moyenne.");
+          $rang->setUpdatedBy($this->getUser());
           $rang->setUpdatedAt(new \Datetime());
           $rang->setRang($r);
           $em->flush();
@@ -2178,6 +2207,7 @@ class ExamenController extends Controller
           else {
             $r = $key + 1;
           }
+          $rang->setUpdatedBy($this->getUser());
           $rang->setUpdatedAt(new \Datetime());
           $rang->setRang($r);
           $em->flush();

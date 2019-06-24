@@ -1,0 +1,90 @@
+{% extends "ISIBundle:Scolarite:index.html.twig" %}
+
+{% block title %}
+  Disposition des classes
+{% endblock %}
+
+
+{% block titre_page %}
+  <i class="users icon"></i>{{ 'Disposition'|trans }}
+{% endblock %}
+
+
+{% block content %}
+  <h2>Disposition des classes par salle</h2>
+  <table class="" id="salles">
+    <thead>
+      <tr>
+        <th>N°</th>
+        <th>Nom</th>
+        <th>Batiment</th>
+        <th>Localisation</th>
+        <th>Académie</th>
+        <th>Centre de formation</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% set i = 0 %}
+      {% for salle in salles %}
+        {% set i = i + 1 %}
+        {% set editMode = false %}
+        <tr>
+          <td>{{ i }}</td>
+          <td>{{ salle.nom }}</td>
+          <td>{{ salle.batiment.nom }}</td>
+          <td>{{ salle.localisation }}</td>
+          <td>
+            {% for sal in sallesClasses %}
+              {% if salle.id == sal.salle.id and sal.classe.niveau.groupeFormation.id == 1 %}
+                {{ sal.classe.libelleFr }}
+                {% set editMode = true %}
+              {% endif %}
+            {% endfor %}
+          </td>
+          <td>
+            {% for sal in sallesClasses %}
+              {% if salle.id == sal.salle.id and sal.classe.niveau.groupeFormation.id == 2 %}
+                {{ sal.classe.libelleFr }}
+                {% set editMode = true %}
+              {% endif %}
+            {% endfor %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+
+
+{% block javascript %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+      col_0: 'none',
+      col_2: 'select',
+      col_3: 'select',
+      col_6: 'none',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string',
+        'string', 'string', 'string',
+      ],
+      col_widths: [
+        // '25px', '330px', '270px'
+      ],
+      extensions: [{ name: 'sort' }]
+    };
+
+    var tf = new TableFilter('salles', filtersConfig);
+    tf.init();
+  </script>
+{% endblock %}

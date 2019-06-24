@@ -22,8 +22,8 @@ use ISI\ENSBundle\Repository\ContratRepository;
 use ISI\ENSBundle\Repository\RencontreRepository;
 use ISI\ENSBundle\Repository\EnseignantRepository;
 use ISI\ISIBundle\Repository\AnneeContratRepository;
-use ISI\ISIBundle\Repository\AnneescolaireRepository;
-use ISI\ISIBundle\Repository\AnneescolaireRencontreRepository;
+use ISI\ISIBundle\Repository\AnneeRepository;
+use ISI\ISIBundle\Repository\AnneeRencontreRepository;
 
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -36,7 +36,7 @@ class RencontreController extends Controller
   public function indexAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee     = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee     = $em->getRepository('ISIBundle:Annee');
     $repoRencontre = $em->getRepository('ENSBundle:Rencontre');
 
     $annee      = $repoAnnee->find($as);
@@ -55,7 +55,7 @@ class RencontreController extends Controller
   public function addRencontreAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee     = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee     = $em->getRepository('ISIBundle:Annee');
     // $repoRencontre = $em->getRepository('ENSBundle:Rencontre');
 
     $annee     = $repoAnnee->find($as);
@@ -78,8 +78,8 @@ class RencontreController extends Controller
       $date = new \Datetime($date);
       $rencontre->setAnnee($annee);
       $rencontre->setDate($date);
+      $rencontre->setCreatedBy($this->getUser());
       $rencontre->setCreatedAt(new \Datetime());
-      $rencontre->setUpdatedAt(new \Datetime());
       $em->persist($rencontre);
       $em->flush();
       $request->getSession()->getFlashBag()->add('info', 'La rencontre à été bien enregistrée');
@@ -99,7 +99,7 @@ class RencontreController extends Controller
   public function editRencontreAction(Request $request, $as, $rencontreId)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee     = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee     = $em->getRepository('ISIBundle:Annee');
     $repoRencontre = $em->getRepository('ENSBundle:Rencontre');
 
     $annee     = $repoAnnee->find($as);
@@ -135,7 +135,7 @@ class RencontreController extends Controller
   public function participantsRencontreAction(Request $request, $as, $rencontreId)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee     = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee     = $em->getRepository('ISIBundle:Annee');
     $repoContrat   = $em->getRepository('ENSBundle:Contrat');
     $repoRencontre = $em->getRepository('ENSBundle:Rencontre');
     $repoAnneeContrat   = $em->getRepository('ENSBundle:AnneeContrat');
@@ -173,8 +173,8 @@ class RencontreController extends Controller
           $EnsRencontre->setAnnee($annee);
           $EnsRencontre->setContrat($contrat);
           $EnsRencontre->setRencontre($rencontre);
+          $EnsRencontre->setCreatedBy($this->getUser());
           $EnsRencontre->setCreatedAt(new \Datetime());
-          $EnsRencontre->setUpdatedAt(new \Datetime());
           $em->persist($EnsRencontre);
         }
         $em->flush();
@@ -203,7 +203,7 @@ class RencontreController extends Controller
   public function listeDesParticipantsRencontreAction(Request $request, $as, $rencontreId)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee     = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee     = $em->getRepository('ISIBundle:Annee');
     $repoRencontre = $em->getRepository('ENSBundle:Rencontre');
     $repoAnneeContratRencontre = $em->getRepository('ENSBundle:AnneeContratRencontre');
 

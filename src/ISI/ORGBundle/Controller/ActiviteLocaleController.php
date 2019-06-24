@@ -76,6 +76,7 @@ class ActiviteLocaleController extends Controller
     {
       $data = $request->request->All();
       $date = new \DateTime($data['date']);
+      $activite->setCreatedBy($this->getUser());
       $activite->setCreatedAt(new \DateTime());
       $activite->setDate($date);
       $activite->setCommune($commune);
@@ -110,6 +111,7 @@ class ActiviteLocaleController extends Controller
     {
       $data = $request->request->All();
       $date = new \DateTime($data['date']);
+      $activite->setUpdatedBy($this->getUser());
       $activite->setUpdatedAt(new \DateTime());
       $em->persist($activite);
       $em->flush();

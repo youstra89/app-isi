@@ -17,7 +17,7 @@
     <div class="ui red message">
       <div class="header">{{ 'Attention'|trans }} !!! </div>
       <ul class="list">
-        <li>{{ message }}</li>
+        <li>{{ message|raw }}</li>
       </ul>
     </div>
   {% endfor %}
@@ -25,7 +25,7 @@
     <div class="ui green message">
       <div class="header">{{ 'Notification'|trans }}: </div>
       <ul class="list">
-        <li>{{ message }}.</li>
+        <li>{{ message|raw }}.</li>
       </ul>
     </div>
   {% endfor %}
@@ -50,21 +50,21 @@
     <div class="three fields">
       <div class="field">
         <label for="">
-           {{ form_label(form.nomFr, "Nom", {'label_attr': {'class': ''}}) }}
+           {{ form_label(form.nomFr, "Nom") }}
            {{ form_errors(form.nomFr) }}
-        </label> {{ form_widget(form.nomFr, {'attr': {'class': 'nomFr', 'placeholder': 'Le nom apparaitra ici'}}) }}
+        </label> {{ form_widget(form.nomFr, {'attr': {'class': 'nomFr', 'placeholder': 'Le nom apparaitra ici', 'readonly': true}}) }}
       </div>
       <div class="field">
         <label for="">
-           {{ form_label(form.pnomFr, "Prénom", {'label_attr': {'class': ''}}) }}
+           {{ form_label(form.pnomFr, "Prénom") }}
            {{ form_errors(form.pnomFr) }}
-        </label>{{ form_widget(form.pnomFr, {'attr': {'class': 'pnomFr', 'placeholder': 'Le prénom de ce côté,'}}) }}
+        </label>{{ form_widget(form.pnomFr, {'attr': {'class': 'pnomFr', 'placeholder': 'Le prénom de ce côté,', 'readonly': true}}) }}
       </div>
       <div class="field">
         <label for="">
-           {{ form_label(form.dateNaissance, "Date de naissance", {'label_attr': {'class': ''}}) }}
+           {{ form_label(form.dateNaissance, "Date de naissance") }}
            {{ form_errors(form.dateNaissance) }}
-        </label>{{ form_widget(form.dateNaissance, {'attr': {'class': 'dateNaissance', 'placeholder': 'Et la date de naissance là'}}) }}
+        </label>{{ form_widget(form.dateNaissance, {'attr': {'class': 'dateNaissance', 'placeholder': 'Et la date de naissance là', 'readonly': true}}) }}
       </div>
     </div>
     <div class="three fields">

@@ -9,11 +9,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * Frequenter
  *
- * @ORM\Table(name="frequenter", uniqueConstraints={@ORM\UniqueConstraint(name="frequenter", columns={"annee_id", "eleve_id", "classe_id"})})
+ * @ORM\Table(name="frequenter", uniqueConstraints={@ORM\UniqueConstraint(name="frequenter", columns={"annee_id", "eleve_id"})})
  * @ORM\Entity(repositoryClass="ISI\ISIBundle\Repository\FrequenterRepository")
  * @UniqueEntity(
- *     fields={"eleve_id", "annee_id", "classe_id"},
- *     errorPath="classe",
+ *     fields={"eleve_id", "annee_id"},
+ *     errorPath="eleve",
  *     message="Cet élève est déjà inscrit."
  * )
  */
@@ -41,6 +41,26 @@ class Frequenter
      * @ORM\Column(name="redouble", type="boolean", nullable=false)
      */
     private $redouble;
+
+    /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $createdBy;
+
+    /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="updated_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $updatedBy;
 
     /**
      * @var \DateTime
@@ -312,5 +332,53 @@ class Frequenter
     public function getAnnee()
     {
         return $this->annee;
+    }
+
+    /**
+     * Set createdBy
+     *
+     * @param \UserBundle\Entity\User $createdBy
+     *
+     * @return Frequenter
+     */
+    public function setCreatedBy(\UserBundle\Entity\User $createdBy = null)
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    /**
+     * Get createdBy
+     *
+     * @return \UserBundle\Entity\User
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
+    /**
+     * Set updatedBy
+     *
+     * @param \UserBundle\Entity\User $updatedBy
+     *
+     * @return Frequenter
+     */
+    public function setUpdatedBy(\UserBundle\Entity\User $updatedBy = null)
+    {
+        $this->updatedBy = $updatedBy;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedBy
+     *
+     * @return \UserBundle\Entity\User
+     */
+    public function getUpdatedBy()
+    {
+        return $this->updatedBy;
     }
 }

@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
-use ISI\ISIBundle\Entity\Anneescolaire;
+use ISI\ISIBundle\Entity\Annee;
 use ISI\ENSBundle\Entity\Enseignant;
 use ISI\ENSBundle\Entity\RetardEnseignant;
 use ISI\ENSBundle\Entity\Contrat;
@@ -16,7 +16,7 @@ use ISI\ENSBundle\Entity\AnneeContrat;
 use ISI\ENSBundle\Entity\AnneeContratRetard;
 use ISI\ENSBundle\Entity\AnneeContratAbsence;
 
-use ISI\ISIBundle\Repository\AnneescolaireRepository;
+use ISI\ISIBundle\Repository\AnneeRepository;
 use ISI\ENSBundle\Repository\EnseignantRepository;
 use ISI\ENSBundle\Repository\ContratRepository;
 use ISI\ENSBundle\Repository\AnneeContratRepository;
@@ -33,7 +33,7 @@ class AbsencesEtRetardsController extends Controller
     public function indexRetardsAction(Request $request, $as)
     {
         $em = $this->getDoctrine()->getManager();
-        $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+        $repoAnnee   = $em->getRepository('ISIBundle:Annee');
         $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
         $annee = $repoAnnee->find($as);
 
@@ -82,7 +82,7 @@ class AbsencesEtRetardsController extends Controller
     public function saisieDesRetardsAction(Request $request, $as, $periode)
     {
         $em = $this->getDoctrine()->getManager();
-        $repoAnnee        = $em->getRepository('ISIBundle:Anneescolaire');
+        $repoAnnee        = $em->getRepository('ISIBundle:Annee');
         $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
         $annee = $repoAnnee->find($as);
         $date = $request->query->get('date');
@@ -109,8 +109,8 @@ class AbsencesEtRetardsController extends Controller
                     $newRetard->setDate($date);
                     $newRetard->setDuree($retard);
                     $newRetard->setPeriode($periode);
+                    $newRetard->setCreatedBy($this->getUser());
                     $newRetard->setCreatedAt(new \Datetime());
-                    $newRetard->setUpdatedAt(new \Datetime());
 
                     $em->persist($newRetard);
                     // return new Response(var_dump($date));
@@ -142,7 +142,7 @@ class AbsencesEtRetardsController extends Controller
     public function apercuDesRetardsHomeAction(Request $request, $as)
     {
         $em = $this->getDoctrine()->getManager();
-        $repoAnnee  = $em->getRepository('ISIBundle:Anneescolaire');
+        $repoAnnee  = $em->getRepository('ISIBundle:Annee');
         $repoMois   = $em->getRepository('ISIBundle:Mois');
         $repoRetard = $em->getRepository('ENSBundle:AnneeContratRetard');
         // $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
@@ -172,7 +172,7 @@ class AbsencesEtRetardsController extends Controller
     public function apercuDesRetardsMoisAction(Request $request, $as, $moisId)
     {
         $em = $this->getDoctrine()->getManager();
-        $repoAnnee  = $em->getRepository('ISIBundle:Anneescolaire');
+        $repoAnnee  = $em->getRepository('ISIBundle:Annee');
         $repoMois   = $em->getRepository('ISIBundle:Mois');
         $repoRetard = $em->getRepository('ENSBundle:AnneeContratRetard');
         // $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
@@ -212,7 +212,7 @@ class AbsencesEtRetardsController extends Controller
     public function apercuDesRetardsMoisCumulAction(Request $request, $as, $moisId)
     {
         $em = $this->getDoctrine()->getManager();
-        $repoAnnee  = $em->getRepository('ISIBundle:Anneescolaire');
+        $repoAnnee  = $em->getRepository('ISIBundle:Annee');
         $repoMois   = $em->getRepository('ISIBundle:Mois');
         $repoRetard = $em->getRepository('ENSBundle:AnneeContratRetard');
         // $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
@@ -243,7 +243,7 @@ class AbsencesEtRetardsController extends Controller
     public function indexAbsencesAction(Request $request, $as)
     {
         $em = $this->getDoctrine()->getManager();
-        $repoAnnee        = $em->getRepository('ISIBundle:Anneescolaire');
+        $repoAnnee        = $em->getRepository('ISIBundle:Annee');
         $repoContrat      = $em->getRepository('ENSBundle:Contrat');
         $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
 
@@ -263,7 +263,7 @@ class AbsencesEtRetardsController extends Controller
     public function enregistrerAbsenceAction(Request $request, $as, $contratId)
     {
         $em = $this->getDoctrine()->getManager();
-        $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+        $repoAnnee   = $em->getRepository('ISIBundle:Annee');
         $repoContrat = $em->getRepository('ENSBundle:Contrat');
         // $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
 
@@ -272,8 +272,8 @@ class AbsencesEtRetardsController extends Controller
         $absence = new AnneeContratAbsence();
         $absence->setAnnee($annee);
         $absence->setContrat($contrat);
+        $absence->setCreatedBy($this->getUser());
         $absence->setCreatedAt(new \Datetime());
-        $absence->setUpdatedAt(new \Datetime());
         $form  = $this->createForm(AnneeContratAbsenceType::class, $absence);
         if($form->handleRequest($request)->isValid())
         {
@@ -306,7 +306,7 @@ class AbsencesEtRetardsController extends Controller
     public function apercuDesAbsencesHomeAction(Request $request, $as)
     {
         $em = $this->getDoctrine()->getManager();
-        $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+        $repoAnnee   = $em->getRepository('ISIBundle:Annee');
         $repoMois    = $em->getRepository('ISIBundle:Mois');
         $repoAbsence = $em->getRepository('ENSBundle:AnneeContratAbsence');
         // $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');

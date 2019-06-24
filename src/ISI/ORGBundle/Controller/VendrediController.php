@@ -25,7 +25,7 @@ class VendrediController extends Controller
     $repoAnnee    = $em->getRepository('ISIBundle:Annee');
     $repoVendredi = $em->getRepository('ORGBundle:Vendredi');
     $annee       = $repoAnnee->find($as);
-    $requete_des_vendredis = "SELECT v.id, v.date, i.nom AS imam_nom, i.pnom AS imam_pnom, m.nom AS mosquee_nom, c.nom AS commune_nom FROM vendredi v JOIN imam i ON v.imam = i.id JOIN mosquee m ON m.id = v.mosquee JOIN commune c ON c.id = m.commune_id ORDER BY v.id DESC;";
+    $requete_des_vendredis = "SELECT v.id, v.date, i.nom AS imam_nom, i.pnom AS imam_pnom, m.nom AS mosquee_nom, c.nom AS commune_nom FROM vendredi v JOIN imam i ON v.imam_id = i.id JOIN mosquee m ON m.id = v.mosquee_id JOIN commune c ON c.id = m.commune_id ORDER BY v.id DESC;";
     $statement = $em->getConnection()->prepare($requete_des_vendredis);
     $statement->execute();
     $vendredis = $statement->fetchAll();

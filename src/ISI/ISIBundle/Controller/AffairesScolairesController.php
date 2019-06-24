@@ -600,7 +600,7 @@ class AffairesScolairesController extends Controller
      **/
     if($annee->getAchevee() == TRUE)
     {
-      $request->getSession()->getFlashBag()->add('error', 'Impossible de saisir des heures d\'absence car l\'année scolaire '.$annee->getLibelle().' est achevée.');
+      $request->getSession()->getFlashBag()->add('error', 'Impossible de saisir des heures d\'absence car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
       return $this->redirect($this->generateUrl('isi_accueil_gestion_absences', ['as' => $as, 'regime' => $regime]));
     }
 
@@ -615,6 +615,7 @@ class AffairesScolairesController extends Controller
      * Sinon, on affiche directement le formulaire pour la saisie des heures d'absences.
      */
     $absenceDuMois = $repoAbsence->findBy(['eleve' => $eleves[0]->getId(), 'mois' => $moisId, 'annee' => $as]);
+    $user = $this->getUser();
     if(empty($absenceDuMois))
     {
       // Création de l'entité absence pour chaque élève
@@ -623,6 +624,7 @@ class AffairesScolairesController extends Controller
         $entiteAbsence->setAnnee($annee);
         $entiteAbsence->setEleve($eleve);
         $entiteAbsence->setMois($mois);
+        $entiteAbsence->setCreatedBy($user);
         $entiteAbsence->setCreatedAt(new \Datetime());
 
         $em->persist($entiteAbsence);
@@ -662,6 +664,7 @@ class AffairesScolairesController extends Controller
             'moisId'   => $moisId
           ]));
         }
+        $user = $this->getUser();
 
         foreach($eleves as $eleve)
         {
@@ -683,13 +686,14 @@ class AffairesScolairesController extends Controller
                 $abs->setHeureCoran($absenceEleve);
             }
 
+            $abs->setUpdatedBy($user);
             $abs->setUpdatedAt(new \Datetime());
             $em->flush();
           }
         } // Fin foreach $eleves
       } // Fin foreach $data['note']
 
-      $request->getSession()->getFlashBag()->add('info', 'Les heures d\'absence du mois de '.$mois->getMois().' de la classe '.$classe->getNiveau()->getLibelleFr().' '.$classe->getLibelleFr().' ont été bien enregistrées.');
+      $request->getSession()->getFlashBag()->add('info', 'Les heures d\'absence du mois de <strong>'.$mois->getMois().'</strong> de la classe <strong>'.$classe->getLibelleFr().'</strong> ont été bien enregistrées.');
       return $this->redirect($this->generateUrl('isi_heures_absences_cours_d_une_classe_home',[
         'as' => $as,
         'regime' => $regime,
@@ -734,7 +738,7 @@ class AffairesScolairesController extends Controller
      **/
     if($annee->getAchevee() == TRUE)
     {
-      $request->getSession()->getFlashBag()->add('error', 'Impossible de modifier des heures d\'absence car l\'année scolaire '.$annee->getLibelle().' est achevée.');
+      $request->getSession()->getFlashBag()->add('error', 'Impossible de modifier des heures d\'absence car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
       return $this->redirect($this->generateUrl('isi_accueil_gestion_absences', ['as' => $as, 'regime' => $regime]));
     }
 
@@ -771,6 +775,7 @@ class AffairesScolairesController extends Controller
             'moisId'   => $moisId
           ]));
         }
+        $user = $this->getUser();
 
         foreach($eleves as $eleve)
         {
@@ -792,13 +797,14 @@ class AffairesScolairesController extends Controller
                 $abs->setHeureCoran($absenceEleve);
             }
 
+            $abs->setUpdatedBy($user);
             $abs->setUpdatedAt(new \Datetime());
             $em->flush();
           }
         } // Fin foreach $eleves
       } // Fin foreach $data['note']
 
-      $request->getSession()->getFlashBag()->add('info', 'Les heures d\'absence du mois de '.$mois->getMois().' de la classe '.$classe->getNiveau()->getLibelleFr().' '.$classe->getLibelleFr().' ont été bien enregistrées.');
+      $request->getSession()->getFlashBag()->add('info', 'Les heures d\'absence du mois de <strong>'.$mois->getMois().'</strong> de la classe <strong>'.$classe->getLibelleFr().'</strong> ont été bien enregistrées.');
       return $this->redirect($this->generateUrl('isi_heures_absences_enregistrees',[
         'as' => $as,
         'regime' => $regime,
@@ -1007,9 +1013,10 @@ class AffairesScolairesController extends Controller
        **/
       if($annee->getAchevee() == TRUE)
       {
-        $request->getSession()->getFlashBag()->add('error', 'Impossible de faire le réaménagement car l\'année scolaire '.$annee->getLibelleAnnee().' est achevée.');
+        $request->getSession()->getFlashBag()->add('error', 'Impossible de faire le réaménagement car l\'année scolaire <strong>'.$annee->getLibelleAnnee().'</strong> est achevée.');
         return $this->redirect($this->generateUrl('isi_reamenager_classes_home', ['as' => $as, 'regime' => $regime]));
       }
+      $user = $this->getUser();
 
       foreach ($classes as $key => $cl) {
         if(!empty($cl)){
@@ -1026,17 +1033,20 @@ class AffairesScolairesController extends Controller
             $probleme->setAppreciation($appreciation);
             $probleme->setDescription($description);
             $probleme->setDate(new \Datetime());
+            $probleme->setCreatedBy($user);
             $probleme->setCreatedAt(new \Datetime());
 
             $commettre = new Commettre();
             $commettre->setEleve($eleve);
             $commettre->setProbleme($probleme);
             $commettre->setAnnee($annee);
+            $commettre->setCreatedBy($user);
 
             $em->persist($probleme);
             $em->persist($commettre);
 
             $frequenter->setClasse($nvoClasse);
+            $frequenter->setUpdatedBy($user);
             $frequenter->setUpdatedAt(new \Datetime());
             
             $check_recording = true;
@@ -1054,6 +1064,7 @@ class AffairesScolairesController extends Controller
               $halaqa = $repoHalaqa->find((int) $hal);
               $memoriser = $repoMemoriser->findOneBy(['eleve' => $key, 'annee' => $as]);
               $memoriser->setHalaqa($halaqa);
+              $memoriser->setUpdatedBy($user);
               $memoriser->setUpdatedAt(new \Datetime());
           }
           else{
@@ -1061,51 +1072,7 @@ class AffairesScolairesController extends Controller
           }
         }
       }
-      /**
-       * On va créer une variable qui s'appelle $bool. Sa valeur initiale est false.
-       * Dès qu'il y a un élève pour qui on fait une réaménagement, sa valeur passera à true.
-       * A la fin de notre boucle, on teste sa valeur et on affiche un message getFlashBag
-       */
-      // $bool = false;
-      // foreach ($classes as $key => $cl) {
-      //   if(!empty($classes[$key]))
-      //   {
-      //     $bool = true;
-      //     $newClasse  = $repoClasse->find($classes[$key]);
-      //     $eleve      = $repoEleve->find($key);
 
-      //     // On va signifier que l'élève à changer de classe dans son historique
-      //     $probleme     = new Probleme();
-      //     $appreciation = 'Réaménagement';
-      //     $description  = 'Changement de classe de '.$classe->getLibelleFr().' à '.$newClasse->getNiveau()->getLibelleFr().' - '.$newClasse->getLibelleFr();
-      //     $tab[] = $description;
-      //     $probleme->setAppreciation($appreciation);
-      //     $probleme->setDescription($description);
-      //     $probleme->setCreatedAt(new \Datetime());
-
-      //     $commettre = new Commettre();
-      //     $commettre->setEleve($eleve);
-      //     $commettre->setProbleme($probleme);
-      //     $commettre->setAnnee($annee);
-
-      //     $em->persist($probleme);
-      //     $em->persist($commettre);
-
-      //     $frequenter = $repoFrequenter->findBy(['eleve' => $key, 'annee' => $as, 'classe' => $classe]);
-      //     foreach ($frequenter as $fq) {
-      //       $fq->setClasse($newClasse);
-      //       $fq->setUpdatedAt(new \Datetime());
-      //     }
-      //   }
-      // }
-      // $em->flush();
-
-      // Une message getFlashBag pour notifier l'utilisateur du résultat des réaménagements
-      // if ($bool == false) {
-      //   $request->getSession()->getFlashBag()->add('info', 'Vous n\'avez effectué aucun changement dans la classe '.$classe->getNiveau()->getLibelleFr().' - '.$classe->getLibelleFr());
-      // } else {
-      //   $request->getSession()->getFlashBag()->add('info', 'Les réaménagements se sont bien effectués dans la classe '.$classe->getNiveau()->getLibelleFr().' - '.$classe->getLibelleFr());
-      // }
       if ($check_recording == false && $classe_recording == false) {
         # On entre dans cette condition s'il n'y a pas eu d'enregistrement
         $request->getSession()->getFlashBag()->add('error', 'Aucun changement constaté. Veuillez essayer à nouveau.');
@@ -1129,6 +1096,41 @@ class AffairesScolairesController extends Controller
         'regime' => $regime
       ]));
     }
+  }
+
+  public function dispositionDesSallesDeCoursAction(Request $request, int $as, string $regime)
+  {
+    $em = $this->getDoctrine()->getManager();
+    $repoAnnee = $em->getRepository('ISIBundle:Annee');
+    $repoSalle = $em->getRepository('ISIBundle:Salle');
+    $repoSC    = $em->getRepository('ISIBundle:SalleClasse');
+    $annee     = $repoAnnee->find($as);
+    $salles    = $repoSalle->findAll();
+    $sallesClasses = $repoSC->findBy(['annee' => $as]);
+    $sallesAOQP = [];
+    $sallesFOQP = [];
+    foreach ($sallesClasses as $key => $value) {
+      if ($value->getClasse()->getNiveau()->getGroupeFormation()->getId() == 1) {
+        # code...
+        $sallesAOQP[] = $value->getSalle();
+      } 
+      elseif ($value->getClasse()->getNiveau()->getGroupeFormation()->getId() == 2) {
+        # code...
+        $sallesFOQP[] = $value->getSalle();
+      }
+      
+    }
+    // dump($sallesClasses, $salles);
+
+    return $this->render('ISIBundle:Scolarite:disposition.html.twig', [
+      'asec'          => $as,
+      'regime'        => $regime,
+      'annee'         => $annee,
+      'salles'        => $salles,
+      'sallesAOQP'    => $sallesAOQP,
+      'sallesFOQP'    => $sallesFOQP,
+      'sallesClasses' => $sallesClasses,
+    ]);
   }
 
   /************** - ça, une une fonction personnelle. Elle sert à récupérer les ids des éleves à partir d'une liste d'élèves */

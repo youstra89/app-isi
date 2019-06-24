@@ -36,6 +36,26 @@ class Eleveautreregime
     private $motif = NULL;
 
     /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $createdBy;
+
+    /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="updated_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $updatedBy;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_at", type="datetime", nullable=false)
@@ -54,7 +74,7 @@ class Eleveautreregime
      *
      * @ORM\ManyToOne(targetEntity="ISI\ISIBundle\Entity\Eleve")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="eleve_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="eleve_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $eleve;
@@ -64,7 +84,7 @@ class Eleveautreregime
      *
      * @ORM\ManyToOne(targetEntity="Annee")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="annee_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="annee_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $annee;
@@ -89,7 +109,7 @@ class Eleveautreregime
      */
     public function setcreated_at($createdAt)
     {
-        $this->created_at = $createdAt;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -101,7 +121,7 @@ class Eleveautreregime
      */
     public function getcreated_at()
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
     /**
@@ -113,7 +133,7 @@ class Eleveautreregime
      */
     public function setupdated_at($updatedAt)
     {
-        $this->updated_at = $updatedAt;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
@@ -125,7 +145,7 @@ class Eleveautreregime
      */
     public function getupdated_at()
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
     /**
@@ -150,30 +170,6 @@ class Eleveautreregime
     public function getEleve()
     {
         return $this->eleve;
-    }
-
-    /**
-     * Set anneeScolaire
-     *
-     * @param \ISI\ISIBundle\Entity\Anneescolaire $anneeScolaire
-     *
-     * @return Frequenter
-     */
-    public function setAnneeScolaire(\ISI\ISIBundle\Entity\Anneescolaire $anneeScolaire = null)
-    {
-        $this->anneeScolaire = $anneeScolaire;
-
-        return $this;
-    }
-
-    /**
-     * Get anneeScolaire
-     *
-     * @return \ISI\ISIBundle\Entity\Anneescolaire
-     */
-    public function getAnneeScolaire()
-    {
-        return $this->anneeScolaire;
     }
 
     /**
@@ -210,7 +206,7 @@ class Eleveautreregime
      */
     public function setCreatedAt($createdAt)
     {
-        $this->created_at = $createdAt;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -222,7 +218,7 @@ class Eleveautreregime
      */
     public function getCreatedAt()
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
     /**
@@ -234,7 +230,7 @@ class Eleveautreregime
      */
     public function setUpdatedAt($updatedAt)
     {
-        $this->updated_at = $updatedAt;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
@@ -246,7 +242,7 @@ class Eleveautreregime
      */
     public function getUpdatedAt()
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
     /**

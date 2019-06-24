@@ -17,7 +17,7 @@ class Classe
     /**
      * @var integer
      *
-     * @ORM\Column(name="classe_id", type="integer", nullable=false)
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
@@ -43,6 +43,26 @@ class Classe
      * @ORM\Column(name="genre", type="string", length=255, nullable=false)
      */
     private $genre;
+
+    /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $createdBy;
+
+    /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="updated_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $updatedBy;
 
     /**
      * @var \DateTime
@@ -80,13 +100,13 @@ class Classe
 
 
     /**
-     * Get classeId
+     * Get id
      *
      * @return integer
      */
-    public function getClasseId()
+    public function getId()
     {
-        return $this->classeId;
+        return $this->id;
     }
 
     /**
@@ -170,7 +190,7 @@ class Classe
      */
     public function setcreated_at($createdAt)
     {
-        $this->created_at = $createdAt;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -182,7 +202,7 @@ class Classe
      */
     public function getcreated_at()
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
     /**
@@ -194,7 +214,7 @@ class Classe
      */
     public function setupdated_at($updatedAt)
     {
-        $this->updated_at = $updatedAt;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
@@ -206,32 +226,9 @@ class Classe
      */
     public function getupdated_at()
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
-    /**
-     * Set anneeScolaire
-     *
-     * @param \ISI\ISIBundle\Entity\Annee $anneeScolaire
-     *
-     * @return Classe
-     */
-    public function setAnneeScolaire(\ISI\ISIBundle\Entity\Annee $anneeScolaire = null)
-    {
-        $this->anneeScolaire = $anneeScolaire;
-
-        return $this;
-    }
-
-    /**
-     * Get anneeScolaire
-     *
-     * @return \ISI\ISIBundle\Entity\Annee
-     */
-    public function getAnneeScolaire()
-    {
-        return $this->anneeScolaire;
-    }
 
     /**
      * Set niveau
@@ -280,20 +277,6 @@ class Classe
       $this->setAnnee($as);
     }
 
-    // public function __toString(){
-    //     return $this->niveau.' '.$this->libelleFr;
-    // }
-
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
     /**
      * Set createdAt
      *
@@ -303,7 +286,7 @@ class Classe
      */
     public function setCreatedAt($createdAt)
     {
-        $this->created_at = $createdAt;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -315,7 +298,7 @@ class Classe
      */
     public function getCreatedAt()
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
     /**
@@ -327,7 +310,7 @@ class Classe
      */
     public function setUpdatedAt($updatedAt)
     {
-        $this->updated_at = $updatedAt;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
@@ -339,7 +322,7 @@ class Classe
      */
     public function getUpdatedAt()
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
     /**
@@ -364,5 +347,53 @@ class Classe
     public function getAnnee()
     {
         return $this->annee;
+    }
+
+    /**
+     * Set createdBy
+     *
+     * @param \UserBundle\Entity\User $createdBy
+     *
+     * @return Classe
+     */
+    public function setCreatedBy(\UserBundle\Entity\User $createdBy = null)
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    /**
+     * Get createdBy
+     *
+     * @return \UserBundle\Entity\User
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
+    /**
+     * Set updatedBy
+     *
+     * @param \UserBundle\Entity\User $updatedBy
+     *
+     * @return Classe
+     */
+    public function setUpdatedBy(\UserBundle\Entity\User $updatedBy = null)
+    {
+        $this->updatedBy = $updatedBy;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedBy
+     *
+     * @return \UserBundle\Entity\User
+     */
+    public function getUpdatedBy()
+    {
+        return $this->updatedBy;
     }
 }

@@ -14,13 +14,21 @@
           <i class="plus icon"></i>
           {{ 'Interner'|trans }} {{ eleve.nomFr }} {{ eleve.pnomFr }}
         </button><br /><br />
-        <label for="">{{ 'Chambre'|trans }}</label>
-        <select class="" name="chambre">
-          <option value="">{{ 'Choisir une chambre pour l\'élève'|trans }}</option>
-          {% for chambre in chambres %}
-            <option value="{{ chambre.id }}">{{ chambre.libelle }}</option>
-          {% endfor %}
-        </select>
+        <div class="two fields">
+          <div class="field">
+            <label for="chambre">{{ 'Chambre'|trans }}</label>
+            <select class="" id="chambre" name="chambre">
+              <option value="">{{ 'Choisir une chambre pour l\'élève'|trans }}</option>
+              {% for chambre in chambres %}
+                <option value="{{ chambre.id }}">{{ chambre.libelle }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="field">
+            <label for="dateI">{{ 'Date d\'inscription à l\'internat'|trans }}</label>
+            <input class="" id="dateI" name="dateI" value="{{ 'now'|date('Y-m-d') }}" type="date">
+          </div>
+        </div>
       </form>
     </center><br>
     <div>

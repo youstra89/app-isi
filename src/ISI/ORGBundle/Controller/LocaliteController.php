@@ -100,6 +100,7 @@ class LocaliteController extends Controller
 
     if($form->isSubmitted() && $form->isValid())
     {
+      $region->setUpdatedBy($this->getUser());
       $region->setUpdatedAt(new \DateTime());
       $em->flush();
       $this->addFlash('info', 'Mise à jour de la region réussie.');
@@ -174,6 +175,7 @@ class LocaliteController extends Controller
 
       if($form->isSubmitted() && $form->isValid())
       {
+        $ville->setUpdatedBy($this->getUser());
         $ville->setUpdatedAt(new \DateTime());
         $em->flush();
         $this->addFlash('info', 'Mise à jour de la ville réussie.');
@@ -254,6 +256,7 @@ class LocaliteController extends Controller
 
       if($form->isSubmitted() && $form->isValid())
       {
+        $commune->setUpdatedBy($this->getUser());
         $commune->setUpdatedAt(new \DateTime());
         $em->flush();
         $this->addFlash('info', 'Mise à jour de la commune réussie.');

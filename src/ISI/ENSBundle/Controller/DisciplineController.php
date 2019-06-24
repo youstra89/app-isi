@@ -5,7 +5,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
-use ISI\ISIBundle\Entity\Anneescolaire;
+use ISI\ISIBundle\Entity\Annee;
 use ISI\ENSBundle\Entity\Contrat;
 use ISI\ENSBundle\Entity\Enseignant;
 use ISI\ENSBundle\Entity\Convocation;
@@ -25,7 +25,7 @@ use ISI\ENSBundle\Repository\ContratRepository;
 use ISI\ENSBundle\Repository\EnseignantRepository;
 use ISI\ENSBundle\Repository\ConvocationRepository;
 use ISI\ENSBundle\Repository\AnneeContratRepository;
-use ISI\ISIBundle\Repository\AnneescolaireRepository;
+use ISI\ISIBundle\Repository\AnneeRepository;
 use ISI\ENSBundle\Repository\AnneeContratConduiteRepository;
 use ISI\ENSBundle\Repository\AnneeContratSanctionRepository;
 use ISI\ENSBundle\Repository\AnneeContratConvocationRepository;
@@ -41,7 +41,7 @@ class DisciplineController extends Controller
   public function indexConduiteAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
 
     $annee    = $repoAnnee->find($as);
@@ -65,7 +65,7 @@ class DisciplineController extends Controller
   public function enregistrerConduiteAction(Request $request, $as, $contratId)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoContrat = $em->getRepository('ENSBundle:Contrat');
     $annee   = $repoAnnee->find($as);
     $contrat = $repoContrat->find($contratId);
@@ -89,8 +89,8 @@ class DisciplineController extends Controller
       $conduite->setAnnee($annee);
       $conduite->setContrat($contrat);
       $conduite->setDate($date);
+      $conduite->setCreatedBy($this->getUser());
       $conduite->setCreatedAt(new \Datetime());
-      $conduite->setUpdatedAt(new \Datetime());
       $em->persist($conduite);
       $em->flush();
 
@@ -116,7 +116,7 @@ class DisciplineController extends Controller
   public function voirConduiteAction(Request $request, $as, $contratId)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoContrat = $em->getRepository('ENSBundle:Contrat');
     $repoConduite = $em->getRepository('ENSBundle:AnneeContratConduite');
 
@@ -138,7 +138,7 @@ class DisciplineController extends Controller
   public function indexConvocationAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee      = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoEnseignant = $em->getRepository('ENSBundle:Enseignant');
     $repoConvocation = $em->getRepository('ENSBundle:Convocation');
     $repoAnneeConvocation = $em->getRepository('ENSBundle:AnneeContratConvocation');
@@ -167,7 +167,7 @@ class DisciplineController extends Controller
   public function convoquerHomeAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee        = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee        = $em->getRepository('ISIBundle:Annee');
     $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
 
     $annee    = $repoAnnee->find($as);
@@ -203,7 +203,7 @@ class DisciplineController extends Controller
   public function remplirConvocationAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoContrat = $em->getRepository('ENSBundle:Contrat');
 
     if($annee->getAchevee() == TRUE)
@@ -233,8 +233,8 @@ class DisciplineController extends Controller
       $convocation->setDate($date);
       $convocation->setInstance($instance);
       $convocation->setMotif($motif);
+      $convocation->setCreatedBy($this->getUser());
       $convocation->setCreatedAt(new \Datetime());
-      $convocation->setUpdatedAt(new \Datetime());
       $em->persist($convocation);
 
       foreach($ids as $id)
@@ -244,8 +244,8 @@ class DisciplineController extends Controller
         $convoque->setAnnee($annee);
         $convoque->setContrat($contrat);
         $convoque->setConvocation($convocation);
+        $convoque->setCreatedBy($this->getUser());
         $convoque->setCreatedAt(new \Datetime());
-        $convoque->setUpdatedAt(new \Datetime());
         $em->persist($convoque);
       }
       $request->getSession()->getFlashBag()->add('info', 'Convocation enregistrée avec succès.');
@@ -270,7 +270,7 @@ class DisciplineController extends Controller
   public function auditionEtVerdictAction(Request $request, $as, $ensConvocationId)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee      = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoContrat    = $em->getRepository('ENSBundle:Contrat');
     $repoAnneeConvocation = $em->getRepository('ENSBundle:AnneeContratConvocation');
 
@@ -293,6 +293,7 @@ class DisciplineController extends Controller
 
       $convocation->setAudition($audition);
       $convocation->setVerdict($verdict);
+      $convocation->setUpdatedBy($this->getUser());
       $convocation->setUpdatedAt(new \Datetime());
       $em->flush();
       $request->getSession()->getFlashBag()->add('info', 'Le verdict pour l\'esnseignant '.$convocation->getContrat()->getEnseignant()->getNomFr().' '.$convocation->getContrat()->getEnseignant()->getPnomFr().' a bien été enregistré.');
@@ -313,7 +314,7 @@ class DisciplineController extends Controller
   public function sanctionHomeAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
 
     $annee    = $repoAnnee->find($as);
@@ -339,7 +340,7 @@ class DisciplineController extends Controller
   public function voirSanctionAction(Request $request, $as, $contratId)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoContrat = $em->getRepository('ENSBundle:Contrat');
     $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
     $repoSanction = $em->getRepository('ENSBundle:AnneeContratSanction');
@@ -365,7 +366,7 @@ class DisciplineController extends Controller
     public function addSanctionAction(Request $request, $as, $contratId)
     {
       $em = $this->getDoctrine()->getManager();
-      $repoAnnee    = $em->getRepository('ISIBundle:Anneescolaire');
+      $repoAnnee    = $em->getRepository('ISIBundle:Annee');
       $repoContrat  = $em->getRepository('ENSBundle:Contrat');
       $repoSanction = $em->getRepository('ENSBundle:AnneeContratSanction');
 
@@ -390,8 +391,8 @@ class DisciplineController extends Controller
         $sanction->setContrat($contrat);
         $sanction->setAnnee($annee);
         $sanction->setDate($date);
+        $sanction->setCreatedBy($this->getUser());
         $sanction->setCreatedAt(new \Datetime());
-        $sanction->setUpdatedAt(new \Datetime());
         $em->persist($sanction);
         $em->flush();
 
@@ -413,7 +414,7 @@ class DisciplineController extends Controller
   public function ajouterEnseignantAnneeAction(Request $request, $as, $contratId)
   {
     $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Anneescolaire');
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoContrat = $em->getRepository('ENSBundle:Contrat');
     $repoAnneeContrat   = $em->getRepository('ENSBundle:AnneeContrat');
 
@@ -436,8 +437,8 @@ class DisciplineController extends Controller
     $newAnneeContrat = new AnneeContrat();
     $newAnneeContrat->setAnnee($annee);
     $newAnneeContrat->setContrat($contrat);
+    $newAnneeContrat->setCreatedBy($this->getUser());
     $newAnneeContrat->setCreatedAt(new \Datetime());
-    $newAnneeContrat->setUpdatedAt(new \Datetime());
     $form  = $this->createForm(AnneeContratType::class, $newAnneeContrat);
 
     if($form->handleRequest($request)->isValid())

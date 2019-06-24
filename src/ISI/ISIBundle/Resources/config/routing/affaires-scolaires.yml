@@ -305,6 +305,11 @@ isi_heures_absences_enregistrees:
         classeId: \d+
         absence:  Cours|Coran
 
-# La route pour la saisie des notes se trouve dans la partie examen
+isi_disposition:
+    path: /disposition-des-salles-de-cours-des-classes-{as}-{regime}
+    defaults: { _controller: ISIBundle:AffairesScolaires:dispositionDesSallesDeCours }
+    requirements:
+        as: \d+
+        regime:   A|F
 
 #------------------------------ FIN DES ROUTES AFFAIRES SCOLAIRES ---------------------------------

@@ -9,6 +9,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Type;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
+use ISI\ISIBundle\Repository\BatimentRepository;
+
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -22,9 +24,16 @@ class ChambreType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('batiment', EntityType::class, [
+        $builder
+                ->add('batiment', EntityType::class, [
                   'class'         => 'ISIBundle:Batiment',
                   'placeholder'   => 'Choisir le bâtiment',
+                  'query_builder' => function (BatimentRepository $er)
+                  {
+                    return $er->createQueryBuilder('n')
+                              ->where('n.utilisation = :usage')
+                              ->setParameter('usage', 2);
+                  },
                   'choice_label'  => 'nom',
                   'multiple'      => false
                 ])

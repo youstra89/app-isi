@@ -427,6 +427,7 @@ class EtudeController extends Controller
           // instead of its contents
           $livre->setNomFichier($file->getClientOriginalName());
           $livre->setSupport($fileName);
+          $livre->setUpdatedBy($this->getUser());
           $livre->setUpdatedAt(new \Datetime());
           $em->flush();
         }
@@ -488,6 +489,7 @@ class EtudeController extends Controller
           $livre->setSupport($fileName);
         }
 
+        $livre->setCreatedBy($this->getUser());
         $livre->setCreatedAt(new \Datetime());
         // return new Response(var_dump($niveau));
         $em->persist($livre);
@@ -529,6 +531,7 @@ class EtudeController extends Controller
       $form = $this->createForm(LivreType::class, $livre);
       if($form->handleRequest($request)->isValid())
       {
+        $livre->setUpdatedBy($this->getUser());
         $livre->setUpdatedAt(new \Datetime());
         $em->flush();
         $request->getSession()->getFlashBag()->add('info', 'Mise à jour du livre '.$livre->getNom().' réussie.');
@@ -582,6 +585,7 @@ class EtudeController extends Controller
       $examen = new Examen();
       $annee = $repoAnnee->find($as);
       $examen->setAnnee($annee);
+      $examen->setCreatedBy($this->getUser());
       $examen->setCreatedAt(new \Datetime());
 
       $form = $this->createForm(ExamenType::class, $examen);

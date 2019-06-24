@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * TourneePays
- * @ORM\Table(name="tourneePays")
+ * @ORM\Table(name="tourneepays")
  * @ORM\Entity(repositoryClass="ISI\ORGBundle\Repository\TourneePaysRepository")
  */
 class TourneePays
@@ -35,6 +35,26 @@ class TourneePays
      * })
      */
     private $pays;
+
+    /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $createdBy;
+
+    /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="updated_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $updatedBy;
 
 
     public function getId(): ?int

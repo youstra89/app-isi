@@ -86,6 +86,7 @@ class InternatController extends Controller
     if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
       $em = $this->getDoctrine()->getManager();
       $chambre->setPlacesDisponibles($chambre->getNombreDePlaces());
+      $chambre->setCreatedBy($this->getUser());
       $chambre->setCreatedAt(new \Datetime());
       $em->persist($chambre);
       $em->flush();
@@ -142,7 +143,7 @@ class InternatController extends Controller
         return $this->redirectToRoute('internat_add', array('as' => $as));
       }
 
-      return $this->redirectToRoute('internat_add_eleve', array('as' => $as, 'eleveId' => $eleve->getEleveId()));
+      return $this->redirectToRoute('internat_add_eleve', array('as' => $as, 'eleveId' => $eleve->getId()));
     }
 
     return $this->render('ISIBundle:Internat:add-interne.html.twig', [
@@ -165,12 +166,13 @@ class InternatController extends Controller
     $annee    = $repoAnnee->find($as);
     $eleve    = $repoEleve->find($eleveId);
     $fq       = $repoFrequenter->findOneBy(['annee' => $as, 'eleve' => $eleveId]);
-    $chambres = $repoChambre->chambresDisponibles($eleve->getSexeFr());
+    $chambres = $repoChambre->chambresDisponibles($eleve->getSexe());
 
     if($request->isMethod('post'))
     {
       $data = $request->request->all();
       $chambreId = $data['chambre'];
+      $dateI = new \DateTime($data['dateI']);
 
       if(empty($chambreId))
       {
@@ -199,6 +201,7 @@ class InternatController extends Controller
       $interner->setAnnee($annee);
       $interner->setChambre($chambre);
       $interner->setRenvoye(FALSE);
+      $interner->setCreatedBy($this->getUser());
       $interner->setCreatedAt(new \Datetime());
 
       // On va profiter pour enregistrer une conduite
@@ -206,8 +209,10 @@ class InternatController extends Controller
       $probleme = new Probleme();
       $appreciation = "Interner";
       $description  = "Inscrit(e) à l'internat";
+      $probleme->setDate($dateI);
       $probleme->setAppreciation($appreciation);
       $probleme->setDescription($description);
+      $probleme->setCreatedBy($this->getUser());
       $probleme->setCreatedAt(new \Datetime());
 
       // Il nous faut un occurence de commettre pour enregistrer un problème
@@ -220,7 +225,7 @@ class InternatController extends Controller
       $em->persist($commettre);
       $em->persist($interner);
       $em->flush();
-      $request->getSession()->getFlashBag()->add('info', $eleve->getNomFr().' '.$eleve->getPnomFr().' a bien été interné dans la chambre "'.$chambre->getLibelleChambre().'"');
+      $request->getSession()->getFlashBag()->add('info', $eleve->getNomFr().' '.$eleve->getPnomFr().' a bien été interné dans la chambre "'.$chambre->getLibelle().'"');
       return $this->redirectToRoute('internat_add', array('as' => $as));
     }
 
@@ -268,13 +273,13 @@ class InternatController extends Controller
         return $this->redirectToRoute('internat_delete', array('as' => $as));
       }
 
-      $eleveInterne = $repoInterner->findBy(['annee' => $as, 'eleve' => $eleve->getEleveId()]);
+      $eleveInterne = $repoInterner->findBy(['annee' => $as, 'eleve' => $eleve->getId()]);
       if(empty($eleveInterne))
       {
         $request->getSession()->getFlashBag()->add('error', 'L\'élève n\'est pas inscrit à l\'internat');
         return $this->redirectToRoute('internat_delete', array('as' => $as));
       }
-      return $this->redirectToRoute('internat_delete_eleve', array('as' => $as, 'eleveId' => $eleve->getEleveId()));
+      return $this->redirectToRoute('internat_delete_eleve', array('as' => $as, 'eleveId' => $eleve->getId()));
     }
 
     return $this->render('ISIBundle:Internat:delete-interne.html.twig', [
@@ -298,7 +303,7 @@ class InternatController extends Controller
     $annee    = $repoAnnee->find($as);
     $eleve    = $repoEleve->find($eleveId);
     $fq       = $repoFrequenter->findOneBy(['annee' => $as, 'eleve' => $eleveId]);
-    $chambres = $repoChambre->findBy(['genre' => $eleve->getSexeFr()]);
+    $chambres = $repoChambre->findBy(['genre' => $eleve->getSexe()]);
 
     if($request->isMethod('post'))
     {
@@ -306,6 +311,7 @@ class InternatController extends Controller
       $eleve = $repoEleve->find($eleveId);
       $data  = $request->request->all();
       $description  = $data['motifRenvoi'];
+      $date = new \DateTime($data['date']);
       if($annee->getAchevee() == TRUE)
       {
         $request->getSession()->getFlashBag()->add('error', 'Impossible d\'inscrire un élève à l\'internat car l\'année scolaire '.$annee->getLibelleAnnee().' est achevée.');
@@ -321,7 +327,6 @@ class InternatController extends Controller
       $interner = $repoInterner->findOneBy(['eleve' => $eleveId, 'annee' => $as]);
       $interner->setRenvoye(TRUE);
       $interner->setDateRenvoi(new \Datetime());
-      $interner->setUpdatedAt(new \Datetime());
 
       // On va profiter pour enregistrer une conduite
       // Un renvoi peut être considéré comme effet immédiat ou non d'un problème
@@ -329,6 +334,8 @@ class InternatController extends Controller
       $appreciation = "Retrait internat";
       $probleme->setAppreciation($appreciation);
       $probleme->setDescription($description);
+      $probleme->setDate($date);
+      $probleme->setCreatedBy($this->getUser());
       $probleme->setCreatedAt(new \Datetime());
 
       // Il nous faut un occurence de commettre pour enregistrer un problème
@@ -446,7 +453,7 @@ class InternatController extends Controller
     $annee = $repoAnnee->find($as);
     $mois  = $repoMois->find($moisId);
 
-    $mdp = $repoMoisDePaie->findAll();
+    $mdp = $repoMoisDePaie->findBy(["annee" => $as]);
     if(count($mdp) >= 10)
     {
       $request->getSession()->getFlashBag()->add('error', 'Vous ne pouvez pas ajouter plus de 10 mois de paiement');
@@ -473,6 +480,7 @@ class InternatController extends Controller
     $moisdepaie = new Moisdepaiementinternat();
     $moisdepaie->setAnnee($annee);
     $moisdepaie->setMois($mois);
+    $moisdepaie->setCreatedBy($this->getUser());
     $moisdepaie->setCreatedAt(new \Datetime());
     $em->persist($moisdepaie);
     $em->flush();
@@ -567,6 +575,7 @@ class InternatController extends Controller
             $paiement->setInterner($interner[0]);
             $paiement->setMoisdepaiement($mois);
             $paiement->setMontant($montant);
+            $paiement->setCreatedBy($this->getUser());
             $paiement->setCreatedAt(new \Datetime());
             $em->persist($paiement);
             $em->flush();
@@ -592,6 +601,7 @@ class InternatController extends Controller
         $paiement->setInterner($interner[0]);
         $paiement->setMoisdepaiement($mois);
         $paiement->setMontant($montant);
+        $paiement->setCreatedBy($this->getUser());
         $paiement->setCreatedAt(new \Datetime());
         $em->persist($paiement);
         $em->flush();

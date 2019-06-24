@@ -23,14 +23,14 @@
     <div class="ui green message">
       <div class="header">{{ 'Notification'|trans }}: </div>
       <ul class="list">
-        <li>{{ message }}</li>
+        <li>{{ message|raw }}</li>
       </ul>
     </div>
   {% endfor %} {% for message in app.session.flashbag.get('error') %}
     <div class="ui red message">
       <div class="header">{{ 'Attention'|trans }} !!! </div>
       <ul class="list">
-        <li>{{ message }}</li>
+        <li>{{ message|raw }}</li>
       </ul>
     </div>
   {% endfor %}
