@@ -37,10 +37,14 @@
         <table width="100%" class="" align="center">
             <thead>
                 <tr class="table-header">
+                    <th width="5%" class="nomAr" align="right">Total</th>
+                    <th width="8%" class="nomAr" align="right">Samedi</th>
+                    <th width="8%" class="nomAr" align="right">Coran</th>
+                    <th width="8%" class="nomAr" align="right">Cours</th>
                     <th width="" class="nomAr" align="right">الجنس</th>
-                    <th width="45%" align="right">Nom & Prénom</th>
-                    <th width="25%" class="nomAr">الاسم و اللقب</th>
-                    <th width="15%" class="matricule-ar" align="right">الرقم التسلسلي</th>
+                    <th width="25%" align="right">Nom & Prénom</th>
+                    <th width="20%" class="nomAr">الاسم و اللقب</th>
+                    <th width="" class="matricule-ar" align="right">الرقم التسلسلي</th>
                     <th width="5%" align="center">N°</th>
                 </tr>
             </thead>
@@ -61,7 +65,13 @@
                         {% set sexe = 'Féminin' %}
                     {% endif %}
                     {% set numero = numero + 1 %}
+                    {% set total = 0 %}
+                    {% set total = contrat.nombreHeuresCours + contrat.nombreHeuresCoran + contrat.nombreHeuresSamedi %}
                     <tr class="line-table" bgcolor={{color}}>
+                        <td align="right" class="sexe">{{ total }}&nbsp;</td>
+                        <td align="right" class="sexe">{{ contrat.nombreHeuresSamedi }}&nbsp;</td>
+                        <td align="right" class="sexe">{{ contrat.nombreHeuresCoran }}&nbsp;</td>
+                        <td align="right" class="sexe">{{ contrat.nombreHeuresCours }}&nbsp;</td>
                         <td align="right" class="sexe">{{ sexe }}&nbsp;</td>
                         <td align="right" class="nomEleveFr">{{ contrat.getContrat.getEnseignant.nomFr }} {{ contrat.getContrat.getEnseignant.pnomFr }}&nbsp;</td>
                         <td align="right" class="nomEleveAr">{{ contrat.getContrat.getEnseignant.pnomAr }} {{ contrat.getContrat.getEnseignant.nomAr }}&nbsp;</td>
@@ -69,17 +79,21 @@
                         <td align="center" class="numero">{{ numero }}</td>
                     </tr>
                     <!-- On divise le tableau pour mieux afficher la suite de la liste -->
-                    {% if numero == 25 or numero == 59 %}
+                    {% if numero == 13 or numero == 36 or numero == 59 or numero == 82 or numero == 105 %}
                             </tbody>
                         </table>
-                        <br>
+                        <br><br>
                         <table width="100%" class="" align="center">
                             <thead>
                                 <tr class="table-header">
+                                    <th width="5%" class="nomAr" align="right">Total</th>
+                                    <th width="8%" class="nomAr" align="right">Samedi</th>
+                                    <th width="8%" class="nomAr" align="right">Coran</th>
+                                    <th width="8%" class="nomAr" align="right">Cours</th>
                                     <th width="" class="nomAr" align="right">الجنس</th>
-                                    <th width="45%" align="right">Nom & Prénom</th>
-                                    <th width="25%" class="nomAr">الاسم و اللقب</th>
-                                    <th width="15%" class="matricule-ar" align="right">الرقم التسلسلي</th>
+                                    <th width="25%" align="right">Nom & Prénom</th>
+                                    <th width="20%" class="nomAr">الاسم و اللقب</th>
+                                    <th width="" class="matricule-ar" align="right">الرقم التسلسلي</th>
                                     <th width="5%" align="center">N°</th>
                                 </tr>
                             </thead>
@@ -97,11 +111,18 @@
                                     {% set sexe = 'Féminin' %}
                                 {% endif %}
                                 {% set numero = numero %}
-                                {% if loop.index == 25 or loop.index == 59 %}
+                                {% if loop.index == 13 or loop.index == 36 or loop.index == 59 or loop.index == 82 or loop.index == 105 %}
+                                {# {% if loop.index == 15 or loop.index == 47 or loop.index == 70 %} #}
                                     {% set code = 1 %}
                                 {% else %}
 
-                                <tr class="line-table" bgcolor={{ color }}>
+                                {% set total = 0 %}
+                                {% set total = contrat.nombreHeuresCours + contrat.nombreHeuresCoran + contrat.nombreHeuresSamedi %}
+                                <tr class="line-table" bgcolor={{color}}>
+                                    <td align="right" class="sexe">{{ total }}&nbsp;</td>
+                                    <td align="right" class="sexe">{{ contrat.nombreHeuresSamedi }}&nbsp;</td>
+                                    <td align="right" class="sexe">{{ contrat.nombreHeuresCoran }}&nbsp;</td>
+                                    <td align="right" class="sexe">{{ contrat.nombreHeuresCours }}&nbsp;</td>
                                     <td align="right" class="sexe">{{ sexe }}&nbsp;</td>
                                     <td align="right" class="nomEleveFr">{{ contrat.getContrat.getEnseignant.nomFr }} {{ contrat.getContrat.getEnseignant.pnomFr }}&nbsp;</td>
                                     <td align="right" class="nomEleveAr">{{ contrat.getContrat.getEnseignant.pnomAr }} {{ contrat.getContrat.getEnseignant.nomAr }}&nbsp;</td>

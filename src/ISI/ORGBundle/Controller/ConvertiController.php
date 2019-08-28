@@ -54,11 +54,11 @@ class ConvertiController extends Controller
       {
         $url = $this->redirectToRoute('home_convertis', ['as' => $as]);
         $repoTournee = $em->getRepository('ORGBundle:Tournee');
-        $tournee = $repoTournee->find($tourneeId);
-        $converti->setTournee($tournee);
         if(isset($tourneeId) && isset($communeId)){
           $repoCommune = $em->getRepository('ORGBundle:Commune');
+          $tournee     = $repoTournee->find($tourneeId);
           $commune     = $repoCommune->find($communeId);
+          $converti->setTournee($tournee);
           $converti->setCommune($commune);
           $url = $this->redirectToRoute('destination.tournee.add.activite', ['as' => $as, 'id' => $tourneeId]);
         }

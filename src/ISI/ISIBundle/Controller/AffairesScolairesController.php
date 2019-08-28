@@ -614,21 +614,34 @@ class AffairesScolairesController extends Controller
      * Si $absencesDuMois est vide, alors on va générer les entités absence du mois pour chaque élève
      * Sinon, on affiche directement le formulaire pour la saisie des heures d'absences.
      */
-    $absenceDuMois = $repoAbsence->findBy(['eleve' => $eleves[0]->getId(), 'mois' => $moisId, 'annee' => $as]);
-    $user = $this->getUser();
+    $absenceDuMois = $repoAbsence->findBy(['eleve' => $eleves[0]['id'], 'mois' => $moisId, 'annee' => $as]);
     if(empty($absenceDuMois))
     {
       // Création de l'entité absence pour chaque élève
       foreach ($eleves as $eleve) {
+        $eleveAbsent = $repoEleve->find($eleve['id']);
         $entiteAbsence = new Absence();
         $entiteAbsence->setAnnee($annee);
-        $entiteAbsence->setEleve($eleve);
+        $entiteAbsence->setEleve($eleveAbsent);
         $entiteAbsence->setMois($mois);
-        $entiteAbsence->setCreatedBy($user);
+        $entiteAbsence->setCreatedBy($this->getUser());
         $entiteAbsence->setCreatedAt(new \Datetime());
 
         $em->persist($entiteAbsence);
         $em->flush();
+      }
+    }
+    else{
+      if((!is_null($absenceDuMois[0]->getHeureCours()) and $absence == 'Cours') or (!is_null($absenceDuMois[0]->getHeureCoran()) and $absence == 'Coran'))
+      {
+        $request->getSession()->getFlashBag()->add('error', 'Les absences en "'.$absence.'" de ce mois ont déjà été saisies pour cette classe.');
+        return $this->redirect($this->generateUrl('isi_accueil_gestion_absences',[
+          'as'       => $as,
+          'regime'   => $regime,
+          'classeId' => $classeId,
+          'absence'  => $absence,
+          'moisId'   => $moisId
+        ]));
       }
     }
 
@@ -636,7 +649,7 @@ class AffairesScolairesController extends Controller
     $absencesDuMois = [];
     foreach($eleves as $eleve)
     {
-      $absencesDuMois[] = $repoAbsence->findOneBy(['eleve' => $eleve->getId(), 'mois' => $moisId, 'annee' => $as]);
+      $absencesDuMois[] = $repoAbsence->findOneBy(['eleve' => $eleve['id'], 'mois' => $moisId, 'annee' => $as]);
     }
 
     $defaultData = array('message' => 'Type your message here');
@@ -664,11 +677,10 @@ class AffairesScolairesController extends Controller
             'moisId'   => $moisId
           ]));
         }
-        $user = $this->getUser();
 
         foreach($eleves as $eleve)
         {
-          if($eleve->getId() == $key)
+          if($eleve['id'] == $key)
           {
             $abs = $repoAbsence->findOneBy(['mois' => $moisId, 'eleve' => $key, 'annee' => $as]);
             // Cette condition me permet de savoir si l'élève à composé dans la matière ou non
@@ -688,13 +700,23 @@ class AffairesScolairesController extends Controller
 
             $abs->setUpdatedBy($user);
             $abs->setUpdatedAt(new \Datetime());
-            $em->flush();
           }
         } // Fin foreach $eleves
       } // Fin foreach $data['note']
 
-      $request->getSession()->getFlashBag()->add('info', 'Les heures d\'absence du mois de <strong>'.$mois->getMois().'</strong> de la classe <strong>'.$classe->getLibelleFr().'</strong> ont été bien enregistrées.');
-      return $this->redirect($this->generateUrl('isi_heures_absences_cours_d_une_classe_home',[
+      try{
+        $em->flush();
+        $request->getSession()->getFlashBag()->add('info', 'Les heures d\'absence du mois de <strong>'.$mois->getMois().'</strong> de la classe <strong>'.$classe->getLibelleFr().'</strong> ont été bien enregistrées.');
+      } 
+      catch(\Doctrine\ORM\ORMException $e){
+        $this->addFlash('error', $e->getMessage());
+        $this->get('logger')->error($e->getMessage());
+      } 
+      catch(\Exception $e){
+        $this->addFlash('error', $e->getMessage());
+      }
+
+      return $this->redirect($this->generateUrl('isi_heures_absences_d_une_classe_home',[
         'as' => $as,
         'regime' => $regime,
         'classeId' => $classeId,
@@ -779,7 +801,7 @@ class AffairesScolairesController extends Controller
 
         foreach($eleves as $eleve)
         {
-          if($eleve->getId() == $key)
+          if($eleve['id'] == $key)
           {
             $abs = $repoAbsence->findOneBy(['mois' => $moisId, 'eleve' => $key, 'annee' => $as]);
             // Cette condition me permet de savoir si l'élève à composé dans la matière ou non
@@ -799,17 +821,27 @@ class AffairesScolairesController extends Controller
 
             $abs->setUpdatedBy($user);
             $abs->setUpdatedAt(new \Datetime());
-            $em->flush();
           }
         } // Fin foreach $eleves
       } // Fin foreach $data['note']
 
-      $request->getSession()->getFlashBag()->add('info', 'Les heures d\'absence du mois de <strong>'.$mois->getMois().'</strong> de la classe <strong>'.$classe->getLibelleFr().'</strong> ont été bien enregistrées.');
+      try{
+        $em->flush();
+        $request->getSession()->getFlashBag()->add('info', 'Les heures d\'absence du mois de <strong>'.$mois->getMois().'</strong> de la classe <strong>'.$classe->getLibelleFr().'</strong> ont été bien enregistrées.');
+      } 
+      catch(\Doctrine\ORM\ORMException $e){
+        $this->addFlash('error', $e->getMessage());
+        $this->get('logger')->error($e->getMessage());
+      } 
+      catch(\Exception $e){
+        $this->addFlash('error', $e->getMessage());
+      }
+
       return $this->redirect($this->generateUrl('isi_heures_absences_enregistrees',[
-        'as' => $as,
-        'regime' => $regime,
+        'as'       => $as,
+        'regime'   => $regime,
         'classeId' => $classeId,
-        'absence' => $absence
+        'absence'  => $absence
       ]));
     }
 
@@ -1086,8 +1118,17 @@ class AffairesScolairesController extends Controller
           $request->getSession()->getFlashBag()->add('error', 'Il y a au moins un élève pour qui aucune halaqa n\'a été présicée');
         }
         if($check_recording == true){
-          $request->getSession()->getFlashBag()->add('info', 'Flash inscription de la classe <strong>'.$classe->getLibelleFr().'</strong> de l\'année précédente effectué avec succès.');
-          $em->flush();
+          try{
+            $em->flush();
+            $this->addFlash('info', 'Flash inscription de la classe <strong>'.$classe->getLibelleFr().'</strong> de l\'année précédente effectué avec succès.');
+          } 
+          catch(\Doctrine\ORM\ORMException $e){
+            $this->addFlash('error', $e->getMessage());
+            $this->get('logger')->error($e->getMessage());
+          } 
+          catch(\Exception $e){
+            $this->addFlash('error', $e->getMessage());
+          }
         }
       }
 

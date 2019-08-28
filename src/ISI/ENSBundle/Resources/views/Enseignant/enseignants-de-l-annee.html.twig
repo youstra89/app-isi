@@ -17,7 +17,8 @@
     {% if contrats is not defined %}
         <p>{{ 'Il n y a auccun enseignant enregistré pour le moment'|trans }}</p>
     {% else %}
-        <a href="{{ path('ens_impression_liste_des_enseignants', {'as': asec}) }}"><button class="ui positive button"><i class="print icon"></i>Imprimer la liste des enseignants</button></a><br />
+        <a href="{{ path('ens_impression_liste_des_enseignants', {'as': asec}) }}"><button class="ui positive button"><i class="print icon"></i>Imprimer la liste des enseignants</button></a> &nbsp;&nbsp;&nbsp;
+        <a href="{{ path('ens_impression_liste_des_enseignants_plus_de_details', {'as': asec}) }}"><button class="ui primary button"><i class="print icon"></i>Imprimer la liste des enseignants (plus de détails)</button></a><br />
         <table id="table-ens" cellspacing="0" class="mytable filterable ui very basic table">
           <thead>
             <tr>

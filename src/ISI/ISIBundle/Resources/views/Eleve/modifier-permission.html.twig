@@ -3,7 +3,7 @@
 {% extends 'ISIBundle:Eleve:index.html.twig' %}
 
 {% block title %}
-  Home renvoi
+  Modification de la permission du {{ permission.depart|date('d-m-Y') }} pour l'élève {{ permission.eleve.nomFr }} {{ permission.eleve.pnomFr }}
 {% endblock %}
 
 {% block content %}
@@ -29,24 +29,15 @@
       </ul>
     </div>
   {% endfor %}
-  <center>
-    <form class="ui form" action="{{ path('isi_renvoi', { 'as': asec, 'regime': regime, 'eleveId': eleve.id }) }}" method="post">
-      <button class="negative ui button">
-        <i class="minus icon"></i>
-        {{ 'Renvoyer'|trans }} {{ eleve.nomFr }} {{ eleve.pnomFr }}
-      </button><br />
-      <label for="">{{ 'Motif du renvoi'|trans }}</label>
-      <textarea name="motifRenvoi" rows="2" cols="30"></textarea>
-    </form>
-  </center><br>
   <div>
+    <h2 class="">Modification de la permission</h2>
     <h2 class="ui horizontal divider header">
       <i class="tag icon"></i>
       {{ 'Identification personnelle'|trans }}
     </h2>
     <center>
       <h2>
-        <font color="red">{{ eleve.matricule }}</font>
+        <font color="red">{{ permission.eleve.matricule }}</font>
       </h2>
     </center>
     <br>
@@ -57,19 +48,19 @@
             <td>
               <strong>{{ 'Nom'|trans }} : </strong>
             </td>
-            <td>{{ eleve.nomFr }}</td>
+            <td>{{ permission.eleve.nomFr }}</td>
           </tr>
           <tr>
             <td>
               <strong>{{ 'Prénom'|trans }} : </strong>
             </td>
-            <td>{{ eleve.pnomFr }}</td>
+            <td>{{ permission.eleve.pnomFr }}</td>
           </tr>
           <tr>
             <td>
               <strong>{{ 'Sexe'|trans }} : </strong>
             </td>
-            {% if eleve.sexe == 1 %}
+            {% if permission.eleve.sexe == 1 %}
             <td>{{ 'Homme'|trans }}</td>
             {% else %}
             <td>{{ 'Femme'|trans }}</td>
@@ -79,13 +70,13 @@
             <td>
               <strong>{{ 'Date de naissance'|trans }} : </strong>
             </td>
-            <td>{{ eleve.dateNaissance|date("d-m-Y") }} à {{ eleve.lieuNaissance }} </td>
+            <td>{{ permission.eleve.dateNaissance|date("d-m-Y") }} à {{ permission.eleve.lieuNaissance }} </td>
           </tr>
           <tr>
             <td>
               <strong>{{ 'Référence extrait de naissance'|trans }} : </strong>
             </td>
-            <td>{{ eleve.refExtrait }} </td>
+            <td>{{ permission.eleve.refExtrait }} </td>
           </tr>
         </table>
       </div>
@@ -95,25 +86,25 @@
             <td>
               <strong>{{ 'Nationalité'|trans }} : </strong>
             </td>
-            <td>{{ eleve.nationalite }}</td>
+            <td>{{ permission.eleve.nationalite }}</td>
           </tr>
           <tr>
             <td>
               <strong>{{ 'Résidence'|trans }} : </strong>
             </td>
-            <td>{{ eleve.commune }} {{ eleve.residence }}</td>
+            <td>{{ permission.eleve.commune }} {{ permission.eleve.residence }}</td>
           </tr>
           <tr>
             <td>
               <strong>{{ 'Etablissement d\'origine'|trans }} : </strong>
             </td>
-            <td>{{ eleve.etsOrigine }}</td>
+            <td>{{ permission.eleve.etsOrigine }}</td>
           </tr>
           <tr>
             <td>
               <strong>{{ 'Contact'|trans }} : </strong>
             </td>
-            <td>{{ eleve.contact }} </td>
+            <td>{{ permission.eleve.contact }} </td>
           </tr>
           <tr>
             <td>
@@ -156,5 +147,30 @@
         </tr>
       </table>
     </div>
+    <h2 class="ui horizontal divider header">
+      <i class="tag icon"></i>
+      {{ 'Permission'|trans }}
+    </h2>
+    <br>
+    <form class="ui form" action="" method="post">
+      <div class="ui two column doubling stackable grid container">
+        <div class="column">
+          <div class="field">
+            <label for="depart">Date de départ</label>
+            <input type="date" name="depart" id="depart" value="{{ permission.depart|date('Y-m-d') }}" required>            
+          </div>
+          <div class="field">
+            <label for="retour">Date de retour</label>
+            <input type="date" name="retour" id="retour" value="{{ permission.retour|date('Y-m-d') }}" required>            
+          </div>
+        </div>
+        <div class="column">
+          <label for="motif">Motif de la permission</label>
+          <textarea name="motif" rows="2" cols="70" id="motif" required>{{ permission.motif }}</textarea>
+        </div>
+        <button class="ui primary button">Appliquer les changements</button>
+      </div>
+    </form>
+    <br>
   </div>
 {% endblock %}

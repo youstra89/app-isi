@@ -476,6 +476,62 @@ class EnseignantController extends Controller
   /**
    * @Security("has_role('ROLE_ENSEIGNANT')")
    */
+  public function impressionListeDesEnseignantsDeLAnneeAvecDetailsAction(Request $request, $as)
+  {
+    $em = $this->getDoctrine()->getManager();
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
+    $repoContrat = $em->getRepository('ENSBundle:Contrat');
+    $repoAnneeContrat   = $em->getRepository('ENSBundle:AnneeContrat');
+
+    $annee    = $repoAnnee->find($as);
+    $anneeContrats = $repoAnneeContrat->findBy(['annee' => $as]);
+
+    foreach ($anneeContrats as $key => $ac) {
+      $nom[$key]  = $ac->getContrat()->getEnseignant()->getNomFr();
+      $pnom[$key] = $ac->getContrat()->getEnseignant()->getPnomFr();
+    }
+    array_multisort($nom, SORT_ASC, $pnom, SORT_ASC, $anneeContrats);
+
+    $snappy = $this->get("knp_snappy.pdf");
+    $snappy->setOption("encoding", "UTF-8");
+    $snappy->setOption("orientation", "Landscape");
+    $filename = "liste-des-enseignants-".$annee->getLibelle();
+
+    $html = $this->renderView('ENSBundle:Enseignant:impression-liste-des-enseignants-avec-details.html.twig', [
+      // "title" => "Titre de mon document",
+      "annee"         => $annee,
+      "anneeContrats" => $anneeContrats,
+    ]);
+    $header = $this->renderView( '::header.html.twig' );
+    // $footer = $this->renderView( '::footer.html.twig' );
+
+    $options = [
+        'header-html' => $header,
+        // 'footer-html' => $footer,
+    ];
+
+    // Tcpdf
+    // $this->returnPDFResponseFromHTML($html);
+
+    return new Response(
+        $snappy->getOutputFromHtml($html, $options),
+        200,
+        [
+            'Content-Type'        => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="'.$filename.'.pdf"'
+        ]
+    );
+
+    return $this->render('ENSBundle:Enseignant:enseignants-de-l-annee.html.twig', [
+      'asec'     => $as,
+      'annee'    => $annee,
+      'contrats' => $anneeContrats,
+    ]);
+  }
+
+  /**
+   * @Security("has_role('ROLE_ENSEIGNANT')")
+   */
   public function ajouterEnseignantAnneeAction(Request $request, $as, $contratId)
   {
     $em = $this->getDoctrine()->getManager();

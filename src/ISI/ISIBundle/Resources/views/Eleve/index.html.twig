@@ -38,7 +38,7 @@
       <div class="item">
         <div class="header">{{ 'Divers'|trans }}</div>
         <div class="menu">
-          <a class="item">{{ 'Permission'|trans }}</a>
+          <a class="item" href="{{ path('liste_des_permissions', {'as': asec, 'regime': regime}) }}">{{ 'Permission'|trans }}</a>
           <a class="item" href="{{ path('isi_problemes_home', { 'as': asec, 'regime': regime }) }}">{{ 'Signaler un problème'|trans }}</a>
         </div>
       </div>

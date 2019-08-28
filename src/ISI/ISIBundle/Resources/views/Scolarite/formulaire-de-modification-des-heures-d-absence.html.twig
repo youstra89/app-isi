@@ -32,7 +32,7 @@
 					{# {{dump(absencesDuMois)}} #}
 					{% for abs in absencesDuMois %}
 
-						{% if eleve.eleveId == abs.eleve.id %}
+						{% if eleve.id == abs.eleve.id %}
 							<div class="item ui selectable">
 								<div class="right floated content">
 									<div class="">
@@ -43,7 +43,7 @@
 											{% else %}
 												{% set heuresAbsences = abs.getHeureCoran %}
 											{% endif %}
-											<input name="abs[{{eleve.eleveId}}]" type="integer" value="{{ heuresAbsences }}">
+											<input name="abs[{{eleve.id}}]" type="integer" value="{{ heuresAbsences }}">
 											<div class="ui basic label">{{ 'heures'|trans }}</div>
 										</div>
 									</div>

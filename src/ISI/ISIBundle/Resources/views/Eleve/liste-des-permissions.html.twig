@@ -1,0 +1,141 @@
+{# ISIBundle/Ressources/views/Eleve #}
+{% set template = "" %}
+{% if regime == 'C' %}
+  {% set template = 'ISIBundle:Coran:index.html.twig' %}
+{% else %}
+  {% set template = 'ISIBundle:Eleve:index.html.twig' %}
+{% endif %}
+{% extends template %}
+
+{% block title %}
+  Liste des permissions demandées
+{% endblock %}
+
+
+{% block body %}
+
+    {% block content %}
+      {% set regimeDeFormation = '' %}
+      {% if regime == 'A' %}
+        {% set regimeDeFormation = 'Academie' %}
+      {% elseif regime == 'F' %}
+        {% set regimeDeFormation = 'Formation' %}
+      {% else %}
+        {% set regimeDeFormation = 'Espace Coran' %}
+      {% endif %}
+      <div class="ui {{ dir2 }} aligned segment">
+        <h1 class="ui header">
+          <i class="student icon"></i>{{ 'Liste des permissions demandées - '|trans }} {{ regimeDeFormation }}
+        </h1>
+      </div>
+    {% if regime is same as('A') %}
+      <a href="{{ path('permission_home', {'as': asec, 'regime': 'A'}) }}">
+    {% elseif regime is same as('F') %}
+      <a href="{{ path('permission_home', {'as': asec, 'regime': 'F'}) }}">
+    {% else %}
+      <a href="{{ path('permission_home', {'as': asec, 'regime': 'C'}) }}">
+    {% endif %}
+
+      <button class="success ui button">
+        <i class="plus icon"></i>
+        {{ 'Enregistrer une permission'|trans }}
+      </button>
+    </a>
+    {% for message in app.session.flashbag.get('error') %}
+      <div class="ui red message">
+        <div class="header">{{ 'Attention'|trans }} !!! </div>
+        <ul class="list">
+          <li>{{ message|raw }}.</li>
+        </ul>
+      </div>
+    {% endfor %}
+    {% for message in app.session.flashbag.get('info') %}
+      <div class="ui green message">
+        <div class="header">{{ 'Notification'|trans }}: </div>
+        <ul class="list">
+          <li>{{ message|raw }}.</li>
+        </ul>
+      </div>
+    {% endfor %}
+      {# {{dump(renvoyes)}} #}
+        <table id="liste_des_permissions" cellspacing="0" class="mytable filterable ui very basic table">
+          <thead>
+            <tr>
+              <th align="center">{{ 'N°'|trans }}</th>
+              <th>{{ 'Matricule'|trans }}</th>
+              <th>{{ 'Nom & Prénom'|trans }}</th>
+              <th>الإسم و اللقب</th>
+              <th>{{ 'Sexe'|trans }}</th>
+              <th>{{ 'Départ'|trans }}</th>
+              <th>{{ 'Retour'|trans }}</th>
+              <th>{{ 'Motif'|trans }}</th>
+              <th>{{ 'Action'|trans }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% set numero = 0 %}
+            {% for permission in permissions %}
+            {% set numero = numero + 1 %}
+            <tr title="{{ permission.motif }}">
+              <td align="center">{{ numero }}</td>
+              <td>{{ permission.eleve.matricule }}</td>
+              <td>{{ permission.eleve.nomFr }} {{ permission.eleve.pnomFr }}</td>
+              <td><span>{{ permission.eleve.pnomAr }} {{ permission.eleve.nomAr }}</span></td>
+              <td>
+                <div class="home-eleve" data-tooltip="{{ permission.eleve.nomFr }} {{ permission.eleve.pnomFr }} est de sexe ">
+                  {% if permission.eleve.sexe == 1 %}
+                    {{ 'ذكر' }}
+                  {% else %}
+                    {{ 'أنثى' }}
+                  {% endif %}
+                </div>
+              </td>
+              <td>{{ permission.depart|date("d-m-Y") }}</td>
+              <td>{{ permission.retour|date("d-m-Y") }}</td>
+              <td>
+                {% if permission.motif|length > 50 %}
+                  {{ permission.motif|slice(0, 50) ~ '...' }}
+                {% else %}
+                  {{ permission.motif }}
+                {% endif %}
+              </td>
+              <td>
+                <a href="{{ path('modifier_permission', {'as': asec, 'regime': regime, 'permissionId': permission.id}) }}" data-tooltip="Modifier la permission"><i class="edit icon"></i></a>
+                <a href="{{ path('details_permission', {'as': asec, 'regime': regime, 'permissionId': permission.id}) }}" data-tooltip="Voir les détails de la permission"><i class="list icon"></i></a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+    {% endblock %}
+    <script data-config>
+      var filtersConfig = {
+        base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+        col_0: 'none',
+        col_4: 'select',
+        col_5: 'select',
+        col_6: 'select',
+        col_8: 'none',
+        alternate_rows: true,
+        rows_counter: true,
+        btn_reset: true,
+        loader: true,
+        status_bar: true,
+        mark_active_columns: true,
+        highlight_keywords: true,
+        no_results_message: true,
+        col_types: [
+          'number', 'string', 'string',
+          'string', 'string', 'string',
+          'string'
+        ],
+        col_widths: [
+          '5px', '130px', '300px', , , '100px', ,
+        ],
+        extensions: [{ name: 'sort' }]
+      };
+
+      var tf = new TableFilter('liste_des_permissions', filtersConfig);
+      tf.init();
+    </script>
+{% endblock %}

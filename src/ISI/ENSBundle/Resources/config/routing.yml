@@ -69,6 +69,12 @@ ens_impression_liste_des_enseignants:
     requirements:
         as: \d+
 
+ens_impression_liste_des_enseignants_plus_de_details:
+    path:     /enseignant/impression-de-la-liste-des-enseignants-de-l-annee-avec-plus-de-details{as}.html
+    defaults: { _controller: ENSBundle:Enseignant:impressionListeDesEnseignantsDeLAnneeAvecDetails }
+    requirements:
+        as: \d+
+
 ens_ajouter_a_l_annee:
     path:     /enseignant/ajouter-cet-enseignant-pour-l-annee-en-cours-{as}-{contratId}.html
     defaults: { _controller: ENSBundle:Enseignant:ajouterEnseignantAnnee }

@@ -5,6 +5,12 @@
 {% block content %}
     <h3>{{ 'Modification de la classe de'|trans }} {{ eleve.nomFr }} {{ eleve.pnomfr }} </h3>
     <p>{{ 'Classe actuelle'|trans }}: {{ classeActuelle.libelleFr }} </p>
+    {% set genreEleve = '' %}
+    {% if eleve.sexe == 1 %}
+        {% set genreEleve = 'H' %}
+    {% else %}
+        {% set genreEleve = 'F' %}
+    {% endif %}
     <form action="" class="ui form" method="post">
         <div class="two fields">
             <div class="field">
@@ -13,6 +19,8 @@
                     <option value="">{{ 'Choisir la nouvelle classe pour'|trans }} {{ eleve.getNomFr }} {{ eleve.getPnomfr }}</option>
                     {% for classe in classes %}
                         {% if (classe.getGenre == 'M' or classe.getGenre == classeActuelle.getGenre) and classe.getId != classeActuelle.getId %}
+                            <option value="{{ classe.getId }}">{{ classe.getLibelleFr }}</option>
+                        {% elseif classe.genre == genreEleve  and classe.getId != classeActuelle.getId %}
                             <option value="{{ classe.getId }}">{{ classe.getLibelleFr }}</option>
                         {% endif %}
                     {% endfor %}

@@ -19,6 +19,7 @@ use ISI\ISIBundle\Entity\Probleme;
 use ISI\ISIBundle\Entity\Commettre;
 use ISI\ISIBundle\Entity\Memoriser;
 use ISI\ISIBundle\Entity\Frequenter;
+use ISI\ISIBundle\Entity\Permission;
 use ISI\ISIBundle\Entity\Eleverenvoye;
 use ISI\ISIBundle\Entity\Annee;
 use ISI\ISIBundle\Entity\Elevereintegre;
@@ -327,9 +328,19 @@ class EleveController extends Controller
 
       $em = $this->getDoctrine()->getManager();
       $em->persist($eleve);
-      $em->flush();
 
-      $request->getSession()->getFlashBag()->add('info', 'L\'élève <strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> a été bien enregistré avec le matricule <strong>'.$eleve->getMatricule().'</strong>.');
+      try{
+        $em->flush();
+        $request->getSession()->getFlashBag()->add('info', 'L\'élève <strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> a été bien enregistré avec le matricule <strong>'.$eleve->getMatricule().'</strong>.');
+      } 
+      catch(\Doctrine\ORM\ORMException $e){
+        $this->addFlash('error', $e->getMessage());
+        $this->get('logger')->error($e->getMessage());
+      } 
+      catch(\Exception $e){
+        $this->addFlash('error', $e->getMessage());
+      }
+
 
       return $this->redirect($this->generateUrl('isi_preinscription', array(
         'as'     => $as,
@@ -376,9 +387,19 @@ class EleveController extends Controller
       $eleve->setDateNaissance($date);
       $eleve->setUpdatedAt(new \Datetime());
       $eleve->setUpdatedBy($user);
-      $em->flush();
+      
+      try{
+        $em->flush();
+        $request->getSession()->getFlashBag()->add('info', 'Les informations de <strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> ont bien été mise à jour.');
+      } 
+      catch(\Doctrine\ORM\ORMException $e){
+        $this->addFlash('error', $e->getMessage());
+        $this->get('logger')->error($e->getMessage());
+      } 
+      catch(\Exception $e){
+        $this->addFlash('error', $e->getMessage());
+      }
 
-      $request->getSession()->getFlashBag()->add('info', 'Les informations de <strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> ont bien été mise à jour.');
       return $this->redirect($this->generateUrl('isi_espace_eleve', [
         'as'     => $as,
         'regime' => $regime
@@ -743,7 +764,6 @@ class EleveController extends Controller
         }
         else{
           $em = $this->getDoctrine()->getManager();
-          $user = $this->getUser();
           $repoHalaqa   = $em->getRepository('ISIBundle:Halaqa');
           // Apres cela, si l'élève est de l'academie, il faudra le mettre dans une halaqa
             if($regime == 'A' or $regime == 'C'){
@@ -765,7 +785,7 @@ class EleveController extends Controller
               $memoriser->setEleve($eleve);
               $memoriser->setAnnee($annee);
               $memoriser->setHalaqa($halaqa);
-              $memoriser->setCreatedBy($user);
+              $memoriser->setCreatedBy($this->getUser());
               $memoriser->setCreatedAt(new \Datetime());
               $em->persist($memoriser);
             }
@@ -777,22 +797,31 @@ class EleveController extends Controller
             $frequenter->setClasse($classe);
             $frequenter->setRedouble($redoublant);
             $frequenter->setAnnee($annee);
-            $frequenter->setCreatedBy($user);
+            $frequenter->setCreatedBy($this->getUser());
             $frequenter->setCreatedAt(new \Datetime());
             // On persist et flush l'entité
             $em->persist($frequenter);
 
           }
-          if ($regime == 'A') {
-            $request->getSession()->getFlashBag()->add('info', '<strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> a bien été inscrit(e) en <strong>'.$classe->getLibelleFr().'</strong> et dans la halaqa <strong>'.$halaqa->getLibelle().'</strong>');
+          try{
+            $em->flush();
+            if ($regime == 'A') {
+              $request->getSession()->getFlashBag()->add('info', '<strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> a bien été inscrit(e) en <strong>'.$classe->getLibelleFr().'</strong> et dans la halaqa <strong>'.$halaqa->getLibelle().'</strong>');
+            }
+            elseif ($regime == 'F') {
+              $request->getSession()->getFlashBag()->add('info', '<strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> a bien été inscrit(e) en <strong>'.$classe->getLibelleFr().'</strong>');
+            }
+            else {
+              $request->getSession()->getFlashBag()->add('info', '<strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> a bien été inscrit(e) dans la halaqa <strong>'.$halaqa->getLibelle().'</strong>');
+            }
+          } 
+          catch(\Doctrine\ORM\ORMException $e){
+            $this->addFlash('error', $e->getMessage());
+            $this->get('logger')->error($e->getMessage());
+          } 
+          catch(\Exception $e){
+            $this->addFlash('error', $e->getMessage());
           }
-          elseif ($regime == 'F') {
-            $request->getSession()->getFlashBag()->add('info', '<strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> a bien été inscrit(e) en <strong>'.$classe->getLibelleFr().'</strong>');
-          }
-          else {
-            $request->getSession()->getFlashBag()->add('info', '<strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> a bien été inscrit(e) dans la halaqa <strong>'.$halaqa->getLibelle().'</strong>');
-          }
-          $em->flush();
 
           // return $this->render('ISIBundle:Default:index.html.twig', ['data' => $data, 'asec' => $as, 'regime' => 'A']);
           return $this->redirect($this->generateUrl('isi_inscription', ['as' => $as, 'regime' => $regime]));
@@ -1003,8 +1032,17 @@ class EleveController extends Controller
           $request->getSession()->getFlashBag()->add('error', 'Il y a au moins un élève pour qui aucune halaqa n\'a été présicée');
         }
         if($check_recording == true){
-          $request->getSession()->getFlashBag()->add('info', 'Flash inscription de la classe <strong>'.$classe->getLibelleFr().'</strong> de l\'année précédente effectué avec succès.');
-          $em->flush();
+          try{
+            $em->flush();
+            $request->getSession()->getFlashBag()->add('info', 'Flash inscription de la classe <strong>'.$classe->getLibelleFr().'</strong> de l\'année précédente effectué avec succès.');
+          } 
+          catch(\Doctrine\ORM\ORMException $e){
+            $this->addFlash('error', $e->getMessage());
+            $this->get('logger')->error($e->getMessage());
+          } 
+          catch(\Exception $e){
+            $this->addFlash('error', $e->getMessage());
+          }
         }
       }
       return $this->redirect($this->generateUrl('isi_flash_inscription', ['as' => $as, 'regime' => $regime]));
@@ -1116,8 +1154,17 @@ class EleveController extends Controller
       $em->persist($probleme);
       $em->persist($commettre);
       // return new Response(var_dump($request));
-      $em->flush();
-      $request->getSession()->getFlashBag()->add('info', 'La conduite de <strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> a été bien enregistrée avec la mention "<strong>'.$probleme->getAppreciation().'</strong>".');
+      try{
+        $em->flush();
+        $request->getSession()->getFlashBag()->add('info', 'La conduite de <strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> a été bien enregistrée avec la mention "<strong>'.$probleme->getAppreciation().'</strong>".');
+      } 
+      catch(\Doctrine\ORM\ORMException $e){
+        $this->addFlash('error', $e->getMessage());
+        $this->get('logger')->error($e->getMessage());
+      } 
+      catch(\Exception $e){
+        $this->addFlash('error', $e->getMessage());
+      }
 
       return $this->redirect($this->generateUrl('isi_problemes_home', ['as' => $as, 'regime' => $regime]));
     }
@@ -1239,11 +1286,16 @@ class EleveController extends Controller
       // return new Response(var_dump($dateRenvoi));
 
       $em->persist($eleveRenvoye);
-      $em->flush();
-
-      $js = "<script type='text/javascript'> alert('Voulez-vous vraiment renvoyer <strong>".$eleve->getNomFr()." ".$eleve->getPnomFr()."</strong>') </script>";
-      $request->getSession()->getFlashBag()->add('info', 'Le renvoi de <strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> s\'est bien effectué');
-      // $em->flush();
+      try{
+        $em->flush();
+        $request->getSession()->getFlashBag()->add('info', 'Le renvoi de <strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> s\'est bien effectué');      } 
+      catch(\Doctrine\ORM\ORMException $e){
+        $this->addFlash('error', $e->getMessage());
+        $this->get('logger')->error($e->getMessage());
+      } 
+      catch(\Exception $e){
+        $this->addFlash('error', $e->getMessage());
+      }
 
       return $this->redirect($this->generateUrl('isi_renvoi_home', ['as' => $as, 'regime' => $regime]));
     }
@@ -1321,9 +1373,17 @@ class EleveController extends Controller
       // return new Response(var_dump($dateRenvoi));
 
       $em->persist($eleveReintegre);
-      $em->flush();
-
-      $request->getSession()->getFlashBag()->add('info', 'La réintegration de '.$eleve->getNomFr().' '.$eleve->getPnomFr().' s\'est bien effectué');
+      try{
+        $em->flush();
+        $request->getSession()->getFlashBag()->add('info', 'La réintegration de '.$eleve->getNomFr().' '.$eleve->getPnomFr().' s\'est bien effectué');
+      } 
+      catch(\Doctrine\ORM\ORMException $e){
+        $this->addFlash('error', $e->getMessage());
+        $this->get('logger')->error($e->getMessage());
+      } 
+      catch(\Exception $e){
+        $this->addFlash('error', $e->getMessage());
+      }
       // $em->flush();
 
       return $this->redirect($this->generateUrl('isi_eleves_renvoyes', ['as' => $as, 'regime' => $regime]));
@@ -1530,9 +1590,19 @@ class EleveController extends Controller
       $changement->setCreatedBy($this->getUser());
       $changement->setCreatedAt(new \Datetime());
       $em->persist($changement);
-      $em->flush();
 
-      $request->getSession()->getFlashBag()->add('info', 'Le changement de regime de '.$eleve->getNomFr().' '.$eleve->getPnomFr().' s\'est bien effectué');
+      try{
+        $em->flush();
+        $request->getSession()->getFlashBag()->add('info', 'Le changement de regime de '.$eleve->getNomFr().' '.$eleve->getPnomFr().' s\'est bien effectué');
+      } 
+      catch(\Doctrine\ORM\ORMException $e){
+        $this->addFlash('error', $e->getMessage());
+        $this->get('logger')->error($e->getMessage());
+      } 
+      catch(\Exception $e){
+        $this->addFlash('error', $e->getMessage());
+      }
+
       // $em->flush();
 
       return $this->redirect($this->generateUrl('isi_changer_regime_home', ['as' => $as, 'regime' => $regime]));
@@ -1671,10 +1741,17 @@ class EleveController extends Controller
           # code...
           $request->getSession()->getFlashBag()->add('error', 'La halaqa de '.$eleve->getNomFr().' '.$eleve->getPnomFr().' ne peut être changer car vous n\'avez sélectionné aucune halaqa.');
         }
-
-
       }
-      $em->flush();
+      try{
+        $em->flush();
+      } 
+      catch(\Doctrine\ORM\ORMException $e){
+        $this->addFlash('error', $e->getMessage());
+        $this->get('logger')->error($e->getMessage());
+      } 
+      catch(\Exception $e){
+        $this->addFlash('error', $e->getMessage());
+      }
 
       return $this->redirect($this->generateUrl('isi_modifier_inscription_d_un_eleve', [
         'as'       => $as,
@@ -1789,7 +1866,12 @@ class EleveController extends Controller
           $request->getSession()->getFlashBag()->add('error', 'La halaqa de '.$eleve->getNomFr().' '.$eleve->getPnomFr().' ne peut être changer car vous n\'avez sélectionné aucune halaqa.');
         }
       }
-      $em->flush();
+      try{
+        $em->flush();
+      } 
+      catch(\Exception $e){
+        $this->addFlash('error', $e->getMessage());
+      }
 
       return $this->redirect($this->generateUrl('isi_modifier_inscription_d_un_eleve', [
         'as'       => $as,
@@ -1808,6 +1890,202 @@ class EleveController extends Controller
       'classeActuelle' => $classeActuelle
     ]);
   }
+
+
+  public function permission_homeAction(Request $request, int $as, $regime)
+  {
+    $em = $this->getDoctrine()->getManager();
+    $repoAnnee = $em->getRepository('ISIBundle:Annee');
+    $annee     = $repoAnnee->find($as);
+    if($request->isMethod('post'))
+    {
+      $data      = $request->request->all();
+      $matricule = $data["matricule"];
+      if(empty($matricule) || is_null($matricule)){
+        $request->getSession()->getFlashBag()->add('error', 'Vous n\'avez rien saisi.');
+      }
+      else{
+        $repoEleve = $em->getRepository('ISIBundle:Eleve');
+        $eleve = $repoEleve->findByMatricule($matricule);
+        if (empty($eleve)) {
+          # code...
+          $request->getSession()->getFlashBag()->add('error', 'Le matricule saisie n\'est pas correcte.');
+        } 
+        else {
+          return $this->redirect($this->generateUrl('permission', [
+            'as'       => $as,
+            'regime'   => $regime,
+            'eleveId'  => $eleve[0]->getId(),
+          ]));
+        }
+      }
+    }
+
+    return $this->render('ISIBundle:Eleve:permission-home.html.twig', [
+      'asec'   => $as,
+      'regime' => $regime,
+      'annee'  => $annee,
+    ]);
+  }
+
+
+  public function permissionAction(Request $request, int $as, int $eleveId, $regime)
+  {
+    $em = $this->getDoctrine()->getManager();
+    $repoAnnee = $em->getRepository('ISIBundle:Annee');
+    $repoEleve = $em->getRepository('ISIBundle:Eleve');
+    $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
+    $eleve = $repoEleve->find($eleveId);
+    $fq = $repoFrequenter->findOneBy(["eleve" => $eleveId, "annee" => $as]);
+    $annee     = $repoAnnee->find($as);
+    if($request->isMethod('post'))
+    {
+      $data      = $request->request->all();
+      $motif  = $data["motif"];
+      $depart = new \DateTime($data["depart"]);
+      $retour = new \DateTime($data["retour"]);
+      if($motif == null || $depart == null ||  $retour == null){
+        $request->getSession()->getFlashBag()->add('error', 'Le formulaire n\'est pas correctement rempli.');
+      }
+      else{
+        if ($depart > $retour) {
+          # code...
+          $request->getSession()->getFlashBag()->add('error', 'La date de départ doit se située avant celle de retour.');
+        } 
+        else {
+          $permission = new Permission();
+          $permission->setEleve($eleve);
+          $permission->setAnnee($annee);
+          $permission->setDepart($depart);
+          $permission->setRetour($retour);
+          $permission->setMotif($motif);
+          $permission->setCreatedAt(new \DateTime());
+          $permission->setCreatedBy($this->getUser());
+          $em->persist($permission);
+          try{
+            $em->flush();
+            $request->getSession()->getFlashBag()->add('info', 'Permission de l\'élève '.$eleve->getNomFr().' '.$eleve->getPnomFr().' enregistrée avec succès.');
+          } 
+          catch(\Exception $e){
+            $this->addFlash('error', $e->getMessage());
+          }
+          return $this->redirect($this->generateUrl('liste_des_permissions', [
+            'as'     => $as,
+            'regime' => $regime,
+          ]));
+        }
+      }
+    }
+
+    return $this->render('ISIBundle:Eleve:enregistrer-permission.html.twig', [
+      'asec'   => $as,
+      'regime' => $regime,
+      'annee'  => $annee,
+      'eleve'  => $eleve,
+      'fq'     => $fq,
+    ]);
+  }
+
+
+  public function liste_des_permissionsAction(int $as, $regime)
+  {
+    $em = $this->getDoctrine()->getManager();
+    $repoAnnee = $em->getRepository('ISIBundle:Annee');
+    $repoPermission = $em->getRepository('ISIBundle:Permission');
+    $permissions = $repoPermission->findByAnnee($as);
+    $annee     = $repoAnnee->find($as);
+
+    return $this->render('ISIBundle:Eleve:liste-des-permissions.html.twig', [
+      'asec'   => $as,
+      'regime' => $regime,
+      'annee'  => $annee,
+      'permissions'  => $permissions,
+    ]);
+  }
+
+
+  public function details_permissionAction(int $as, int $permissionId, $regime)
+  {
+    $em = $this->getDoctrine()->getManager();
+    $repoAnnee = $em->getRepository('ISIBundle:Annee');
+    $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
+    $repoPermission = $em->getRepository('ISIBundle:Permission');
+    $permission = $repoPermission->find($permissionId);
+    $fq = $repoFrequenter->findOneBy(["eleve" => $permission->getEleve()->getId(), "annee" => $as]);
+    $annee     = $repoAnnee->find($as);
+
+    return $this->render('ISIBundle:Eleve:details-permission.html.twig', [
+      'asec'   => $as,
+      'regime' => $regime,
+      'annee'  => $annee,
+      'fq'     => $fq,
+      'permission'  => $permission,
+    ]);
+  }
+
+
+  public function modifier_permissionAction(Request $request, int $as, int $permissionId, $regime)
+  {
+    $em = $this->getDoctrine()->getManager();
+    $repoAnnee = $em->getRepository('ISIBundle:Annee');
+    $repoPermission = $em->getRepository('ISIBundle:Permission');
+    $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
+    $permission = $repoPermission->find($permissionId);
+    $fq = $repoFrequenter->findOneBy(["eleve" => $permission->getEleve()->getId(), "annee" => $as]);
+    $annee     = $repoAnnee->find($as);
+    dump($permission);
+
+    if($request->isMethod('post'))
+    {
+      $data      = $request->request->all();
+      $motif  = $data["motif"];
+      $depart = new \DateTime($data["depart"]);
+      $retour = new \DateTime($data["retour"]);
+      if($motif == null || $depart == null ||  $retour == null){
+        $request->getSession()->getFlashBag()->add('error', 'Le formulaire n\'est pas correctement rempli.');
+      }
+      else{
+        if ($depart > $retour) {
+          # code...
+          $request->getSession()->getFlashBag()->add('error', 'La date de départ doit se située avant celle de retour.');
+        } 
+        elseif($motif == $permission->getMotif() && $depart == $permission->getDepart() && $retour == $permission->getRetour()) {
+          $request->getSession()->getFlashBag()->add('error', 'Aucun changement n\'a été constaté.');
+          return $this->redirect($this->generateUrl('liste_des_permissions', [
+            'as'     => $as,
+            'regime' => $regime,
+          ]));
+        }
+        elseif($motif != $permission->getMotif() || $depart != $permission->getDepart() || $retour != $permission->getRetour()) {
+          $permission->setDepart($depart);
+          $permission->setRetour($retour);
+          $permission->setMotif($motif);
+          $permission->setCreatedAt(new \DateTime());
+          $permission->setCreatedBy($this->getUser());
+          try{
+            $em->flush();
+            $request->getSession()->getFlashBag()->add('info', 'Permission de l\'élève '.$permission->getEleve()->getNomFr().' '.$permission->getEleve()->getPnomFr().' mise à jour avec succès.');
+          } 
+          catch(\Exception $e){
+            $this->addFlash('error', $e->getMessage());
+          }
+          return $this->redirect($this->generateUrl('liste_des_permissions', [
+            'as'     => $as,
+            'regime' => $regime,
+          ]));
+        }
+      }
+    }
+
+    return $this->render('ISIBundle:Eleve:modifier-permission.html.twig', [
+      'asec'   => $as,
+      'regime' => $regime,
+      'annee'  => $annee,
+      'fq'     => $fq,
+      'permission'  => $permission,
+    ]);
+  }
+
 
   public function remplirClasseAction(Request $request, $anneeId, $niveauId)
   {

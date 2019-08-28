@@ -242,6 +242,44 @@ eleves_sans_notes:
         examenId: \d+
         classeId: \d+
 
+permission_home:
+    path:     /page-d-accueil-pour-permission-{as}-{regime}.html
+    defaults: { _controller: ISIBundle:Eleve:permission_home }
+    requirements:
+        as:     \d+
+        regime: A|F|C
+        
+permission:
+    path:     /enregistrement-de-permission-{as}-{regime}-{eleveId}.html
+    defaults: { _controller: ISIBundle:Eleve:permission }
+    requirements:
+        as:      \d+
+        eleveId: \d+
+        regime:  A|F|C
+                
+liste_des_permissions:
+    path:     /liste-des-permissions-{as}-{regime}.html
+    defaults: { _controller: ISIBundle:Eleve:liste_des_permissions }
+    requirements:
+        as:      \d+
+        regime:  A|F|C
+
+details_permission:
+    path:     /details-d-une-permission-{as}-{regime}-{permissionId}.html
+    defaults: { _controller: ISIBundle:Eleve:details_permission }
+    requirements:
+        as:      \d+
+        permissionId: \d+
+        regime:  A|F|C
+        
+modifier_permission:
+    path:     /modifier-une-permission-{as}-{regime}-{permissionId}.html
+    defaults: { _controller: ISIBundle:Eleve:modifier_permission }
+    requirements:
+        as:      \d+
+        permissionId: \d+
+        regime:  A|F|C
+
 # La route suivante me permet d'accéder au fichier php pour voir les élèves d'un niveau qui ont des notes en manque
 eleves_notes_incompletes:
     path:     /voir-notes-qui-manquent.html

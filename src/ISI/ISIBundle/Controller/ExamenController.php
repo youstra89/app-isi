@@ -342,7 +342,16 @@ class ExamenController extends Controller
         }
       }
 
-      $em->flush();
+      try{
+        $em->flush();
+      } 
+      catch(\Doctrine\ORM\ORMException $e){
+        $this->addFlash('error', $e->getMessage());
+        $this->get('logger')->error($e->getMessage());
+      } 
+      catch(\Exception $e){
+        $this->addFlash('error', $e->getMessage());
+      }
       $notesGenerees = 1;
     }
 
@@ -369,7 +378,16 @@ class ExamenController extends Controller
       $note    = $repoNote->findOneBy(['examen' => $examenId, 'eleve' => $eleve['id'], 'matiere' => $matiereId]);
       $notes[] = $note;
     }
-    $em->flush();
+    try{
+      $em->flush();
+    } 
+    catch(\Doctrine\ORM\ORMException $e){
+      $this->addFlash('error', $e->getMessage());
+      $this->get('logger')->error($e->getMessage());
+    } 
+    catch(\Exception $e){
+      $this->addFlash('error', $e->getMessage());
+    }
 
     $defaultData = array('message' => 'Type your message here');
     $form = $this->createFormBuilder($defaultData);
@@ -422,8 +440,18 @@ class ExamenController extends Controller
           }
         }// Fin foreach $eleves
       } // Fin foreach $data['note']
-      $em->flush();
-      $request->getSession()->getFlashBag()->add('info', 'Les notes  des élèves de '.$classe->getNiveau()->getLibelleFr().' - '.$classe->getLibelleFr().' en '.$matiere->getLibelle().' ont été bien enregistrées.');
+      
+      try{
+        $em->flush();
+        $request->getSession()->getFlashBag()->add('info', 'Les notes  des élèves de '.$classe->getNiveau()->getLibelleFr().' - '.$classe->getLibelleFr().' en '.$matiere->getLibelle().' ont été bien enregistrées.');
+      } 
+      catch(\Doctrine\ORM\ORMException $e){
+        $this->addFlash('error', $e->getMessage());
+        $this->get('logger')->error($e->getMessage());
+      } 
+      catch(\Exception $e){
+        $this->addFlash('error', $e->getMessage());
+      }
       return $this->redirect($this->generateUrl('isi_saisie_de_notes_de_la_classe', [
         'as'       => $as,
         'regime'   => $regime,
@@ -565,7 +593,17 @@ class ExamenController extends Controller
           }
         }
       }
-      $em->flush();
+      try{
+        $em->flush();
+      } 
+      catch(\Doctrine\ORM\ORMException $e){
+        $this->addFlash('error', $e->getMessage());
+        $this->get('logger')->error($e->getMessage());
+      } 
+      catch(\Exception $e){
+        $this->addFlash('error', $e->getMessage());
+      }
+
       if($noteMAJ != 0)
       {
         // return new Response('Nombre de note modifiées : '.$noteMAJ);
@@ -591,7 +629,16 @@ class ExamenController extends Controller
           $moyenneClasse->setUpdatedAt(new \Datetime());
         }
 
-        $em->flush();
+        try{
+          $em->flush();
+        } 
+        catch(\Doctrine\ORM\ORMException $e){
+          $this->addFlash('error', $e->getMessage());
+          $this->get('logger')->error($e->getMessage());
+        } 
+        catch(\Exception $e){
+          $this->addFlash('error', $e->getMessage());
+        }
       }
       else{
         // return new Response('Aucune note modifiée : '.$noteMAJ);
@@ -1020,9 +1067,18 @@ class ExamenController extends Controller
       $moyenneClasse->setCreatedAt(new \Datetime());
       // return new Response(var_dump($admis, $recales, $moyenneClasse));
       $em->persist($moyenneClasse);
-      $em->flush();
+      try{
+        $em->flush();
+        $request->getSession()->getFlashBag()->add('info', 'Les résultats sont disponibles.');
+      } 
+      catch(\Doctrine\ORM\ORMException $e){
+        $this->addFlash('error', $e->getMessage());
+        $this->get('logger')->error($e->getMessage());
+      } 
+      catch(\Exception $e){
+        $this->addFlash('error', $e->getMessage());
+      }
 
-      $request->getSession()->getFlashBag()->add('info', 'Les résultats sont disponibles.');
       // $moyennes = [];
       // foreach($eleves as $eleve)
       // {
@@ -1175,9 +1231,18 @@ class ExamenController extends Controller
       $moyenneClasse->setRecales($recales);
       $moyenneClasse->setUpdatedBy($this->getUser());
       $moyenneClasse->setUpdatedAt(new \Datetime());
-      $em->flush();
+      try{
+        $em->flush();
+        $request->getSession()->getFlashBag()->add('info', 'Vous devez maintenant calculer les résultats annuels.');
+      } 
+      catch(\Doctrine\ORM\ORMException $e){
+        $this->addFlash('error', $e->getMessage());
+        $this->get('logger')->error($e->getMessage());
+      } 
+      catch(\Exception $e){
+        $this->addFlash('error', $e->getMessage());
+      }
 
-      $request->getSession()->getFlashBag()->add('info', 'Vous devez maintenant calculer les résultats annuels.');
       // $moyennes = [];
       // foreach($eleves as $eleve)
       // {
@@ -1370,7 +1435,16 @@ class ExamenController extends Controller
           $continuer = TRUE;
         }
       }// Fin de la boucle foreach
-      $em->flush();
+      try{
+        $em->flush();
+      } 
+      catch(\Doctrine\ORM\ORMException $e){
+        $this->addFlash('error', $e->getMessage());
+        $this->get('logger')->error($e->getMessage());
+      } 
+      catch(\Exception $e){
+        $this->addFlash('error', $e->getMessage());
+      }
 
       // Début du classement annuel
       foreach ($moyennes as $key => $moyenne) {
@@ -1439,7 +1513,16 @@ class ExamenController extends Controller
           $continuer = TRUE;
         }
       }// Fin de la boucle foreach
-      $em->flush();
+      try{
+        $em->flush();
+      } 
+      catch(\Doctrine\ORM\ORMException $e){
+        $this->addFlash('error', $e->getMessage());
+        $this->get('logger')->error($e->getMessage());
+      } 
+      catch(\Exception $e){
+        $this->addFlash('error', $e->getMessage());
+      }
       // Fin du classement annuel
       // return new Response(var_dump($moyennes));
       return $this->render('ISIBundle:Examen:classement-annuel-de-la-classe.html.twig', [
@@ -1958,7 +2041,16 @@ class ExamenController extends Controller
 
         // On va flusher l'entité moyenne
         $em->persist($moyenne);
-        $em->flush();
+        try{
+          $em->flush();
+        } 
+        catch(\Doctrine\ORM\ORMException $e){
+          $this->addFlash('error', $e->getMessage());
+          $this->get('logger')->error($e->getMessage());
+        } 
+        catch(\Exception $e){
+          $this->addFlash('error', $e->getMessage());
+        }
 
         if($moy > 5)
           $admis++;
@@ -2086,9 +2178,18 @@ class ExamenController extends Controller
         $moyenneClasse->setUpdatedBy($this->getUser());
         $moyenneClasse->setUpdatedAt(new \Datetime());
       }
-      $em->flush();
+      try{
+        $em->flush();
+        $request->getSession()->getFlashBag()->add('info', 'Vous devez recalculer les résultats.');
+      } 
+      catch(\Doctrine\ORM\ORMException $e){
+        $this->addFlash('error', $e->getMessage());
+        $this->get('logger')->error($e->getMessage());
+      } 
+      catch(\Exception $e){
+        $this->addFlash('error', $e->getMessage());
+      }
 
-      $request->getSession()->getFlashBag()->add('info', 'Vous devez recalculer les résultats.');
       $moyennes = [];
       foreach($eleves as $eleve)
       {
