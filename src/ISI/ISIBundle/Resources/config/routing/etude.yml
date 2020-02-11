@@ -20,7 +20,7 @@ etude_niveaux_matieres:
         as:     \d+
         regime: A|F
 
-# Liaison des matières aux niveaux de formation
+# Liaison des matières aux niveaux de formation editerLiaisonNiveauxMatieres
 etude_lier_niveaux_matieres:
     path:     /lier-les-matieres-aux-niveaux-de-formation-{as}-{regime}-{niveauId}.html
     defaults: { _controller: ISIBundle:Etude:lierNiveauxMatieres }
@@ -28,6 +28,15 @@ etude_lier_niveaux_matieres:
         as:       \d+
         regime:   A|F
         niveauId: \d+
+    
+
+editer_liaison_niveaux_matieres:
+    path:     /editer-liaison-des-matieres-aux-niveaux-de-formation/{as}/{regime}/{enseignementId}
+    defaults: { _controller: ISIBundle:Etude:editerLiaisonNiveauxMatieres }
+    requirements:
+        as    : \d+
+        regime: A|F
+        enseignementId: \d+        
 
 etude_parametres:
     path:     /parametres-{as}.html

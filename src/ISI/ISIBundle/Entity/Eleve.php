@@ -67,6 +67,13 @@ class Eleve
     /**
      * @var string
      *
+     * @ORM\Column(name="profession", type="string", length=255, nullable=true)
+     */
+    private $profession;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="ref_extrait", type="string", length=255, nullable=false)
      */
     private $refExtrait;
@@ -428,6 +435,30 @@ class Eleve
     public function getPnomAr()
     {
         return $this->pnomAr;
+    }
+
+    /**
+     * Set profession
+     *
+     * @param string $profession
+     *
+     * @return Eleve
+     */
+    public function setProfession($profession)
+    {
+        $this->profession = $profession;
+
+        return $this;
+    }
+
+    /**
+     * Get profession
+     *
+     * @return string
+     */
+    public function getProfession()
+    {
+        return $this->profession;
     }
 
     /**

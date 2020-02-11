@@ -22,7 +22,11 @@ class MoyenneRepository extends \Doctrine\ORM\EntityRepository
        ->setParameter('examenId', $examenId)
     ;
 
-    $moyennes = $qb->getQuery()->getResult();
+    $moy = $qb->getQuery()->getResult();
+
+    foreach ($moy as $key => $value) {
+      $moyennes[$value->getEleve()->getId()] = $value;
+    }
     return $moyennes;
   }
 

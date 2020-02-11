@@ -30,14 +30,14 @@
 					{% endif %}
 					{# Pour chaque note #}
 					{# {{dump(absencesDuMois)}} #}
-					{% for abs in absencesDuMois %}
+					{# {% for abs in absencesDuMois %} #}
 
-						{% if eleve.id == abs.eleve.id %}
+						{# {% if eleve.id == abs.eleve.id %} #}
 							<div class="item ui selectable">
 								<div class="right floated content">
 									<div class="">
 										<div class="ui right labeled input">
-											<input name="abs[{{eleve.id}}]" type="integer">
+											<input name="eleves[{{eleve.id}}]" type="integer">
 											<div class="ui basic label">{{ 'heures'|trans }}</div>
 										</div>
 									</div>
@@ -45,8 +45,8 @@
 								<img class="ui avatar image" src="{{ image }}">
 								<div class="content">{{ eleve.nomFr }} {{ eleve.pnomFr }}</div>
 							</div>
-						{% endif %}
-					{% endfor %}
+						{# {% endif %} #}
+					{# {% endfor %} #}
 				{% endfor %}
 				</div>
 				<div>

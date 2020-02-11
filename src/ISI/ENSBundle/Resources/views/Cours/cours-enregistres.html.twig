@@ -1,0 +1,71 @@
+{# Accueil pour l'édition des listes de classe' #}
+
+{% extends "ENSBundle:Enseignant:layout.html.twig" %}
+
+
+
+{% block pageTitle %}
+  Cours enregistrés au {{ classe.libelleFr }}
+{% endblock %}
+
+
+{% block titre_page %}
+  <i class="student icon"></i>{{ 'GESTION DES COURS'|trans }}
+{% endblock %}
+
+
+{% block contextual_menu %}
+  {{ include("ENSBundle::contextual-menu-cours.html.twig") }}
+{% endblock %}
+
+
+
+{% block corps %}
+  <h3>{{ 'Cours enregistrés au '|trans }} {{ classe.libelleFr }}</h3>
+  {% if cours is empty %}
+    <p>{{ 'Il n y a aucun cours pour cette classe'|trans }}</p>
+  {% else %}
+    <div class="column" style="width:75%">
+      <form action="" method="post" class="ui form">
+        <table class="ui selectable very basic table" align="center" width="75%">
+          <thead>
+            <tr>
+              <th class="one wide">{{ 'N°'|trans }}</th>
+              <th>{{ 'Matière'|trans }}</th>
+              <th>{{ 'Enseignant'|trans }}</th>
+              <th>{{ 'Coefficient'|trans }}</th>
+              <th>{{ 'Nbr heures cours'|trans }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% set numero = 0 %}
+            {% set totalHeure = 0 %}
+            {% for item in cours %}
+              {% for en in ens if en.matiere.id == item.matiere.id %}
+                {% set numero = numero + 1 %}
+                <tr>
+                  <td>{{ numero }}</td>
+                  <td>{{ item.matiere.libelle }}</td>
+                  <td>{{ item.anneeContrat.contrat.enseignant.nomFr }} {{ item.anneeContrat.contrat.enseignant.pnomFr }}</td>
+                  <td>{{ en.coefficient }}</td>
+                  <td>{{ en.nombreHeureCours }}</td>
+                  {% set totalHeure = totalHeure + en.nombreHeureCours %}
+                </tr>
+              {% endfor %}
+            {% endfor %}
+            <tr>
+              <td colspan="4"><strong>Nombre total d'heures de cours</strong></td>
+              <td>{{ totalHeure }}h</td>
+            </tr>
+          </tbody>
+          <tfoot>
+          </tfoot>
+        </table>
+      </form>
+    </div>
+  {% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

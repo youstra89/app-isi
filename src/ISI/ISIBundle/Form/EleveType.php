@@ -39,6 +39,7 @@ class EleveType extends AbstractType
           ))
           // ->add('sexeAr')
           ->add('refExtrait', TextType::class)
+          ->add('profession', TextType::class)
           ->add('grpSanguin', ChoiceType::class, array(
             'required' => FALSE,
             'choices'  => array(
@@ -89,8 +90,7 @@ class EleveType extends AbstractType
             $form = $event->getForm();
 
             if (!$eleve || null === $eleve->getId()) {
-              $form
-                ->add('save', SubmitType::class, array('label' => 'Préinscrire l\'élève'));
+              $form->add('save', SubmitType::class, array('label' => 'Préinscrire l\'élève'));
             }
             else{
               $form->add('update', SubmitType::class, array('label' => 'Modifier l\'élève'));

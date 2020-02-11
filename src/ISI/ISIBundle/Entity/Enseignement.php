@@ -37,6 +37,13 @@ class Enseignement
     private $statu;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="nombre_heure_cours", type="integer", nullable=true)
+     */
+    private $nombreHeureCours;
+
+    /**
      * @var \User
      *
      * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
@@ -378,5 +385,29 @@ class Enseignement
     public function getUpdatedBy()
     {
         return $this->updatedBy;
+    }
+
+    /**
+     * Set nombreHeureCours
+     *
+     * @param integer $nombreHeureCours
+     *
+     * @return Enseignement
+     */
+    public function setNombreHeureCours($nombreHeureCours)
+    {
+        $this->nombreHeureCours = $nombreHeureCours;
+
+        return $this;
+    }
+
+    /**
+     * Get nombreHeureCours
+     *
+     * @return integer
+     */
+    public function getNombreHeureCours()
+    {
+        return $this->nombreHeureCours;
     }
 }

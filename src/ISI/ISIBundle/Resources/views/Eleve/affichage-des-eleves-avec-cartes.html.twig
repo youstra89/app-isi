@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-  <h3>{{ 'Supprimer l\'inscription d\'un élève de'|trans }} {{classe.niveau.libelleFr}}-{{classe.libelleClasseFr}} </h3>
+  <h3>{{ 'Supprimer l\'inscription d\'un élève de'|trans }} {{classe.niveau.libelleFr}}-{{classe.libelleFr}} </h3>
   <div class="ui hidden divider"></div>
   {% if elevesClasse is empty %}
     <p>{{ 'Aucune classe n\'a encore été enregistrée'|trans }}</p>

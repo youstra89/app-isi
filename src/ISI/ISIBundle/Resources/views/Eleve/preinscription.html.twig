@@ -103,7 +103,7 @@
          {{ form_widget(form.grpSanguin, {'attr': {'class': ''}}) }}
       </div>
     </div>
-    <div class="six fields">
+    <div class="five fields">
       <div class="field">
         <label for="">
            {{ form_label(form.nationalite, "Nationalite", {'label_attr': {'class': ''}}) }}
@@ -152,17 +152,31 @@
          {{ form_widget(form.contact, {'attr': {'class': '', 'placeholder': 'Numéro de téléphone'}}) }}
       </div>
       <div class="field">
-        <label for="">
-           {{ form_label(form.etsOrigine, "Ets d'origine", {'label_attr': {'class': ''}}) }}
-           {{ form_errors(form.etsOrigine) }}
-        </label>
+         <label for="">
+            {{ form_label(form.profession, "Profession", {'label_attr': {'class': ''}}) }}
+            {{ form_errors(form.profession) }}
+         </label>
+            {{ form_widget(form.profession, {'attr': {'class': '', 'placeholder': 'Profession', 'list': 'profession'}}) }}
+      </div>
+      <datalist id='profession'>
+         {% for item in professions %}
+            <option value="{{ item["profession"] }}"></option>
+         {% endfor %}
+      </datalist>
+   </div>
+   <div class="two fields">
+      <div class="field">
+         <label for="">
+            {{ form_label(form.etsOrigine, "Ets d'origine", {'label_attr': {'class': ''}}) }}
+            {{ form_errors(form.etsOrigine) }}
+         </label>
          {{ form_widget(form.etsOrigine, {'attr': {'class': ''}}) }}
       </div>
       <div class="field">
-        <label for="">
-           {{ form_label(form.etatSante, "Etat de santé", {'label_attr': {'class': ''}}) }}
-           {{ form_errors(form.etatSante) }}
-        </label>
+         <label for="">
+            {{ form_label(form.etatSante, "Etat de santé", {'label_attr': {'class': ''}}) }}
+            {{ form_errors(form.etatSante) }}
+         </label>
          {{ form_widget(form.etatSante, {'attr': {'class': ''}}) }}
       </div>
     </div>

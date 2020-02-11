@@ -20,14 +20,14 @@
       </div>
     {% endfor %}
     <h3>{{ 'Réintégration de'|trans }} {{ eleve.nomFr }} {{ eleve.pnomfr }} </h3>
-    <p>{{ 'Classe avant renvoi'|trans }}: <span>{{ classeAvRenvoi.niveau.libelleFr }} - {{ classeAvRenvoi.libelleClasseFr }}</span></p>
+    <p>{{ 'Classe avant renvoi'|trans }}: <span>{{ classeAvRenvoi.niveau.libelleFr }} - {{ classeAvRenvoi.libelleFr }}</span></p>
     <form action="" class="ui form" method="post">
         <label for="">{{ 'Nouvelle classe'|trans }}</label>
         <select name="classe" id="">
             <option value="">{{ 'Choisir la nouvelle classe pour'|trans }} {{ eleve.nomFr }} {{ eleve.pnomfr }}</option>
             {% for classe in classes %}
                 {% if classe.genre == 'M' or (classe.genre == 'H' and eleve.sexeFr == 1) or (classe.genre == 'F' and eleve.sexeFr == 2) %}
-                    <option value="{{ classe.classeId }}">{{ classe.niveau.libelleFr }} - {{ classe.libelleClasseFr }}</option>
+                    <option value="{{ classe.classeId }}">{{ classe.niveau.libelleFr }} - {{ classe.libelleFr }}</option>
                 {% endif %}
             {% endfor %}
         </select>

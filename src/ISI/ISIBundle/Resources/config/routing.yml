@@ -22,6 +22,10 @@ etude:
     resource: "@ISIBundle/Resources/config/routing/etude.yml"
     prefix:   /etude
 
+import-export:
+    resource: "@ISIBundle/Resources/config/routing/import-export.yml"
+    prefix:   /import-export
+
 #------------------------------------ ESPACE CORAN ---------------------------------------
 # Page d'accueil des l'espace coran, ceux qui ne font que mémoriser le coran
 isi_espace_coran_home:

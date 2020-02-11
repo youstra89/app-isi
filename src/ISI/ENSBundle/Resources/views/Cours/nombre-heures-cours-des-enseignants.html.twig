@@ -1,0 +1,96 @@
+{# Accueil pour l'édition des listes de classe' #}
+
+{% extends "ENSBundle:Enseignant:layout.html.twig" %}
+
+
+{% block pageTitle %}
+  Nombre heure de cours des enseignants
+{% endblock %}
+
+{% block titre_page %}
+  <i class="student icon"></i>{{ 'GESTION DES COURS'|trans }}
+{% endblock %}
+
+
+{% block contextual_menu %}
+  {{ include("ENSBundle::contextual-menu-cours.html.twig") }}
+{% endblock %}
+
+
+{% block corps %}
+  <h3>{{ 'Nombre heure de cours des enseignants'|trans }}</h3>
+{% if anneeContrats is empty %}
+  <p>{{ 'Pas de données disponibles pour l\'heure'|trans }}</p>
+{% else %}
+  <div class="column" style="width:75%">
+      <table class="ui selectable very basic table" id="enseignants">
+        <thead>
+          <tr>
+            <th width="10%">N°</th>
+            <th>Nom</th>
+            <th>Prénoms</th>
+            <th>Heures Académie</th>
+            <th>Heures Centre de Formation</th>
+            <th class="two wide">{{ 'Actions'|trans }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% set numero = 0 %}
+          {% for item in anneeContrats %} 
+              {% set numero = numero + 1 %}
+              <tr>
+                <td>{{ numero }}</td>
+                <td>{{ item.contrat.enseignant.nomFr }}</td>
+                <td>{{ item.contrat.enseignant.pnomFr }}</td>
+                {% if heuresCours[item.id] is defined %}
+                  <td>{{ heuresCours[item.id].academie }}</td>
+                  <td>{{ heuresCours[item.id].centre }}</td>
+                {% else %}
+                  <td></td>
+                  <td></td>
+                {% endif %}
+                <td>
+                  {% set nom = item.contrat.enseignant.nomFr ~ ' ' ~ item.contrat.enseignant.pnomFr %}
+                  <a href="{{ path('ens_cours_d_un_enseignant', {'as': annee.id, 'anneeContratId': item.id}) }}" data-tooltip="Voir les cours de l'enseigannt {{ nom }}">
+                    <i class="list icon"></i>
+                  </a>
+                </td>
+              </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <hr width="75%">
+    </div><br><br>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+<script data-config>
+        var filtersConfig = {
+          base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+          col_0: "none",
+          col_3: 'select',
+          col_4: 'select',
+          col_5: 'none',
+          alternate_rows: true,
+          rows_counter: true,
+          btn_reset: true,
+          loader: true,
+          status_bar: true,
+          mark_active_columns: true,
+          highlight_keywords: true,
+          no_results_message: true,
+          col_types: [
+            'number', 'string', 'string', 'string'
+          ],
+          col_widths: [
+              '20px', , , '200px'
+          ],
+          extensions: [{ name: 'sort' }]
+        };
+
+        var tf = new TableFilter('enseignants', filtersConfig);
+        tf.init();
+      </script>
+{% endblock %}

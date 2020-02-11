@@ -39,7 +39,7 @@
                         <td>رقم الطالب</td>
                         <td><span class="matricule">{{ moyenne.getEleve.getMatricule }}</span></td>
                         <td>العام الدراسي</td>
-                        <td>{{ examen.getAnneeScolaire.getLibelleAnneeScolaire }}</td>
+                        <td>{{ examen.getAnnee.getLibelle }}</td>
                     </tr>
                 </table>
             </div>
@@ -60,7 +60,7 @@
                     </tr>
                     <!-- Ici on va déterminer les sexe -->
                     {% set sexe = '' %}
-                    {% if moyenne.getEleve.getSexeFr == 1 %}
+                    {% if moyenne.getEleve.getSexe == 1 %}
                         {% set sexe = 'ذكر' %}
                     {% else %}
                         {% set sexe = 'أنثى' %}
@@ -71,7 +71,7 @@
                     </tr>
                     <tr class="infos-identification-eleve">
                         <td class="titre-info-eleve">المستوى الدراسي</td>
-                        <td class="info-eleve-db">{{ classe.getLibelleClasseAr }}
+                        <td class="info-eleve-db">{{ classe.getLibelleAr }}
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <span class="effectif">عدد الطلاب : {{ effectif }}</span>
                         </td>
@@ -83,60 +83,71 @@
                 <table class="les-notes" align="center">
                     <tr class="">
                         <th class="" width="" align="">المواد</th>
-                        <th class="" width="10%" align="">الدرجات</th>
+                        <th class="" width="7%" align="">الدرجات</th>
+                        <th class="" width="7%" align="">الوحدات</th>
+                        <th class="" width="7%" align="">نتيجة الضرب</th>
                         <th class="" width="" align="">المدرسون</th>
                         <th class="" width="" align="">التقدير</th>
                         <th class="" width="" align="">توقيع</th>
                     </tr>
                     {% set totalNote = 0 %}
-                    <!-- On va sélectionner les matières de la classe -->
-                    {% for matiere in matieres %}
-                        <!-- Dans la boucle des matières, on boucle une fois de plus sur les notes -->
-                        {% set color = '' %}
-                        {% set numero = 0 %}
-                        {% for note in notes %}
-                            {% if (numero % 2) == 0 %}
-                                {% set color = 'white' %}
-                            {% else %}
-                                {% set color = 'rgb(255, 255, 230)' %}
-                            {% endif %}
+                    <!-- Dans la boucle des matières, on boucle une fois de plus sur les notes -->
+                    {% set color = '' %}
+                    {% set numero = 0 %}
+                    {% for note in notes %}
+                        {# {% for item in ens %} #}
                             <!-- On va maintenant sélectionner les notes de l'élèves -->
-                            {% if moyenne.getEleve.getEleveId == note.getEleve.getEleveId and matiere.getMatiereId == note.getMatiere.getMatiereId|e %}
+                            {% if moyenne.getEleve.id == note.getEleve.id %}
+                                {% set matiere = matieres[note.matiere.id] %}
+                                {% set coefficient = ens[matiere.id].coefficient %}
+                                {% set moyCoeff = note.getNote * coefficient %}
+                                {% if (numero % 2) == 0 %}
+                                    {% set color = 'white' %}
+                                {% else %}
+                                    {% set color = 'rgb(255, 255, 230)' %}
+                                {% endif %}
                                 {% set totalNote = totalNote + note.getNote %}
                                 <tr class="" bgcolor="{{ color }}">
-                                    <td class="libelle-matiere">&nbsp;&nbsp;{{ matiere.libelleMatiere }}</td>
-                                    <td class="valeur-note" with="10%" align="center">{{ note.getNote }}</td>
+                                    <td class="libelle-matiere">&nbsp;&nbsp;{{ matiere.libelle }}</td>
+                                    <td class="valeur-note" with="10%" align="center"><label data-number-target="ar">{{ note.getNote }}</label></td>
+                                    <td class="valeur-note" with="10%" align="center">{{ coefficient }}</td>
+                                    <td class="valeur-note" with="10%" align="center">{{ moyCoeff }}</td>            
                                     <td class=""></td>
                                     <td class="">&nbsp;&nbsp;{{ note.getAppreciation.getAppreciationAr }}</td>
                                     <td class=""></td>
                                 </tr>
+                                {% set numero = numero + 1 %}
                             {% endif %}
-                            {% set numero = numero + 1 %}
-                        {% endfor %}
-                        <!-- Fin de la boucle sur les notes -->
+                        {# {% endfor %} #}
                     {% endfor %}
-                    <!-- Fin de la boucle sur les matières -->
+                    <!-- Fin de la boucle sur les notes -->
                 </table>
                 <!-------------------------    Fin tableau des notes  ---------------------------->
                 <!-- Le tableau des notes et celui de la moyenne se trouvent dans le même div -->
                 <!-----------------------   Début tableau des moyennes  ---------------------------->
                 {% set nieme = '' %}
-                {% if moyenne.getRang == 1 and moyenne.getEleve.getSexeFr == 1 %}
+                {% if moyenne.getRang == 1 and moyenne.getEleve.getSexe == 1 %}
                 <!-- Dans ce cas, c'est un homme. Il faudra donc dire: Le premier -->
                     {% set nieme = 'er' %}
-                {% elseif moyenne.getRang == 1 and moyenne.getEleve.getSexeFr == 2 %}
+                {% elseif moyenne.getRang == 1 and moyenne.getEleve.getSexe == 2 %}
                 <!-- Dans ce cas, c'est une femme. Il faudra donc dire: La première -->
                     {% set nieme = 'ère' %}
                 {% else %}
                 <!-- Pour le reste il n'a pas de différence -->
                     {% set nieme = 'ème' %}
                 {% endif %}
+                {% set appreciation = null %}
+                {% if moyenne.moyenne <= 5.5 %}
+                    {% set appreciation = 'راسب' %} 
+                {% else %} 
+                    {% set appreciation = 'ناجح' %}
+                {% endif %}
                 <table class="la-moyenne" align="center">
                     <tr class="table-line-moyenne">
-
-                        <td><span class="titre-info-moyenne">المجموع :&nbsp;&nbsp;</span><span class="info-moyenne">{{ totalNote }}</span></td>
-                        <td><span class="titre-info-moyenne">المعدل :&nbsp;&nbsp;</span><span class="info-moyenne">{{moyenne.getMoyenne}}</span></td>
-                        <td><span class="titre-info-moyenne">الترتيب :&nbsp;&nbsp;</span><span class="info-moyenne">{{moyenne.getRang}}{#<sup>{{nieme}}</sup>#}</span></td>
+                        <td><span class="titre-info-moyenne">المجموع :&nbsp;&nbsp;</span><span class="info-moyenne">{{ moyenne.getTotalPoints }}</span></td>
+                        <td><span class="titre-info-moyenne">المعدل :&nbsp;&nbsp;</span><span class="info-moyenne">{{ moyenne.getMoyenne|number_format(2) }}</span></td>
+                        <td><span class="titre-info-moyenne">الترتيب :&nbsp;&nbsp;</span><span class="info-moyenne">{{ moyenne.getRang }}{#<sup>{{nieme}}</sup>#}</span></td>
+                        <td><span class="titre-info-moyenne">القرار :&nbsp;&nbsp;</span><span class="info-moyenne">{{ appreciation }}</span></td>
                     <tr/>
                 </table>
                 <!-- Fin de la boucle sur les moyennes, sur les élèves donc -->

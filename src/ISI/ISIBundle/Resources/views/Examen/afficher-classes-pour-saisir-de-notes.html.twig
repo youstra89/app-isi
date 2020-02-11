@@ -1,0 +1,132 @@
+{# On affiche toues les classes d'un niveau de formation. On sélectionne alors une classe pour aller saisir les notes #}
+{% extends "ISIBundle:Scolarite:index.html.twig" %}
+
+{% block pageTitle %}
+  Saisie de notes
+{% endblock %}
+
+
+{% block content %}
+  {% set grp = '' %}
+  {% if regime is same as('A') %}
+    {% set grp = 'Académie' %}
+  {% else %}
+    {% set grp = 'Formation' %}
+  {% endif %}
+  <div class="ui info message">
+    <center>
+      <h2>{{ 'Notes et résultats d\'examen'|trans }} : {{ grp }}</h2>
+      <h3>{{ 'Session'|trans }} {{ examen.session }} : {{ examen.annee.libelle }}</h3>
+    </center>
+  </div>
+  
+  {# Cas de fiches de notes déjà éditées #}
+    {% for message in app.session.flashbag.get('error') %}
+      <div class="ui red message">
+        <div class="header">{{ 'Attention'|trans }} !!! </div>
+        <ul class="list">
+          <li>{{ message|raw }}</li>
+        </ul>
+      </div>
+    {% endfor %}
+    {% for message in app.session.flashbag.get('info') %}
+      <div class="ui green message">
+        <div class="header">{{ 'Notification'|trans }}: </div>
+        <ul class="list">
+          <li>{{ message|raw }}.</li>
+        </ul>
+      </div>
+    {% endfor %}
+  {# Fin des notifications #}
+  {% if classes is empty %}
+    <p>{{ 'Pas de classes pour le moment'|trans }}</p>
+  {% else %}
+  <div class="column" style="width:75%">
+    <table class="ui selectable very basic table" id="classes">
+      <thead>
+        <tr>
+          <th width="10%">N°</th>
+          <th>Niveaux</th>
+          <th>Classses</th>
+          <th>المستويات</th>
+          <th>الفصول</th>
+          <th>Genre</th>
+          <th class="two wide">{{ 'Actions'|trans }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% set numero = 0 %}
+        {% for classe in classes %} 
+          {% if classe.niveau.groupeFormation.reference is same as(regime) %}
+            {% set numero = numero + 1 %}
+            {% set genre = '' %}
+            {% if classe.genre == 'H' %}
+              {% set genre = 'Homme' %}
+            {% elseif classe.genre == 'F' %}
+              {% set genre = 'Femme' %}
+            {% else %}
+              {% set genre = 'Mixte' %}
+            {% endif %}
+            <tr>
+              <td>
+                <h4 class="ui image header">{{ numero }}</h4>
+              </td>
+              <td>
+                <h4 class="ui image header">{{ classe.getNiveau.getLibelleFr }}</h4>
+              </td>
+              <td>
+                <h4 class="ui image header">{{ classe.libellefr }}</h4>
+              </td>
+              <td>
+                <h4 class="ui image header">{{ classe.getNiveau.getLibelleAr }}</h4>
+              </td>
+              <td>
+                <h4 class="ui image header">{{ classe.libellear }}</h4>
+              </td>
+              <td>
+                <h4 class="ui image header">{{ genre }}</h4>
+              </td>
+              <td>
+                <a href="{{path('isi_saisie_de_notes_de_la_classe', {'as': asec, 'regime': regime, 'classeId': classe.getId, 'examenId': examen.getId})}} "data-tooltip="Saisie des notes">
+                  <i class="print icon"></i>
+                </a>
+                <a href="{{path('isi_resultats_de_la_classe', {'as': asec, 'regime': regime, 'classeId': classe.getId, 'examenId': examen.getId})}}" data-tooltip="Voir les résultats">
+                  <i class="print red icon"></i>
+                </a>
+              </td>
+            </tr>
+          {% endif %} 
+        {% endfor %}
+      </tbody>
+    </table>
+    <hr width="75%">
+    <script data-config>
+      var filtersConfig = {
+        base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+        col_0: "none",
+        col_1: 'select',
+        col_3: 'select',
+        col_5: 'select',
+        alternate_rows: true,
+        rows_counter: true,
+        btn_reset: true,
+        loader: true,
+        status_bar: true,
+        mark_active_columns: true,
+        highlight_keywords: true,
+        no_results_message: true,
+        col_types: [
+          'number', 'string', 'string', 'string'
+        ],
+        col_widths: [
+            '20px', , , '200px'
+        ],
+        extensions: [{ name: 'sort' }]
+      };
+  
+      var tf = new TableFilter('classes', filtersConfig);
+      tf.init();
+    </script>
+  </div><br><br>
+  {% endif %}
+{% endblock %}

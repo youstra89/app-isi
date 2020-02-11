@@ -5,7 +5,9 @@
     <table class="les-notes" align="center">
         <tr class="">
             <th class="" width="" align="">المواد</th>
-            <th class="" width="10%" align="">الدرجات</th>
+            <th class="" width="7%" align="">الدرجات</th>
+            <th class="" width="7%" align="">الوحدات</th>
+            <th class="" width="7%" align="">نتيجة الضرب</th>
             <th class="" width="" align="">المدرسون</th>
             <th class="" width="" align="">التقدير</th>
             <th class="" width="" align="">توقيع</th>
@@ -14,19 +16,26 @@
         {% set color = '' %}
         {% set numero = 0 %}
         {% for note in notes %}
-            {% if (numero % 2) == 0 %}
-                {% set color = 'white' %}
-            {% else %}
-                {% set color = 'rgb(255, 255, 230)' %}
-            {% endif %}
-            <tr class="" bgcolor="{{ color }}">
-                <td class="libelle-matiere">&nbsp;&nbsp;{{ note.getMatiere.getLibelle }}</td>
-                <td class="valeur-note" with="10%" align="center">{{ note.getNote }}</td>
-                <td class=""></td>
-                <td class="">&nbsp;&nbsp;{{ note.getAppreciation.getAppreciationAr }}</td>
-                <td class=""></td>
-            </tr>
-            {% set numero = numero + 1 %}
+            {% for item in ens %}
+                {% if item.matiere.id == note.matiere.id %}
+                    {% set moyCoeff = note.getNote * item.coefficient %}
+                    {% if (numero % 2) == 0 %}
+                        {% set color = 'white' %}
+                    {% else %}
+                        {% set color = 'rgb(255, 255, 230)' %}
+                    {% endif %}
+                    <tr class="" bgcolor="{{ color }}">
+                        <td class="libelle-matiere">&nbsp;&nbsp;{{ note.getMatiere.getLibelle }}</td>
+                        <td class="valeur-note" with="10%" align="center">{{ note.getNote }}</td>
+                        <td class="valeur-note" with="10%" align="center">{{ item.coefficient }}</td>
+                        <td class="valeur-note" with="10%" align="center">{{ moyCoeff }}</td>
+                        <td class=""></td>
+                        <td class="">&nbsp;&nbsp;{{ note.getAppreciation.getAppreciationAr }}</td>
+                        <td class=""></td>
+                    </tr>
+                    {% set numero = numero + 1 %}
+                {% endif %}
+            {% endfor %}
         {% endfor %}
         <!-- Fin de la boucle sur les notes -->
     </table>
@@ -36,8 +45,8 @@
     <table class="la-moyenne" align="center">
         <tr class="table-line-moyenne">
             <td><span class="titre-info-moyenne">المجموع :&nbsp;&nbsp;</span><span class="info-moyenne">{{ moyenne.getTotalPoints }}</span></td>
-            <td><span class="titre-info-moyenne">المعدل :&nbsp;&nbsp;</span><span class="info-moyenne">{{moyenne.getMoyenne}}</span></td>
-            <td><span class="titre-info-moyenne">الترتيب :&nbsp;&nbsp;</span><span class="info-moyenne">{{moyenne.getRang}}</span></td>
+            <td><span class="titre-info-moyenne">المعدل :&nbsp;&nbsp;</span><span class="info-moyenne">{{ moyenne.getMoyenne|number_format(2) }}</span></td>
+            <td><span class="titre-info-moyenne">الترتيب :&nbsp;&nbsp;</span><span class="info-moyenne">{{ moyenne.getRang }}</span></td>
         <tr/>
     </table>
     <!-- Fin de la boucle sur les moyennes, sur les élèves donc -->

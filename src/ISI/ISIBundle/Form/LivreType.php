@@ -41,7 +41,7 @@ class LivreType extends AbstractType
                 ->add('matiere', EntityType::class, [
                     'class'         => 'ISIBundle:Matiere',
                     'placeholder'   => 'Sélectionner une matière',
-                    'choice_label'  => 'libelleMatiere',
+                    'choice_label'  => 'libelle',
                     'multiple'      => FALSE
                   ])
                 // ->add('instance', ChoiceType::class, [

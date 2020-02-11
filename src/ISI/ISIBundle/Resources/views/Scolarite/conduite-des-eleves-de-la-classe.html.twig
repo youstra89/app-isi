@@ -1,0 +1,76 @@
+{# ISIBundle/Ressources/views/Scolarite #}
+{% extends "ISIBundle:Scolarite:index.html.twig" %}
+{% block title %}
+    {% block pageTitle %}
+        Liste de classe
+    {% endblock %}
+{% endblock %}
+
+{% block body %}
+
+    {% if eleves is empty %}
+        <p>{{ 'Inscrivez d\'abord des élèves dans cette classe.'|trans }}</p>
+    {% else %}
+        <div class="titre-document">
+            <center>
+                <h1>{{ 'LISTE DE CLASSE'|trans }}</h1>
+            </center>
+        </div>
+        <br />
+        <div class="id-fiche">
+            <div class="classe">
+                <span><span class="libelleClasse">{{ classe.libelleAr }}</span> : الفصل</span>
+            </div>
+        </div>
+        <br />
+        {# {{dump(eleves)}} #}
+        <table width="100%" class="" align="center">
+            <thead>
+                <tr class="table-header" bgcolor="">
+                    <th align="center">N°</th>
+                    <th align="left" class="nomAr">الرقم التسلسلي</th>
+                    <th class="nomAr">الاسم و اللقب</th>
+                    <th align="left">{{ 'Nom & Prénom'|trans }}</th>
+                    <th align="left" class="nomAr">الجنس</th>
+                    <th align="left" class="conduite" width="45%">Conduites</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set numero = 0 %}
+                {% set color = '' %}
+                {% for eleve in eleves %}
+                    {# Ce code me permet d'alterner la couleur des lignes du tableau #}
+                    {% if (numero % 2) == 1 %}
+                        {% set color = 'white' %}
+                    {% else %}
+                        {% set color = '#DCDCDC' %}
+                    {% endif %}
+                    {# Pour le sexe #}
+                    {% if eleve.sexe == 1 %}
+                        {% set sexe = 'Masculin' %}
+                    {% else %}
+                        {% set sexe = 'Féminin' %}
+                    {% endif %}
+                    {% set numero = numero + 1 %}
+                    <tr class="line-table" bgcolor={{ color }}>
+                        <td align="center">{{ numero }}</td>
+                        <td align="left">{{ eleve.matricule }}</td>
+                        <td align="left" class="nomEleveAr">{{ eleve.pnomAr }} {{ eleve.nomAr }}</td>
+                        <td align="left">{{ eleve.nomFr }} {{ eleve.pnomFr }}</td>
+                        <td align="left">{{ sexe }}</td>
+                        <td align="left">
+                            {% for item in commettres %}
+                                {% if item.eleve.id == eleve.id  %}
+                                    <li>{{ item.probleme.description }}</li>
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br />
+        <center><span class="effectif">{{ 'Effectif'|trans }} :  {{ numero }}</span> </center>
+    {% endif %}
+
+{% endblock %}

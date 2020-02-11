@@ -19,7 +19,7 @@ Classe:
             generator:
                 strategy: IDENTITY
     fields:
-        libelleClasseFr:
+        libelleFr:
             type: string
             nullable: false
             length: 255

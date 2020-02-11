@@ -645,7 +645,8 @@ class InternatController extends Controller
       'annee' => $annee,
       'eleve' => $eleve,
       'paiement' => $paiement,
-    ]);
+      'server'   => $_SERVER["DOCUMENT_ROOT"],   
+      ]);
 
     return new Response(
         $snappy->getOutputFromHtml($html),

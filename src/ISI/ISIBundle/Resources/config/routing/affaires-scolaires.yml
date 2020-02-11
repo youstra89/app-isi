@@ -28,6 +28,23 @@ isi_liste_de_classe_home:
         as:     \d+
         regime: A|F
 
+# Accueil pour l'affichage des conduites enregistrées
+isi_liste_des_classes_conduite:
+    path:     /liste-des-classes-conduite-{as}-{regime}.html
+    defaults: { _controller: ISIBundle:AffairesScolaires:listeDesClassesConduiteHome }
+    requirements:
+        as:     \d+
+        regime: A|F
+
+# Edition sans impression de la liste de classe d'une classe donnée
+isi_conduites_des_eleves_d_une_classe:
+    path:     /conduites-des-eleves-d-une-classe-{as}-{regime}-{classeId}.html
+    defaults: { _controller: ISIBundle:AffairesScolaires:conduitesDesElevesDUneClasse }
+    requirements:
+        as:       \d+
+        regime:   A|F
+        classeId: \d+
+
 # Edition sans impression de la liste de classe d'une classe donnée
 isi_tirer_liste_de_la_classe_edition_sans_impression:
     path:     /liste-de-la-classe-edition-sans-impression-{as}-{regime}-{classeId}.html
@@ -100,7 +117,7 @@ isi_liste_d_une_halaqa:
 #
 isi_saisie_de_notes:
     path:     /accueil-saisie-de-notes-{as}-{regime}.html
-    defaults: { _controller: ISIBundle:AffairesScolaires:accueilSaisieDeNote }
+    defaults: { _controller: ISIBundle:Examen:accueilSaisieDeNote }
     requirements:
         as:       \d+
         regime:   A|F
@@ -132,14 +149,6 @@ isi_appliquer_reamenagement:
         as:       \d+
         regime:   A|F
         classeId: \d+
-
-# Pour les résultats (calcul des moyennes, classement...)
-isi_resultats_d_examens:
-    path:     /examen/resultats-d-examen-{as}-{regime}.html
-    defaults: { _controller: ISIBundle:Examen:accueilResultatsDExamen }
-    requirements:
-        as:       \d+
-        regime:   A|F
 
 # Voir les données statistiques d'un examen donné
 isi_statiqtiques:

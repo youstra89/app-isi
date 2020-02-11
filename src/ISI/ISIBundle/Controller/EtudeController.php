@@ -124,6 +124,8 @@ class EtudeController extends Controller
         //Remplissage des champs niveau et annee
         $enseignement->setNiveau($niveau);
         $enseignement->setAnnee($annee);
+        $enseignement->setCreatedBy($this->getUser());
+        $enseignement->setCreatedAt(new \Datetime());
 
         $form = $this->createForm(EnseignementType::class, $enseignement, [
             'as'             => $as,
@@ -135,15 +137,24 @@ class EtudeController extends Controller
         if($form->handleRequest($request)->isValid())
         {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($enseignement);
-            $em->flush();
+            $em->persist($enseignement); 
+            try{
+              $em->flush();
+              $this->addFlash('info', 'La matière '.$enseignement->getMatiere()->getLibelle().' a été enregistrée pour le niveau '.$enseignement->getNiveau()->getLibelleAr());
+              return $this->redirect($this->generateUrl('etude_lier_niveaux_matieres', [
+                  'as'     => $as,
+                  'regime' => $regime,
+                  'niveauId' => $niveauId,
+              ]));
+            } 
+            catch(\Doctrine\ORM\ORMException $e){
+              $this->addFlash('error', $e->getMessage());
+              $this->get('logger')->error($e->getMessage());
+            } 
+            catch(\Exception $e){
+              $this->addFlash('error', $e->getMessage());
+            }
 
-            $request->getSession()->getFlashBag()->add('info', 'La matière '.$enseignement->getMatiere()->getLibelle().' a été enregistrée pour le niveau '.$enseignement->getNiveau()->getLibelleAr());
-            return $this->redirect($this->generateUrl('etude_lier_niveaux_matieres', [
-                'as'     => $as,
-                'regime' => $regime,
-                'niveauId' => $niveauId,
-            ]));
         }
 
         return $this->render('ISIBundle:Etude:lier-les-matieres-aux-niveaux.html.twig', [
@@ -152,6 +163,74 @@ class EtudeController extends Controller
             'regime'   => $regime,
             'annee'    => $annee,
             'form'     => $form->createView()
+        ]);
+    }
+
+
+    /**
+     * @Security("has_role('ROLE_ETUDE')")
+     */
+    public function editerLiaisonNiveauxMatieresAction(Request $request, $as, $regime, $enseignementId)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $repoAnnee  = $em->getRepository('ISIBundle:Annee');
+        $repoEleve  = $em->getRepository('ISIBundle:Eleve');
+        $repoNiveau = $em->getRepository('ISIBundle:Niveau');
+        $repoEnseignement = $em->getRepository('ISIBundle:Enseignement');
+        $annee = $repoAnnee->find($as);
+
+        /**
+         * Quand l'année scolaire est finie, on doit plus faire des
+         * mofications, des mises à jour
+         **/
+        if($annee->getAchevee() == TRUE)
+        {
+          $request->getSession()->getFlashBag()->add('error', 'Impossible d\'ajouter d\'autres matières car l\'année scolaire '.$annee->getLibelle().' est achevée.');
+          return $this->redirect($this->generateUrl('etude_niveaux_matieres', ['as' => $as, 'regime' => $regime]));
+        }
+        
+        $enseignement = $repoEnseignement->find($enseignementId);
+        $niveauId = $enseignement->getNiveau()->getId();
+        $niveau = $repoNiveau->find($niveauId);
+        
+        $form = $this->createForm(EnseignementType::class, $enseignement, [
+            'as'             => $as,
+            'niveauId'       => $niveauId,
+            'niveau'         => $niveau,
+            'entity_manager' => $em
+        ]);
+
+        if($form->handleRequest($request)->isValid())
+        {
+          $enseignement->setUpdatedBy($this->getUser());
+          $enseignement->setUpdatedAt(new \Datetime());
+          $em = $this->getDoctrine()->getManager();
+          $em->persist($enseignement); 
+          try{
+            $em->flush();
+            $this->addFlash('info', 'La matière '.$enseignement->getMatiere()->getLibelle().' au niveau '.$enseignement->getNiveau()->getLibelleAr().' a été mise à jour avec succès');
+            return $this->redirect($this->generateUrl('etude_liste_niveaux_matieres', [
+                'as'     => $as,
+                'regime' => $regime,
+                'niveauId' => $niveauId,
+            ]));
+          } 
+          catch(\Doctrine\ORM\ORMException $e){
+            $this->addFlash('error', $e->getMessage());
+            $this->get('logger')->error($e->getMessage());
+          } 
+          catch(\Exception $e){
+            $this->addFlash('error', $e->getMessage());
+          }
+        }
+
+        return $this->render('ISIBundle:Etude:editer-liaison-des-matieres-aux-niveaux.html.twig', [
+            'asec'         => $as,
+            'niveau'       => $niveau,
+            'regime'       => $regime,
+            'annee'        => $annee,
+            'enseignement' => $enseignement,
+            'form'         => $form->createView()
         ]);
     }
 
@@ -234,6 +313,8 @@ class EtudeController extends Controller
       if($form->handleRequest($request)->isValid())
       {
         $em = $this->getDoctrine()->getManager();
+        $matiere->setCreatedBy($this->getUser());
+        $matiere->setCreatedAt(new \Datetime());
         $em->persist($matiere);
         $em->flush();
 
@@ -263,6 +344,8 @@ class EtudeController extends Controller
       $form = $this->createForm(MatiereType::class, $matiere);
       if($form->handleRequest($request)->isValid())
       {
+        $matiere->setUpdatedBy($this->getUser());
+        $matiere->setUpdatedAt(new \Datetime());
         $em->flush();
         $request->getSession()->getFlashBag()->add('info', 'Mise à jour de la matière '.$matiere->getLibelle().' réussie.');
 
@@ -325,6 +408,8 @@ class EtudeController extends Controller
         $succession = (empty($dernierNiveau)) ? 1 : $dernierNiveau->getSuccession() + 1 ;
         $niveau->setSuccession($succession);
         // return new Response(var_dump($niveau));
+        $niveau->setCreatedBy($this->getUser());
+        $niveau->setCreatedAt(new \Datetime());
         $em->persist($niveau);
         $em->flush();
 
@@ -363,6 +448,7 @@ class EtudeController extends Controller
       if($form->handleRequest($request)->isValid())
       {
         $em->flush();
+        
         $request->getSession()->getFlashBag()->add('info', 'Mise à jour du niveau '.$niveau->getLibelleAr().' réussie.');
 
         return $this->redirect($this->generateUrl('etude_gestion_niveaux', array(

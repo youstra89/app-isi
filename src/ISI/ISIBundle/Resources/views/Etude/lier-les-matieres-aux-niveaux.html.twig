@@ -29,7 +29,7 @@
 {% endblock %}
 	<h3>{{ 'Ajout de matière pour le niveau'|trans }} {{ niveau.libelleFr }}</h3>
 	{{ form_start(form, {'attr': {'class': 'ui form'}}) }} 
-		<div class="four fields">
+		<div class="five fields">
 			<div class="field">
 				<label for="">
 					{{ form_label(form.matiere, "Matière", {'label_attr': {'class': ''}}) }} 
@@ -51,12 +51,13 @@
 				</label>
 				{{ form_widget(form.livre) }}
 			</div>
-			{# <div class="field">
-				<select name="liv" id="liv">
-					<option value="0">Test</option>
-				</select>
-				
-			</div> #}
+			<div class="field">
+				<label for="">
+					{{ form_label(form.nombre_heure_cours, "Nombre d'heures de cours", {'label_attr': {'class': ''}}) }} 
+					{{ form_errors(form.nombre_heure_cours) }}
+				</label>
+				{{ form_widget(form.nombre_heure_cours) }}
+			</div>
 			<div class="field">
 				<label for="">
 					{{ form_label(form.statu, "Cocher si c'est une matière spécifique", {'label_attr': {'class': ''}}) }} 

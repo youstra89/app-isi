@@ -240,4 +240,41 @@ ens_liste_des_participants:
     requirements:
         as: \d+
         rencontreId: \d+
+
+# Routes pour les cours
+ens_liste_des_classes_save_cours:
+    path:     /enseignant/cours/liste-des-classes/{as}/{regime}
+    defaults: { _controller: ENSBundle:Cours:listeDesClassesSaveCours }
+    requirements:
+        as: \d+
+        regime: A|F
+
+ens_enregistrer_cours_classe:
+    path:     /enseignant/cours/enregistrement-de-cours/{as}/{regime}/{classeId}
+    defaults: { _controller: ENSBundle:Cours:enregistrerCoursDuneClasse }
+    requirements:
+        as      : \d+
+        regime  : A|F
+        classeId: \d+
+
+ens_cours_de_la_classe:
+    path:     /enseignant/cours/liste-des-cours-de-la-classe/{as}/{regime}/{classeId}
+    defaults: { _controller: ENSBundle:Cours:voirLesCoursDeLaClasse }
+    requirements:
+        as      : \d+
+        regime  : A|F
+        classeId: \d+
+
+ens_nombre_heures_cours_enseignants:
+    path:     /enseignant/cours/nombre-heures-de-cours-des-enseignants/{as}
+    defaults: { _controller: ENSBundle:Cours:nombreHeuresCoursEnseignants }
+    requirements:
+        as      : \d+
+
+ens_cours_d_un_enseignant:
+    path:     /enseignant/cours/cours-d-un-enseignant/{as}/{anneeContratId}
+    defaults: { _controller: ENSBundle:Cours:coursDUnEnseignant }
+    requirements:
+        as: \d+
+        anneeContratId: \d+
 #-------------------------------- FIN DES ROUTES ENSEIGNANT -----------------------------------

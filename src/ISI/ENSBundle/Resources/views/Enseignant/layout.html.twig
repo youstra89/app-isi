@@ -38,6 +38,24 @@
         <div class="ui input">
           <div class="ui simple dropdown item">
             <a>
+              <h4 class="ui header"><span class="style-main-menu"><i class="student icon"></i>{{ 'Cours'|trans }}</span></h4>
+            </a>
+            <i class="dropdown icon"></i>
+            <div class="menu">
+              <span class="sub-menu">
+                <a class="item" href="{{ path('ens_liste_des_classes_save_cours', {'as': asec, 'regime': 'A'}) }}">
+                  {{ 'Académie'|trans }}
+                </a>
+                <a class="item" href="{{ path('ens_liste_des_classes_save_cours', {'as': asec, 'regime': 'F'}) }}">
+                  {{ 'Centre de formation'|trans }}
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="ui input">
+          <div class="ui simple dropdown item">
+            <a>
               <h4 class="ui header"><span class="style-main-menu"><i class="flag checkered icon"></i>{{ 'Contrôle'|trans }}</span></h4>
             </a>
             <i class="dropdown icon"></i>
@@ -159,39 +177,42 @@
       </div>
     </div>
   </body>
-  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
-  <script data-config>
-    var filtersConfig = {
-      base_path: '/markaz/web/TableFilter/dist/tablefilter/',
-      col_0: 'none',
-      col_4: 'select',
-      col_6: 'none',
-      alternate_rows: true,
-      rows_counter: true,
-      btn_reset: true,
-      loader: true,
-      status_bar: true,
-      mark_active_columns: true,
-      highlight_keywords: true,
-      no_results_message: true,
-      col_types: [
-        'number', 'string', 'string',
-        'string', 'string', 'string',
-      ],
-      col_widths: [
-        '15px', '130px', '270px', , , '100px'
-      ],
-      extensions: [{ name: 'sort' }]
-    };
 
-    var tf = new TableFilter('table-ens', filtersConfig);
-    tf.init();
-  </script>
-  <script src="{{ asset('js/jquery-3.3.1.js') }}"></script>
-  <script src="{{ asset('../vendor/semantic/ui/dist/semantic.min.js') }}"></script>
-  <script>
-    $('.ui.accordion')
-      .accordion()
-    ;
-  </script>
+  {% block scripts %}
+    <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+    <script data-config>
+      var filtersConfig = {
+        base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+        col_0: 'none',
+        col_4: 'select',
+        col_6: 'none',
+        alternate_rows: true,
+        rows_counter: true,
+        btn_reset: true,
+        loader: true,
+        status_bar: true,
+        mark_active_columns: true,
+        highlight_keywords: true,
+        no_results_message: true,
+        col_types: [
+          'number', 'string', 'string',
+          'string', 'string', 'string',
+        ],
+        col_widths: [
+          '15px', '130px', '270px', , , '100px'
+        ],
+        extensions: [{ name: 'sort' }]
+      };
+
+      var tf = new TableFilter('table-ens', filtersConfig);
+      tf.init();
+    </script>
+    <script src="{{ asset('js/jquery-3.3.1.js') }}"></script>
+    <script src="{{ asset('../vendor/semantic/ui/dist/semantic.min.js') }}"></script>
+    <script>
+      $('.ui.accordion')
+        .accordion()
+      ;
+    </script>
+  {% endblock %}
 </html>

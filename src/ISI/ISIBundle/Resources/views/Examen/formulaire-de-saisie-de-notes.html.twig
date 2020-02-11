@@ -9,8 +9,8 @@
 {% block content %}
 	<div class="ui info message" style="width:75%">
 		<center>
-			<h2>{{ 'Enregistrement des notes de'|trans }} {{classe.libelleClasseFr}} en {{matiere.libelleMatiere}}</h2>
-			<h3>{{ 'Session'|trans }} {{ examen.session }} : {{ examen.anneeScolaire.libelleAnneeScolaire }}</h3>
+			<h2>{{ 'Enregistrement des notes de'|trans }} {{classe.libelleFr}} en {{matiere.libelle}}</h2>
+			<h3>{{ 'Session'|trans }} {{ examen.session }} : {{ examen.annee.libelle }}</h3>
 		</center>
 	</div>
 	<table>
@@ -44,8 +44,6 @@
 					{% else %}
 						{% set image = "/markaz/web/images/molly.png" %}
 					{% endif %}
-					{% for note in notes %}
-						{% if eleve.id is same as(note.eleve.id) %}
 							{% set num = num + 1 %}
 							<div class="item ui selectable">
 								<div class="right floated content">
@@ -59,8 +57,6 @@
 								<img class="ui avatar image" src="{{ image }}">
 								<div class="content"><span class="ui violet circular label">{{ i }}</span><i class="right chevron icon"></i>{{ eleve.matricule }} <i class="right chevron icon"></i> <strong>{{eleve.nomFr}} {{eleve.pnomFr}}</strong></div>
 							</div>
-						{% endif %}
-					{% endfor %}
 				{% endfor %}
 				</div>
 				<div>

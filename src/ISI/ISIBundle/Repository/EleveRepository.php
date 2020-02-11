@@ -144,7 +144,11 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
       array_multisort($nom, SORT_ASC, $pnom, SORT_ASC, $eleves);
     }
     return $eleves;
+  }
 
+
+  public function elevesDeLaClasse($as, $classeId)
+  {
     $qb = $this->createQueryBuilder('e');
     $qb->join('e.frequenter', 'f')
        ->join('f.classe', 'c')
@@ -155,8 +159,23 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
        ->setParameter('as', $as)
        ->setParameter('classeId', $classeId);
 
-    return $qb->getQuery()
+      $eleves = $qb->getQuery()
               ->getResult();
+      if(!empty($eleves)){
+        foreach ($eleves as $key => $value) {
+          if ($value->getRenvoye() == true) {
+            unset($eleves[array_search($value, $eleves)]);
+          }
+          else {
+            # code...
+            $nom[$key]  = $value->getNomFr();
+            $pnom[$key] = $value->getPnomFr();
+          }
+        }
+        array_multisort($nom, SORT_ASC, $pnom, SORT_ASC, $eleves);
+      }
+
+      return $eleves;
   }
 
   // Sélection des membres d'une halaqa

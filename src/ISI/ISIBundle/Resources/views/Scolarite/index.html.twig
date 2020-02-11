@@ -45,6 +45,12 @@
         </div>
       </div>
       <div class="item">
+        <div class="header">{{ 'Conduites'|trans }}</div>
+        <div class="menu">
+          <a class="item" href="{{path('isi_liste_des_classes_conduite',{'as': asec, 'regime': regime})}}">{{ 'Voir les conduites'|trans }}</a>
+        </div>
+      </div>
+      <div class="item">
         <div class="header">{{ 'Réaménagement'|trans }}</div>
         <div class="menu">
           <a class="item" href="{{path('isi_disposition', {'as': asec, 'regime': regime})}}">{{ 'Disposition des classes'|trans }}</a>
@@ -54,8 +60,7 @@
       <div class="item">
         <div class="header">{{ 'Examens'|trans }}</div>
         <div class="menu">
-          <a class="item" href="{{path('isi_saisie_de_notes', {'as': asec, 'regime': regime})}}">{{ 'Saisie des notes'|trans }}</a>
-          <a class="item" href="{{path('isi_resultats_d_examens', {'as': asec, 'regime': regime})}}">{{ 'Résultats des examens'|trans }}</a>
+          <a class="item" href="{{path('isi_saisie_de_notes', {'as': asec, 'regime': regime})}}">{{ 'Notes & résultats'|trans }}</a>
           <a class="item" href="{{path('isi_statiqtiques', {'as': asec, 'regime': regime})}}">{{ 'Données statistiques'|trans }}</a>
           <a class="item" href="{{path('isi_resultats_annuels', {'as': asec, 'regime': regime})}}">{{ 'Résultats annuels'|trans }}</a>
         </div>

@@ -39,7 +39,7 @@ class MatiereType extends AbstractType
                 $form
                 ->add('referenceLangue', EntityType:: class, array(
                   'class'        => 'ISIBundle:Languematiere',
-                  'choice_label' => 'libelleLangue',
+                  'choice_label' => 'libelle',
                   'multiple'     => false
                 ))
                 ->add('save', SubmitType::class, array('label' => 'Enregistrer la matière'));

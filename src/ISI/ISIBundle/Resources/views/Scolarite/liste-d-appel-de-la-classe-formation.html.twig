@@ -9,19 +9,31 @@
 
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     <style>
-        @font-face
-        {
-            font-family: "majalla";
-            src: url("file:///C:/xampp/htdocs/markaz/web/polices/majalla.ttf");
-            /*src: url("file:///var/www/html/markaz/web/polices/majalla.ttf");*/
-        }
+        {% if server == '/var/www/html' %}
+            @font-face
+            {
+                font-family: "majalla";
+                src: url("file:///var/www/html/markaz/web/polices/majalla.ttf");
+            }
 
-        @font-face
-        {
-            font-family: "Lato";
-            src: url("file:///C:/xampp/htdocs/markaz/web/polices/Lato-Regular.ttf");
-            /*src: url("file:///var/www/html/markaz/web/polices/Lato-Regular.ttf");*/
-        }
+            @font-face
+            {
+                font-family: "Lato";
+                src: url("file:///var/www/html/markaz/web/polices/Lato-Regular.ttf");
+            }
+        {% else %}
+            @font-face
+            {
+                font-family: "majalla";
+                src: url("file:///C:/xampp/htdocs/markaz/web/polices/majalla.ttf");
+            }
+
+            @font-face
+            {
+                font-family: "Lato";
+                src: url("file:///C:/xampp/htdocs/markaz/web/polices/Lato-Regular.ttf");
+            }
+        {% endif %}
 
         * {
             font-family: majalla, Lato;
@@ -181,13 +193,13 @@
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <div class="annee">
                         <span>السنة الدراسية : <span class="libelleClasse">{{ annee.libelle }}</span></span>
                     </div>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {{ informations.ville }}
                 </center>
             </div>
             <br /> {# {{dump(eleves)}} #}

@@ -23,7 +23,7 @@ class MatiereRepository extends \Doctrine\ORM\EntityRepository
        ->join('ens.annee', 'an')
        ->addSelect('an')
        ->where('an.id = :annee AND n.id = :niveau')
-       ->orderBy('an.id', 'DESC');
+       ->orderBy('m.id', 'ASC');
     $qb->setParameters(['annee' => $as, 'niveau' => $niveauId]);
     return $qb
       ->getQuery()

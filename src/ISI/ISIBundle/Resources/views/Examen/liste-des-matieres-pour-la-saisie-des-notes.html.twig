@@ -27,18 +27,17 @@
             on les saisie
             -->
             {# {{dump(notesDUnEleve)}} #}
-        {% for note in notesDUnEleve %}
-            {% if matiere.getId == note.getMatiere.getId and note.getNote is empty %}
+            {% if matiereSansNote[matiere.id] is defined %}
                 <div class="card">
                     <div class="content">
                         <div class="header">{{ matiere.libelle }}</div>
                         <div class="description"></div>
                     </div>
-                    <a href="{{path('isi_saisie_de_notes_de_la_classe_pour_une_matiere', {'as': asec, 'regime': regime, 'classeId': classe.id, 'examenId': examen.getId, 'matiereId': matiere.getId, 'note': 1})}}">
+                    <a href="{{path('isi_saisie_de_notes_de_la_classe_pour_une_matiere', {'as': asec, 'regime': regime, 'classeId': classe.id, 'examenId': examen.getId, 'matiereId': matiere.getId})}}">
                         <div class="ui positive bottom attached button">{{ 'Saisir les notes'|trans }}</div>
                     </a>
                 </div>
-            {% elseif matiere.getId == note.getMatiere.getId and note.getNote is not empty %}
+            {% else %}
                 <div class="card">
                     <div class="content">
                         <div class="header">{{ matiere.libelle }}</div>
@@ -49,20 +48,6 @@
                     </a>
                 </div>
             {% endif %}
-        {% endfor %}
-        {% for mat in matiereSansNote %}
-            {% if matiere.getId == mat.getId %}
-                <div class="card">
-                    <div class="content">
-                        <div class="header">{{ matiere.getLibelle }}</div>
-                        <div class="description"></div>
-                    </div>
-                    <a href="{{path('isi_saisie_de_notes_de_la_classe_pour_une_matiere', {'as': asec, 'regime': regime, 'classeId': classe.getId, 'examenId': examen.getId, 'matiereId': matiere.getId, 'note': 0})}}">
-                        <div class="ui positive bottom attached button">{{ 'Saisir les notes'|trans }} </div>
-                    </a>
-                </div>
-            {% endif %}
-        {% endfor %}
     {% endfor %}
     </div>
 </div>

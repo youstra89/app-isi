@@ -6,19 +6,31 @@
     <title>Reçu de paiement de | {{ eleve.nomFr }} - {{ eleve.pnomFr }} </title>
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     <style>
-        @font-face
-        {
-            font-family: "majalla";
-            src: url("file:///C:/xampp/htdocs/markaz/web/polices/majalla.ttf");
-            /*src: url("file:///var/www/html/markaz/web/polices/majalla.ttf");*/
-        }
+      {% if server == '/var/www/html' %}
+            @font-face
+            {
+                font-family: "majalla";
+                src: url("file:///var/www/html/markaz/web/polices/majalla.ttf");
+            }
 
-        @font-face
-        {
-            font-family: "Lato";
-            src: url("file:///C:/xampp/htdocs/markaz/web/polices/Lato-Regular.ttf");
-            /*src: url("file:///var/www/html/markaz/web/polices/Lato-Regular.ttf");*/
-        }
+            @font-face
+            {
+                font-family: "Lato";
+                src: url("file:///var/www/html/markaz/web/polices/Lato-Regular.ttf");
+            }
+        {% else %}
+            @font-face
+            {
+                font-family: "majalla";
+                src: url("file:///C:/xampp/htdocs/markaz/web/polices/majalla.ttf");
+            }
+
+            @font-face
+            {
+                font-family: "Lato";
+                src: url("file:///C:/xampp/htdocs/markaz/web/polices/Lato-Regular.ttf");
+            }
+        {% endif %}
 
         * {
             font-family: majalla, Lato;

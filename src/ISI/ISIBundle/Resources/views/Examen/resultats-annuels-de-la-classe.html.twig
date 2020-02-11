@@ -3,7 +3,7 @@
 {% extends 'ISIBundle:Scolarite:index.html.twig' %}
 
 {% block pageTitle %}
-  Résultats annuels {{ classe.libelleClasseFr }}
+  Résultats annuels {{ classe.libelleFr }}
 {% endblock %}
 
 {% block content %}
@@ -13,7 +13,7 @@
   {% else %}
     {% set grp = 'Formation' %}
   {% endif %}
-  <h3>{{ 'Résultats annuels de'|trans }} {{ classe.libelleClasseFr }}</h3>
+  <h3>{{ 'Résultats annuels de'|trans }} {{ classe.libelleFr }}</h3>
     {% for message in app.session.flashbag.get('info') %}
       <div class="ui green message">
         <div class="header">{{ 'Attention'|trans }} !!! </div>

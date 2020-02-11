@@ -40,29 +40,6 @@ class Languematiere
         return $this->reference;
     }
 
-    /**
-     * Set libelleLangue
-     *
-     * @param string $libelleLangue
-     *
-     * @return Languematiere
-     */
-    public function setLibelleLangue($libelleLangue)
-    {
-        $this->libelleLangue = $libelleLangue;
-
-        return $this;
-    }
-
-    /**
-     * Get libelleLangue
-     *
-     * @return string
-     */
-    public function getLibelleLangue()
-    {
-        return $this->libelleLangue;
-    }
 
     /**
      * Set libelle

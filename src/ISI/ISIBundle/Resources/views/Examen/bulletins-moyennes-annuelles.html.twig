@@ -176,7 +176,7 @@
                 <table class="la-moyenne" align="center">
                     <tr class="table-line-moyenne">
                         <td><span class="titre-info-moyenne">المجموع :&nbsp;&nbsp;</span><span class="info-moyenne">{{ totalNote }}</span></td>
-                        <td><span class="titre-info-moyenne">المعدل :&nbsp;&nbsp;</span><span class="info-moyenne">{{ moyenne.getMoyenneAnnuelle }}</span></td>
+                        <td><span class="titre-info-moyenne">المعدل :&nbsp;&nbsp;</span><span class="info-moyenne">{{ moyenne.getMoyenneAnnuelle|number_format(2) }}</span></td>
                         <td><span class="titre-info-moyenne">الترتيب :&nbsp;&nbsp;</span><span class="info-moyenne">{{ moyenne.getClassementAnnuel }}{#<sup>{{ nieme }}</sup>#}</span></td>
                         <td><span class="titre-info-moyenne">القرار :&nbsp;&nbsp;</span><span class="info-moyenne">{{ admission }}{#<sup>{{ nieme }}</sup>#}</span></td>
                     <tr/>

@@ -68,16 +68,16 @@ class EleveController extends Controller
     $infoEleve = [];
     foreach ($eleves as $eleve) {
       # code...
-      $elev = [];
-      $elev['id'] = $eleve->getId();
-      $elev['matricule'] = $eleve->getMatricule();
-      $elev['nomFr'] = $eleve->getNomFr();
-      $elev['pnomFr'] = $eleve->getPnomFr();
-      $elev['nomAr'] = $eleve->getNomAr();
-      $elev['pnomAr'] = $eleve->getPnomAr();
-      $elev['sexe'] = $eleve->getSexe();
+      $elev                  = [];
+      $elev['id']            = $eleve->getId();
+      $elev['matricule']     = $eleve->getMatricule();
+      $elev['nomFr']         = $eleve->getNomFr();
+      $elev['pnomFr']        = $eleve->getPnomFr();
+      $elev['nomAr']         = $eleve->getNomAr();
+      $elev['pnomAr']        = $eleve->getPnomAr();
+      $elev['sexe']          = $eleve->getSexe();
       $elev['dateNaissance'] = $eleve->getDateNaissance();
-      $elev['renvoye'] = $eleve->getRenvoye();
+      $elev['renvoye']       = $eleve->getRenvoye();
 
       // $infoEleve[] = [
       //   $eleve->getId(),
@@ -286,6 +286,16 @@ class EleveController extends Controller
 
     return $accepteInscription;
   }
+
+  public function findAllProfessions()
+  {
+    $em = $this->getDoctrine()->getManager();
+    $requetes = "SELECT DISTINCT(profession) FROM eleve WHERE profession IS NOT NULL;";   
+    $statement = $em->getConnection()->prepare($requetes);
+    $statement->execute();
+    $professions = $statement->fetchAll();
+    return $professions;
+  }
   // Ici finissent mes méthodes personnelles dans le controller
 
   //Function de présincription
@@ -297,6 +307,9 @@ class EleveController extends Controller
 
     // Sélection de l'année scolaire
     $annee  = $repoAnnee->find($as);
+
+    $professions = $this->findAllProfessions();
+    dump($professions);
 
     $eleve = new Eleve();
     $eleve->setCreatedAt(new \Datetime());
@@ -352,6 +365,7 @@ class EleveController extends Controller
       'asec'      => $as,
       'regime'    => $regime,
       'annee'     => $annee,
+      'professions'     => $professions,
       'form'      => $form->createView(),
       'matricule' => $matriculeNew
     ));
@@ -367,6 +381,7 @@ class EleveController extends Controller
 
     // Sélection de l'année scolaire
     $annee  = $repoAnnee->find($as);
+    $professions = $this->findAllProfessions();
 
     // Sélection de l'élève dont l'id est passé en paramètre de la fonction
     $repoEleve = $em->getRepository('ISIBundle:Eleve');
@@ -411,7 +426,8 @@ class EleveController extends Controller
       'regime' => $regime,
       'annee'  => $annee,
       'eleve'  => $eleve,
-      'form'   => $form->createView()
+    'professions'     => $professions,
+    'form'   => $form->createView()
     ]);
   }
 
@@ -1684,7 +1700,13 @@ class EleveController extends Controller
     if ($regime == 'A') {
       $repoHalaqa = $em->getRepository('ISIBundle:Halaqa');
       $genre = ($eleve->getSexe() == 1) ? 'H' : 'F' ;
-      $halaqas  = $repoHalaqa->findBy(['annee' => $as, 'genre' => $genre]);
+      $tousLesHalaqas  = $repoHalaqa->findBy(['annee' => $as]);
+      $halaqas = [];
+      foreach($tousLesHalaqas as $key => $value)
+      {
+        if($value->getGenre() == $genre or $value->getGenre() == 'M')
+          $halaqas[] = $value;
+      }
     }
 
     // $eleveASupprimer = $repoEleve->find($eleveId);
@@ -2060,8 +2082,8 @@ class EleveController extends Controller
           $permission->setDepart($depart);
           $permission->setRetour($retour);
           $permission->setMotif($motif);
-          $permission->setCreatedAt(new \DateTime());
-          $permission->setCreatedBy($this->getUser());
+          $permission->setUpdatedAt(new \DateTime());
+          $permission->setUpdatedBy($this->getUser());
           try{
             $em->flush();
             $request->getSession()->getFlashBag()->add('info', 'Permission de l\'élève '.$permission->getEleve()->getNomFr().' '.$permission->getEleve()->getPnomFr().' mise à jour avec succès.');
@@ -2239,8 +2261,8 @@ class EleveController extends Controller
    * Il faudra donc générer leurs notes
    * C'est justement ce que cette méthode (function) va nous permettre de faire in chaa Allah
    */
-   public function AjouterNotesDesElevesSansNotesAction($classeId, $examenId)
-   {
+  public function AjouterNotesDesElevesSansNotesAction($classeId, $examenId)
+  {
       $em = $this->getDoctrine()->getManager();
       // $repoAnnee   = $em->getRepository('ISIBundle:');
       $repoNiveau  = $em->getRepository('ISIBundle:Niveau');
@@ -2259,24 +2281,23 @@ class EleveController extends Controller
 
       return new Response(var_dump($eleves));
 
-   }
+  }
 
-   public function elevesSansLesNotesAuCompletesAction()
-   {
-     return $this->render('ISIBundle:Eleve:elevesSansQQNote.html.php');
-   }
+  public function elevesSansLesNotesAuCompletesAction()
+  {
+    return $this->render('ISIBundle:Eleve:elevesSansQQNote.html.php');
+  }
   
-   public function recupererLesIdsDesEleves($eleves)
-   {
-     $lesIdsEleves = [];
-     foreach($eleves as $eleve)
-     {
-         $lesIdsEleves[] = $eleve['id'];
-     }
-     // $lesIdsEleves = $lesIdsEleves.'0';
- 
-     return $lesIdsEleves;
-   }
+  public function recupererLesIdsDesEleves($eleves)
+  {
+    $lesIdsEleves = [];
+    foreach($eleves as $eleve)
+    {
+        $lesIdsEleves[] = $eleve['id'];
+    }
+
+    return $lesIdsEleves;
+  }
 
 }
 

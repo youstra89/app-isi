@@ -70,6 +70,9 @@
                 <a href="{{path('isi_classement', {'as': asec, 'regime': regime, 'classeId':classe.getId, 'examenId': examen.getId})}}">
                     <button class="ui violet basic button">{{ 'Classement'|trans }}</button>
                 </a>
+                {# <a href="{{path('envoi_des_notes_et_moyennes_sur_le_net', {'as': asec, 'regime': regime, 'classeId':classe.getId, 'examenId': examen.getId})}}">
+                    <button class="ui violet basic button">{{ 'Importer les résultats sur Internet'|trans }}</button>
+                </a> #}
             </div>
             <div class="ui middle aligned selection list">
                 <!-- On boucle sur la liste des moyenne. Et pour chaque moyenne: -->

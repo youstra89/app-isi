@@ -10,19 +10,31 @@
     <lin rel="stylesheet" href="{{ asset('../vendor/twbs/bootstrap/dist/css/bootstrap.min.css') }}" /> {% endblock %}
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     <style>
-        @font-face
-        {
-            font-family: "majalla";
-            src: url("file:///C:/xampp/htdocs/markaz/web/polices/majalla.ttf");
-            /*src: url("file:///var/www/html/markaz/web/polices/majalla.ttf");*/
-        }
+        {% if server == '/var/www/html' %}
+            @font-face
+            {
+                font-family: "majalla";
+                src: url("file:///var/www/html/markaz/web/polices/majalla.ttf");
+            }
 
-        @font-face
-        {
-            font-family: "Lato";
-            src: url("file:///C:/xampp/htdocs/markaz/web/polices/Lato-Regular.ttf");
-            /*src: url("file:///var/www/html/markaz/web/polices/Lato-Regular.ttf");*/
-        }
+            @font-face
+            {
+                font-family: "Lato";
+                src: url("file:///var/www/html/markaz/web/polices/Lato-Regular.ttf");
+            }
+        {% else %}
+            @font-face
+            {
+                font-family: "majalla";
+                src: url("file:///C:/xampp/htdocs/markaz/web/polices/majalla.ttf");
+            }
+
+            @font-face
+            {
+                font-family: "Lato";
+                src: url("file:///C:/xampp/htdocs/markaz/web/polices/Lato-Regular.ttf");
+            }
+        {% endif %}
 
         * {
             font-family: majalla, Lato;
@@ -264,7 +276,14 @@
             </tr>
         </table>
         <h2>
-            <center title="{{ moyenne.eleve.pnomAr }} {{ moyenne.eleve.nomAr }}">  الاختبار الثاني </center>
+            {% if examen.getSession == 1 %}
+                {% set session = "الاختبار الأول" %}
+            {% else %}
+                {% set session = "الاختبار الثاني" %}
+            {% endif %}
+            <center title="{{ moyenne.eleve.pnomAr }} {{ moyenne.eleve.nomAr }}">
+                {{ session }}
+            </center>
         </h2>
         <br />
         <div>

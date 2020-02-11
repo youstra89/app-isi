@@ -22,7 +22,7 @@ Classe:
             length: 255
             options:
                 fixed: false
-            column: libelleClasseFr
+            column: libelleFr
         libelleclassear:
             type: string
             nullable: false

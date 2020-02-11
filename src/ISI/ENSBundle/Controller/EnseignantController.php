@@ -101,9 +101,13 @@ class EnseignantController extends Controller
       $enseignant->setCreatedBy($this->getUser());
       $enseignant->setCreatedAt(new \Datetime());
       $em->persist($enseignant);
-      $em->flush();
-
-      $request->getSession()->getFlashBag()->add('info', 'L\'enseignant(e) '.$enseignant->getNom().' '.$enseignant->getPnom().' a été enrégistré(e) avec succès.');
+      try{
+        $em->flush();
+        $request->getSession()->getFlashBag()->add('info', 'L\'enseignant(e) '.$enseignant->getNomFr().' '.$enseignant->getPnomFr().' a été enrégistré(e) avec succès.');
+      } 
+      catch(\Exception $e){
+        $this->addFlash('error', $e->getMessage());
+      }
 
       // On redirige l'utilisateur vers index paramèTraversable
       return $this->redirect($this->generateUrl('ens_home',
@@ -410,6 +414,7 @@ class EnseignantController extends Controller
 
     $annee    = $repoAnnee->find($as);
     $anneeContrats = $repoAnneeContrat->findBy(['annee' => $as]);
+    $anneeContrats = $repoAnneeContrat->fonctionDeLAnnee($as);
 
     return $this->render('ENSBundle:Enseignant:enseignants-de-l-annee.html.twig', [
       'asec'     => $as,
@@ -429,7 +434,7 @@ class EnseignantController extends Controller
     $repoAnneeContrat   = $em->getRepository('ENSBundle:AnneeContrat');
 
     $annee    = $repoAnnee->find($as);
-    $anneeContrats = $repoAnneeContrat->findBy(['annee' => $as]);
+    $anneeContrats = $repoAnneeContrat->fonctionDeLAnnee($as);
 
     foreach ($anneeContrats as $key => $ac) {
       $nom[$key]  = $ac->getContrat()->getEnseignant()->getNomFr();
@@ -445,6 +450,7 @@ class EnseignantController extends Controller
       // "title" => "Titre de mon document",
       "annee"         => $annee,
       "anneeContrats" => $anneeContrats,
+      'server'   => $_SERVER["DOCUMENT_ROOT"],   
     ]);
     $header = $this->renderView( '::header.html.twig' );
     // $footer = $this->renderView( '::footer.html.twig' );
@@ -484,7 +490,7 @@ class EnseignantController extends Controller
     $repoAnneeContrat   = $em->getRepository('ENSBundle:AnneeContrat');
 
     $annee    = $repoAnnee->find($as);
-    $anneeContrats = $repoAnneeContrat->findBy(['annee' => $as]);
+    $anneeContrats = $repoAnneeContrat->fonctionDeLAnnee($as);
 
     foreach ($anneeContrats as $key => $ac) {
       $nom[$key]  = $ac->getContrat()->getEnseignant()->getNomFr();
@@ -501,6 +507,7 @@ class EnseignantController extends Controller
       // "title" => "Titre de mon document",
       "annee"         => $annee,
       "anneeContrats" => $anneeContrats,
+      'server'   => $_SERVER["DOCUMENT_ROOT"],   
     ]);
     $header = $this->renderView( '::header.html.twig' );
     // $footer = $this->renderView( '::footer.html.twig' );
@@ -534,25 +541,25 @@ class EnseignantController extends Controller
    */
   public function ajouterEnseignantAnneeAction(Request $request, $as, $contratId)
   {
-    $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
-    $repoContrat = $em->getRepository('ENSBundle:Contrat');
-    $repoAnneeContrat   = $em->getRepository('ENSBundle:AnneeContrat');
+    $em               = $this->getDoctrine()->getManager();
+    $repoAnnee        = $em->getRepository('ISIBundle: Annee');
+    $repoContrat      = $em->getRepository('ENSBundle: Contrat');
+    $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
 
-    $annee    = $repoAnnee->find($as);
-    $contrat    = $repoContrat->find($contratId);
+    $annee        = $repoAnnee->find($as);
+    $contrat      = $repoContrat->find($contratId);
     $anneeContrat = $repoAnneeContrat->findOneBy(['annee' => $as, 'contrat' => $contratId]);
 
     if($annee->getAchevee() == TRUE)
     {
       $request->getSession()->getFlashBag()->add('error', 'Impossible d\'ajouter une prise de fonction car l\'année scolaire '.$annee->getLibelle().' est achevée.');
-      return $this->redirect($this->generateUrl('ens_enseignant_de_l_annee', ['as' => $as]));
+      return $this->redirect($this->generateUrl('ens_fonctions_en_cours', ['as' => $as]));
     }
 
     if(!is_null($anneeContrat))
     {
       $request->getSession()->getFlashBag()->add('error', $anneeContrat->getContrat()->getEnseignant()->getNomFr().' '.$anneeContrat->getContrat()->getEnseignant()->getPnomFr().' est déjà utilisé(e) pour l\'année '.$annee->getLibelle().'.');
-      return $this->redirectToRoute('ens_enseignant_de_l_annee', ['as' => $as]);
+      return $this->redirectToRoute('ens_fonctions_en_cours', ['as' => $as]);
     }
 
     $newAnneeContrat = new AnneeContrat();

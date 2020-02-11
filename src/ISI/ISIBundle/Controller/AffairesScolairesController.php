@@ -20,6 +20,7 @@ use ISI\ISIBundle\Entity\Absence;
 use ISI\ISIBundle\Entity\Probleme;
 use ISI\ISIBundle\Entity\Commettre;
 use ISI\ISIBundle\Entity\Annee;
+use ISI\ISIBundle\Entity\Informations;
 use ISI\ISIBundle\Entity\Groupeformation;
 
 use ISI\ISIBundle\Repository\MoisRepository;
@@ -156,6 +157,63 @@ class AffairesScolairesController extends Controller
     ]);
   }
 
+  /**
+   * @Security("has_role('ROLE_SCOLARITE')")
+   */
+  public function listeDesClassesConduiteHomeAction(Request $request, $as, $regime)
+  {
+    $em = $this->getDoctrine()->getManager();
+    $repoAnnee  = $em->getRepository('ISIBundle:Annee');
+    $repoClasse = $em->getRepository('ISIBundle:Classe');
+    $repoNiveau = $em->getRepository('ISIBundle:Niveau');
+    $repoExamen  = $em->getRepository('ISIBundle:Examen');
+
+    // Sélection de l'année scolaire
+    $annee  = $repoAnnee->find($as);
+    $examens = $repoExamen->lesExamensDeLAnnee($as);
+    $classes = $repoClasse->classeGrpFormation($as, $regime);
+    $niveaux = $repoNiveau->niveauxDuGroupe($regime);
+
+    return $this->render('ISIBundle:Scolarite:liste-des-classes-conduite.html.twig', [
+      'asec'    => $as,
+      'regime'  => $regime,
+      'annee'   => $annee,
+      'classes' => $classes,
+      'niveaux' => $niveaux,
+      'examens' => $examens,
+    ]);
+  }
+
+  /**
+   * @Security("has_role('ROLE_SCOLARITE')")
+   */
+  public function conduitesDesElevesDUneClasseAction(Request $request, $as, $regime, $classeId)
+  {
+    $em = $this->getDoctrine()->getManager();
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
+    $repoClasse  = $em->getRepository('ISIBundle:Classe');
+    $repoExamen  = $em->getRepository('ISIBundle:Examen');
+    $repoCommettre  = $em->getRepository('ISIBundle:Commettre');
+    $repoEleve  = $em->getRepository('ISIBundle:Eleve');
+    
+    // Sélection de l'année scolaire
+    $annee   = $repoAnnee->find($as);
+    $examens = $repoExamen->lesExamensDeLAnnee($as);
+    $classe  = $repoClasse->find($classeId);
+    $eleves = $repoEleve->lesElevesDeLaClasse($as, $classeId);
+    $commettres = $repoCommettre->findBy(["annee" => $as]);
+    
+    return $this->render('ISIBundle:Scolarite:conduite-des-eleves-de-la-classe.html.twig', [
+      'asec'    => $as,
+      'regime'  => $regime,
+      'annee'   => $annee,
+      'classe'  => $classe,
+      "eleves"  => $eleves,
+      'examens' => $examens,
+      'commettres' => $commettres,
+    ]);
+  }
+
   // La function de sélection les élèves d'une classe donnée
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
@@ -208,26 +266,29 @@ class AffairesScolairesController extends Controller
    */
   public function tirerListeDeLaClasseAction(Request $request, $as, $regime, $classeId)
   {
-    $em = $this->getDoctrine()->getManager();
-    $repoEleve     = $em->getRepository('ISIBundle:Eleve');
-    $repoClasse    = $em->getRepository('ISIBundle:Classe');
-    $repoAnnee     = $em->getRepository('ISIBundle:Annee');
+    $em               = $this->getDoctrine()->getManager();
+    $repoEleve        = $em->getRepository('ISIBundle:Eleve');
+    $repoClasse       = $em->getRepository('ISIBundle:Classe');
+    $repoAnnee        = $em->getRepository('ISIBundle:Annee');
+    $repoInformations = $em->getRepository('ISIBundle:Informations');
 
     $annee  = $repoAnnee->find($as);
     $classe = $repoClasse->find($classeId);
     $eleves = $repoEleve->lesElevesDeLaClasse($as, $classeId);
+    $informations = $repoInformations->find(1);
 
     $snappy = $this->get("knp_snappy.pdf");
     $snappy->setOption("encoding", "UTF-8");
     $filename = "liste-de-classe-de-".$classe->getLibelleFr();
 
 
-    // $html = $this->renderView('../../../../scr/ISIBundle/Resources/views/Scolarite/liste-de-la-classe.html.twig', [
     $html = $this->renderView('ISIBundle:Scolarite:liste-de-la-classe.html.twig', [
       // "title" => "Titre de mon document",
       "annee" => $annee,
       "classe" => $classe,
       "eleves" => $eleves,
+      "informations" => $informations,
+      'server'   => $_SERVER["DOCUMENT_ROOT"],   
     ]);
 
     $header = $this->renderView( '::header.html.twig' );
@@ -287,31 +348,33 @@ class AffairesScolairesController extends Controller
     $repoClasse    = $em->getRepository('ISIBundle:Classe');
     $repoMemoriser = $em->getRepository('ISIBundle:Memoriser');
     $repoAnnee     = $em->getRepository('ISIBundle:Annee');
-
+    $repoInformations = $em->getRepository('ISIBundle:Informations');
+    
     $annee  = $repoAnnee->find($as);
-
     $classe = $repoClasse->find($classeId);
     $eleves = $repoEleve->lesElevesDeLaClasse($as, $classeId);
+    $informations = $repoInformations->find(1);
     $listeHalaqa = [];
     foreach ($eleves as $eleve) {
       $listeHalaqa[] = $repoMemoriser->findOneBy(['annee' => $as, 'eleve' => $eleve['id']]) ;
     }
-
+    
     // return new Response(var_dump($listeHalaqa));
 
     $snappy = $this->get("knp_snappy.pdf");
     $snappy->setOption("encoding", "UTF-8");
     $snappy->setOption("orientation", "Landscape");
     $filename = "liste-d-appel-de-".$classe->getLibelleFr();
+    
 
-
-    // $html = $this->renderView('../../../../scr/ISIBundle/Resources/views/Scolarite/liste-de-la-classe.html.twig', [
     $html = $this->renderView('ISIBundle:Scolarite:liste-d-appel-de-la-classe-academie.html.twig', [
       // "title" => "Titre de mon document",
       "classe" => $classe,
       "eleves" => $eleves,
       "annee"  => $annee,
       "elevesH" => $listeHalaqa,
+      "informations" => $informations,
+      'server'   => $_SERVER["DOCUMENT_ROOT"],   
     ]);
 
     $header = $this->renderView( '::header.html.twig' );
@@ -347,22 +410,25 @@ class AffairesScolairesController extends Controller
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoEleve  = $em->getRepository('ISIBundle:Eleve');
     $repoClasse = $em->getRepository('ISIBundle:Classe');
-
+    $repoInformations = $em->getRepository('ISIBundle:Informations');
+    
     $annee  = $repoAnnee->find($as);
     $classe = $repoClasse->find($classeId);
     $eleves = $repoEleve->lesElevesDeLaClasse($as, $classeId);
-
+    $informations = $repoInformations->find(1);
+    
     $snappy = $this->get("knp_snappy.pdf");
     $snappy->setOption("encoding", "UTF-8");
     $snappy->setOption("orientation", "Landscape");
     $filename = "liste-d-appel-de-".$classe->getNiveau()->getLibelleFr()."-".$classe->getLibelleFr();
-
-
-    // $html = $this->renderView('../../../../scr/ISIBundle/Resources/views/Scolarite/liste-de-la-classe.html.twig', [
+    
+    
     $html = $this->renderView('ISIBundle:Scolarite:liste-d-appel-de-la-classe-formation.html.twig', [
       // "title" => "Titre de mon document",
       "annee" => $annee,
       "classe" => $classe,
+      "informations" => $informations,
+      'server'   => $_SERVER["DOCUMENT_ROOT"],   
       "eleves" => $eleves,
     ]);
 
@@ -423,33 +489,34 @@ class AffairesScolairesController extends Controller
     $repoAnnee = $em->getRepository('ISIBundle:Annee');
     $repoHalaqa = $em->getRepository('ISIBundle:Halaqa');
     $repoClasse = $em->getRepository('ISIBundle:Classe');
-
+    $repoInformations = $em->getRepository('ISIBundle:Informations');
+    
     $annee  = $repoAnnee->find($as);
     $halaqa = $repoHalaqa->find($halaqaId);
     $memoriser = $repoMemoriser->findBy(['halaqa' => $halaqaId]);
-
+    $informations = $repoInformations->find(1);
+    
     $classes = [];
     foreach ($memoriser as $memo) {
       $classes[] = $repoFrequenter->findOneBy(['eleve' => $memo->getEleve(), 'annee' => $as]);
     }
-
+    
     // return new Response(var_dump($classes));
-
+    
     foreach ($memoriser as $key => $memo) {
       $nom[$key]   = $memo->getEleve()->getNomFr();
       $pnom[$key]  = $memo->getEleve()->getPnomFr();
     }
-
+    
     // array_multisort() permet de trier un tableau multidimensionnel
     array_multisort($nom, SORT_ASC, $pnom, SORT_ASC, $memoriser);
-
+    
     $snappy = $this->get("knp_snappy.pdf");
     $snappy->setOption("encoding", "UTF-8");
     $snappy->setOption("orientation", "Landscape");
     $filename = "liste-de-halaqa-".$halaqa->getLibelle();
-
-
-    // $html = $this->renderView('../../../../scr/ISIBundle/Resources/views/Scolarite/liste-de-la-classe.html.twig', [
+    
+    
     $html = $this->renderView('ISIBundle:Scolarite:liste-des-eleves-de-halaqa.html.twig', [
       // "title" => "Titre de mon document",
       "annee"     => $annee,
@@ -457,7 +524,9 @@ class AffairesScolairesController extends Controller
       "halaqa"    => $halaqa,
       "classes"   => $classes,
       "memoriser" => $memoriser,
-    ]);
+      'server'   => $_SERVER["DOCUMENT_ROOT"],   
+      "informations" => $informations,
+      ]);
 
     $header = $this->renderView( '::header.html.twig' );
     // $footer = $this->renderView( '::footer.html.twig' );
@@ -480,43 +549,6 @@ class AffairesScolairesController extends Controller
           'Content-Disposition' => 'inline; filename="'.$filename.'.pdf"',
         ]
     );
-  }
-
-  // Page d'accueil pour la saisie des notes
-  /**
-   * @Security("has_role('ROLE_SCOLARITE')")
-   */
-  public function accueilSaisieDeNoteAction(Request $request, $as, $regime)
-  {
-    $em = $this->getDoctrine()->getManager();
-    $repoAnnee  = $em->getRepository('ISIBundle:Annee');
-    $repoNiveau = $em->getRepository('ISIBundle:Niveau');
-    $repoClasse = $em->getRepository('ISIBundle:Classe');
-    $repoExamen = $em->getRepository('ISIBundle:Examen');
-
-    // Sélection de l'examen pour lequel on va saisir les notes
-    $examen  = $repoExamen->dernierExamen($as);
-    $examens = $repoExamen->lesExamensDeLAnnee($as);
-    $annee   = $repoAnnee->find($as);
-    $niveaux = $repoNiveau->niveauxDuGroupe($regime);
-
-    if(empty($examen))
-    {
-      $request->getSession()->getFlashBag()->add('error', 'Vous ne pouvez pas saisir de notes car il n\'a aucun examen en cours. Demandez au bureau des études et des examens d\'enregistrer un examen.');
-      return $this->redirect($this->generateUrl('isi_affaires_scolaires', ['as' => $as, 'regime' => $regime]));
-    }
-
-    //
-    $classes = $repoClasse->classeGrpFormation($as, $regime);
-    return $this->render('ISIBundle:Scolarite:afficher-classes-pour-saisir-de-notes.html.twig', [
-      'asec'     => $as,
-      'regime'   => $regime,
-      'classes'  => $classes,
-      'examen'   => $examen,
-      'annee'    => $annee,
-      'niveaux'  => $niveaux,
-      'examens'  => $examens,
-    ]);
   }
 
   // Page d'accueil de la gestion des absences
@@ -552,12 +584,12 @@ class AffairesScolairesController extends Controller
    */
   public function heuresAbsenceCoursHomeAction(Request $request, $as, $regime, $classeId, $absence)
   {
-    $em = $this->getDoctrine()->getManager();
+    $em         = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoMois   = $em->getRepository('ISIBundle:Mois');
     $repoClasse = $em->getRepository('ISIBundle:Classe');
-    $repoExamen  = $em->getRepository('ISIBundle:Examen');
-    $examens = $repoExamen->lesExamensDeLAnnee($as);
+    $repoExamen = $em->getRepository('ISIBundle:Examen');
+    $examens    = $repoExamen->lesExamensDeLAnnee($as);
 
     $absence == 'Cours' ? $absence = 'Cours' : $absence = 'Coran';
 
@@ -582,14 +614,14 @@ class AffairesScolairesController extends Controller
    */
   public function saisieDesHeuresDAbsenceAction(Request $request, $as, $regime, $classeId, $moisId, $absence)
   {
-    $em = $this->getDoctrine()->getManager();
+    $em          = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoMois    = $em->getRepository('ISIBundle:Mois');
     $repoClasse  = $em->getRepository('ISIBundle:Classe');
     $repoEleve   = $em->getRepository('ISIBundle:Eleve');
     $repoAbsence = $em->getRepository('ISIBundle:Absence');
     $repoExamen  = $em->getRepository('ISIBundle:Examen');
-    $examens = $repoExamen->lesExamensDeLAnnee($as);
+    $examens     = $repoExamen->lesExamensDeLAnnee($as);
 
     // Sélection des informations à envoyer vers le formulaire
     $annee  = $repoAnnee->find($as);
@@ -609,47 +641,21 @@ class AffairesScolairesController extends Controller
     $mois   = $repoMois->find($moisId);
     $absence == 'Cours' ? $absence = 'Cours' : $absence = 'Coran';
 
-    // Je sélectionne les absences du mois de tous les élèves de la classe. Ces absences se trouvent dans $absencesDuMois
-    /**
+    /** Je sélectionne les absences du mois de tous les élèves de la classe. Ces absences se trouvent dans $absencesDuMois
      * Si $absencesDuMois est vide, alors on va générer les entités absence du mois pour chaque élève
      * Sinon, on affiche directement le formulaire pour la saisie des heures d'absences.
      */
-    $absenceDuMois = $repoAbsence->findBy(['eleve' => $eleves[0]['id'], 'mois' => $moisId, 'annee' => $as]);
-    if(empty($absenceDuMois))
+    $absenceDuMois = $repoAbsence->findOneBy(['eleve' => $eleves[0]['id'], 'mois' => $moisId, 'annee' => $as]);
+    if((!empty($absenceDuMois) and $absence == 'Cours') or (!empty($absenceDuMois) and $absence == 'Coran'))
     {
-      // Création de l'entité absence pour chaque élève
-      foreach ($eleves as $eleve) {
-        $eleveAbsent = $repoEleve->find($eleve['id']);
-        $entiteAbsence = new Absence();
-        $entiteAbsence->setAnnee($annee);
-        $entiteAbsence->setEleve($eleveAbsent);
-        $entiteAbsence->setMois($mois);
-        $entiteAbsence->setCreatedBy($this->getUser());
-        $entiteAbsence->setCreatedAt(new \Datetime());
-
-        $em->persist($entiteAbsence);
-        $em->flush();
-      }
-    }
-    else{
-      if((!is_null($absenceDuMois[0]->getHeureCours()) and $absence == 'Cours') or (!is_null($absenceDuMois[0]->getHeureCoran()) and $absence == 'Coran'))
-      {
-        $request->getSession()->getFlashBag()->add('error', 'Les absences en "'.$absence.'" de ce mois ont déjà été saisies pour cette classe.');
-        return $this->redirect($this->generateUrl('isi_accueil_gestion_absences',[
-          'as'       => $as,
-          'regime'   => $regime,
-          'classeId' => $classeId,
-          'absence'  => $absence,
-          'moisId'   => $moisId
-        ]));
-      }
-    }
-
-    // Ne pas confondre $absenceDuMois (sans s) avec le $absencesDuMois
-    $absencesDuMois = [];
-    foreach($eleves as $eleve)
-    {
-      $absencesDuMois[] = $repoAbsence->findOneBy(['eleve' => $eleve['id'], 'mois' => $moisId, 'annee' => $as]);
+      $request->getSession()->getFlashBag()->add('error', 'Les absences en "'.$absence.'" de ce mois ont déjà été saisies pour cette classe.');
+      return $this->redirect($this->generateUrl('isi_accueil_gestion_absences',[
+        'as'       => $as,
+        'regime'   => $regime,
+        'classeId' => $classeId,
+        'absence'  => $absence,
+        'moisId'   => $moisId
+      ]));
     }
 
     $defaultData = array('message' => 'Type your message here');
@@ -661,12 +667,11 @@ class AffairesScolairesController extends Controller
       $em = $this->getDoctrine()->getManager();
       $data = $request->request->all();
       // return new Response(var_dump($data));
-      foreach($data['abs'] as $key => $absenceEleve)
+      foreach($data['eleves'] as $key => $absenceEleve)
       {
         // On vérifie qu'aucune des notes saisies n'est pas supérieures à 10.
         if(!is_numeric($absenceEleve))
         {
-          $eleveNoteSup = $eleve;
           $request->getSession()->getFlashBag()->add('error', 'Les heures sont des données numériques.');
 
           return $this->redirect($this->generateUrl('isi_saisie_des_heures_d_absence',[
@@ -678,31 +683,29 @@ class AffairesScolairesController extends Controller
           ]));
         }
 
-        foreach($eleves as $eleve)
-        {
-          if($eleve['id'] == $key)
-          {
-            $abs = $repoAbsence->findOneBy(['mois' => $moisId, 'eleve' => $key, 'annee' => $as]);
-            // Cette condition me permet de savoir si l'élève à composé dans la matière ou non
-            if($absence == 'Cours')
-            {
-              if(empty($absenceEleve))
-                $abs->setHeureCours(0);
-              else
-                $abs->setHeureCours($absenceEleve);
-            }
-            else{
-              if(empty($absenceEleve))
-                $abs->setHeureCoran(0);
-              else
-                $abs->setHeureCoran($absenceEleve);
-            }
+        $eleve = $repoEleve->find($key);
 
-            $abs->setUpdatedBy($user);
-            $abs->setUpdatedAt(new \Datetime());
-          }
-        } // Fin foreach $eleves
-      } // Fin foreach $data['note']
+        $entiteAbsence = new Absence();
+        $entiteAbsence->setAnnee($annee);
+        $entiteAbsence->setEleve($eleve);
+        $entiteAbsence->setMois($mois);
+        $entiteAbsence->setCreatedBy($this->getUser());
+        $entiteAbsence->setCreatedAt(new \Datetime());
+        if($absence == 'Cours')
+        {
+          if(empty($absenceEleve))
+            $entiteAbsence->setHeureCours(0);
+          else
+            $entiteAbsence->setHeureCours($absenceEleve);
+        }
+        else{
+          if(empty($absenceEleve))
+            $entiteAbsence->setHeureCoran(0);
+          else
+            $entiteAbsence->setHeureCoran($absenceEleve);
+        }
+        $em->persist($entiteAbsence);
+      }
 
       try{
         $em->flush();
@@ -733,7 +736,6 @@ class AffairesScolairesController extends Controller
       'eleves'  => $eleves,
       'absence' => $absence,
       'examens' => $examens,
-      'absencesDuMois' => $absencesDuMois
     ]);
   }
 
@@ -1052,7 +1054,6 @@ class AffairesScolairesController extends Controller
 
       foreach ($classes as $key => $cl) {
         if(!empty($cl)){
-          if(($regime == 'A' && array_key_exists($key, $halaqas) && $halaqas[$key] != null) || $regime == 'F'){
             $eleve = $repoEleve->find($key);
             $nvoClasse = $repoClasse->find((int) $cl);
             // On va signifier que l'élève à changer de classe dans son historique
@@ -1072,44 +1073,41 @@ class AffairesScolairesController extends Controller
             $commettre->setEleve($eleve);
             $commettre->setProbleme($probleme);
             $commettre->setAnnee($annee);
-            $commettre->setCreatedBy($user);
+            $commettre->setCreatedBy($this->getUser());
 
             $em->persist($probleme);
             $em->persist($commettre);
 
             $frequenter->setClasse($nvoClasse);
-            $frequenter->setUpdatedBy($user);
+            $frequenter->setUpdatedBy($this->getUser());
             $frequenter->setUpdatedAt(new \Datetime());
             
             $check_recording = true;
-          }
-          else{
             $classe_recording = true;
-          }
         }
       }
 
       if($regime == 'A'){
         foreach ($halaqas as $key => $hal) {
-          if(!empty($hal) && array_key_exists($key, $classes) && $classes[$key] != null){
+          if(!empty($hal)){
               $eleve = $repoEleve->find($key);
               $halaqa = $repoHalaqa->find((int) $hal);
               $memoriser = $repoMemoriser->findOneBy(['eleve' => $key, 'annee' => $as]);
               $memoriser->setHalaqa($halaqa);
-              $memoriser->setUpdatedBy($user);
+              $memoriser->setUpdatedBy($this->getUser());
               $memoriser->setUpdatedAt(new \Datetime());
-          }
-          else{
-            $halaqa_recording = true;
+              $check_recording = true;
+              $halaqa_recording = true;
           }
         }
       }
 
-      if ($check_recording == false && $classe_recording == false) {
+      if ($check_recording == false && $classe_recording == false && $halaqa_recording == false) {
         # On entre dans cette condition s'il n'y a pas eu d'enregistrement
         $request->getSession()->getFlashBag()->add('error', 'Aucun changement constaté. Veuillez essayer à nouveau.');
         return $this->redirect($this->generateUrl('isi_reamenager_classes_home', ['as' => $as, 'regime' => $regime]));
-      } else {
+      } 
+      else {
         # Beuh, sinon on flush les entités nouvellement créées
         if ($classe_recording) {
           $request->getSession()->getFlashBag()->add('error', 'Les classes de tous les élèves n\'ont pas été précisées.');

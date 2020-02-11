@@ -1,0 +1,108 @@
+{# Accueil pour l'édition des listes de classe' #}
+
+{% extends 'ISIBundle:Scolarite:index.html.twig' %}
+
+{% block title %}
+  {% block pageTitle %}
+    Liste des classes | Afficher les conduites saisies
+  {% endblock %}
+{% endblock %}
+
+
+{% block content %}
+  {% set grp = '' %}
+  {% if regime is same as('A') %}
+    {% set grp = 'Académie' %}
+  {% else %}
+    {% set grp = 'Formation' %}
+  {% endif %}
+  <h3>{{ 'Afficher les conduites saisies'|trans }} : {{grp}}</h3>
+{% if classes is empty %}
+  <p>{{ 'Pas de classes pour le moment'|trans }}</p>
+{% else %}
+  <div class="column" style="width:75%">
+      <table class="ui selectable very basic table" id="classes">
+        <thead>
+          <tr>
+            <th width="10%">N°</th>
+            <th>Niveaux</th>
+            <th>Classses</th>
+            <th>المستويات</th>
+            <th>الفصول</th>
+            <th>Genre</th>
+            <th class="two wide">{{ 'Actions'|trans }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% set numero = 0 %}
+          {% for classe in classes %} 
+            {% if classe.niveau.groupeFormation.reference is same as(regime) %}
+              {% set numero = numero + 1 %}
+              {% set genre = '' %}
+              {% if classe.genre == 'H' %}
+                {% set genre = 'Homme' %}
+              {% elseif classe.genre == 'F' %}
+                {% set genre = 'Femme' %}
+              {% else %}
+                {% set genre = 'Mixte' %}
+              {% endif %}
+              <tr>
+                <td>
+                  <h4 class="ui image header">{{ numero }}</h4>
+                </td>
+                <td>
+                  <h4 class="ui image header">{{ classe.getNiveau.getLibelleFr }}</h4>
+                </td>
+                <td>
+                  <h4 class="ui image header">{{ classe.libellefr }}</h4>
+                </td>
+                <td>
+                  <h4 class="ui image header">{{ classe.getNiveau.getLibelleAr }}</h4>
+                </td>
+                <td>
+                  <h4 class="ui image header">{{ classe.libellear }}</h4>
+                </td>
+                <td>
+                  <h4 class="ui image header">{{ genre }}</h4>
+                </td>
+                <td>
+                  <a href="{{path('isi_conduites_des_eleves_d_une_classe', {'as': asec, 'regime': regime, 'classeId': classe.id})}}">
+                    <i class="list icon"></i>
+                  </a>
+                </td>
+              </tr>
+            {% endif %} 
+          {% endfor %}
+        </tbody>
+      </table>
+      <hr width="75%">
+      <script data-config>
+        var filtersConfig = {
+          base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+          col_0: "none",
+          col_1: 'select',
+          col_3: 'select',
+          col_5: 'select',
+          alternate_rows: true,
+          rows_counter: true,
+          btn_reset: true,
+          loader: true,
+          status_bar: true,
+          mark_active_columns: true,
+          highlight_keywords: true,
+          no_results_message: true,
+          col_types: [
+            'number', 'string', 'string', 'string'
+          ],
+          col_widths: [
+              '20px', , , '200px'
+          ],
+          extensions: [{ name: 'sort' }]
+        };
+
+        var tf = new TableFilter('classes', filtersConfig);
+        tf.init();
+      </script>
+    </div><br><br>
+{% endif %}
+{% endblock %}
