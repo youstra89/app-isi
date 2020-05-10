@@ -68,6 +68,7 @@
               <th>{{ 'Sexe'|trans }}</th>
               <th>{{ 'Date de naissance'|trans }}</th>
               <th>{{ 'Classe'|trans }}</th>
+              <th width="20%">{{ 'Motif'|trans }}</th>
               <th>{{ 'Date de renvoi'|trans }}</th>
               {% if is_granted('ROLE_ADMIN_SCOLARITE') or is_granted('ROLE_ADMIN_ANNEXE') %}
                 <th>{{ 'Action'|trans }}</th>
@@ -78,7 +79,6 @@
             {% set numero = 0 %}
             {% for eleve in eleves %}
             {% set numero = numero + 1 %}
-            <tr title="{{ eleve.motifRenvoi }}">
               <td align="center">{{ numero }}</td>
               <td>{{ eleve.matricule }}</td>
               <td>{{ eleve.nomFr }} {{ eleve.pnomFr }}</td>
@@ -94,10 +94,11 @@
               </td>
               <td>{{ eleve.dateNaissance|date("d-m-Y") }}</td>
               <td>{{ eleve.classe }}</td>
+              <td>{{ eleve.motifRenvoi }}</td>
               <td>{{ eleve.dateRenvoi|date("d-m-Y") }}</td>
               {% if is_granted('ROLE_ADMIN_SCOLARITE') or is_granted('ROLE_ADMIN_ANNEXE') %}
                 <td>
-                  <a href="{{ path('isi_reintegration', {'as': asec, 'regime': regime, 'eleveId': eleve.id}) }}" data-tooltip="Réintegrer l'élève"><i class="plus icon"></i></a>
+                  {# <a href="{{ path('isi_reintegration', {'as': asec, 'regime': regime, 'eleveId': eleve.id}) }}" data-tooltip="Réintegrer l'élève"><i class="plus icon"></i></a> #}
                   <a href="{{ path('isi_info_eleve_renvoye', {'as': asec, 'regime': regime, 'eleveId': eleve.id}) }}" data-tooltip="Plus de détails"><i class="list icon"></i></a></td>
               {% endif %}
             </tr>
@@ -111,7 +112,7 @@
         col_0: 'none',
         col_4: 'select',
         col_6: 'select',
-        col_8: 'none',
+        col_9: 'none',
         alternate_rows: true,
         rows_counter: true,
         btn_reset: true,

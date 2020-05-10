@@ -1,7 +1,20 @@
-{% extends "ISIBundle:Scolarite:index.html.twig" %}
+{% set template = 'ISIBundle:Examen:index.html.twig' %}
+{% if direction == 'scolarite' %}
+  {% set template = 'ISIBundle:Scolarite:index.html.twig' %}
+{% endif %}
+{% extends template %}
+
 {% block pageTitle %}
     Résultats de la classe
 {% endblock %}
+
+
+
+{% block contextual_menu %}
+  {{ include("ISIBundle:Examen:contextual-menu-notes-exam.html.twig") }}
+{% endblock %}
+
+
 
 {% block content %}
 <h3>{{ 'Résultats de'|trans }} : {{ classe.libelleFr }}</h3>    
@@ -29,17 +42,19 @@
         {% else %}
             <div>
                 <h4>{{ 'Classement annuel'|trans }}</h4>
-                {% if moyennes|length > 45 %}
-                    <a href="{{ path('isi_bulletins_moyennes_annuelles', {'as': asec, 'regime': regime, 'classeId': classe.id, 'partie': 1}) }}">
-                        <button class="ui teal basic button">{{ 'Voir / Imprimer les bulletins annuels (1)'|trans }}</button>
-                    </a>
-                    <a href="{{ path('isi_bulletins_moyennes_annuelles', {'as': asec, 'regime': regime, 'classeId': classe.id, 'partie': 2}) }}">
-                        <button class="ui teal basic button">{{ 'Voir / Imprimer les bulletins annuels (2)'|trans }}</button>
-                    </a>
-                {% else %}
-                    <a href="{{ path('isi_bulletins_moyennes_annuelles', {'as': asec, 'regime': regime, 'classeId': classe.id}) }}">
-                        <button class="ui teal basic button">{{ 'Voir / Imprimer les bulletins annuels'|trans }}</button>
-                    </a>
+                {% if direction == 'etude' %}
+                    {% if moyennes|length > 45 %}
+                        <a href="{{ path('isi_bulletins_moyennes_annuelles', {'as': asec, 'regime': regime, 'classeId': classe.id, 'partie': 1}) }}">
+                            <button class="ui teal basic button">{{ 'Voir / Imprimer les bulletins annuels (1)'|trans }}</button>
+                        </a>
+                        <a href="{{ path('isi_bulletins_moyennes_annuelles', {'as': asec, 'regime': regime, 'classeId': classe.id, 'partie': 2}) }}">
+                            <button class="ui teal basic button">{{ 'Voir / Imprimer les bulletins annuels (2)'|trans }}</button>
+                        </a>
+                    {% else %}
+                        <a href="{{ path('isi_bulletins_moyennes_annuelles', {'as': asec, 'regime': regime, 'classeId': classe.id}) }}">
+                            <button class="ui teal basic button">{{ 'Voir / Imprimer les bulletins annuels'|trans }}</button>
+                        </a>
+                    {% endif %}
                 {% endif %}
                 <a href="{{path('isi_statistiques_annuelles', {'as': asec, 'regime': regime, 'classeId':classe.id})}}">
                     <button class="ui blue basic button">{{ 'Résultats généraux & statistiques'|trans }}</button>

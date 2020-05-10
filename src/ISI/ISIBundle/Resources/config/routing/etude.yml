@@ -127,6 +127,14 @@ etude_examen:
     requirements:
         as: \d+
 
+# Gestion des notes home
+etude_notes:
+    path:     /gestion-des-notes-{as}-{regime}
+    defaults: { _controller: ISIBundle:Etude:notes }
+    requirements:
+        as: \d+
+        regime: A|F
+
 # Ajout d'examen
 etude_add_examen:
     path:     /parametres/add-new-examen-{as}.html

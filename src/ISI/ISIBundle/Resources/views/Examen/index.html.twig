@@ -3,7 +3,7 @@
 {% if is_granted("ROLE_NOTE") %} 
   {% set template = "::divers-layout.html.twig" %} 
 {% else %} 
-  {% set template = "ISIBundle::layout.html.twig" %}
+  {% set template = "ISIBundle:Etude:layout.html.twig" %}
 {% endif %} 
 {% extends template %}
 {% block title %}

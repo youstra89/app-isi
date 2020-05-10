@@ -2,33 +2,12 @@
 
 namespace ISI\ISIBundle\Controller;
 
-use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-
-use Doctrine\ORM\QueryBuilder;
-
-use Dompdf\Options;
-use Dompdf\Dompdf;
-
-use ISI\ISIBundle\Entity\Eleve;
-use ISI\ISIBundle\Entity\Classe;
-use ISI\ISIBundle\Entity\Niveau;
 use ISI\ISIBundle\Entity\Absence;
 use ISI\ISIBundle\Entity\Probleme;
 use ISI\ISIBundle\Entity\Commettre;
-use ISI\ISIBundle\Entity\Annee;
-use ISI\ISIBundle\Entity\Informations;
-use ISI\ISIBundle\Entity\Groupeformation;
-
-use ISI\ISIBundle\Repository\MoisRepository;
-use ISI\ISIBundle\Repository\AbsenceRepository;
-use ISI\ISIBundle\Repository\EleveRepository;
-use ISI\ISIBundle\Repository\ClasseRepository;
-use ISI\ISIBundle\Repository\NiveauRepository;
-use ISI\ISIBundle\Repository\AnneeRepository;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
@@ -37,7 +16,7 @@ class AffairesScolairesController extends Controller
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
-  public function indexAction(Request $request, $as, $regime)
+  public function indexAction($as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
@@ -48,9 +27,9 @@ class AffairesScolairesController extends Controller
     $examens = $repoExamen->lesExamensDeLAnnee($as);
 
     return $this->render('ISIBundle:Scolarite:index.html.twig', array(
-      'asec'   => $as,
-      'regime' => $regime,
-      'annee'  => $annee,
+      'asec'    => $as,
+      'regime'  => $regime,
+      'annee'   => $annee,
       'examens' => $examens,
     ));
   }
@@ -58,13 +37,16 @@ class AffairesScolairesController extends Controller
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
-  public function homeScolariteAction()
+  public function homeScolariteAction(Request $request)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee = $em->getRepository('ISIBundle:Annee');
     $repoExamen  = $em->getRepository('ISIBundle:Examen');
 
     $annee = $repoAnnee->anneeEnCours();
+    if(null !== $request->get('as')){
+        $annee = $repoAnnee->find($request->get('as'));
+    }
     // $examens = $repoExamen->lesExamensDeLAnnee($as);
 
     return $this->render('ISIBundle:Default:index.html.twig', array(
@@ -78,7 +60,7 @@ class AffairesScolairesController extends Controller
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
-  public function statistiquesAction(Request $request, $as, $regime)
+  public function statistiquesAction(Request $request, int $as, string $regime)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
@@ -87,7 +69,7 @@ class AffairesScolairesController extends Controller
     $repoExamen = $em->getRepository('ISIBundle:Examen');
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
 
-    $annee = $repoAnnee->anneeEnCours();
+    $annee = $repoAnnee->find($request->get('as'));
     $examens = $repoExamen->lesExamensDeLAnnee($as);
 
     $classes = $repoClasse->classeGrpFormation($as, $regime);
@@ -133,7 +115,7 @@ class AffairesScolairesController extends Controller
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
-  public function listeDeClasseHomeAction(Request $request, $as, $regime)
+  public function listeDeClasseHomeAction($as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
@@ -160,7 +142,7 @@ class AffairesScolairesController extends Controller
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
-  public function listeDesClassesConduiteHomeAction(Request $request, $as, $regime)
+  public function listeDesClassesConduiteHomeAction($as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
@@ -187,7 +169,7 @@ class AffairesScolairesController extends Controller
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
-  public function conduitesDesElevesDUneClasseAction(Request $request, $as, $regime, $classeId)
+  public function conduitesDesElevesDUneClasseAction($as, $regime, $classeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
@@ -218,7 +200,7 @@ class AffairesScolairesController extends Controller
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
-  public function listeDeClasseAction(Request $request, $as, $regime, $classeId)
+  public function listeDeClasseAction($as, $regime, $classeId)
   {
     $repoEleve  = $this->getDoctrine()->getManager()->getRepository('ISIBundle:Eleve');
     $repoClasse = $this->getDoctrine()->getManager()->getRepository('ISIBundle:Classe');
@@ -235,14 +217,12 @@ class AffairesScolairesController extends Controller
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
-  public function listeDeClasseEtatSansImpressionAction(Request $request, $as, $regime, $classeId)
+  public function listeDeClasseEtatSansImpressionAction($as, $regime, $classeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoEleve  = $em->getRepository('ISIBundle:Eleve');
     $repoClasse = $em->getRepository('ISIBundle:Classe');
-    $repoExamen  = $em->getRepository('ISIBundle:Examen');
-    $examens = $repoExamen->lesExamensDeLAnnee($as);
 
     // Sélection de l'année scolaire
     $annee  = $repoAnnee->find($as);
@@ -256,7 +236,124 @@ class AffairesScolairesController extends Controller
       "annee"  => $annee,
       "classe" => $classe,
       "eleves" => $eleves,
-      "examens" => $examens,
+    ]);
+  }
+
+  /**
+   * Cette fonction (ou methode si vous voulez) devait se trouver dans EleveController
+   * 
+   * @Security("has_role('ROLE_SCOLARITE')")
+   */
+  public function miseAJourInformationsDesElevesAction(Request $request, int $as, string $regime, int $classeId)
+  {
+    $em = $this->getDoctrine()->getManager();
+    $repoAnnee  = $em->getRepository('ISIBundle:Annee');
+    $repoEleve  = $em->getRepository('ISIBundle:Eleve');
+    $repoClasse = $em->getRepository('ISIBundle:Classe');
+
+    // Sélection de l'année scolaire
+    $annee  = $repoAnnee->find($as);
+
+    $classe = $repoClasse->find($classeId);
+    $eleves = $repoEleve->elevesDeLaClasse($as, $classeId);
+
+    if($request->isMethod('post')){
+      $em        = $this->getDoctrine()->getManager();
+      $data      = $request->request->all();
+      $dates     = $data["dates"];
+      $lieux     = $data["lieux"];
+      $communes  = $data["communes"];
+      $contacts  = $data["contact"];
+      $contactsP = $data["contactP"];
+      $contactsM = $data["contactM"];
+      $mise_a_jour = false;
+      foreach ($eleves as $eleve) {
+        $eleveId       = $eleve->getId();
+        $dateNaissance = $eleve->getDateNaissance()->format("Y-m-d");
+        $residence     = $eleve->getResidence();
+        $commune       = $eleve->getCommune();
+        $contact       = $eleve->getContact();
+        $contactP      = $eleve->getContactPere();
+        $contactM      = $eleve->getContactMere();
+        $new_date      = $dates[$eleveId];
+        $new_residence = $lieux[$eleveId];
+        $new_commune   = $communes[$eleveId];
+        $new_contact   = $contacts[$eleveId];
+        $new_contactP  = $contactsP[$eleveId];
+        $new_contactM  = $contactsM[$eleveId];
+        $mise_a_jour_eleve = false;
+        if ($dateNaissance != $new_date) {
+          $new_date_naissance = new \DateTime($new_date);
+          $mise_a_jour_eleve = true;
+          $eleve->setDateNaissance($new_date_naissance);
+        }
+        
+        if ($residence != $new_residence) {
+          $mise_a_jour = true;
+          $mise_a_jour_eleve = true;
+          $eleve->setResidence($new_residence);
+        }
+
+        if ($commune != $new_commune) {
+          $mise_a_jour = true;
+          $mise_a_jour_eleve = true;
+          $eleve->setCommune($new_commune);
+        }
+
+        if ($contact != $new_contact) {
+          $mise_a_jour = true;
+          $mise_a_jour_eleve = true;
+          $eleve->setContact($new_contact);
+        }
+
+        if ($contactP != $new_contactP) {
+          $mise_a_jour = true;
+          $mise_a_jour_eleve = true;
+          $eleve->setContactPere($new_contactP);
+        }
+
+        if ($contactM != $new_contactM) {
+          $mise_a_jour = true;
+          $mise_a_jour_eleve = true;
+          $eleve->setContactMere($new_contactM);
+        }
+        
+        if($mise_a_jour_eleve === true)
+        {
+          $eleve->setUpdatedAt(new \DateTime());
+          $eleve->setUpdatedBy($this->getUser());
+        }
+      }
+      if($mise_a_jour === true)
+      {
+        try{
+          $em->flush();
+          $request->getSession()->getFlashBag()->add('info', 'La mise à jour des informations des élèves de la classe <strong>'.$classe->getLibelleFr().'</strong> s\'est terminée avec succès.');
+        } 
+        catch(\Doctrine\ORM\ORMException $e){
+          $this->addFlash('error', $e->getMessage());
+          $this->get('logger')->error($e->getMessage());
+        } 
+        catch(\Exception $e){
+          $this->addFlash('error', $e->getMessage());
+        }
+      }
+      else{
+        $request->getSession()->getFlashBag()->add('error', 'Aucun changement constaté.');
+      }
+
+      return $this->redirect($this->generateUrl('isi_liste_de_classe_home',[
+        'as' => $as,
+        'regime' => $regime
+      ]));
+    }
+
+    return $this->render('ISIBundle:Scolarite:mise-a-jour-informations-eleves.html.twig', [
+      "asec"   => $as,
+      "regime" => $regime,
+      "annee"  => $annee,
+      "classe" => $classe,
+      "eleves" => $eleves,
     ]);
   }
 
@@ -264,7 +361,7 @@ class AffairesScolairesController extends Controller
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
-  public function tirerListeDeLaClasseAction(Request $request, $as, $regime, $classeId)
+  public function tirerListeDeLaClasseAction($as, $regime, $classeId)
   {
     $em               = $this->getDoctrine()->getManager();
     $repoEleve        = $em->getRepository('ISIBundle:Eleve');
@@ -316,7 +413,7 @@ class AffairesScolairesController extends Controller
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
-  public function listeDAppelHomeAction(Request $request, $as, $regime)
+  public function listeDAppelHomeAction($as, $regime)
   {
     $em = $this->getdoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
@@ -341,7 +438,7 @@ class AffairesScolairesController extends Controller
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
-  public function tirerListeDAppelDeLaClasseAcademieAction(Request $request, $as, $regime, $classeId)
+  public function tirerListeDAppelDeLaClasseAcademieAction($as, $regime, $classeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoEleve     = $em->getRepository('ISIBundle:Eleve');
@@ -404,7 +501,7 @@ class AffairesScolairesController extends Controller
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
-  public function tirerListeDAppelDeLaClasseFormationAction(Request $request, $as, $regime, $classeId)
+  public function tirerListeDAppelDeLaClasseFormationAction($as, $regime, $classeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
@@ -458,7 +555,7 @@ class AffairesScolairesController extends Controller
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
-  public function listeDesHalaqasAction(Request $request, $as, $regime)
+  public function listeDesHalaqasAction($as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
@@ -481,7 +578,7 @@ class AffairesScolairesController extends Controller
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
-  public function listeDesElevesDUneHalaqaAction(Request $request, $as, $regime, $halaqaId)
+  public function listeDesElevesDUneHalaqaAction($as, $regime, $halaqaId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoMemoriser  = $em->getRepository('ISIBundle:Memoriser');
@@ -555,7 +652,7 @@ class AffairesScolairesController extends Controller
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
-  public function absenceHomeAction(Request $request, $as, $regime)
+  public function absenceHomeAction($as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee = $em->getRepository('ISIBundle:Annee');
@@ -582,7 +679,7 @@ class AffairesScolairesController extends Controller
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
-  public function heuresAbsenceCoursHomeAction(Request $request, $as, $regime, $classeId, $absence)
+  public function heuresAbsenceCoursHomeAction($as, $regime, $classeId, $absence)
   {
     $em         = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
@@ -864,7 +961,7 @@ class AffairesScolairesController extends Controller
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
-  public function absenceEnregistreeHomeAction(Request $request, $as, $regime)
+  public function absenceEnregistreeHomeAction($as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee = $em->getRepository('ISIBundle:Annee');
@@ -891,7 +988,7 @@ class AffairesScolairesController extends Controller
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
-  public function heuresAbsenceEnregistreesAction(Request $request, $as, $regime, $classeId, $absence)
+  public function heuresAbsenceEnregistreesAction($as, $regime, $classeId, $absence)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
@@ -939,7 +1036,7 @@ class AffairesScolairesController extends Controller
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
-  public function reamenagerClassesHomeAction(Request $request, $as, $regime)
+  public function reamenagerClassesHomeAction($as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
@@ -966,7 +1063,7 @@ class AffairesScolairesController extends Controller
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
-  public function reamenagerUneClasseAction(Request $request, $as, $regime, $classeId)
+  public function reamenagerUneClasseAction($as, $regime, $classeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
@@ -1137,12 +1234,12 @@ class AffairesScolairesController extends Controller
     }
   }
 
-  public function dispositionDesSallesDeCoursAction(Request $request, int $as, string $regime)
+  public function dispositionDesSallesDeCoursAction(int $as, string $regime)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee = $em->getRepository('ISIBundle:Annee');
     $repoSalle = $em->getRepository('ISIBundle:Salle');
-    $repoSC    = $em->getRepository('ISIBundle:SalleClasse');
+    $repoSC    = $em->getRepository('ISIBundle:SalleClasse'); 
     $annee     = $repoAnnee->find($as);
     $salles    = $repoSalle->findAll();
     $sallesClasses = $repoSC->findBy(['annee' => $as]);

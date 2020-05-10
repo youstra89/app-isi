@@ -27,7 +27,7 @@ class CoranController extends Controller
 
         $eleves = $repoEleve->findBy(['regime' => $regime]);
         $elevesInternes = $repoEleve->elevesInternes($as);
-        $annee  = $repoAnnee->anneeEnCours();
+        $annee = $repoAnnee->find($request->get('as'));
 
         return $this->render('ISIBundle:Coran:index.html.twig', [
             'asec'   => $as,

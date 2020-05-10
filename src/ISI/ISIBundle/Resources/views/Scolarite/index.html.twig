@@ -58,11 +58,9 @@
         </div>
       </div>
       <div class="item">
-        <div class="header">{{ 'Examens'|trans }}</div>
+        <div class="header">{{ 'Résultats'|trans }}</div>
         <div class="menu">
-          <a class="item" href="{{path('isi_saisie_de_notes', {'as': asec, 'regime': regime})}}">{{ 'Notes & résultats'|trans }}</a>
-          <a class="item" href="{{path('isi_statiqtiques', {'as': asec, 'regime': regime})}}">{{ 'Données statistiques'|trans }}</a>
-          <a class="item" href="{{path('isi_resultats_annuels', {'as': asec, 'regime': regime})}}">{{ 'Résultats annuels'|trans }}</a>
+          <a class="item" href="{{path('isi_resultats_annuels', {'as': asec, 'regime': regime, 'direction': 'scolarite'})}}">{{ 'Résultats annuels'|trans }}</a>
         </div>
       </div>
     </div>

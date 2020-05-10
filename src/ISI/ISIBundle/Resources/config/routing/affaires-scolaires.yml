@@ -54,6 +54,15 @@ isi_tirer_liste_de_la_classe_edition_sans_impression:
         regime:   A|F
         classeId: \d+
 
+# Edition sans impression de la liste de classe d'une classe donnée
+isi_mise_a_jour_informations_des_eleves_d_une_classe:
+    path:     /mise-a-jour-des-informations-des-eleves-d-une-classe-{as}-{regime}-{classeId}.html
+    defaults: { _controller: ISIBundle:AffairesScolaires:miseAJourInformationsDesEleves }
+    requirements:
+        as:       \d+
+        regime:   A|F
+        classeId: \d+
+
 # Edition de la liste de classe d'une classe donnée
 isi_tirer_liste_de_la_classe:
     path:     /liste-de-la-classe-{as}-{regime}-{classeId}.html
@@ -170,7 +179,7 @@ isi_resultats_annuels:
 # possibilité de voir les notes annuelles, les bulletins et les statistiques
 isi_resultats_annuels_d_une_classe:
     path: /examen/resultats-annuels-de-la-classe-{as}-{regime}-{classeId}.html
-    defaults: { _controller: ISIBundle:Examen:resultatsAnnuelsDeLaClasse }
+    defaults: { _controller: ISIBundle:Examen:resultatsAnnuelsDUneClasse }
     requirements:
         as:       \d+
         classeId: \d+
@@ -219,7 +228,7 @@ moyenne_annuelle:
     defaults: { _controller: ISIBundle:Examen:resultYear }
 
 # La route-ci nous permettra in chaa Allah de calculer les moyennes annuelles et de faire le classement annuel
-isi_classement_annuel:
+isi_classement_annuel: 
     path:     /examen/calcul-moyennes-annuelles-et-classement-annuel-{as}-{regime}-{classeId}.html
     defaults: { _controller: ISIBundle:Examen:moyennesClassementAnnuel }
     requirements:

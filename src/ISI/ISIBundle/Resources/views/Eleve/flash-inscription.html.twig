@@ -40,17 +40,21 @@
                             {% if eleve.id == fq.eleve.id %}
                                 {% set i = i + 1 %}
                                 {% set class = '' %}
-                                {% if fq.admission == FALSE %}
+                                {% set reinscrit = false %}
+                                {% if fq.admission == 0 %}
                                     {% set class = 'error' %}
                                 {% endif %}
-                                <tr class="{{ class }}">
+                                {% if fq.eleve.id in reinscription|keys %}
+                                    {% set reinscrit = true %}
+                                {% endif %}
+                                <tr class="{{ class }}" {% if reinscrit == false %}title="{{ fq.eleve.nomFr }} {{ fq.eleve.pnomFr }} ne s'est pas réinscrit(e) pour l'année scolaire {{ annee.libelle }}"{% endif %}>
                                     <td>{{ i }}</td> 
                                     <td><img class="ui avatar image" src="/markaz/web/images/logoISI-x.png" /></td> 
                                     <td>{{ fq.eleve.matricule }}</td> 
                                     <td>{{ fq.eleve.nomFr }} {{ fq.eleve.pnomFr }}</td> 
                                     <td>
-                                        {% if fq.admission == TRUE %}
-                                            <select class="ui fluid dropdown" name="classe[{{ fq.eleve.id }}]">
+                                        {% if fq.admission == 1 %}
+                                            <select class="ui fluid dropdown" name="classe[{{ fq.eleve.id }}]" {% if reinscrit == false %}disabled{% endif %}>
                                                 <option value="">{{ 'Sélectionner une classe'|trans }}</option>
                                                 {% for cl in classesSup %}
                                                     {% if cl.genre == 'M' or (cl.genre == 'H' and fq.eleve.sexe == 1) or (cl.genre == 'F' and fq.eleve.sexe == 2) %}
@@ -58,8 +62,8 @@
                                                     {% endif %}
                                                 {% endfor %}
                                             </select>
-                                        {% elseif fq.admission == FALSE %}
-                                            <select class="ui fluid dropdown" name="classe[{{ fq.eleve.id }}]">
+                                        {% elseif fq.admission == 0 %}
+                                            <select class="ui fluid dropdown" name="classe[{{ fq.eleve.id }}]" {% if reinscrit == false %}disabled{% endif %}>
                                                 <option value="">{{ 'Sélectionner une classe'|trans }}</option>
                                                 {% for cl in classesR %}
                                                     {% if cl.genre == 'M' or (cl.genre == 'H' and fq.eleve.sexe == 1) or (cl.genre == 'F' and fq.eleve.sexe == 2) %}
@@ -71,7 +75,7 @@
                                     </td> 
                                     {% if regime == 'A' %}
                                         <td>
-                                            <select class="ui fluid dropdown" name="halaqa[{{ fq.eleve.id }}]">
+                                            <select class="ui fluid dropdown" name="halaqa[{{ fq.eleve.id }}]" {% if reinscrit == false %}disabled{% endif %}>
                                                 <option value="">{{ 'Sélectionner une halaqa'|trans }}</option>
                                                 {% for halaqa in halaqas %}
                                                     {% if halaqa.genre == 'M' or (halaqa.genre == 'H' and fq.eleve.sexe == 1) or (halaqa.genre == 'F' and fq.eleve.sexe == 2) %}

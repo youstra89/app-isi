@@ -2,7 +2,7 @@
     <div class="item">
         <div class="header">Activités précédentes</div>
         <div class="menu">
-            <a class="item" href="{{ path('admin_home', {'as': annee.id}) }}">Années précédentes</a>
+            <a class="item" href="{{ path('isi_annees_precedentes', {'as': asec, 'route': app.request.get('_route'), 'route_params': app.request.get('_route_params')})}}">{{ 'Années précédentes'|trans }}</a>
         </div>
     </div>
 </div>

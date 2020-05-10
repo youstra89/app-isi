@@ -7,6 +7,12 @@
 {% endblock %}
 
 
+{% block contextual_menu %}
+  {{ include("ISIBundle:Examen:contextual-menu-fiche-notes-exam.html.twig") }}
+{% endblock %}
+
+
+
 {% block content %}
   {% set grp = '' %}
   {% if regime is same as('A') %}

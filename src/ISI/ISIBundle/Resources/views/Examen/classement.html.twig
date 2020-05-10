@@ -6,8 +6,15 @@
     {% endblock %}
 {% endblock %}
 
-{% block body %}
 
+
+{% block contextual_menu %}
+  {{ include("ISIBundle:Examen:contextual-menu-notes-exam.html.twig") }}
+{% endblock %}
+
+
+
+{% block body %}
     {% if moyennes is empty %}
         <p>{{ 'Inscrivez d\'abord des élèves dans cette classe.'|trans }}</p>
     {% else %}

@@ -6,6 +6,13 @@
 	Edition des notes
 {% endblock %}
 
+
+{% block contextual_menu %}
+  {{ include("ISIBundle:Examen:contextual-menu-notes-exam.html.twig") }}
+{% endblock %}
+
+
+
 {% block content %}
 	<div class="ui info message" style="width:75%">
 		<center>

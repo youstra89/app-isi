@@ -111,8 +111,7 @@ class InternatController extends Controller
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee = $em->getRepository('ISIBundle:Annee');
-    $repoEleve = $em->getRepository('ISIBundle:Eleve');
-
+    $repoEleve = $em->getRepository('ISIBundle:Eleve');    
     $annee = $repoAnnee->find($as);
 
     if($request->isMethod('post'))
@@ -162,14 +161,22 @@ class InternatController extends Controller
     $repoChambre = $em->getRepository('ISIBundle:Chambre');
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoEleve   = $em->getRepository('ISIBundle:Eleve');
-
+    $repoReinscription = $em->getRepository('ISIBundle:Reinscription');
+    
+    
     $annee    = $repoAnnee->find($as);
     $eleve    = $repoEleve->find($eleveId);
     $fq       = $repoFrequenter->findOneBy(['annee' => $as, 'eleve' => $eleveId]);
+    $fqs       = $repoFrequenter->findBy(['eleve' => $eleveId]);
     $chambres = $repoChambre->chambresDisponibles($eleve->getSexe());
+    $reinscription = $repoReinscription->findOneBy(['eleve' => $eleveId, 'annee' => $as - 1]);
 
-    if($request->isMethod('post'))
-    {
+    if(empty($reinscription) and count($fqs) != 0) {
+      $request->getSession()->getFlashBag()->add('error', 'Cet élève ne s\'est pas réinscrit pour l\'année scolaire en cours');
+      return $this->redirectToRoute('internat_add', array('as' => $as));
+    }
+
+    if($request->isMethod('post')) {
       $data = $request->request->all();
       $chambreId = $data['chambre'];
       $dateI = new \DateTime($data['dateI']);

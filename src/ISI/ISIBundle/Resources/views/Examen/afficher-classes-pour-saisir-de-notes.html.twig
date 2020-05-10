@@ -1,12 +1,27 @@
 {# On affiche toues les classes d'un niveau de formation. On sélectionne alors une classe pour aller saisir les notes #}
-{% extends "ISIBundle:Scolarite:index.html.twig" %}
+{% extends "ISIBundle:Etude:index.html.twig" %}
 
 {% block pageTitle %}
   Saisie de notes
 {% endblock %}
 
 
+{% block contextual_menu %}
+  {{ include("ISIBundle:Examen:contextual-menu-notes-exam.html.twig") }}
+{% endblock %}
+
+
+{% block head %}
+    <div class="ui {{ dir2 }} aligned segment">
+        <h1 class="ui header">
+            <i class="student icon"></i>{{ 'GESTION DES NOTES D\'EXAMEN'|trans }}
+        </h1>
+    </div>
+{% endblock %}
+
+
 {% block content %}
+
   {% set grp = '' %}
   {% if regime is same as('A') %}
     {% set grp = 'Académie' %}

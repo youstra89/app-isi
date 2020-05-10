@@ -132,25 +132,33 @@
       {% endif %}
       <div class="main container">
         <div class="ui hidden divider"></div>
-        <div class="ui internally celled grid" id="example1">
-          <div class="ui rail row">
-            <div class="ui sticky three wide column" style="left: 0px; top: 0px;">
-              <div class="ui tertiary segment">
-                <p>{{ 'Année scolaire'|trans }}: <strong>{{ annee.libelle }}</strong></p>
-              </div>
-              <p>
-                {% if is_granted('ROLE_SUPER_ADMIN') %}
-                  {{ 'Admin'|trans }}:
-                {% else %}
-                  {{ 'Utilisateur'|trans }} :
-                {% endif %}
-                <a class="ui basic image label">
-                  <img src="/markaz/web/images/elliot.jpg">
-                  <strong>{{ app.user.username }}</strong>
-                </a>
-              </p>
-              {% block contextual_menu %}
-              {% endblock %}
+          <div class="ui internally celled grid" id="example1">
+            <div class="ui rail row">
+              <div class="ui sticky three wide column" style="left: 0px; top: 0px;">
+                <div class="ui tertiary segment">
+                  <p>{{ 'Année scolaire'|trans }}: <strong>{{ annee.libelle }}</strong></p>
+                </div>
+                <p>
+                  {% if is_granted('ROLE_SUPER_ADMIN') %}
+                    {{ 'Admin'|trans }}:
+                  {% else %}
+                    {{ 'Utilisateur'|trans }} :
+                  {% endif %}
+                  <a class="ui basic image label">
+                    <img src="/markaz/web/images/elliot.jpg">
+                    <strong>{{ app.user.username }}</strong>
+                  </a>
+                </p>
+                <div class="ui vertical menu">
+                  <div class="item">
+                    <div class="header">{{ 'Année scolaire'|trans }}</div>
+                    <div class="menu">
+                      <a class="item" href="{{ path('isi_annees_precedentes', {'as': asec, 'route': app.request.get('_route'), 'route_params': app.request.get('_route_params')})}}">{{ 'Années précédentes'|trans }}</a>
+                    </div>
+                  </div>
+                </div>
+                {% block contextual_menu %}
+                {% endblock %}
             </div>
             <div class="thirteen wide column">
               {% block body %}

@@ -8,33 +8,15 @@ use Symfony\Component\HttpFoundation\Request;
 
 // use Symfony\Component\Form\Extention\Core\Type\TextType;
 
-use ISI\ISIBundle\Entity\Niveau;
 use ISI\ISIBundle\Entity\Classe;
 use ISI\ISIBundle\Entity\Examen;
-use ISI\ISIBundle\Entity\Matiere;
 use ISI\ISIBundle\Entity\Halaqa;
-use ISI\ISIBundle\Entity\Enseignement;
 use ISI\ISIBundle\Entity\Annee;
-use ISI\ISIBundle\Repository\ExamenRepository;
-use ISI\ISIBundle\Repository\NiveauRepository;
-use ISI\ISIBundle\Repository\MatiereRepository;
-use ISI\ISIBundle\Repository\EnseignementRepository;
-use ISI\ISIBundle\Repository\AnneeRepository;
 
 use ISI\ISIBundle\Form\ExamenType;
-use ISI\ISIBundle\Form\NiveauType;
 use ISI\ISIBundle\Form\ClasseType;
 use ISI\ISIBundle\Form\HalaqaType;
-use ISI\ISIBundle\Form\MatiereType;
-use ISI\ISIBundle\Form\EnseignementType;
 use ISI\ISIBundle\Form\AnneeType;
-
-use ServicesBundle\Services\UserConnexion;
-use ServicesBundle\DependencyInjection;
-
-use Doctrine\ORM\EntityRepository;
-
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 
@@ -106,14 +88,6 @@ class ParametresController extends Controller
             ));
         }
       }
-      else {
-        // On peut donc créer une nouvelle année
-        $annee->setAchevee(TRUE);
-        $annee->setUpdatedBy($this->getUser());
-        $annee->setUpdatedAt(new \Datetime());
-        $em->flush();
-        // return new Response("C'est cool");
-      }
       // return new Response(var_dump($frequentation));
     }
 
@@ -128,6 +102,10 @@ class ParametresController extends Controller
       $em = $this->getDoctrine()->getManager();
       $nouvelleAnnee->setAchevee(FALSE);
       $em->persist($nouvelleAnnee);
+
+      $annee->setAchevee(TRUE);
+      $annee->setUpdatedBy($this->getUser());
+      $annee->setUpdatedAt(new \Datetime());
       $em->flush();
 
       $request->getSession()->getFlashBag()->add('info', 'La nouvelle année scolaire a été bien enrégistrée.');
@@ -147,7 +125,7 @@ class ParametresController extends Controller
 
   // Pour voir les années précédentes d'activité
   /**
-   * @Security("has_role('ROLE_SCOLARITE')")
+   * @Security("has_role('ROLE_USER')")
    */
   public function anneesPrecedentesAction(Request $request, $as)
   {

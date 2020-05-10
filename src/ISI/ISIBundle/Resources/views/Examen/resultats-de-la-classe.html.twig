@@ -1,7 +1,14 @@
-{% extends "ISIBundle:Scolarite:index.html.twig" %}
+{% extends "ISIBundle:Examen:index.html.twig" %}
 {% block pageTitle %}
     Résultats de la classe - {{ parent() }}
 {% endblock %}
+
+
+{% block contextual_menu %}
+  {{ include("ISIBundle:Examen:contextual-menu-notes-exam.html.twig") }}
+{% endblock %}
+
+
 
 {% block content %}
     {% for message in app.session.flashbag.get('info') %}

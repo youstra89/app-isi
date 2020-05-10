@@ -1,5 +1,12 @@
 {% extends "ISIBundle::layout.html.twig" %}
 
+
+{% block stylesheets %}
+  {# <link rel="stylesheet" href="http://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css"> #}
+  <link rel="stylesheet" type="text/css" href="{{ asset('../vendor/semantic/ui/dist/semantic.min.css') }}" />
+  <link rel="stylesheet" type="text/css" href="{{ asset('DataTables/datatables.min.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" />
+{% endblock %}
 {% block title %}
   {% block pageTitle %}
     {% if regime is same as ('A') %}
@@ -47,17 +54,16 @@
 {% endblock %}
 
 {% block body %}
-  <div class="ui {{ dir2 }} aligned segment">
-    <h1 class="ui header">
-      <i class="student icon"></i>{{ 'Espace élèves'|trans }}
-      {% if regime is same as ('A') %}
-        {{ ' - Academie' }}
-      {% else %}
-        {{' - Formation'}}
-      {% endif %}
-    </h1>
-  </div>
-
+<div class="ui {{ dir2 }} aligned segment">
+  <h1 class="ui header">
+    <i class="student icon"></i>{{ 'Espace élèves'|trans }}
+    {% if regime is same as ('A') %}
+      {{ ' - Academie' }}
+    {% else %}
+      {{' - Formation'}}
+    {% endif %}
+  </h1>
+</div>
   {% if eleves is not defined %}
     {% block content %}
     {% endblock %}
@@ -91,16 +97,11 @@
         <i class="plus icon"></i>
         {{ 'Préinscrire un nouvel élève'|trans }}
       </button>
-    </a>
-    <form class="" action="" method="post">
-      <input type="hidden" id="asec" value="{{ asec }}">
-      <input type="hidden" id="regime" value="{{ regime }}">
-    </form>
-    {# <table id="table1" cellspacing="0" class="mytable filterable ui very basic table"> #}
+    </a><br><br>
     <table id="example" class="display nowrap" style="width:100%">
       <thead>
         <tr>
-          <th align="center">N°</th>
+          <th align="center" width="5px">N°</th>
           <th>{{ 'Matricule'|trans }}</th>
           <th>Nom & Prénom</th>
           <th>الإسم و اللقب</th>
@@ -159,12 +160,9 @@
         </tr> 
        {% endfor %}
       </tbody>
-       <!--<tbody>
-
-      </tbody> -->
-      {# <tfoot>
+      <tfoot>
         <tr>
-          <th align="center">N°</th>
+          <th align="center" width="5px">N°</th>
           <th>{{ 'Matricule'|trans }}</th>
           <th>Nom & Prénom</th>
           <th>الإسم و اللقب</th>
@@ -172,116 +170,54 @@
           <th>{{ 'Date de naissance'|trans }}</th>
           <th>{{ 'Actions'|trans }}</th>
         </tr>
-      </tfoot> #}
+      </tfoot>
     </table>
-    {# <div id="test" data-is-test="{{ eleves }}"></div> #}
 
-    {# {{ dump(eleves)}} #}
-
-    <script data-config>
-      console.log("JavaScript bien chargé");
-      $('document').ready(function(){
-    var test = $('#test').data("isTest");
-    console.log(test);
-        console.log("Etape 1");
-        console.log({{eleves|json_encode|raw}});
-          var list = $('#list');
-          console.log("Récupération de la liste");
-          /*$.ajax({
-            url: "{{ path('selection_eleves_regime', {'as': asec, 'regime': regime}) }}",
-            type: "GET",
-            dataType: "json",
-            success: function (data){
-                console.log(data)
-                for(var i in data)
-                var id = data[i].id
-                var lien = { path('isi_edit_eleve', {'as': asec, 'regime': regime, 'id': id}) };
-                $("#table1 > tbody:last")
-                  .append(
-                    "<tr><td>" + data[i].id +
-                    "</td><td>" + data[i].matricule +
-                    "</td><td>" + data[i].nomFr + " " + data[i].pnomFr +
-                    "</td><td>" + data[i].nomAr + " " + data[i].pnomAr +
-                    "</td><td>" + data[i].sexe +
-                    "</td><td>" + data[i].dateNaissance['date'] +
-                    "</td><td><div class='" + lien + "'><i class='edit icon'></i></a></div></td></tr>"
-                    // "</td><td><div class='home-eleve' data-tooltip='Modifier les information de l\'élève'><a href='/espace-eleves/edit-eleve-{{ asec }}-{{ regime }}-" + data[i].id + ".html'><i class='edit icon'></i></a></div></td></tr>"
-      				)
-            }
-          });*/
-      });
-
-      {# var filtersConfig = {
-        base_path: '/markaz/web/TableFilter/dist/tablefilter/',
-        col_0: "none",
-        col_4: 'select',
-        col_6: "none",
-        alternate_rows: true,
-        rows_counter: true,
-        btn_reset: true,
-        loader: true,
-        status_bar: true,
-        mark_active_columns: true,
-        highlight_keywords: true,
-        no_results_message: true,
-        col_types: [
-          'number', 'string', 'string',
-          'string', 'string', 'string',
-        ],
-        
-        extensions: [{ name: 'sort' }]
-      };
-
-      var tf = new TableFilter('table1', filtersConfig);
-      tf.init(); #}
-    </script>
     <script>
-         /* $(document).ready(function() {
-          $('#example').DataTable( {
-              {# "ajax": JSON.parse('{{ eleves|raw}}');, #}
-              //"ajax": {{ eleves|json_encode|raw }},
-              "columns": [
-                  { "data": "matricule" },
-                  { "data": "pnomFr" },
-                  { "data": "pnomAr" },
-                  { "data": "sexe" },
-                  { "data": "dateNaissance" }
-              ]
-          } );
-      } );*/
-      $(document).ready(function() { 
-        $('#example').DataTable( {
-          "scrollY": 500,
-          "scrollX": true,
-          "pageLength": 100,
-          "lengthMenu": [ 50, 100, 200 ]
-        });
-        $.ajax({
-            //url: "{{ path('selection_eleves_regime', {'as': asec, 'regime': regime}) }}",
-            type: "GET",
-            dataType: "json",
-            success: function (data){
-                //console.log(data)
-                $('#example').DataTable( {
-                  /*"ajax": data,
-                  "columns": [
-                      { "data": "id" },
-                      { "data": "matricule" },
-                      { "data": "nomFr" },
-                      { "data": "nomAr" },
-                      { "data": "sexe" },
-                      { "data": "dateNaissance" },
-                      { "data": "action" },
-                  ],*/
-                  "scrollY": 500,
-                  "scrollX": true,
-                  "pageLength": 100,
-                  "lengthMenu": [ 50, 100, 200 ]
-                });
-            },
-          });
+      // $(document).ready(function() { 
+      //   $('#example').DataTable( {
+      //     "scrollY": 500,
+      //     "scrollX": true,
+      //     "pageLength": 100,
+      //     "lengthMenu": [ 50, 100, 200 ]
+      //   });
+      //   $.ajax({
+      //       type: "GET",
+      //       dataType: "json",
+      //       success: function (data){
+      //           $('#example').DataTable( {
+      //             "scrollY": 500,
+      //             "scrollX": true,
+      //             "pageLength": 100,
+      //             "lengthMenu": [ 50, 100, 200 ]
+      //           });
+      //       },
+      //     });
         
-      });
+      // });
+      $(document).ready(function() {
+				// Setup - add a text input to each footer cell
+				$('#example tfoot th').each( function () {
+					var title = $(this).text();
+					$(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+				} );
+			
+				// DataTable
+				var table = $('#example').DataTable();
+			
+				// Apply the search
+				table.columns().every( function () {
+					var that = this;
+			
+					$( 'input', this.footer() ).on( 'keyup change clear', function () {
+						if ( that.search() !== this.value ) {
+							that
+								.search( this.value )
+								.draw();
+						}
+					} );
+				} );
+			} );
     </script>
     </div>
   {% endif %}

@@ -39,10 +39,10 @@
             <i class="dropdown icon"></i>
             <div class="menu">
               <span class="sub-menu">
-                <a class="item" href="{{ path('etude_progression_home', {'as': asec, 'regime': 'A'}) }}">
+                <a class="item" href="{{ path('etude_niveaux_matieres', {'as': asec, 'regime': 'A'}) }}">
                   {{ 'Academie'|trans }}
                 </a>
-                <a class="item" href="{{ path('etude_progression_home', {'as': asec, 'regime': 'F'}) }}">
+                <a class="item" href="{{ path('etude_niveaux_matieres', {'as': asec, 'regime': 'F'}) }}">
                   {{ 'Centre de formation'|trans }}
                 </a>
               </span>
@@ -52,6 +52,24 @@
         <a class="item" href="{{ path('etude_home', {'as': asec}) }}">
           <h4 class="ui header"><span class="style-main-menu"><i class="book icon"></i> {{ 'Mémorisation de coran'|trans }}</span></h4>
         </a>
+        <div class="ui input">
+          <div class="ui simple dropdown item">
+            <a>
+              <h4 class="ui header"><span class="style-main-menu"><i class="users icon"></i>{{ 'Notes'|trans }}</span></h4>
+            </a>
+            <i class="dropdown icon"></i>
+            <div class="menu">
+              <span class="sub-menu">
+                <a class="item" href="{{ path('etude_notes', {'as': asec, 'regime': 'A'}) }}">
+                  {{ 'Academie'|trans }}
+                </a>
+                <a class="item" href="{{ path('etude_notes', {'as': asec, 'regime': 'F'}) }}">
+                  {{ 'Centre de formation'|trans }}
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
         <a class="item" href="{{ path('etude_examen', {'as': asec}) }}">
           <h4 class="ui header"><span class="style-main-menu"><i class="settings icon"></i> {{ 'Examens'|trans }}</span></h4>
         </a>

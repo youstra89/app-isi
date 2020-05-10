@@ -1,0 +1,77 @@
+{# ISIBundle/Ressources/views/Scolarite #}
+{% extends "ISIBundle:Scolarite:index.html.twig" %}
+{% block title %}
+    {% block pageTitle %}
+        Mise à jour informations des élèves {{ classe.libelleFr }} {{ annee.libelle }}
+    {% endblock %}
+{% endblock %}
+
+{% block body %}
+
+    {% if eleves is empty %}
+        <p>{{ 'Inscrivez d\'abord des élèves dans cette classe.'|trans }}</p>
+    {% else %}
+        <div class="titre-document">
+            <center>
+                <h1>{{ 'Mise à jour des informations des élèves de '|trans }}{{ classe.libelleFr }}</h1>
+            </center>
+        </div>
+        <br />
+        <br />
+        {# {{dump(eleves)}} #}
+        <form class="ui mini form" action="" method="post">
+            <table class="ui selectable celled table" width="100%" align="center">
+                <thead>
+                    <tr class="table-header" bgcolor="">
+                        <th width="2%" align="center">N°</th>
+                        <th width="8%" class="nomAr">الرقم التسلسلي</th>
+                        <th width="10%" class="nomAr">الاسم و اللقب</th>
+                        <th width="20%">{{ 'Nom & Prénom'|trans }}</th>
+                        <th width="10%" class="nomAr">Date de naissance</th>
+                        <th width="10%" class="nomAr">Commune</th>
+                        <th width="10%" class="nomAr">Résidence</th>
+                        <th width="10%" class="nomAr">Contact</th>
+                        <th width="10%" class="nomAr">Contact père</th>
+                        <th width="10%" class="nomAr">Contact mère</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set numero = 0 %}
+                    {% set color = '' %}
+                    {% for eleve in eleves %}
+                        {# Ce code me permet d'alterner la couleur des lignes du tableau #}
+                        {% if (numero % 2) == 1 %}
+                            {% set color = 'white' %}
+                        {% else %}
+                            {% set color = '#DCDCDC' %}
+                        {% endif %}
+                        {# Pour le sexe #}
+                        {% if eleve.sexe == 1 %}
+                            {% set sexe = 'Masculin' %}
+                        {% else %}
+                            {% set sexe = 'Féminin' %}
+                        {% endif %}
+                        {% set numero = numero + 1 %}
+                        <tr class="line-table" bgcolor={{ color }}>
+                            <td align="center">{{ numero }}</td>
+                            <td>{{ eleve.matricule }}</td>
+                            <td class="nomEleveAr">{{ eleve.pnomAr }} {{ eleve.nomAr }}</td>
+                            <td>{{ eleve.nomFr }} {{ eleve.pnomFr }}</td>
+                            <td><input type="date" name="dates[{{eleve.id}}]" value="{{ eleve.dateNaissance|date("Y-m-d") }}"></td>
+                            <td><input type="text" name="communes[{{eleve.id}}]" value="{{ eleve.commune }}"></td>
+                            <td><input type="text" name="lieux[{{eleve.id}}]" value="{{ eleve.residence }}"></td>
+                            <td><input type="text" name="contact[{{eleve.id}}]" value="{{ eleve.contact }}"></td>
+                            <td><input type="text" name="contactP[{{eleve.id}}]" value="{{ eleve.contactPere }}"></td>
+                            <td><input type="text" name="contactM[{{eleve.id}}]" value="{{ eleve.contactMere }}"></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br />
+            <button class="ui right floated labeled icon massive button">
+            <i class="save icon"></i> {{ 'Appliquer les changements'|trans }}
+            </button>
+        </form>
+    {% endif %}
+
+{% endblock %}

@@ -4,8 +4,15 @@
         Fiche de notes
     {% endblock %}
 
-{% block body %}
 
+
+{% block contextual_menu %}
+  {{ include("ISIBundle:Examen:contextual-menu-fiche-notes-exam.html.twig") }}
+{% endblock %}
+
+
+
+{% block body %}
     {% if eleves is empty %}
         <p>{{ 'Inscrivez d\'abord des élèves dans cette classe'|trans }}</p>
     {% else %}

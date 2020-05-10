@@ -1,0 +1,10 @@
+<div class="ui vertical menu">
+	<div class="item">
+        <div class="header">{{ 'Gestion des notes'|trans }}</div>
+        <div class="menu">
+            <a class="item" href="{{path('isi_saisie_de_notes', {'as': asec, 'regime': regime})}}">{{ 'Notes & résultats'|trans }}</a>
+            <a class="item" href="{{path('isi_statiqtiques', {'as': asec, 'regime': regime})}}">{{ 'Données statistiques'|trans }}</a>
+            <a class="item" href="{{path('isi_resultats_annuels', {'as': asec, 'regime': regime, 'direction': 'etude'})}}">{{ 'Résultats annuels'|trans }}</a>
+        </div>
+    </div>
+</div>

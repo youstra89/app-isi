@@ -4,6 +4,14 @@
     Tirer une fiche de note
 {% endblock %}
 
+
+
+{% block contextual_menu %}
+  {{ include("ISIBundle:Examen:contextual-menu-fiche-notes-exam.html.twig") }}
+{% endblock %}
+
+
+
 {% block content %}
 <h3>{{ 'Impression des fiches de notes de'|trans }} {{ classe.libelleFr }}</h3>
 

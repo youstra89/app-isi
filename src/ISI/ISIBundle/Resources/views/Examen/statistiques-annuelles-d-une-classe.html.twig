@@ -1,8 +1,22 @@
-{# Page d'ajout d'un nouvel examen #}
-{% extends "ISIBundle:Scolarite:index.html.twig" %}
+{% set template = 'ISIBundle:Examen:index.html.twig' %}
+{% if direction == 'scolarite' %}
+  {% set template = 'ISIBundle:Scolarite:index.html.twig' %}
+{% endif %}
+{% extends template %}
+
+
+
 {% block pageTitle %}
     Résultats généraux - {{ parent() }}
 {% endblock %}
+
+
+
+{% block contextual_menu %}
+  {{ include("ISIBundle:Examen:contextual-menu-notes-exam.html.twig") }}
+{% endblock %}
+
+
 
 {% block content %}
     <div class="ui info message">

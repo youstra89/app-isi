@@ -1,9 +1,15 @@
 {# On affiche toues les classes d'un niveau de formation. On sélectionne alors une classe pour aller saisir les notes #}
-{% extends 'ISIBundle:Scolarite:index.html.twig' %}
+{% extends 'ISIBundle:Examen:index.html.twig' %}
 
 {% block pageTitle %}
   Accueil Statistiques
 {% endblock %}
+
+
+{% block contextual_menu %}
+  {{ include("ISIBundle:Examen:contextual-menu-notes-exam.html.twig") }}
+{% endblock %}
+
 
 
 {% block content %}

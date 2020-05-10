@@ -1,12 +1,12 @@
 {# Page d'ajout d'une nouvelle année scolaire #}
 
-{% extends "ISIBundle:Parametres:index.html.twig" %}
+{% extends "ISIBundle::layout.html.twig" %}
 
 {% block pageTitle %}
 	Années précédentes
 {% endblock %}
 
-{% block content %}
+{% block body %}
 	<h3>{{ 'Années scolaires précédentes'|trans }}</h3>
 	<div class="ui cards">
 		{% for anneeP in annees %}
@@ -18,7 +18,7 @@
 				{% set route_params = "5" %}
 				<div class="extra content">
 					<div class="ui buttons">
-						<a href="{{ path('isi_parametres', {'as': anneeP.id}) }}">
+						<a href="{{ path('homepage', {'as': anneeP.id}) }}">
 							<div class="ui basic green button">{{ 'Revenir en '|trans }}{{ anneeP.libelle}} </div>
 						</a>
 					</div>

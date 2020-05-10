@@ -15,11 +15,11 @@ class AdminController extends Controller
     /**
      * @Security("has_role('ROLE_SUPER_ADMIN')")
      */
-    public function indexAction(Request $request, $as)
+    public function indexAction(Request $request, int $as)
     {
         $em = $this->getDoctrine()->getManager();
         $repoAnnee = $em->getRepository('ISIBundle:Annee');
-        $annee = $repoAnnee->anneeEnCours();
+        $annee = $repoAnnee->find($as);
         return $this->render('ISIBundle:Admin:index.html.twig', [
             'asec' => $annee->getId(),
             'annee' => $annee

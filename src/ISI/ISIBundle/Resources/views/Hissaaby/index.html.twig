@@ -11,6 +11,8 @@
         {% set template = "ISIBundle:Enseignant:layout.html.twig" %}
     {% elseif is_granted('ROLE_ETUDE') %}
         {% set template = "ISIBundle:Etude:layout.html.twig" %}
+    {% elseif is_granted('ROLE_SCOLARITE') %}
+        {% set template = "ISIBundle::layout.html.twig" %}
     {% endif %}
 {% endif %}
 
@@ -25,6 +27,9 @@
             <p>{{ 'Nom'|trans }}: <strong>{{ app.user.username }}</strong></p>
         </div>
         <br />
+        <a href="{{ path('fos_user_change_password', {'as': asec}) }}">
+                <button class="ui positive button">{{ 'Changer mon mot de passe'|trans }}</button>
+            </a>
         <!-- Début d'affichage des notifications et des messages d'erreur -->
         {% for message in app.session.flashbag.get('error') %}
             <div class="ui red message">

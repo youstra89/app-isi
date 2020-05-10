@@ -5,12 +5,6 @@ namespace ISI\ISIBundle\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use ISI\ISIBundle\Entity\Annee;
-use ISI\ISIBundle\Repository\AnneeRepository;
-
-use Doctrine\ORM\EntityRepository;
-
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class DefaultController extends Controller
 {
@@ -19,6 +13,9 @@ class DefaultController extends Controller
         $em = $this->getDoctrine()->getManager();
         $repoAnnee = $em->getRepository('ISIBundle:Annee');
         $annee = $repoAnnee->anneeEnCours();
+        if(null !== $request->get('as')){
+            $annee = $repoAnnee->find($request->get('as'));
+        }
 
         // Cette condition ne sera vraie que lorsque nous seront à la toute première exécution du programme
         if($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN'))
@@ -44,7 +41,7 @@ class DefaultController extends Controller
                 return $this->redirect($this->generateUrl('isi_nouvelle_annee', ['as' => 0]));
             }
 
-            return $this->redirectToRoute('isi_home_scolarite');
+            return $this->redirectToRoute('isi_home_scolarite', ['as' => $annee->getId()]);
         }
             // return $this->redirectToRoute('isi_homepage');
         elseif($this->get('security.authorization_checker')->isGranted('ROLE_SCOLARITE') || $this->get('security.authorization_checker')->isGranted('ROLE_PREINSCRIPTION'))
@@ -52,7 +49,7 @@ class DefaultController extends Controller
             if(empty($annee))
                 return new Response('Vous ne pouvez pas utiliser l\'application avant votre directeur!!!');
 
-            return $this->redirectToRoute('isi_home_scolarite');
+            return $this->redirectToRoute('isi_home_scolarite', ['as' => $annee->getId()]);
         }
         elseif($this->get('security.authorization_checker')->isGranted('ROLE_NOTE'))
         {

@@ -390,7 +390,7 @@ class EtudeController extends Controller
       $repoNiveau          = $em->getRepository('ISIBundle:Niveau');
       $repoGroupeformation = $em->getRepository('ISIBundle:Groupeformation');
 
-      $grpFormation = $repoGroupeformation->findOneBy(['referenceGrp' => $regime]);
+      $grpFormation = $repoGroupeformation->findOneBy(['reference' => $regime]);
       $annee  = $repoAnnee->find($as);
 
       $niveau = new Niveau();
@@ -650,6 +650,26 @@ class EtudeController extends Controller
         'asec'    => $as,
         'annee'   => $annee,
         'examens' => $examens
+      ]);
+    }
+
+    /**
+     * @Security("has_role('ROLE_NOTE' or 'ROLE_ETUDE')")
+     */
+    public function notesAction($as, $regime)
+    {
+      $em = $this->getDoctrine()->getManager();
+      $repoAnnee  = $em->getRepository('ISIBundle:Annee');
+      $repoExamen = $em->getRepository('ISIBundle:Examen');
+
+      $examen = $repoExamen->dernierExamen($as);
+      $annee  = $repoAnnee->find($as);
+
+      return $this->render('ISIBundle:Etude:accueil-notes.html.twig', [
+        'asec'   => $as,
+        'annee'  => $annee,
+        'regime' => $regime,
+        'examen' => $examen
       ]);
     }
 
