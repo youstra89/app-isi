@@ -1,11 +1,11 @@
-{% extends "ORGBundle::layout.html.twig" %}
+{% extends "ISIBundle::layout.html.twig" %}
 
 {% block title %}
   Dispositions
 {% endblock %}
 
 {% block contextual_menu %}
-  {# {% include('ORGBundle::contextual-menu.html.twig') %} #}
+  {# {% include('ISIBundle::contextual-menu.html.twig') %} #}
 {% endblock %}
 
 
@@ -35,6 +35,11 @@
 
 
 {% block body %}
+  <div class="ui right aligned segment">
+    <h1 class="ui header">
+      <i class="student icon"></i>{{ 'Disposition en salle de classe'|trans }}
+    </h1>
+  </div>
   <h2 class="ui header">
     {# <img src="/images/icons/plugin.png"> #}
     <div class="content">

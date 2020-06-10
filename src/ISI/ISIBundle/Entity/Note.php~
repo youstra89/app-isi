@@ -17,7 +17,7 @@ class Note
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
@@ -31,7 +31,7 @@ class Note
     /**
      * @var boolean
      *
-     * @ORM\Column(name="participation", type="boolean", nullable=true)
+     * @ORM\Column(name="participation", type="boolean")
      */
     private $participation;
 

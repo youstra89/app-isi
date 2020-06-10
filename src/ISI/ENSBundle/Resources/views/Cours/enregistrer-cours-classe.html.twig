@@ -1,16 +1,24 @@
 {# Accueil pour l'édition des listes de classe' #}
 
-{% extends "ENSBundle:Enseignant:layout.html.twig" %}
+{% extends "ENSBundle::layout.html.twig" %}
 
 
 
-{% block pageTitle %}
+{% block stylesheets %}
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+  <link href="{{ asset('css/select2.min.css') }}" rel="stylesheet" />
+{% endblock %}
+
+
+
+
+{% block title %}
   Enregistrement des cours de la classe {{ classe.libelleFr }}
 {% endblock %}
 
 
 {% block titre_page %}
-  <i class="student icon"></i>{{ 'GESTION DES COURS'|trans }}
+  <i class="student icon"></i>{{ 'Gestion des cours'|trans }}
 {% endblock %}
 
 
@@ -37,7 +45,7 @@
           </thead>
           <tbody>
             {% set numero = 0 %}
-            {% for matiere in matieres %}
+            {% for matiere in matieres if (matiere.id != 1 and matiere.id != 16 and regime == "A" and matiere.id != 15) or (matiere.id != 16 and regime == "F" and matiere.id != 15) %}
               {% set numero = numero + 1 %}
               <tr>
                 <td>
@@ -47,9 +55,9 @@
                   {{ matiere.libelle }}
                 </td>
                 <td>
-                  <select name="enseignants[{{ matiere.id }}]" id="">
+                  <select class="js-example-basic-single" name="enseignants[{{ matiere.id }}]" id="">
                     <option value="">Sélectionner un enseignant</option>
-                    {% for item in anneeContrats %}
+                    {% for item in anneeContrats if item.contrat.enseignant.enseignant == 1 and item.contrat.enseignant.arabe == 1 %}
                       <option value="{{ item.id }}" {% if infoCours[matiere.id] is defined and infoCours[matiere.id].anneeContrat.id == item.id %}selected{% endif %}>{{ item.contrat.enseignant.nomFr }} {{ item.contrat.enseignant.pnomFr }}</option>
                     {% endfor %}
                   </select>
@@ -66,4 +74,12 @@
 {% endblock %}
 
 {% block scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <script src="{{ asset('js/jquery-3.3.1.js') }}"></script>
+    <script src="{{ asset('js/select2.min.js') }}"></script>
+    <script>
+    $(document).ready(function() {
+      $('.js-example-basic-single').select2();
+    });
+    </script>
 {% endblock %}

@@ -28,7 +28,7 @@ use ISI\ENSBundle\Form\AnneeContratAbsenceType;
 class AbsencesEtRetardsController extends Controller
 {
     /**
-     * @Security("has_role('ROLE_ENSEIGNANT')")
+     * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
      */
     public function indexRetardsAction(Request $request, $as)
     {
@@ -77,7 +77,7 @@ class AbsencesEtRetardsController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_ENSEIGNANT')")
+     * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
      */
     public function saisieDesRetardsAction(Request $request, $as, $periode)
     {
@@ -137,7 +137,7 @@ class AbsencesEtRetardsController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_ENSEIGNANT')")
+     * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
      */
     public function apercuDesRetardsHomeAction(Request $request, $as)
     {
@@ -167,7 +167,7 @@ class AbsencesEtRetardsController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_ENSEIGNANT')")
+     * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
      */
     public function apercuDesRetardsMoisAction(Request $request, $as, $moisId)
     {
@@ -207,7 +207,7 @@ class AbsencesEtRetardsController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_ENSEIGNANT')")
+     * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
      */
     public function apercuDesRetardsMoisCumulAction(Request $request, $as, $moisId)
     {
@@ -238,7 +238,7 @@ class AbsencesEtRetardsController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_ENSEIGNANT')")
+     * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
      */
     public function indexAbsencesAction(Request $request, $as)
     {
@@ -258,7 +258,7 @@ class AbsencesEtRetardsController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_ENSEIGNANT')")
+     * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
      */
     public function enregistrerAbsenceAction(Request $request, $as, $contratId)
     {
@@ -301,7 +301,7 @@ class AbsencesEtRetardsController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_ENSEIGNANT')")
+     * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
      */
     public function apercuDesAbsencesHomeAction(Request $request, $as)
     {

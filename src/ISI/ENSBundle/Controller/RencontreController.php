@@ -5,33 +5,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
-use ISI\ISIBundle\Entity\Annee;
-use ISI\ENSBundle\Entity\Contrat;
 use ISI\ENSBundle\Entity\Rencontre;
-use ISI\ENSBundle\Entity\Enseignant;
-use ISI\ENSBundle\Entity\AnneeContrat;
 use ISI\ENSBundle\Entity\AnneeContratRencontre;
 
-use ISI\ENSBundle\Form\ContratType;
 use ISI\ENSBundle\Form\RencontreType;
-use ISI\ENSBundle\Form\EnseignantType;
-use ISI\ENSBundle\Form\AnneeContratType;
-use ISI\ENSBundle\Form\AnneeContratRencontreType;
-
-use ISI\ENSBundle\Repository\ContratRepository;
-use ISI\ENSBundle\Repository\RencontreRepository;
-use ISI\ENSBundle\Repository\EnseignantRepository;
-use ISI\ISIBundle\Repository\AnneeContratRepository;
-use ISI\ISIBundle\Repository\AnneeRepository;
-use ISI\ISIBundle\Repository\AnneeRencontreRepository;
-
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class RencontreController extends Controller
 {
   /**
-   * @Security("has_role('ROLE_ENSEIGNANT')")
+   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
    */
   public function indexAction(Request $request, $as)
   {
@@ -50,7 +33,7 @@ class RencontreController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_ENSEIGNANT')")
+   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
    * */
   public function addRencontreAction(Request $request, $as)
   {
@@ -94,7 +77,7 @@ class RencontreController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_ENSEIGNANT')")
+   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
    * */
   public function editRencontreAction(Request $request, $as, $rencontreId)
   {
@@ -130,7 +113,7 @@ class RencontreController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_ENSEIGNANT')")
+   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
    * */
   public function participantsRencontreAction(Request $request, $as, $rencontreId)
   {
@@ -198,7 +181,7 @@ class RencontreController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_ENSEIGNANT')")
+   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
    * */
   public function listeDesParticipantsRencontreAction(Request $request, $as, $rencontreId)
   {

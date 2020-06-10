@@ -215,7 +215,7 @@
           error: function (xhr, status, error) {
             console.log(error)
             var init = document.createElement("option");
-            init.value = 0;
+            init.value = "";
             init.text = 'Pas de livre disponible';
             select.add(init);
           }

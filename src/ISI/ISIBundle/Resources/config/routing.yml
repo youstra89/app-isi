@@ -26,6 +26,10 @@ import-export:
     resource: "@ISIBundle/Resources/config/routing/import-export.yml"
     prefix:   /import-export
 
+disposition:
+    resource: "@ISIBundle/Resources/config/routing/disposition.yml"
+    prefix:   /disposition
+
 #------------------------------------ ESPACE CORAN ---------------------------------------
 # Page d'accueil des l'espace coran, ceux qui ne font que mémoriser le coran
 isi_espace_coran_home:

@@ -15,10 +15,10 @@
       {% block title %}
       {% endblock %}
     </title>
-    {% block stylesheets %}
       <link rel="stylesheet" type="text/css" href="{{ asset('../vendor/semantic/ui/dist/semantic.min.css') }}" /> {# Site CSS #}
       <lin rel="stylesheet" href="{{ asset('../vendor/twbs/bootstrap/dist/css/bootstrap.min.css') }}" />
       <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" />
+    {% block stylesheets %}
     {% endblock %}
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
   </head>
@@ -146,7 +146,7 @@
             <div class="ui {{ dir2 }} aligned segment">
               <h1 class="ui header">
                 {% block titre_page %}
-                  <i class="student icon"></i>{{ 'GESTION DES ENSEIGNANTS'|trans }}
+                  <i class="student icon"></i>{{ 'Gestion des enseignants'|trans }}
                 {% endblock %}
               </h1>
             </div>
@@ -185,7 +185,9 @@
         base_path: '/markaz/web/TableFilter/dist/tablefilter/',
         col_0: 'none',
         col_4: 'select',
-        col_6: 'none',
+        col_6: 'select',
+        col_7: 'select',
+        col_8: 'none',
         alternate_rows: true,
         rows_counter: true,
         btn_reset: true,

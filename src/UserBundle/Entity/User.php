@@ -28,14 +28,14 @@ class User extends BaseUser
     /**
      * @var string
      *
-     * @ORM\Column(name="nom", type="string")
+     * @ORM\Column(name="nom", type="string", nullable=true)
      */
     protected $nom;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="pnom", type="string")
+     * @ORM\Column(name="pnom", type="string", nullable=true)
      */
     protected $pnom;
 

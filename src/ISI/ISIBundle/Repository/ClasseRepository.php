@@ -129,5 +129,37 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
     return $qb->getQuery()
             ->getResult();
   }
+
+  public function lesClassesDeLEnseignant(int $as, int $enseignantId)
+  {
+    $qb = $this->createQueryBuilder('c');
+    $qb->join('c.cours', 'crs')
+        ->join('crs.anneeContrat', 'ac')
+        ->join('ac.contrat', 'cont')
+        ->join('cont.enseignant', 'e')
+        ->join('ac.annee', 'an')
+        ->where('an.id = :as AND e.id = :enseignantId')
+        ->setParameter('as', $as)
+        ->setParameter('enseignantId', $enseignantId)
+        ->setParameter('as', $as);
+
+    return $qb->getQuery()
+            ->getResult();
+  }
+
+  public function classesAyantEmploiDuTemps(int $as, string $regime)
+  {
+      $qb = $this->createQueryBuilder('c');
+      $qb ->join('c.cours', 'ac')
+          ->join('c.niveau', 'n')
+          ->join('n.groupeFormation', 'grpF')
+          ->join('ac.annee', 'an')
+          ->where('an.id = :as AND grpF.reference = :regime')
+          ->setParameter('as', $as)
+          ->setParameter('regime', $regime);
+
+      return $qb->getQuery()
+              ->getResult();
+  }
 }
 ?>

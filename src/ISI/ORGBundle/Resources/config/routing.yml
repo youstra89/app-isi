@@ -35,7 +35,3 @@ activite_externe:
 cours:
     resource: "@ORGBundle/Resources/config/routing/cours.yml"
     prefix:   /cours
-
-disposition:
-    resource: "@ORGBundle/Resources/config/routing/disposition.yml"
-    prefix:   /disposition

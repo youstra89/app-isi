@@ -1,16 +1,53 @@
 {# Page d'ajout d'un nouvel examen #}
 
-{% extends "ENSBundle:Enseignant:index.html.twig" %}
+{% extends "ENSBundle::layout.html.twig" %}
 
 {% block pageTitle %}
-	Mise à jour info. {{ enseignant.pnomAr }} {{ enseignant.nomAr }}
+	Enregistrer un agent
 {% endblock %}
 
 {% block corps %}
-	<h2>{{ 'Mise à jour des informations'|trans }}  <font  class="ui massive blue tag label">{{ enseignant.nomFr }} {{ enseignant.pnomFr }}</font></h2>
-	<center><h2>{{ enseignant.matricule }}</h2></center><br>
-	<div class="form-group">
+	<h2>{{ 'Enregistrement d\'un nouvel agent'|trans }}</h2>
+	<p>{{ 'Le matricule'|trans }}: <b>{{matricule}}</b></p>
+	<div class="form-group"><br><br>
 		{{ form_start(form, {'attr': {'class': 'ui form'}}) }}
+			<div class="five fields">
+				<div class="field">
+					<div class="ui slider checkbox">
+						{{ form_widget(form.enseignant) }}
+						{{ form_errors(form.enseignant) }}
+						{{ form_label(form.enseignant, "Enseignant", {'label_attr': {'class': ''}}) }}
+					</div>
+				</div>
+				<div class="field">
+					<div class="ui slider checkbox">
+						{{ form_widget(form.arabe) }}
+						{{ form_errors(form.arabe) }}
+						{{ form_label(form.arabe, "Arabe", {'label_attr': {'class': ''}}) }}
+					</div>
+				</div>
+				<div class="field">
+					<div class="ui slider checkbox">
+						{{ form_widget(form.francais) }}
+						{{ form_errors(form.francais) }}
+						{{ form_label(form.francais, "Français", {'label_attr': {'class': ''}}) }}
+					</div>
+				</div>
+				<div class="field">
+					<div class="ui slider checkbox">
+						{{ form_widget(form.administrateur) }}
+						{{ form_errors(form.administrateur) }}
+						{{ form_label(form.administrateur, "Administrateur", {'label_attr': {'class': ''}}) }}
+					</div>
+				</div>
+				<div class="field">
+					<div class="ui slider checkbox">
+						{{ form_widget(form.autre) }}
+						{{ form_errors(form.autre) }}
+						{{ form_label(form.autre, "Autre", {'label_attr': {'class': ''}}) }}
+					</div>
+				</div>
+			</div><br><br>
 			<div class="two fields">
 				<div class="field">
 					<label for="">
@@ -47,14 +84,14 @@
 					</label> {{ form_widget(form.sexe, {'attr': {'class': 'sexe'}}) }}
 				</div>
 				<div class="field">
-					<label for="date">
-						{# {{ form_label(form.dateNaissance, "Date de naissance", {'label_attr': {'class': ''}}) }}
-						{{ form_errors(form.dateNaissance) }} #}
-						Date de naissance
-					</label> 
-					{# {{ form_widget(form.dateNaissance, {'attr': {'class': 'dateNaissance'}}) }} #}
-					<input type="date" name="date" required="required" value="{{ enseignant.dateNaissance|date("Y-m-d") }}" id="date"/>
-				</div>
+						<label for="">
+							{# {{ form_label(form.dateNaissance, "Date de naissance", {'label_attr': {'class': ''}}) }}
+							{{ form_errors(form.dateNaissance) }} #}
+							Date de naissance
+						</label> 
+						{# {{ form_widget(form.dateNaissance, {'attr': {'class': 'dateNaissance'}}) }} #}
+						<input type="date" name="date" required="required" />
+					</div>
 				<div class="field">
 					<label for="">
 						{{ form_label(form.lieuNaissance, "Lieu de naissance", {'label_attr': {'class': ''}}) }}
@@ -142,8 +179,8 @@
 						{{ form_errors(form.autresCompetences) }}
 				</label> {{ form_widget(form.autresCompetences, {'attr': {'class': 'diplomeObtenu'}}) }}
 			</div>
-		{{ form_widget(form.update, {'attr': {'class': 'ui positive button'}}) }}
-	  {{ form_end(form) }}
+			{{ form_widget(form.save, {'attr': {'class': 'ui primary button'}}) }}
+	  	{{ form_end(form) }}
 	</div>
 
 {% endblock %}

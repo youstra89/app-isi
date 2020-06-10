@@ -35,7 +35,14 @@
 				<div class="content">
 					<img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
 					<div class="header">{{ matiere.getLibelle }} </div>
-					<div class="meta">{{ matiere.getReferenceLangue.getLibelle }}</div>
+					<div class="meta">
+						{{ matiere.getReferenceLangue.getLibelle }}
+					</div>
+					<div class="meta">
+						{% if matiere.matiereMere %}
+							Matière enfant de {{ matiere.matiereMere.libelle }}
+						{% endif %}
+					</div>
 				</div>
 				<div class="extra content">
 					<div class="ui two buttons">

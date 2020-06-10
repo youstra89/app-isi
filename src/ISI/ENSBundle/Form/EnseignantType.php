@@ -9,15 +9,14 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 
 class EnseignantType extends AbstractType
 {
@@ -26,26 +25,26 @@ class EnseignantType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('nomFr',  TextType::class, ['required' => TRUE]) 
-                ->add('nomAr',  TextType::class, ['required' => TRUE])
-                ->add('pnomFr', TextType::class, ['required' => TRUE])
-                ->add('pnomAr', TextType::class, ['required' => TRUE])
+        $builder->add('nomFr',  TextType::class, ['required' => true]) 
+                ->add('nomAr',  TextType::class, ['required' => true])
+                ->add('pnomFr', TextType::class, ['required' => true])
+                ->add('pnomAr', TextType::class, ['required' => true])
                 ->add('sexe',   ChoiceType::class, array(
                     'choices' => array(
                       'Selectionner le genre' => '',
                       'Homme'                 => 1,
                       'Femme'                 => 2
                     )
-                  ), ['required' => TRUE])
+                  ), ['required' => true])
                 // ->add('dateNaissance',  BirthdayType::class, ['required' => TRUE])
-                ->add('lieuNaissance',  TextType::class,     ['required' => TRUE])
-                ->add('referenceCni',   TextType::class,     ['required' => TRUE])
-                ->add('contact',        TextType::class,     ['required' => TRUE])
-                ->add('email',          TextType::class,     ['required' => TRUE])
-                ->add('nationalite',    TextType::class,     ['required' => TRUE])
-                ->add('niveauEtude',    TextType::class,     ['required' => TRUE])
-                ->add('diplomeObtenu',  TextType::class,     ['required' => TRUE])
-                ->add('autresCompetences',      TextareaType::class,     ['required' => TRUE])
+                ->add('lieuNaissance',  TextType::class,     ['required' => true])
+                ->add('referenceCni',   TextType::class,     ['required' => true])
+                ->add('contact',        TextType::class,     ['required' => true])
+                ->add('email',          TextType::class,     ['required' => true])
+                ->add('nationalite',    TextType::class,     ['required' => true])
+                ->add('niveauEtude',    TextType::class,     ['required' => true])
+                ->add('diplomeObtenu',  TextType::class,     ['required' => true])
+                ->add('autresCompetences',      TextareaType::class,     ['required' => true])
                 ->add('situationMatrimoniale',  ChoiceType::class,   [
                     'choices' => array(
                         'Faites un choix' => '',
@@ -53,11 +52,17 @@ class EnseignantType extends AbstractType
                         'Marié(e)'        => 'Marié(e)',
                         'Divorcéé(e)'     => 'Divorcéé(e)'
                       )
-                    ], ['required' => TRUE])
-                ->add('residence',              TextType::class,     ['required' => TRUE])
-                ->add('expProfessionnelle',     IntegerType::class,  ['required' => TRUE])
-                ->add('languesParlees',         TextType::class,     ['required' => TRUE])
-                ->add('anneeObtention',         TextType::class,     ['required' => TRUE]);
+                    ], ['required' => true])
+                ->add('residence',              TextType::class,     ['required' => true])
+                ->add('expProfessionnelle',     IntegerType::class,  ['required'    => true])
+                ->add('languesParlees',         TextType::class,     ['required' => true])
+                ->add('anneeObtention',         TextType::class,     ['required' => true])
+                ->add('enseignant',             CheckboxType::class, ['required' => false])
+                ->add('arabe',                  CheckboxType::class, ['required' => false])
+                ->add('francais',               CheckboxType::class, ['required' => false])
+                ->add('administrateur',         CheckboxType::class, ['required' => false])
+                ->add('autre',                  CheckboxType::class, ['required' => false])
+        ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event)
         {

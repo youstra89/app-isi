@@ -6,7 +6,7 @@
     <i class="users icon"></i>Panel Admin
   {% endblock %}
 
-  {% block corps %}
+  {% block body %}
     <!-- Début d'affichage des notifications et des messages d'erreur -->
     {% for message in app.session.flashbag.get('error') %}
       <div class="ui red message">

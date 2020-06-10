@@ -63,7 +63,7 @@ class MySecurityController extends Controller
                 'username' => 'bambaY',
                 'password' => 'b@mb@you$$',
                 'email'    => 'bambaY@isi.islam',
-                'roles'    => ['ROLE_ENSEIGNANT']
+                'roles'    => ['ROLE_DIRECTION_ENSEIGNANT']
             ],
             6 => [
                 'username' => 'admin',

@@ -1,0 +1,87 @@
+{# Accueil pour l'édition des listes de classe' #}
+
+{% extends "ENSBundle::layout.html.twig" %}
+
+
+
+{% block stylesheets %}
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+  <link href="{{ asset('css/select2.min.css') }}" rel="stylesheet" />
+{% endblock %}
+
+
+
+
+{% block title %}
+  Enregistrement des cours de français de la classe {{ classe.libelleFr }}
+{% endblock %}
+
+
+{% block titre_page %}
+  <i class="student icon"></i>{{ 'Gestion des cours'|trans }}
+{% endblock %}
+
+
+{% block contextual_menu %}
+  {{ include("ENSBundle::contextual-menu-cours.html.twig") }}
+{% endblock %}
+
+
+
+{% block corps %}
+  <h3>{{ 'Enregistrement des cours de français de la classe'|trans }} {{ classe.libelleFr }}</h3>
+  {% if matieres is empty %}
+    <p>{{ 'Il n y a aucune matière pour ce niveau'|trans }}</p>
+  {% else %}
+    <div class="column" style="width:75%">
+      <form action="" method="post" class="ui form">
+        <table class="ui selectable very basic table" align="center" width="75%">
+          <thead>
+            <tr>
+              <th class="one wide">{{ 'N°'|trans }}</th>
+              <th>{{ 'Matière'|trans }}</th>
+              <th>{{ 'Enseignant'|trans }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% set numero = 0 %}
+            {% for matiere in matieres if matiere.matiereMere.id == 15 and regime == "A" %}
+              {# {% for item in matiere.matiereEnfants %} #}
+                {% set numero = numero + 1 %}
+                <tr>
+                  <td>
+                    {{ numero }}
+                  </td>
+                  <td>
+                    {{ matiere.libelle }}
+                  </td>
+                  <td>
+                    <select class="js-example-basic-single" name="enseignants[{{ matiere.id }}]" id="">
+                      <option value="">Sélectionner un enseignant</option>
+                      {% for item in anneeContrats if item.contrat.enseignant.enseignant == 1 and item.contrat.enseignant.francais == 1 %}
+                        <option value="{{ item.id }}" {% if infoCours[matiere.id] is defined and infoCours[matiere.id].anneeContrat.id == item.id %}selected{% endif %}>{{ item.contrat.enseignant.nomFr }} {{ item.contrat.enseignant.pnomFr }}</option>
+                      {% endfor %}
+                    </select>
+                  </td>
+                </tr>
+              {# {% endfor %} #}
+            {% endfor %}
+          </tbody>
+        </table>
+        <button class="ui primary large button">Enregistrer</button>
+      </form>
+    </div>
+  {% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <script src="{{ asset('js/jquery-3.3.1.js') }}"></script>
+    <script src="{{ asset('js/select2.min.js') }}"></script>
+    <script>
+    $(document).ready(function() {
+      $('.js-example-basic-single').select2();
+    });
+    </script>
+{% endblock %}

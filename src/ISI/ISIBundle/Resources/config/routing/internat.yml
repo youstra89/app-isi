@@ -20,6 +20,13 @@ internat_add_chambre:
     requirements:
         as: \d+
 
+internat_edit_chambre:
+    path:     /editer-des-chambres/{chambreId}/{as}.html
+    defaults: { _controller: ISIBundle:Internat:editChambres }
+    requirements:
+        as: \d+
+        chambreId: \d+
+
 # Ajouter un(e) élève à l'internat
 internat_add:
     path:     /ajouter-un-interne-home-{as}.html

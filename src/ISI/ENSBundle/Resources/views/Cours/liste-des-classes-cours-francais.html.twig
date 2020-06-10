@@ -1,0 +1,141 @@
+{# Accueil pour l'édition des listes de classe' #}
+
+{% extends "ENSBundle::layout.html.twig" %}
+
+
+
+{% block stylesheets %}
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+  <link href="{{ asset('css/select2.min.css') }}" rel="stylesheet" />
+{% endblock %}
+
+
+
+{% set grp = '' %}
+{% if regime is same as('A') %}
+  {% set grp = 'Académie' %}
+{% else %}
+  {% set grp = 'Formation' %}
+{% endif %}
+
+
+{% block pageTitle %}
+  Affectation des enseignants pour les cours de français
+{% endblock %}
+
+{% block titre_page %}
+  <i class="student icon"></i>{{ 'Gestion des cours'|trans }}
+{% endblock %}
+
+
+{% block contextual_menu %}
+  {{ include("ENSBundle::contextual-menu-cours.html.twig") }}
+{% endblock %}
+
+
+{% block corps %}
+  <h3>{{ 'Affectation des enseignants pour les cours de français'|trans }} : {{grp}}</h3>
+{% if classes is empty %}
+  <p>{{ 'Pas de classes pour le moment'|trans }}</p>
+{% else %}
+  <div class="column" style="width:75%">
+      <table class="ui selectable very basic table" id="classes">
+        <thead>
+          <tr>
+            <th width="10%">N°</th>
+            <th>Niveaux</th>
+            <th>Classses</th>
+            <th>المستويات</th>
+            <th>الفصول</th>
+            <th>Genre</th>
+            <th class="two wide">{{ 'Actions'|trans }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% set numero = 0 %}
+          {% for classe in classes %} 
+            {% if classe.niveau.groupeFormation.reference is same as(regime) %}
+              {% set numero = numero + 1 %}
+              {% set genre = '' %}
+              {% if classe.genre == 'H' %}
+                {% set genre = 'Homme' %}
+              {% elseif classe.genre == 'F' %}
+                {% set genre = 'Femme' %}
+              {% else %}
+                {% set genre = 'Mixte' %}
+              {% endif %}
+              <tr>
+                <td>
+                  <h4 class="ui image header">{{ numero }}</h4>
+                </td>
+                <td>
+                  <h4 class="ui image header">{{ classe.getNiveau.getLibelleFr }}</h4>
+                </td>
+                <td>
+                  <h4 class="ui image header">{{ classe.libellefr }}</h4>
+                </td>
+                <td>
+                  <h4 class="ui image header">{{ classe.getNiveau.getLibelleAr }}</h4>
+                </td>
+                <td>
+                  <h4 class="ui image header">{{ classe.libellear }}</h4>
+                </td>
+                <td>
+                  <h4 class="ui image header">{{ genre }}</h4>
+                </td>
+                <td>
+                  <a href="{{path('ens_cours_francais_de_la_classe', {'as': asec, 'regime': regime, 'classeId': classe.id})}}"  data-tooltip="Voir les cours de français de la classe">
+                    <i class="list icon"></i>
+                  </a>
+                  &nbsp;&nbsp;&nbsp;&nbsp;
+                  <a href="{{path('ens_enregistrer_cours_francais_classe', {'as': asec, 'regime': regime, 'classeId': classe.id})}}"  data-tooltip="Editer les cours de français de la classe">
+                    <i class="edit icon"></i>
+                  </a>
+                </td>
+              </tr>
+            {% endif %} 
+          {% endfor %}
+        </tbody>
+      </table>
+      <hr width="75%">
+    </div><br><br>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+<script data-config>
+        var filtersConfig = {
+          base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+          col_0: "none",
+          col_1: 'select',
+          col_3: 'select',
+          col_5: 'select',
+          alternate_rows: true,
+          rows_counter: true,
+          btn_reset: true,
+          loader: true,
+          status_bar: true,
+          mark_active_columns: true,
+          highlight_keywords: true,
+          no_results_message: true,
+          col_types: [
+            'number', 'string', 'string', 'string'
+          ],
+          col_widths: [
+              '20px', , , '200px'
+          ],
+          extensions: [{ name: 'sort' }]
+        };
+
+        var tf = new TableFilter('classes', filtersConfig);
+        tf.init();
+      </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <script src="{{ asset('js/select2.min.js') }}"></script>
+    <script>
+    $(document).ready(function() {
+      $('.js-example-basic-single').select2();
+    });
+    </script>
+{% endblock %}

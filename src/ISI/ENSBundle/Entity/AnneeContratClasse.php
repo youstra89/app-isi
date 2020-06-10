@@ -18,6 +18,15 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class AnneeContratClasse
 {
+    const JOURS = [
+        1 => 'Samedi',
+        2 => 'Dimanche',
+        3 => 'Lundi',
+        4 => 'Mardi',
+        5 => 'Mercredi',
+        6 => 'Jeudi',
+    ];
+
     /**
      * @var int
      *
@@ -40,12 +49,22 @@ class AnneeContratClasse
     /**
      * @var \Classe
      *
-     * @ORM\ManyToOne(targetEntity="\ISI\ISIBundle\Entity\Classe")
+     * @ORM\ManyToOne(targetEntity="\ISI\ISIBundle\Entity\Classe", inversedBy="cours")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="classe_id", referencedColumnName="id", nullable=true)
      * })
      */
     private $classe;
+
+    /**
+     * @var \Halaqa
+     *
+     * @ORM\ManyToOne(targetEntity="\ISI\ISIBundle\Entity\Halaqa")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="halaqa_id", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $halaqa;
 
     /**
      * @var \Matiere
@@ -86,6 +105,27 @@ class AnneeContratClasse
      * })
      */
     private $updatedBy;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="numero", type="integer", nullable=false)
+     */
+    private $numero;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="jour", type="integer", nullable=true)
+     */
+    private $jour;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="heure", type="integer", nullable=true)
+     */
+    private $heure;
 
     /**
      * @var \DateTime
@@ -134,6 +174,14 @@ class AnneeContratClasse
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+
+    /**
+     * @return AnneeContratClasse
+     */
+    public function jourdecours()
+    {
+        return self::JOURS[$this->jour];
     }
 
     /**
@@ -302,5 +350,101 @@ class AnneeContratClasse
     public function getAnneeContrat()
     {
         return $this->anneeContrat;
+    }
+
+    /**
+     * Set halaqa
+     *
+     * @param \ISI\ISIBundle\Entity\Halaqa $halaqa
+     *
+     * @return AnneeContratClasse
+     */
+    public function setHalaqa(\ISI\ISIBundle\Entity\Halaqa $halaqa = null)
+    {
+        $this->halaqa = $halaqa;
+
+        return $this;
+    }
+
+    /**
+     * Get halaqa
+     *
+     * @return \ISI\ISIBundle\Entity\Halaqa
+     */
+    public function getHalaqa()
+    {
+        return $this->halaqa;
+    }
+
+    /**
+     * Set numero
+     *
+     * @param integer $numero
+     *
+     * @return AnneeContratClasse
+     */
+    public function setNumero($numero)
+    {
+        $this->numero = $numero;
+
+        return $this;
+    }
+
+    /**
+     * Get numero
+     *
+     * @return integer
+     */
+    public function getNumero()
+    {
+        return $this->numero;
+    }
+
+    /**
+     * Set jour
+     *
+     * @param integer $jour
+     *
+     * @return AnneeContratClasse
+     */
+    public function setJour($jour)
+    {
+        $this->jour = $jour;
+
+        return $this;
+    }
+
+    /**
+     * Get jour
+     *
+     * @return integer
+     */
+    public function getJour()
+    {
+        return $this->jour;
+    }
+
+    /**
+     * Set heure
+     *
+     * @param integer $heure
+     *
+     * @return AnneeContratClasse
+     */
+    public function setHeure($heure)
+    {
+        $this->heure = $heure;
+
+        return $this;
+    }
+
+    /**
+     * Get heure
+     *
+     * @return integer
+     */
+    public function getHeure()
+    {
+        return $this->heure;
     }
 }

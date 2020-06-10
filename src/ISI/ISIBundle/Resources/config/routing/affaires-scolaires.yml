@@ -63,6 +63,15 @@ isi_mise_a_jour_informations_des_eleves_d_une_classe:
         regime:   A|F
         classeId: \d+
 
+# Edition sans impression de la liste de classe d'une classe donnée
+isi_cartes_scolaires_d_une_classe:
+    path:     /cartes-scolaires-des-eleves-d-une-classe-{as}-{regime}-{classeId}.html
+    defaults: { _controller: ISIBundle:AffairesScolaires:cartesScolaireDesEleves }
+    requirements:
+        as:       \d+
+        regime:   A|F
+        classeId: \d+
+
 # Edition de la liste de classe d'une classe donnée
 isi_tirer_liste_de_la_classe:
     path:     /liste-de-la-classe-{as}-{regime}-{classeId}.html

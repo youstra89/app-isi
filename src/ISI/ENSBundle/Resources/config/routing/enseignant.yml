@@ -1,0 +1,5 @@
+enseignant_home:
+    path:     /{as}
+    defaults: { _controller: ENSBundle:Enseignant:index }
+    requirements:
+        as: \d+

@@ -36,7 +36,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class DisciplineController extends Controller
 {
   /**
-   * @Security("has_role('ROLE_ENSEIGNANT')")
+   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
    */
   public function indexConduiteAction(Request $request, $as)
   {
@@ -60,7 +60,7 @@ class DisciplineController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_ENSEIGNANT')")
+   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
    */
   public function enregistrerConduiteAction(Request $request, $as, $contratId)
   {
@@ -111,7 +111,7 @@ class DisciplineController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_ENSEIGNANT')")
+   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
    */
   public function voirConduiteAction(Request $request, $as, $contratId)
   {
@@ -133,7 +133,7 @@ class DisciplineController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_ENSEIGNANT')")
+   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
    */
   public function indexConvocationAction(Request $request, $as)
   {
@@ -162,7 +162,7 @@ class DisciplineController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_ENSEIGNANT')")
+   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
    */
   public function convoquerHomeAction(Request $request, $as)
   {
@@ -198,7 +198,7 @@ class DisciplineController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_ENSEIGNANT')")
+   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
    */
   public function remplirConvocationAction(Request $request, $as)
   {
@@ -265,7 +265,7 @@ class DisciplineController extends Controller
 
 
   /**
-   * @Security("has_role('ROLE_ENSEIGNANT')")
+   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
    */
   public function auditionEtVerdictAction(Request $request, $as, $ensConvocationId)
   {
@@ -309,7 +309,7 @@ class DisciplineController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_ENSEIGNANT')")
+   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
    */
   public function sanctionHomeAction(Request $request, $as)
   {
@@ -335,7 +335,7 @@ class DisciplineController extends Controller
     }
 
   /**
-   * @Security("has_role('ROLE_ENSEIGNANT')")
+   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
    */
   public function voirSanctionAction(Request $request, $as, $contratId)
   {
@@ -361,7 +361,7 @@ class DisciplineController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_ENSEIGNANT')")
+     * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
      */
     public function addSanctionAction(Request $request, $as, $contratId)
     {
@@ -409,7 +409,7 @@ class DisciplineController extends Controller
     }
 
   /**
-   * @Security("has_role('ROLE_ENSEIGNANT')")
+   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
    */
   public function ajouterEnseignantAnneeAction(Request $request, $as, $contratId)
   {

@@ -3,11 +3,13 @@
 namespace ISI\ISIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 
 /**
  * Interner
  *
- * @ORM\Table(name="interner", uniqueConstraints={@ORM\UniqueConstraint(name="interner", columns={"chambre_id", "eleve_id", "annee_id"})}, indexes={@ORM\Index(name="eleve_id", columns={"eleve_id"}), @ORM\Index(name="annee_id", columns={"annee_id"}), @ORM\Index(name="chambre_id", columns={"chambre_id"})})
+ * @ORM\Table(name="interner", uniqueConstraints={@ORM\UniqueConstraint(name="interner", columns={"eleve_id", "annee_id"})}, indexes={@ORM\Index(name="eleve_id", columns={"eleve_id"}), @ORM\Index(name="annee_id", columns={"annee_id"})})
  * @ORM\Entity(repositoryClass="ISI\ISIBundle\Repository\InternerRepository")
  */
 class Interner

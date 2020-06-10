@@ -98,6 +98,11 @@ class Classe
      */
     private $niveau;
 
+    /**
+     * @ORM\OneToMany(targetEntity="ISI\ENSBundle\Entity\AnneeContratClasse", mappedBy="classe")
+     */
+    private $cours;
+
 
     /**
      * Get id

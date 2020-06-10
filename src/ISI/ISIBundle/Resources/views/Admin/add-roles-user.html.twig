@@ -8,7 +8,7 @@
   <i class="users icon"></i>{{ 'AJOUTER ROLES A UN USER'|trans }}
 {% endblock %}
 
-{% block corps %}
+{% block body %}
   <div>
     <p>{{user.username}}</p>
     <p>{{ 'Les rôles de'|trans }} {{user.username}}:</p>
@@ -20,7 +20,7 @@
     <form action="" method="post" name="">
       {% for role in rolesDispo %}
         <div class="ui toggle checkbox">
-          <input type="checkbox" name="role[]"  value="{{ role }}" id="">
+          <input type="checkbox" name="role[]"  value="{{ role }}" id="" {% if role in user.roles %}checked{% endif %}>
           <label for="">{{ role }}</label>
         </div><br /><br />
       {% endfor %}

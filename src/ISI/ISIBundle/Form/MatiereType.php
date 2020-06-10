@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use ISI\ISIBundle\Repository\MatiereRepository;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
@@ -37,12 +38,24 @@ class MatiereType extends AbstractType
 
               if (!$matiere || null === $matiere->getId()) {
                 $form
-                ->add('referenceLangue', EntityType:: class, array(
-                  'class'        => 'ISIBundle:Languematiere',
-                  'choice_label' => 'libelle',
-                  'multiple'     => false
-                ))
-                ->add('save', SubmitType::class, array('label' => 'Enregistrer la matière'));
+                  ->add('referenceLangue', EntityType:: class, array(
+                    'class'        => 'ISIBundle:Languematiere',
+                    'choice_label' => 'libelle',
+                    'multiple'     => false
+                  ))
+                  ->add('matiere_mere', EntityType::class, [
+                    'class'         => 'ISIBundle:Matiere',
+                    'placeholder'   => 'Choisir la matière mère',
+                    'query_builder' => function (MatiereRepository $er)
+                    {
+                      return $er->createQueryBuilder('m')
+                                ->where('m.matiere_mere IS NULL');
+                    },
+                    'choice_label'  => 'libelle',
+                    'multiple'      => false,
+                    'required'      => false
+                  ])
+                  ->add('save', SubmitType::class, array('label' => 'Enregistrer la matière'));
               }
               else{
                 $form->add('update', SubmitType::class, array('label' => 'Modifier la matière'));

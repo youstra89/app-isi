@@ -16,6 +16,7 @@
     {% if internes is empty %}
         <p>{{ 'Aucun élève n\'a encore été inscrit cette année'|trans }}</p>
     {% else %}
+    {# {{dump(frequenter)}} #}
         <table id="table-internes" cellspacing="0" class="mytable filterable ui very basic table">
           <thead>
             <tr>
@@ -24,9 +25,10 @@
               <th>Nom & Prénom</th>
               <th>الإسم و اللقب</th>
               <th>{{ 'Sexe'|trans }}</th>
+              <th>{{ 'Classe'|trans }}</th>
               <th>{{ 'Date de naissance'|trans }}</th>
-              <th>{{ 'Bâtiment'|trans }}</th>
               <th>{{ 'Libellé chambre'|trans }}</th>
+              <th>{{ 'Responsable'|trans }}</th>
               <th>{{ 'Actions'|trans }}</th>
             </tr>
           </thead>
@@ -51,9 +53,18 @@
                     {{ 'أنثى' }}
                   {% endif %}
                 </td>
+                {# <td>{{ interne.getEleve.frequenter.classe.libelleFr }}</td> #}
+                <td>
+                  {% if interne.eleve.id in frequenter|keys %}
+                    {{ frequenter[interne.eleve.id].classe.libelleFr }}
+                  {% endif %}
+                  {# {% for item in frequenter if item.eleve.id == interne.eleve.id %}
+                    {{ frequenter.classe.libelleFr }}
+                  {% endfor %} #}
+                </td>
                 <td>{{ interne.getEleve.dateNaissance|date("d-m-Y") }}</td>
-                <td>{{ interne.getChambre.getBatiment.getResponsable }}</td>
-                <td>{{ interne.getChambre.getLibelle }}</td>
+                <td>{{ interne.getChambre.getBatiment.getNom }} - {{ interne.getChambre.getLibelle }}</td>
+                <td>{{ interne.getChambre.getBatiment.responsable }}</td>
                 <td>
                   <div class="ui grid">
                     <div class="home-eleve wide column" data-tooltip="Modifier les informations de l'élève">

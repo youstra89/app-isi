@@ -1,11 +1,11 @@
-{% extends "ORGBundle::layout.html.twig" %}
+{% extends "ISIBundle::layout.html.twig" %}
 
 {% block title %}
   Gestion des salles
 {% endblock %}
 
 {% block contextual_menu %}
-  {# {% include('ORGBundle::contextual-menu.html.twig') %} #}
+  {# {% include('ISIBundle::contextual-menu.html.twig') %} #}
 {% endblock %}
 
 
@@ -37,7 +37,12 @@
 {% endblock %}
 
 
-{% block corps %}
+{% block body %}
+  <div class="ui right aligned segment">
+    <h1 class="ui header">
+      <i class="student icon"></i>{{ 'Disposition en salle de classe'|trans }}
+    </h1>
+  </div>
   <h2>Salles enregistrés</h2>
   <div>
     <a href="{{ path('salle_add', {'as' : asec}) }}" class="ui primary button">Ajouter une salle</a>

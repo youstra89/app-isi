@@ -24,7 +24,7 @@
 	<div class="well">
 		{{ form_start(form, {'attr': {'class': 'ui form'}}) }}
 			<div class="form-group">
-				<div class="two fields">
+				<div class="three fields">
 					<div class="field">
 						<label>
 							{{ form_label(form.libelle, "Libellé de la matière", {'label_attr': {'class': ''}}) }}
@@ -41,6 +41,15 @@
 						</label>
 						<div class="">
 							{{ form_widget(form.referenceLangue, {'attr': {'class': ''}}) }}
+						</div>
+					</div>
+					<div class="field">
+						<label>
+							{{ form_label(form.matiere_mere, "Matière mère", {'label_attr': {'class': ''}}) }}
+							{{ form_errors(form.matiere_mere) }}
+						</label>
+						<div class="">
+							{{ form_widget(form.matiere_mere, {'attr': {'class': ''}}) }}
 						</div>
 					</div>
 				</div>

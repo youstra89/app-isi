@@ -79,6 +79,23 @@ class Matiere
     private $enseignements;
 
 
+    /**
+     * @var \Matiere
+     *
+     * @ORM\ManyToOne(targetEntity="Matiere", inversedBy="matiere_enfant")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="matiere_mere", referencedColumnName="id")
+     * })
+     */
+    private $matiere_mere;
+
+
+    /**
+     * @ORM\OneToMany(targetEntity="ISI\ISIBundle\Entity\Matiere", mappedBy="matiere_mere")
+     */
+    private $matiere_enfants;
+
+
 
     /**
      * Get matiereId
@@ -185,7 +202,9 @@ class Matiere
     public function __construct()
     {
         $this->enseignements = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->matieres_enfant = new \Doctrine\Common\Collections\ArrayCollection();
     }
+
 
     /**
      * Add enseignement
@@ -339,5 +358,63 @@ class Matiere
     public function getUpdatedBy()
     {
         return $this->updatedBy;
+    }
+
+    /**
+     * Set matiereMere
+     *
+     * @param \ISI\ISIBundle\Entity\Matiere $matiereMere
+     *
+     * @return Matiere
+     */
+    public function setMatiereMere(\ISI\ISIBundle\Entity\Matiere $matiereMere = null)
+    {
+        $this->matiere_mere = $matiereMere;
+
+        return $this;
+    }
+
+    /**
+     * Get matiereMere
+     *
+     * @return \ISI\ISIBundle\Entity\Matiere
+     */
+    public function getMatiereMere()
+    {
+        return $this->matiere_mere;
+    }
+
+    /**
+     * Add matiereEnfant
+     *
+     * @param \ISI\ISIBundle\Entity\Matiere $matiereEnfant
+     *
+     * @return Matiere
+     */
+    public function addMatiereEnfant(\ISI\ISIBundle\Entity\Matiere $matiereEnfant)
+    {
+        $this->matiere_enfants[] = $matiereEnfant;
+
+        return $this;
+    }
+
+    /**
+     * Remove matiereEnfant
+     *
+     * @param \ISI\ISIBundle\Entity\Matiere $matiereEnfant
+     */
+    public function removeMatiereEnfant(\ISI\ISIBundle\Entity\Matiere $matiereEnfant)
+    {
+        $this->matiere_enfants->removeElement($matiereEnfant);
+    }
+
+    /**
+     * Get matiereEnfants
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getMatiereEnfants()
+    {
+        return $this->matiere_enfants;
     }
 }

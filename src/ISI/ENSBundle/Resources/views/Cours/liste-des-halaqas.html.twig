@@ -1,0 +1,93 @@
+{% extends "ENSBundle::layout.html.twig" %}
+
+{% block pageTitle %}
+  Affectation des enseignants dans les halaqas
+{% endblock %}
+
+
+
+{% block stylesheets %}
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+  <link href="{{ asset('css/select2.min.css') }}" rel="stylesheet" />
+{% endblock %}
+
+
+
+{% block contextual_menu %}
+  {{ include("ENSBundle::contextual-menu-cours.html.twig") }}
+{% endblock %}
+
+
+
+{% block body %}
+  <h3>{{ 'Affectation des enseignants dans les halaqas'|trans }}</h3>
+  <div class="ui hidden divider"></div>
+  {% if halaqas is empty %}
+    <p>{{ 'Aucune classe n\'a encore été enregistrée'|trans }}</p>
+  {% else %}
+    <div class="column" style="width:75%">
+      <form method="post" action="" class="ui form">
+        <table class="ui selectable very basic table" id="halaqas">
+          <thead>
+            <tr>
+              <th width="10%">N°</th>
+              <th>Halaqa</th>
+              <th>Genre</th>
+              <th>{{ 'Enseignants'|trans }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% set i = 0 %}
+            {% for halaqa in halaqas %}
+              {% set i = i + 1 %}
+              <tr>
+                <td>
+                  <h4 class="ui image header">{{ i }}</h4>
+                </td>
+                <td>
+                  <h4 class="ui image header">{{ halaqa.getLibelle }}</h4>
+                </td>
+                <td>
+                  {% set genre = '' %}
+                  {% if halaqa.getGenre == 'H' %}
+                    {% set genre = 'Homme' %}
+                  {% elseif halaqa.genre == 'F' %}
+                    {% set genre = 'Femme' %}
+                  {% else %}
+                    {% set genre = 'Mixte' %}
+                  {% endif %}
+                  <h4 class="ui image header">{{ genre }}</h4>
+                </td>
+                <td>
+                  <select name="enseignants[{{ halaqa.id }}]" class="js-example-basic-single">
+                    <option value="">Sélectionner un enseignant</option>
+                    {% for item in anneeContrats %}
+                      <option value="{{ item.id }}" {% if infoCours[halaqa.id] is defined and infoCours[halaqa.id].anneeContrat.id == item.id %}selected{% endif %}>{{ item.contrat.enseignant.nomFr }} {{ item.contrat.enseignant.pnomFr }}</option>
+                    {% endfor %}
+                  </select>
+                </td>
+              </tr> 
+            {% endfor %}
+          </tbody>
+        </table>
+        <br><br>
+        <button type="submit" class="ui right floated small primary labeled icon massive button">
+          <i class="save icon"></i> {{ 'Appliquer les changements'|trans }}
+        </button>
+      </form>
+      <hr width="75%">
+    </div><br><br>
+  {% endif %}
+{% endblock %}
+
+
+{% block scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <script src="{{ asset('js/jquery-3.3.1.js') }}"></script>
+    <script src="{{ asset('js/select2.min.js') }}"></script>
+    <script>
+    $(document).ready(function() {
+      $('.js-example-basic-single').select2();
+    });
+    </script>
+{% endblock %}

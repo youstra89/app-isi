@@ -1,180 +1,185 @@
 #------------------------------- DEBUT DES ROUTES ENSEIGNANT -----------------------------------
+
+espace_eleve:
+    resource: "@ENSBundle/Resources/config/routing/enseignant.yml"
+    prefix:   /enseignant
+
 ens_home:
-    path:     /enseignant-{as}.html
-    defaults: { _controller: ENSBundle:Enseignant:index }
+    path:     /direction-enseignant-{as}.html
+    defaults: { _controller: ENSBundle:DirectionEnseignant:index }
     requirements:
         as: \d+
 
 ens_add:
-    path:     /enseignant/ajouter-un-nouvel-enseignant-{as}.html
-    defaults: { _controller: ENSBundle:Enseignant:addEnseignant }
+    path:     /direction-enseignant/ajouter-un-nouvel-enseignant-{as}.html
+    defaults: { _controller: ENSBundle:DirectionEnseignant:addEnseignant }
     requirements:
         as: \d+
 
 ens_edit:
-    path:     /enseignant/editer-un-enseignant-{as}-{enseignantId}.html
-    defaults: { _controller: ENSBundle:Enseignant:editEnseignant }
+    path:     /direction-enseignant/editer-un-enseignant-{as}-{enseignantId}.html
+    defaults: { _controller: ENSBundle:DirectionEnseignant:editEnseignant }
     requirements:
         as: \d+
         enseignantId: \d+
 
 ens_info:
-    path:     /enseignant/information-sur-l-enseignant-{as}-{enseignantId}.html
-    defaults: { _controller: ENSBundle:Enseignant:infoEnseignant }
+    path:     /direction-enseignant/information-sur-l-enseignant-{as}-{enseignantId}.html
+    defaults: { _controller: ENSBundle:DirectionEnseignant:infoEnseignant }
     requirements:
         as: \d+
         enseignantId: \d+
 
 ens_initialisation_prise_de_fonction:
-    path:     /enseignant/initialisation-de-la-prise-de-fonction-d-un-enseignant-{as}.html
-    defaults: { _controller: ENSBundle:Enseignant:priseDeFonctionHome }
+    path:     /direction-enseignant/initialisation-de-la-prise-de-fonction-d-un-enseignant-{as}.html
+    defaults: { _controller: ENSBundle:DirectionEnseignant:priseDeFonctionHome }
     requirements:
         as: \d+
 
 ens_prise_de_fonction:
-    path:     /enseignant/prise-de-fonction-de-l-enseignant-{as}-{enseignantId}.html
-    defaults: { _controller: ENSBundle:Enseignant:priseDeFonction }
+    path:     /direction-enseignant/prise-de-fonction-de-l-enseignant-{as}-{enseignantId}.html
+    defaults: { _controller: ENSBundle:DirectionEnseignant:priseDeFonction }
     requirements:
         as: \d+
         enseignantId: \d+
 
 ens_fonctions_en_cours:
-    path:     /enseignant/fonctions-d-en-enseignant-en-cours-{as}.html
-    defaults: { _controller: ENSBundle:Enseignant:fonctionEnCours }
+    path:     /direction-enseignant/fonctions-d-en-enseignant-en-cours-{as}.html
+    defaults: { _controller: ENSBundle:DirectionEnseignant:fonctionEnCours }
     requirements:
         as: \d+
 
 ens_initialisation_l_arret_de_fonction:
-    path:     /enseignant/initialisation-de-l-arret-de-fonction-d-un-enseignant-{as}.html
-    defaults: { _controller: ENSBundle:Enseignant:arretDeFonctionHome }
+    path:     /direction-enseignant/initialisation-de-l-arret-de-fonction-d-un-enseignant-{as}.html
+    defaults: { _controller: ENSBundle:DirectionEnseignant:arretDeFonctionHome }
     requirements:
         as: \d+
 
 ens_arret_de_fonction:
-    path:     /enseignant/arret-de-fonction-de-l-enseignant-{as}-{contratId}.html
-    defaults: { _controller: ENSBundle:Enseignant:arretDeFonction }
+    path:     /direction-enseignant/arret-de-fonction-de-l-enseignant-{as}-{contratId}.html
+    defaults: { _controller: ENSBundle:DirectionEnseignant:arretDeFonction }
     requirements:
         as: \d+
         contratId: \d+
 
 ens_enseignant_de_l_annee:
-    path:     /enseignant/enseignants-de-l-annee-{as}.html
-    defaults: { _controller: ENSBundle:Enseignant:enseignantsDeLAnnee }
+    path:     /direction-enseignant/direction-enseignants-de-l-annee-{as}.html
+    defaults: { _controller: ENSBundle:DirectionEnseignant:enseignantsDeLAnnee }
     requirements:
         as: \d+
 
 ens_impression_liste_des_enseignants:
-    path:     /enseignant/impression-de-la-liste-des-enseignants-de-l-annee-{as}.html
-    defaults: { _controller: ENSBundle:Enseignant:impressionListeDesEnseignantsDeLAnnee }
+    path:     /direction-enseignant/impression-de-la-liste-des-enseignants-de-l-annee-{as}.html
+    defaults: { _controller: ENSBundle:DirectionEnseignant:impressionListeDesEnseignantsDeLAnnee }
     requirements:
         as: \d+
 
 ens_impression_liste_des_enseignants_plus_de_details:
-    path:     /enseignant/impression-de-la-liste-des-enseignants-de-l-annee-avec-plus-de-details{as}.html
-    defaults: { _controller: ENSBundle:Enseignant:impressionListeDesEnseignantsDeLAnneeAvecDetails }
+    path:     /direction-enseignant/impression-de-la-liste-des-enseignants-de-l-annee-avec-plus-de-details{as}.html
+    defaults: { _controller: ENSBundle:DirectionEnseignant:impressionListeDesEnseignantsDeLAnneeAvecDetails }
     requirements:
         as: \d+
 
 ens_ajouter_a_l_annee:
-    path:     /enseignant/ajouter-cet-enseignant-pour-l-annee-en-cours-{as}-{contratId}.html
-    defaults: { _controller: ENSBundle:Enseignant:ajouterEnseignantAnnee }
+    path:     /direction-enseignant/ajouter-cet-enseignant-pour-l-annee-en-cours-{as}-{contratId}.html
+    defaults: { _controller: ENSBundle:DirectionEnseignant:ajouterEnseignantAnnee }
     requirements:
         as: \d+
         contratId: \d+
 
 ens_edit_enseignant_annee:
-    path:     /enseignant/mise-a-jour-un-enseignant-pour-l-annee-en-cours-{as}-{anneeContratId}.html
-    defaults: { _controller: ENSBundle:Enseignant:modifierEnseignantAnnee }
+    path:     /direction-enseignant/mise-a-jour-un-enseignant-pour-l-annee-en-cours-{as}-{anneeContratId}.html
+    defaults: { _controller: ENSBundle:DirectionEnseignant:modifierEnseignantAnnee }
     requirements:
         as: \d+
         anneeContratId: \d+
 
 ens_retards_home:
-    path:     /enseignant/page-d-accueil-des-retards-des-enseignants-{as}.html
+    path:     /direction-enseignant/page-d-accueil-des-retards-des-enseignants-{as}.html
     defaults: { _controller: ENSBundle:AbsencesEtRetards:indexRetards }
     requirements:
         as: \d+
 
 ens_saisi_retards:
-    path:     /enseignant/page-de-saisie-des-retards-des-enseignants-{as}-{periode}.html
+    path:     /direction-enseignant/page-de-saisie-des-retards-des-enseignants-{as}-{periode}.html
     defaults: { _controller: ENSBundle:AbsencesEtRetards:saisieDesRetards }
     requirements:
         as: \d+
         periode: Matin|Soir
 
 ens_voir_retards_home:
-    path:     /enseignant/apercu-des-retards-des-enseignants-enregistres-home-{as}.html
+    path:     /direction-enseignant/apercu-des-retards-des-enseignants-enregistres-home-{as}.html
     defaults: { _controller: ENSBundle:AbsencesEtRetards:apercuDesRetardsHome }
     requirements:
         as: \d+
 
 ens_voir_retards_mois:
-    path:     /enseignant/apercu-des-retards-des-enseignants-enregistres-pour-un-mois-donnee-{as}-{moisId}.html
+    path:     /direction-enseignant/apercu-des-retards-des-enseignants-enregistres-pour-un-mois-donnee-{as}-{moisId}.html
     defaults: { _controller: ENSBundle:AbsencesEtRetards:apercuDesRetardsMois }
     requirements:
         as: \d+
         moisId: \d+
 
 ens_voir_retards_mois_cumul:
-    path:     /enseignant/apercu-du-bilan-des-retards-des-enseignants-enregistres-pour-un-mois-donnee-{as}-{moisId}.html
+    path:     /direction-enseignant/apercu-du-bilan-des-retards-des-enseignants-enregistres-pour-un-mois-donnee-{as}-{moisId}.html
     defaults: { _controller: ENSBundle:AbsencesEtRetards:apercuDesRetardsMoisCumul }
     requirements:
         as: \d+
         moisId: \d+
 
 ens_absences_home:
-    path:     /enseignant/page-d-accueil-des-absences-des-enseignants-{as}.html
+    path:     /direction-enseignant/page-d-accueil-des-absences-des-enseignants-{as}.html
     defaults: { _controller: ENSBundle:AbsencesEtRetards:indexAbsences }
     requirements:
         as: \d+
 
 ens_enregistrer_absence:
-    path:     /enseignant/page-d-accueil-d-absence-d-un-enseignant-{as}-{contratId}.html
+    path:     /direction-enseignant/page-d-accueil-d-absence-d-un-enseignant-{as}-{contratId}.html
     defaults: { _controller: ENSBundle:AbsencesEtRetards:enregistrerAbsence }
     requirements:
         as: \d+
         contratId: \d+
 
 ens_voir_absences_home:
-    path:     /enseignant/apercu-des-absences-des-enseignants-enregistrees-home-{as}.html
+    path:     /direction-enseignant/apercu-des-absences-des-enseignants-enregistrees-home-{as}.html
     defaults: { _controller: ENSBundle:AbsencesEtRetards:apercuDesAbsencesHome }
     requirements:
         as: \d+
 
 ens_conduite_home:
-    path:     /enseignant/conduite-home-{as}.html
+    path:     /direction-enseignant/conduite-home-{as}.html
     defaults: { _controller: ENSBundle:Discipline:indexConduite }
     requirements:
         as: \d+
 
 ens_enregistrement_conduite:
-    path:     /enseignant/enregistrer-une-conduite-pour-un-enseignant-{as}-{contratId}.html
+    path:     /direction-enseignant/enregistrer-une-conduite-pour-un-enseignant-{as}-{contratId}.html
     defaults: { _controller: ENSBundle:Discipline:enregistrerConduite }
     requirements:
         as: \d+
         contratId: \d+
 
 ens_voir_conduite:
-    path:     /enseignant/voir-les-conduites-d-un-enseignant-{as}-{contratId}.html
+    path:     /direction-enseignant/voir-les-conduites-d-un-enseignant-{as}-{contratId}.html
     defaults: { _controller: ENSBundle:Discipline:voirConduite }
     requirements:
         as: \d+
         contratId: \d+
 
 ens_convocation_home:
-    path:     /enseignant/convocation-home-{as}.html
+    path:     /direction-enseignant/convocation-home-{as}.html
     defaults: { _controller: ENSBundle:Discipline:indexConvocation }
     requirements:
         as: \d+
 
 ens_convoquer_enseignant:
-    path:     /enseignant/convoquer-des-enseignants-{as}.html
+    path:     /direction-enseignant/convoquer-des-enseignants-{as}.html
     defaults: { _controller: ENSBundle:Discipline:convoquerHome }
     requirements:
         as: \d+
 
 ens_info_convocation:
-    path:     /enseignant/rempli-convocation-des-enseignants-{as}.html
+    path:     /direction-enseignant/rempli-convocation-des-enseignants-{as}.html
     defaults: { _controller: ENSBundle:Discipline:remplirConvocation }
     requirements:
         as: \d+
@@ -182,60 +187,60 @@ ens_info_convocation:
 # ensConvocationId ici est le paramètre qui renvoi l'id de l'entité AnneeContratConvocation, qui correspond à l'enregistrement
 # d'une convocation d'un enseignant pour une année donnée
 ens_audition_et_verdict:
-    path:     /enseignant/enregistrement-de-l-audition-et-du-verdict-pour-la-convocation-de-l-enseignant-{as}-{ensConvocationId}.html
+    path:     /direction-enseignant/enregistrement-de-l-audition-et-du-verdict-pour-la-convocation-de-l-enseignant-{as}-{ensConvocationId}.html
     defaults: { _controller: ENSBundle:Discipline:auditionEtVerdict }
     requirements:
         as: \d+
         ensConvocationId: \d+
 
 ens_sanction_home:
-    path:     /enseignant/sanction-home-{as}.html
+    path:     /direction-enseignant/sanction-home-{as}.html
     defaults: { _controller: ENSBundle:Discipline:sanctionHome }
     requirements:
         as: \d+
 
 ens_voir_sanction:
-    path:     /enseignant/voir-les-sanctions-d-un-enseignant-{as}-{contratId}.html
+    path:     /direction-enseignant/voir-les-sanctions-d-un-enseignant-{as}-{contratId}.html
     defaults: { _controller: ENSBundle:Discipline:voirSanction }
     requirements:
         as: \d+
         contratId: \d+
 
 ens_add_sanction:
-    path:     /enseignant/enregistrement-d-une-sanction-{as}-{contratId}.html
+    path:     /direction-enseignant/enregistrement-d-une-sanction-{as}-{contratId}.html
     defaults: { _controller: ENSBundle:Discipline:addSanction }
     requirements:
         as: \d+
         contratId: \d+
 
 ens_rencontre_home:
-    path:     /enseignant/index-des-rencontres-{as}.html
+    path:     /direction-enseignant/index-des-rencontres-{as}.html
     defaults: { _controller: ENSBundle:Rencontre:index }
     requirements:
         as: \d+
 
 ens_add_rencontre:
-    path:     /enseignant/enregistrement-de-rencontres-{as}.html
+    path:     /direction-enseignant/enregistrement-de-rencontres-{as}.html
     defaults: { _controller: ENSBundle:Rencontre:addRencontre }
     requirements:
         as: \d+
 
 ens_edit_rencontre:
-    path:     /enseignant/mise-a-jour-des-informations-d-une-rencontre-{as}-{rencontreId}.html
+    path:     /direction-enseignant/mise-a-jour-des-informations-d-une-rencontre-{as}-{rencontreId}.html
     defaults: { _controller: ENSBundle:Rencontre:editRencontre }
     requirements:
         as: \d+
         rencontreId: \d+
 
 ens_participants_rencontre:
-    path:     /enseignant/ajouter-des-participants-a-la-rencontre-{as}-{rencontreId}.html
+    path:     /direction-enseignant/ajouter-des-participants-a-la-rencontre-{as}-{rencontreId}.html
     defaults: { _controller: ENSBundle:Rencontre:participantsRencontre }
     requirements:
         as: \d+
         rencontreId: \d+
 
 ens_liste_des_participants:
-    path:     /enseignant/liste-des-participants-a-la-rencontre-{as}-{rencontreId}.html
+    path:     /direction-enseignant/liste-des-participants-a-la-rencontre-{as}-{rencontreId}.html
     defaults: { _controller: ENSBundle:Rencontre:listeDesParticipantsRencontre }
     requirements:
         as: \d+
@@ -243,36 +248,82 @@ ens_liste_des_participants:
 
 # Routes pour les cours
 ens_liste_des_classes_save_cours:
-    path:     /enseignant/cours/liste-des-classes/{as}/{regime}
+    path:     /direction-enseignant/cours/liste-des-classes/{as}/{regime}
     defaults: { _controller: ENSBundle:Cours:listeDesClassesSaveCours }
     requirements:
         as: \d+
         regime: A|F
 
+ens_liste_des_classes_save_cours_francais:
+    path:     /direction-enseignant/cours/liste-des-classes-enregistrement-cours-francais/{as}/{regime}
+    defaults: { _controller: ENSBundle:Cours:listeDesClassesSaveCoursFrancais }
+    requirements:
+        as: \d+
+        regime: A
+
+ens_liste_des_halaqas_save_cours:
+    path:     /direction-enseignant/cours/liste-des-halaqas/{as}/{regime}
+    defaults: { _controller: ENSBundle:Cours:listeDesHalaqasSaveCours }
+    requirements:
+        as: \d+
+        regime: A
+
 ens_enregistrer_cours_classe:
-    path:     /enseignant/cours/enregistrement-de-cours/{as}/{regime}/{classeId}
+    path:     /direction-enseignant/cours/enregistrement-de-cours/{as}/{regime}/{classeId}
     defaults: { _controller: ENSBundle:Cours:enregistrerCoursDuneClasse }
     requirements:
         as      : \d+
         regime  : A|F
         classeId: \d+
 
+ens_editer_cours_classe:
+    path:     /direction-enseignant/cours/mise-a-jour-des-cours/{as}/{regime}/{classeId}
+    defaults: { _controller: ENSBundle:Cours:editerCoursDuneClasse }
+    requirements:
+        as      : \d+
+        regime  : A|F
+        classeId: \d+
+
+ens_editer_un_cours:
+    path:     /direction-enseignant/cours/editer-un-cours/{as}/{regime}/{coursId}
+    defaults: { _controller: ENSBundle:Cours:editerUnCours }
+    requirements:
+        as     : \d+
+        regime : A|F
+        coursId: \d+
+
 ens_cours_de_la_classe:
-    path:     /enseignant/cours/liste-des-cours-de-la-classe/{as}/{regime}/{classeId}
+    path:     /direction-enseignant/cours/liste-des-cours-de-la-classe/{as}/{regime}/{classeId}
     defaults: { _controller: ENSBundle:Cours:voirLesCoursDeLaClasse }
     requirements:
         as      : \d+
         regime  : A|F
         classeId: \d+
 
+ens_enregistrer_cours_francais_classe:
+    path:     /direction-enseignant/cours/enregistrement-de-cours-de-francais/{as}/{regime}/{classeId}
+    defaults: { _controller: ENSBundle:Cours:enregistrerCoursfrancaisDuneClasse }
+    requirements:
+        as      : \d+
+        regime  : A
+        classeId: \d+
+
+ens_cours_francais_de_la_classe:
+    path:     /direction-enseignant/cours/liste-des-cours-de-francais-de-la-classe/{as}/{regime}/{classeId}
+    defaults: { _controller: ENSBundle:Cours:voirLesCoursfrancaisDeLaClasse }
+    requirements:
+        as      : \d+
+        regime  : A
+        classeId: \d+
+
 ens_nombre_heures_cours_enseignants:
-    path:     /enseignant/cours/nombre-heures-de-cours-des-enseignants/{as}
+    path:     /direction-enseignant/cours/nombre-heures-de-cours-des-enseignants/{as}
     defaults: { _controller: ENSBundle:Cours:nombreHeuresCoursEnseignants }
     requirements:
         as      : \d+
 
 ens_cours_d_un_enseignant:
-    path:     /enseignant/cours/cours-d-un-enseignant/{as}/{anneeContratId}
+    path:     /direction-enseignant/cours/cours-d-un-enseignant/{as}/{anneeContratId}
     defaults: { _controller: ENSBundle:Cours:coursDUnEnseignant }
     requirements:
         as: \d+

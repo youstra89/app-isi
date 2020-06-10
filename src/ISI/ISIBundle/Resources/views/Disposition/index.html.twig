@@ -1,0 +1,80 @@
+{% extends "ISIBundle::layout.html.twig" %}
+
+{% block title %}
+  Dispositions
+{% endblock %}
+
+{% block contextual_menu %}
+{% endblock %}
+
+
+{% block notification %}
+  {% set notif = app.session.flashbag.get('error') %}
+  {% if notif is not empty %}
+    <div class="ui red message">
+      <div class="header">{{ 'Attention'|trans }}</div>
+      <ul class="list">
+        {% for message in notif %}
+          <li>{{ message }}.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+  {% for message in app.session.flashbag.get('info') %}
+  <div class="ui green message">
+    <div class="header">{{ 'Notification'|trans }}: </div>
+    <ul class="list">
+      <li>{{ message }}.</li>
+    </ul>
+  </div>
+  {% endfor %}
+{% endblock %}
+
+
+{% block titre_page %}
+  <i class="users icon"></i>{{ 'Disposition des salles de cours'|trans }}
+{% endblock %}
+
+
+
+{% block body %}
+  <div class="feature alternate ui stripe vertical segment">
+    <div class="ui right aligned segment">
+      <h1 class="ui header">
+        <i class="student icon"></i>{{ 'Disposition en salle de classe'|trans }}
+      </h1>
+    </div>
+    <div class="ui three column center aligned divided relaxed stackable grid container">
+      <div class="row">
+        <div class="column">
+          <h2 class="ui icon header">
+            Bâtiments
+          </h2>
+          <p>Les bâtiments pour suivre les cours.</p>
+          <a class="ui large button" href="{{ path('batiment_home', {'as': asec}) }}">Plus</a>
+        </div>
+        <div class="column">
+          <h2 class="ui icon header">
+            Salles
+          </h2>
+          <p>Les salles de cours.</p>
+          <a class="ui large primary button" href="{{ path('salle_home', {'as': asec}) }}">Plus</a>
+        </div>
+        <div class="column">
+          <h2 class="ui icon header">
+            Dispositions
+          </h2>
+          <p>
+            La répartiton des élèves dans les salles de cours.
+          </p>
+          <a class="ui large button" href="{{ path('disposition', {'as': asec}) }}">Plus</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+
+
+{% block javascript %}
+{% endblock %}

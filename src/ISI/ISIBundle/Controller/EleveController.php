@@ -164,13 +164,13 @@ class EleveController extends Controller
   		$matriculeNumeric[] = intval($mat1['mat']);
   	}
 
-	if(!empty($matriculeNumeric)){
-		$matriculeMax = max($matriculeNumeric);
-		$matricule = $matriculeMax + 1;
-	}
-	else{
-		$matricule = 1;
-	}
+    if(!empty($matriculeNumeric)){
+      $matriculeMax = max($matriculeNumeric);
+      $matricule = $matriculeMax + 1;
+    }
+    else{
+      $matricule = 1;
+    }
 	   //$matricule = preg_replace('/[^0-9]/', '',$matricule[0]['plus_grand_matricule']);
 
     $matriculeNew = 'ISI-0'.$matricule.''.$regime.'-'.$annee;
@@ -309,7 +309,7 @@ class EleveController extends Controller
       $eleve->setCreatedBy($user);
 
       $em = $this->getDoctrine()->getManager();
-      // $em->persist($eleve);
+      $em->persist($eleve);
 
       try{
         $em->flush();
@@ -331,12 +331,12 @@ class EleveController extends Controller
     }
 
     return $this->render('ISIBundle:Eleve:preinscription.html.twig', array(
-      'asec'      => $as,
-      'regime'    => $regime,
-      'annee'     => $annee,
-      'professions'     => $professions,
-      'form'      => $form->createView(),
-      'matricule' => $matriculeNew
+      'asec'        => $as,
+      'regime'      => $regime,
+      'annee'       => $annee,
+      'professions' => $professions,
+      'form'        => $form->createView(),
+      'matricule'   => $matriculeNew
     ));
     // return $this->render('ISIBundle:Default:index.html.twig', ['mat' => $annee, 'asec' => $as]);
     // return $this->render('ISIBundle:Default:index.html.twig', ['mat' => $mat[0]['plus_grand_matricule'], 'asec' => $as]);
@@ -599,12 +599,6 @@ class EleveController extends Controller
       // Sélection des indentifiants de classe, d'élève, d'année scolaire et de matière
       $eleve    = $repoEleve->findOneBy(['matricule' => $data['form']['matricule']]);
       $eleveId  = $eleve->getId();
-      $anneeId  = $as - 1;
-      $reinscription = $repoReinscription->findOneBy(['eleve' => $eleveId, 'annee' => $anneeId]);
-      if(empty($reinscription)){
-        $request->getSession()->getFlashBag()->add('error', '<strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> Ne s\'est pas réinscrit');
-        return $this->redirect($this->generateUrl('isi_inscription', ['as' => $as, 'regime' => $regime]));
-      }
 
       if ($regime != 'C') {
         $classeId  = $data['classe'];
@@ -629,6 +623,14 @@ class EleveController extends Controller
       // Ici on vérifie que l'élève n'est pas encore inscrit dans une classe quelconque
       if(!empty($frequente)) {
         $request->getSession()->getFlashBag()->add('error', '<strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> est déjà inscrit(e) en <strong>'.$frequente->getClasse()->getLibelleFr().'</strong>');
+        return $this->redirect($this->generateUrl('isi_inscription', ['as' => $as, 'regime' => $regime]));
+      }
+
+      $anneeId  = $as - 1;
+      $frequentationAnterieures = $repoFrequenter->findOneBy(["eleve" => $eleveId]);
+      $reinscription = $repoReinscription->findOneBy(['eleve' => $eleveId, 'annee' => $anneeId]);
+      if(empty($reinscription) and count($frequentationAnterieures) != 0){
+        $request->getSession()->getFlashBag()->add('error', '<strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> ne s\'est pas réinscrit');
         return $this->redirect($this->generateUrl('isi_inscription', ['as' => $as, 'regime' => $regime]));
       }
 
@@ -992,6 +994,7 @@ class EleveController extends Controller
                 $tome2[] = $fq;
               }
               else{
+                $testClasses[$key] = $eleve;
                 $redoublant = ($fq->getClasse()->getNiveau()->getId() == $nvoClasse->getNiveau()->getId()) ? 1 : 0 ;
                 $frequenter = new Frequenter();
                 $frequenter->setEleve($eleve);
@@ -1016,11 +1019,13 @@ class EleveController extends Controller
 
       if($regime == 'A'){
         foreach ($halaqas as $key => $hal) {
-          if(!empty($hal) && array_key_exists($key, $classes) && $classes[$key] != null && ($fq->getAdmission() != 0 && $fq->getRedouble() != 1)){
+          $fq   = $repoFrequenter->findOneBy(['annee' => $as - 1, 'classe' => $classeId, 'eleve' => $key ]);
+          if(!empty($hal) && array_key_exists($key, $classes) && $classes[$key] != null){
             if($fq->getAdmission() == 0 && $fq->getRedouble() == 1){
               $tome2[] = $fq;
             }
             else{
+              $test[$key]    = $eleve;
               $eleve     = $repoEleve->find($key);
               $halaqa    = $repoHalaqa->find((int) $hal);
               $memoriser = new Memoriser();
@@ -1037,6 +1042,8 @@ class EleveController extends Controller
           }
         }
       }
+      // dump([$testClasses, $test]);
+      // die();
       if ($check_recording == false && $classe_recording == false) {
         # On entre dans cette condition s'il n'y a pas eu d'enregistrement
         $request->getSession()->getFlashBag()->add('error', 'Aucun changement constaté. Veuillez reprendre <strong>Flash inscription</strong>.');
@@ -1758,9 +1765,20 @@ class EleveController extends Controller
           # code...
           $halaqa = $repoHalaqa->find($halaqaId);
           $memoriser = $repoMemoriser->findOneBy(['eleve' => $eleveId, 'annee' => $as]);
-          $memoriser->setHalaqa($halaqa);
-          $memoriser->setUpdatedBy($this->getUser());
-          $memoriser->setUpdatedAt(new \Datetime());
+          if(empty($memoriser)){
+            $memoriser = new Memoriser();
+            $memoriser->setEleve($eleve);
+            $memoriser->setAnnee($annee);
+            $memoriser->setHalaqa($halaqa);
+            $memoriser->setCreatedBy($this->getUser());
+            $memoriser->setCreatedAt(new \Datetime());
+            $em->persist($memoriser);
+          }
+          else{
+            $memoriser->setHalaqa($halaqa);
+            $memoriser->setUpdatedBy($this->getUser());
+            $memoriser->setUpdatedAt(new \Datetime());
+          }
           $request->getSession()->getFlashBag()->add('info', 'La halaqa de '.$eleve->getNomFr().' '.$eleve->getPnomFr().' a été mise à jour avec succès.');
         } else {
           # code...
@@ -1904,6 +1922,8 @@ class EleveController extends Controller
         'classeId' => $classeId,
       ]));
     }
+
+    // dump($classes);
 
     return $this->render('ISIBundle:Eleve:modification-du-niveau-d-dun-eleve.html.twig', [
       'asec'           => $as,

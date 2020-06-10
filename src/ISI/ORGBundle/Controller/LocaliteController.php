@@ -233,7 +233,7 @@ class LocaliteController extends Controller
         $this->addFlash('info', 'La commune a bien été enregistrée.');
         return $this->redirectToRoute('villes', ['as' => $as]);
       }
-      return $this->render('Admin/Localite/commune-add.html.twig', [
+      return $this->render('Localite/commune-add.html.twig', [
         'form' => $form->createView(),
         'asec'  => $as,
         'annee' => $annee,

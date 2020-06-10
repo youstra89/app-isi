@@ -140,9 +140,10 @@
       base_path: '/markaz/web/TableFilter/dist/tablefilter/',
       col_0: "none",
       col_4: 'select',
-      col_6: 'select',
+      col_5: 'select',
       col_7: 'select',
-      col_8: 'none',
+      col_8: 'select',
+      col_9: 'none',
       alternate_rows: true,
       rows_counter: true,
       btn_reset: true,
@@ -163,6 +164,35 @@
     };
 
     var tf = new TableFilter('table-internes', filtersConfig);
+    tf.init();
+  </script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+      col_0: "none",
+      col_2: 'select',
+      col_3: 'select',
+      col_4: 'select',
+      col_5: 'none',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string',
+        'string', 'string', 'string',
+        'string', 'none'
+      ],
+      col_widths: [
+      ],
+      extensions: [{ name: 'sort' }]
+    };
+
+    var tf = new TableFilter('table1', filtersConfig);
     tf.init();
   </script>
   <script src="{{ asset('../vendor/semantic/ui/examples/assets/library/jquery.min.js') }}"></script>

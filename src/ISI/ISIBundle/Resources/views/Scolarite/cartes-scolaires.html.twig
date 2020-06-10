@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            @font-face {
+                font-family: 'Elegance';
+                font-weight: normal;
+                font-style: normal;
+                font-variant: normal;
+                /* src: url("http://eclecticgeek.com/dompdf/fonts/Elegance.ttf") format("truetype"); */
+            }
+
+            @page{margin: 0.05in}
+
+            .arriere-plan{
+                background-image: url('img/logo.jpg');
+                background-repeat: no-repeat;
+                background-position: center center;
+                background-size: 100px 100px cover;
+                opacity: 0.2;
+                /* background: url('images/logo.png') center center cover no-repeat !important; */
+                width: 99%;
+                height: 92%;
+                z-index: 0;
+                position: absolute;
+            }
+
+            .main{
+                z-index: 3;
+                width: 49.5%;
+                height: 92%;
+                display: inline-block;
+                margin-bottom: 10px;
+            }
+
+            .en-tete{
+                text-align: center;
+                padding-top: 1px;
+            }
+
+            .rci{
+                font-weight: bold;
+                font-family: Elegance, 'Open Sans';
+            }
+
+            .men{
+                font-size: 0.5em;
+            }
+
+            .ecole{
+                text-align: center;
+                font-weight: bold;
+            }
+
+            .nom-ecole{
+                font-size: 0.8em;
+                font-style: normal;
+            }
+
+            .slogan-ecole{
+                font-size: 0.8em;
+                font-style: italic;
+            }
+
+            .info{
+                font-size: 0.8em;
+                line-height: 10px;
+            }
+        </style>
+        <meta charset="UTF-8">
+        <title>Cartes scolaires de la {{ classe.libelleFr }}</title>
+    </head>
+    <body>
+      {# {{ dump(informations) }} #}
+      {% set i = 0 %}
+      {% for eleve in eleves %}
+        {% set i = i + 1 %}
+        <div class="arriere-plan">
+        </div>
+        <div class="main">
+          <div class="en-tete">
+            <span class="rci">REPUBLIQUE DE CÔTE D'IVOIRE</span><br>
+            <span class="men">Ministère de l'Education Nationale, de l'Enseignement Technique et de la Formation Professionnelle</span>
+          </div>
+          <hr style="width: 60%">
+          <div class="ecole">
+            {# <span class="nom-ecole">{{ informations.nom }}</span><br> #}
+            {# <span class="slogan-ecole">{{ informations.slogan }}</span><br> #}
+          </div>
+          <hr style="width: 65%">
+          <div style="text-align: center">
+            <span style="font-weight: bold; font-size: 1em">Matricule : </span> <span style="color: red; font-size: 1em; font-weight: bold">{{ eleve.matricule }}</span>
+          </div>
+          <div>
+            <table width="100%" class="info">
+              <tbody>
+                <tr>
+                  <td rowspan="6" width="25%"> 
+                    {% if eleve.photo is not empty %} 
+                      {# <img style="width: 80px; height: 80px; object-fit: cover" src=".{{ eleve.photo }}" alt="{{ eleve.nomFr }} {{ eleve.pnomFr }}"> #}
+                      <img src="{{app.request.schemeAndHttpHost ~ asset('../web/images/eleve.jpeg')}}" alt="" style="width: 80px; height: 80px; object-fit: cover">
+                      {# <img style="max-width: 100px; height: auto" src=".{{ image[eleve.id] }}" alt="{{ eleve.nom }} {{ eleve.pnom }}"> #}
+                    {% else %}
+                      {# <img style="width: 80px; height: 80px; object-fit: cover" src="images/eleve.jpeg" alt="{{ eleve.nomFr }} {{ eleve.pnomFr }}"> #}
+                      <img src="{{app.request.schemeAndHttpHost ~ asset('../web/images/eleve.jpeg')}}" alt="" style="width: 80px; height: 80px; object-fit: cover">
+                      {# <img style="max-width: 100px; height: auto" src="img/eleve.jpeg" alt="{{ eleve.nom }} {{ eleve.pnom }}"> #}
+                    {% endif %}
+                  </td>
+                  <td><span style="font-weight: bold">Nom : </span><span style="">{{ eleve.nomFr }}</span></td>
+                  <td rowspan="6" width="20%">
+                    {# <img style="width: 80px; height: 80px" src="img/logo.jpg" alt="{{ eleve.nom }} {{ eleve.pnom }}"> #}
+                  </td>
+                </tr>
+                <tr>
+                  <td><span style="font-weight: bold">Prénom : </span><span style="">{{ eleve.pnomFr }}</span></td>
+                </tr>
+                <tr>
+                  <td><span style="font-weight: bold">Sexe : </span><span style="">{{ eleve.sexe }}</span></td>
+                </tr>
+                <tr>
+                  <td><span style="font-weight: bold">Né(e) le : </span><span style="">{{ eleve.dateNaissance|date('d-m-Y') }}</span><span style="font-weight: bold"> à </span><span style="">{{ eleve.lieuNaissance }}</span></td>
+                </tr>
+                <tr>
+                  {# <td><span style="font-weight: bold">Classe : </span><span style="">{{ eleve.classe.label }}</span></td> #}
+                </tr>
+                <tr>
+                  {# <td><span style="font-weight: bold">Statut : </span><span style="">{{ eleve.affecteType }}</span></td> #}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="text-align: right; font-size: .8em; font-style: italic">
+            <span>Année scolaire : </span><span style="font-weight: bold">{{ annee.libelle }}</span>&nbsp;&nbsp;
+          </div>
+        </div>
+      {% endfor %}
+      <div class="arriere-plan">
+      </div>
+    </body>
+</html>

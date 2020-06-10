@@ -42,6 +42,9 @@
               </td>
               <td>
                 <h4 class="ui image header">{{ matiere.libelle }}</h4>
+                {% for item in matieresEnfants if item.matiereMere.id == matiere.id %}
+                  <li>{{ item.libelle }}</li>
+                {% endfor %}
               </td>
               <td>
                 <h4 class="ui image header">{{ matiere.referenceLangue.libelle }}</h4>

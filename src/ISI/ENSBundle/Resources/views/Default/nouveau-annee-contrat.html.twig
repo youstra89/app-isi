@@ -1,8 +1,8 @@
 {# Fiche de renseignement d'un élève #}
-{% extends 'ENSBundle:Enseignant:index.html.twig' %}
+{% extends 'ENSBundle::layout.html.twig' %}
 
 {% block title %}
-  Mise à jour des heures d'enseignement | {{ contrat.getContrat.getEnseignant.getNomFr }} {{ contrat.getContrat.getEnseignant.getPnomFr }}
+  Enregistrement d'enseignant pour l'année | {{ contrat.getEnseignant.getNomFr }} {{ contrat.getEnseignant.getPnomFr }}
 {% endblock %}
 
 {% block contextual_menu %}
@@ -16,7 +16,7 @@
 {% block corps %}
 
 <div class="">
-	<h2>{{ 'Mise à jour du programme d\'enseignement de '|trans }} <font  class="ui massive green tag label">{{ contrat.getContrat.getEnseignant.getNomFr }} {{ contrat.getContrat.getEnseignant.getPnomFr }}</font></h2>
+	<h2>{{ 'Enregistrement pour le programme d\'enseignement '|trans }} <font  class="ui massive green tag label">{{ contrat.getEnseignant.getNomFr }} {{ contrat.getEnseignant.getPnomFr }}</font></h2>
 	<div class="form-group">
 		{{ form_start(form, {'attr': {'class': 'ui form'}}) }}
 			<div class="three fields">
@@ -39,7 +39,7 @@
 					</label> {{ form_widget(form.nombreHeuresSamedi, {'attr': {'class': 'nomAr'}}) }}
 				</div>
 			</div>
-			{{ form_widget(form.update, {'attr': {'class': 'ui positive button'}}) }}
+			{{ form_widget(form.save, {'attr': {'class': 'ui primary button'}}) }}
 		{{ form_end(form) }}
 	</div>
 </div>

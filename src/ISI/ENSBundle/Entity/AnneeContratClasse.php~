@@ -11,8 +11,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Table(name="annee_contrat_classe")
  * @ORM\Entity(repositoryClass="ISI\ENSBundle\Repository\AnneeContratClasseRepository")
  * @UniqueEntity(
- *     fields={"annee_id", "contrat_id", "classe_id", "matiere_id"},
- *     errorPath="contrat",
+ *     fields={"annee_id", "annee_contrat_id", "classe_id", "matiere_id"},
+ *     errorPath="anneeContrat",
  *     message="L'enseignant donne déjà ce cours dans la classe sélectionnée"
  * )
  */
@@ -40,12 +40,22 @@ class AnneeContratClasse
     /**
      * @var \Classe
      *
-     * @ORM\ManyToOne(targetEntity="\ISI\ISIBundle\Entity\Classe")
+     * @ORM\ManyToOne(targetEntity="\ISI\ISIBundle\Entity\Classe", inversedBy="cours")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="classe_id", referencedColumnName="id", nullable=true)
      * })
      */
     private $classe;
+
+    /**
+     * @var \Halaqa
+     *
+     * @ORM\ManyToOne(targetEntity="\ISI\ISIBundle\Entity\Halaqa")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="halaqa_id", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $halaqa;
 
     /**
      * @var \Matiere
@@ -65,7 +75,7 @@ class AnneeContratClasse
      *   @ORM\JoinColumn(name="annee_contrat_id", referencedColumnName="id")
      * })
      */
-    private $contrat;
+    private $anneeContrat;
 
     /**
      * @var \User
@@ -86,6 +96,27 @@ class AnneeContratClasse
      * })
      */
     private $updatedBy;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="numero", type="integer", nullable=false)
+     */
+    private $numero;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="jour", type="integer", nullable=true)
+     */
+    private $jour;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="heure", type="integer", nullable=true)
+     */
+    private $heure;
 
     /**
      * @var \DateTime
@@ -278,5 +309,53 @@ class AnneeContratClasse
     public function getUpdatedBy()
     {
         return $this->updatedBy;
+    }
+
+    /**
+     * Set contrat
+     *
+     * @param \ISI\ENSBundle\Entity\AnneeContrat $anneeContrat
+     *
+     * @return AnneeContratClasse
+     */
+    public function setAnneeContrat(\ISI\ENSBundle\Entity\AnneeContrat $anneeContrat = null)
+    {
+        $this->anneeContrat = $anneeContrat;
+
+        return $this;
+    }
+
+    /**
+     * Get anneeContrat
+     *
+     * @return \ISI\ENSBundle\Entity\AnneeContrat
+     */
+    public function getAnneeContrat()
+    {
+        return $this->anneeContrat;
+    }
+
+    /**
+     * Set halaqa
+     *
+     * @param \ISI\ISIBundle\Entity\Halaqa $halaqa
+     *
+     * @return AnneeContratClasse
+     */
+    public function setHalaqa(\ISI\ISIBundle\Entity\Halaqa $halaqa = null)
+    {
+        $this->halaqa = $halaqa;
+
+        return $this;
+    }
+
+    /**
+     * Get halaqa
+     *
+     * @return \ISI\ISIBundle\Entity\Halaqa
+     */
+    public function getHalaqa()
+    {
+        return $this->halaqa;
     }
 }

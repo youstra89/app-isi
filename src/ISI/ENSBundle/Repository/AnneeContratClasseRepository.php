@@ -10,4 +10,19 @@ namespace ISI\ENSBundle\Repository;
  */
 class AnneeContratClasseRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function lesCoursDeLEnseignant(int $as, int $enseignantId)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb ->join('c.anneeContrat', 'ac')
+            ->join('ac.contrat', 'cont')
+            ->join('cont.enseignant', 'e')
+            ->join('ac.annee', 'an')
+            ->where('an.id = :as AND e.id = :enseignantId')
+            ->setParameter('as', $as)
+            ->setParameter('enseignantId', $enseignantId)
+            ->setParameter('as', $as);
+
+        return $qb->getQuery()
+                ->getResult();
+    }
 }

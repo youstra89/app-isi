@@ -97,4 +97,22 @@ class FrequenterRepository extends \Doctrine\ORM\EntityRepository
         ->getResult()
       ;
     }
+
+    public function classesDeCertainEleves($as, $ids)
+    {
+      $renvoi = false;
+      $qb = $this->createQueryBuilder('f');
+      $qb->select('f')
+         ->join('f.eleve', 'e')
+         ->addSelect('e')
+         ->where('e.id IN (:ids) AND f.annee = :an AND e.renvoye = :renvoi')
+         ->setParameter('renvoi', $renvoi)
+         ->setParameter('ids', $ids)
+         ->setParameter('an', $as)
+      ;
+      return $qb
+        ->getQuery()
+        ->getResult()
+      ;
+    }
 }

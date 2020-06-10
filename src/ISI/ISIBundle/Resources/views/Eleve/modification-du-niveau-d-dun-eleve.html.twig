@@ -8,11 +8,11 @@
     <form action="" class="ui form" method="post">
         <div class="two fields">
             <div class="field">
-                <label for="">Nouvelle classe</label>
-                <select name="classe" id="">
+                <label for="classe">Nouvelle classe</label>
+                <select name="classe" id="classe">
                     <option value="">{{ 'Choisir la nouvelle classe pour'|trans }} {{ eleve.getNomFr }} {{ eleve.getPnomfr }}</option>
                     {% for classe in classes %}
-                        {% if (classe.getGenre == 'M' or classe.getGenre == classeActuelle.getGenre) and classe.getNiveau.getId != classeActuelle.getNiveau.getId %}
+                        {% if classe.getNiveau.getId != classeActuelle.getNiveau.getId %}
                             <option value="{{ classe.getId }}">{{ classe.getLibelleFr }}</option>
                         {% endif %}
                     {% endfor %}
@@ -22,7 +22,7 @@
                 <div class="field">
                     <label for="">Nouvelle halaqa</label>
                     <select name="halaqa" id="">
-                        <option value="">{{ 'Choisir la nouvelle halaqa'|trans }} {{ eleve.getNomFr }} {{ eleve.getPnomfr }}</option>
+                        <option value="">{{ 'Choisir la nouvelle halaqa'|trans }} {{ eleve.getNomFr }} {{ eleve.getPnomfr }}</option> 
                         {% for halaqa in halaqas %}
                             <option value="{{ halaqa.getId }}">{{ halaqa.getLibelle }}</option>
                         {% endfor %}

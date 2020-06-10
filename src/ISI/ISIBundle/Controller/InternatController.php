@@ -9,6 +9,7 @@ use ISI\ISIBundle\Form\ChambreType;
 
 use ISI\ISIBundle\Entity\Eleve;
 use ISI\ISIBundle\Entity\Interner;
+use ISI\ISIBundle\Entity\Frequenter;
 use ISI\ISIBundle\Entity\Chambre;
 use ISI\ISIBundle\Entity\Probleme;
 use ISI\ISIBundle\Entity\Commettre;
@@ -33,21 +34,34 @@ class InternatController extends Controller
     $repoAnnee    = $em->getRepository('ISIBundle:Annee');
     $repoEleve    = $em->getRepository('ISIBundle:Eleve');
     $repoInterner = $em->getRepository('ISIBundle:Interner');
+    $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
     $annee    = $repoAnnee->find($as);
     $internes = $repoInterner->litseDesInternes($as);
+    $ids = [];
     if(!empty($internes))
     {
       foreach ($internes as $key => $interne) {
         $nom[$key]  = $interne->getEleve()->getNomFr();
         $pnom[$key] = $interne->getEleve()->getPnomFr();
+        $ids[] = $interne->getEleve()->getId();
       }
       array_multisort($nom, SORT_ASC, $pnom, SORT_ASC, $internes);
     }
+    $frequenter = $repoFrequenter->classesDeCertainEleves($as, $ids);
+    $tabFrequenter = [];
+    foreach ($frequenter as $key => $fq) {
+      $tabFrequenter[$fq->getEleve()->getId()] = $fq;
+    }
+
+    // dump(count($ids));
+
+    // return new Response(var_dump($frequenter[0]->getClasse()->getLibelleFr()));
 
     return $this->render('ISIBundle:Internat:index.html.twig', [
-      'asec'     =>$as,
-      'annee'    => $annee,
-      'internes' => $internes
+      'asec'       => $as,
+      'annee'      => $annee,
+      'internes'   => $internes,
+      'frequenter' => $tabFrequenter
     ]);
   }
 
@@ -73,11 +87,10 @@ class InternatController extends Controller
   /**
    * @Security("has_role('ROLE_INTERNAT')")
    */
-  public function addChambresAction(Request $request, $as)
+  public function addChambresAction(Request $request, int $as)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
-    $repoChambre = $em->getRepository('ISIBundle:Chambre');
     $annee = $repoAnnee->find($as);
 
     $chambre = new Chambre;
@@ -99,6 +112,41 @@ class InternatController extends Controller
     return $this->render('ISIBundle:Internat:add-chambre.html.twig', array(
       'annee' => $annee,
       'asec'  => $as,
+      'form'  => $form->createView(),
+    ));
+  }
+
+  /**
+   * @Security("has_role('ROLE_INTERNAT')")
+   */
+  public function editChambresAction(Request $request, int $as, int $chambreId)
+  {
+    $em = $this->getDoctrine()->getManager();
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
+    $repoChambre = $em->getRepository('ISIBundle:Chambre');
+    $annee = $repoAnnee->find($as);
+    $chambre = $repoChambre->find($chambreId);
+
+
+    $form = $this->get('form.factory')->create(ChambreType::class, $chambre);
+
+    if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+      $em = $this->getDoctrine()->getManager();
+      $chambre->setPlacesDisponibles($chambre->getNombreDePlaces());
+      $chambre->setUpdatedBy($this->getUser());
+      $chambre->setUpdatedAt(new \Datetime());
+      $em->persist($chambre);
+      $em->flush();
+
+      $request->getSession()->getFlashBag()->add('info', 'La chambre '.$chambre->getBatiment()->getNom().' - '.$chambre->getLibelle().' a été bien modifiée');
+      return $this->redirectToRoute('internat_gestion_chambres', array('as' => $as));
+    }
+
+    // return new Response('Que se passe-t-il ?');
+    return $this->render('ISIBundle:Internat:edit-chambre.html.twig', array(
+      'annee' => $annee,
+      'asec'  => $as,
+      'chambre'  => $chambre,
       'form'  => $form->createView(),
     ));
   }
@@ -332,7 +380,7 @@ class InternatController extends Controller
       }
 
       $interner = $repoInterner->findOneBy(['eleve' => $eleveId, 'annee' => $as]);
-      $interner->setRenvoye(TRUE);
+      $interner->setRenvoye(true);
       $interner->setDateRenvoi(new \Datetime());
 
       // On va profiter pour enregistrer une conduite

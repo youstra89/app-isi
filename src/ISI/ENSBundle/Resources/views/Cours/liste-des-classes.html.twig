@@ -1,6 +1,6 @@
 {# Accueil pour l'édition des listes de classe' #}
 
-{% extends "ENSBundle:Enseignant:layout.html.twig" %}
+{% extends "ENSBundle::layout.html.twig" %}
 
 
 {% set grp = '' %}
@@ -16,7 +16,7 @@
 {% endblock %}
 
 {% block titre_page %}
-  <i class="student icon"></i>{{ 'GESTION DES COURS'|trans }}
+  <i class="student icon"></i>{{ 'Gestion des cours'|trans }} {{grp}}
 {% endblock %}
 
 
@@ -26,7 +26,7 @@
 
 
 {% block corps %}
-  <h3>{{ 'Edition des listes de classe'|trans }} : {{grp}}</h3>
+  <h3>{{ 'Affectation des enseignants pour les cours '|trans }} : {{grp}}</h3>
 {% if classes is empty %}
   <p>{{ 'Pas de classes pour le moment'|trans }}</p>
 {% else %}
@@ -76,13 +76,19 @@
                   <h4 class="ui image header">{{ genre }}</h4>
                 </td>
                 <td>
-                  <a href="{{path('ens_cours_de_la_classe', {'as': asec, 'regime': regime, 'classeId': classe.id})}}"  data-tooltip="Voir les cours de la classe">
-                    <i class="list icon"></i>
-                  </a>
-                  &nbsp;&nbsp;&nbsp;&nbsp;
-                  <a href="{{path('ens_enregistrer_cours_classe', {'as': asec, 'regime': regime, 'classeId': classe.id})}}"  data-tooltip="Editer les cours de la classe">
-                    <i class="edit icon"></i>
-                  </a>
+                  {% if classe.id in emplois %}
+                    <a href="{{path('ens_cours_de_la_classe', {'as': asec, 'regime': regime, 'classeId': classe.id})}}"  data-tooltip="Voir les cours de la classe">
+                      <i class="list icon"></i>
+                    </a>
+                    &nbsp;&nbsp;&nbsp;
+                    <a href="{{path('ens_editer_cours_classe', {'as': asec, 'regime': regime, 'classeId': classe.id})}}"  data-tooltip="Editer les cours de la classe">
+                      <i class="edit positive icon"></i>
+                    </a>
+                  {% else %}
+                    <a href="{{path('ens_enregistrer_cours_classe', {'as': asec, 'regime': regime, 'classeId': classe.id})}}"  data-tooltip="Enregistrer les cours de la classe">
+                      <i class="plus icon"></i>
+                    </a>
+                  {% endif %}
                 </td>
               </tr>
             {% endif %} 
@@ -95,32 +101,32 @@
 {% endblock %}
 
 {% block scripts %}
-    <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
-<script data-config>
-        var filtersConfig = {
-          base_path: '/markaz/web/TableFilter/dist/tablefilter/',
-          col_0: "none",
-          col_1: 'select',
-          col_3: 'select',
-          col_5: 'select',
-          alternate_rows: true,
-          rows_counter: true,
-          btn_reset: true,
-          loader: true,
-          status_bar: true,
-          mark_active_columns: true,
-          highlight_keywords: true,
-          no_results_message: true,
-          col_types: [
-            'number', 'string', 'string', 'string'
-          ],
-          col_widths: [
-              '20px', , , '200px'
-          ],
-          extensions: [{ name: 'sort' }]
-        };
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+      col_0: "none",
+      col_1: 'select',
+      col_3: 'select',
+      col_5: 'select',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string', 'string'
+      ],
+      col_widths: [
+          '20px', , , '200px'
+      ],
+      extensions: [{ name: 'sort' }]
+    };
 
-        var tf = new TableFilter('classes', filtersConfig);
-        tf.init();
-      </script>
+    var tf = new TableFilter('classes', filtersConfig);
+    tf.init();
+  </script>
 {% endblock %}

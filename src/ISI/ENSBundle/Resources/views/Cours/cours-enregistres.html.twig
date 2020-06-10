@@ -1,6 +1,6 @@
 {# Accueil pour l'édition des listes de classe' #}
 
-{% extends "ENSBundle:Enseignant:layout.html.twig" %}
+{% extends "ENSBundle::layout.html.twig" %}
 
 
 
@@ -10,7 +10,7 @@
 
 
 {% block titre_page %}
-  <i class="student icon"></i>{{ 'GESTION DES COURS'|trans }}
+  <i class="student icon"></i>{{ 'Gestion des cours'|trans }}
 {% endblock %}
 
 
@@ -27,19 +27,20 @@
   {% else %}
     <div class="column" style="width:75%">
       <form action="" method="post" class="ui form">
-        <table class="ui selectable very basic table" align="center" width="75%">
+        <table class="ui selectable very basic table" align="center" width="75%" id="cours">
           <thead>
             <tr>
               <th class="one wide">{{ 'N°'|trans }}</th>
               <th>{{ 'Matière'|trans }}</th>
               <th>{{ 'Enseignant'|trans }}</th>
               <th>{{ 'Coefficient'|trans }}</th>
-              <th>{{ 'Nbr heures cours'|trans }}</th>
+              <th>{{ 'Jours'|trans }}</th>
+              <th>{{ 'Heures'|trans }}</th>
+              <th>{{ 'Actions'|trans }}</th>
             </tr>
           </thead>
           <tbody>
             {% set numero = 0 %}
-            {% set totalHeure = 0 %}
             {% for item in cours %}
               {% for en in ens if en.matiere.id == item.matiere.id %}
                 {% set numero = numero + 1 %}
@@ -48,15 +49,16 @@
                   <td>{{ item.matiere.libelle }}</td>
                   <td>{{ item.anneeContrat.contrat.enseignant.nomFr }} {{ item.anneeContrat.contrat.enseignant.pnomFr }}</td>
                   <td>{{ en.coefficient }}</td>
-                  <td>{{ en.nombreHeureCours }}</td>
-                  {% set totalHeure = totalHeure + en.nombreHeureCours %}
+                  <td>{{ item.jourdecours }}</td>
+                  <td>{{ item.heure }}</td>
+                  <td>
+                    <a href="{{path('ens_editer_un_cours', {'as': annee.id, 'regime': regime, 'coursId': item.id})}}"  data-tooltip="Mettre à jour ce cours">
+                      <i class="edit icon"></i>
+                    </a>
+                  </td>
                 </tr>
               {% endfor %}
             {% endfor %}
-            <tr>
-              <td colspan="4"><strong>Nombre total d'heures de cours</strong></td>
-              <td>{{ totalHeure }}h</td>
-            </tr>
           </tbody>
           <tfoot>
           </tfoot>
@@ -68,4 +70,34 @@
 {% endblock %}
 
 {% block scripts %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+      col_0: "none",
+      col_1: 'select',
+      col_2: 'select',
+      col_3: 'select',
+      col_4: 'select',
+      col_5: 'select',
+      col_6: 'noe',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string', 'string'
+      ],
+      col_widths: [
+      ],
+      extensions: [{ name: 'sort' }]
+    };
+
+    var tf = new TableFilter('cours', filtersConfig);
+    tf.init();
+  </script>
 {% endblock %}

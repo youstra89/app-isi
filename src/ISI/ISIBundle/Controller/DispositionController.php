@@ -1,6 +1,6 @@
 <?php
 
-namespace ISI\ORGBundle\Controller;
+namespace ISI\ISIBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -9,7 +9,7 @@ use ISI\ISIBundle\Entity\Salle;
 use ISI\ISIBundle\Entity\SalleClasse;
 use ISI\ISIBundle\Form\SalleType;
 use ISI\ISIBundle\Entity\Batiment;
-use ISI\ORGBundle\Form\BatimentType;
+use ISI\ISIBundle\Form\BatimentType;
 use ISI\ISIBundle\Entity\Annee;
 use ISI\ISIBundle\Repository\SalleClasseRepository;
 use ISI\ISIBundle\Repository\AnneeContratRepository;
@@ -21,7 +21,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class DispositionController extends Controller
 {
     /**
-     * @Security("has_role('ROLE_ORGANISATION')")
+     * @Security("has_role('ROLE_SCOLARITE')")
      */
     public function indexAction(Request $request, int $as)
     {
@@ -29,14 +29,14 @@ class DispositionController extends Controller
       $repoAnnee = $em->getRepository('ISIBundle:Annee');
       $annee     = $repoAnnee->find($as);
 
-      return $this->render('ORGBundle:Disposition:index.html.twig', [
+      return $this->render('ISIBundle:Disposition:index.html.twig', [
         'asec'  => $as,
         'annee' => $annee,
       ]);
     }
 
     /**
-     * @Security("has_role('ROLE_ORGANISATION')")
+     * @Security("has_role('ROLE_SCOLARITE')")
      */
     public function gestionDesBatimentsAction(Request $request, int $as)
     {
@@ -46,7 +46,7 @@ class DispositionController extends Controller
       $annee     = $repoAnnee->find($as);
       $batiments = $repoBatiment->findBy(['utilisation' => 1]);
 
-      return $this->render('ORGBundle:Disposition:batiments.html.twig', [
+      return $this->render('ISIBundle:Disposition:batiments.html.twig', [
         'asec'      => $as,
         'annee'     => $annee,
         'batiments' => $batiments,
@@ -54,7 +54,7 @@ class DispositionController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_ORGANISATION')")
+     * @Security("has_role('ROLE_SCOLARITE')")
      */
     public function addBatimentAction(Request $request, int $as): Response
     {
@@ -80,14 +80,14 @@ class DispositionController extends Controller
         return $this->redirectToRoute('batiment_home', ['as' => $as]);
       }
       //>>
-      return $this->render('ORGBundle:Disposition:batiment-add.html.twig', [
+      return $this->render('ISIBundle:Disposition:batiment-add.html.twig', [
         'asec'  => $as,
         'annee' => $annee
       ]);
     }
 
     /**
-     * @Security("has_role('ROLE_ORGANISATION')")
+     * @Security("has_role('ROLE_SCOLARITE')")
      * @param Batiment $batiment
      */
     public function editBatimentAction(Request $request, Batiment $batiment, int $as): Response
@@ -110,7 +110,7 @@ class DispositionController extends Controller
         return $this->redirectToRoute('batiment_home', ['as' => $as]);
       }
       //>>
-      return $this->render('ORGBundle:Disposition:batiment-edit.html.twig', [
+      return $this->render('ISIBundle:Disposition:batiment-edit.html.twig', [
         'asec'  => $as,
         'annee' => $annee,
         'batiment' => $batiment,
@@ -118,7 +118,7 @@ class DispositionController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_ORGANISATION')")
+     * @Security("has_role('ROLE_SCOLARITE')")
      */
     public function gestionDesSallesAction(Request $request, int $as)
     {
@@ -128,7 +128,7 @@ class DispositionController extends Controller
       $annee     = $repoAnnee->find($as);
       $salles = $repoSalle->findAll();
 
-      return $this->render('ORGBundle:Disposition:salles.html.twig', [
+      return $this->render('ISIBundle:Disposition:salles.html.twig', [
         'asec'   => $as,
         'annee'  => $annee,
         'salles' => $salles,
@@ -136,7 +136,7 @@ class DispositionController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_ORGANISATION')")
+     * @Security("has_role('ROLE_SCOLARITE')")
      */
     public function addSalleAction(Request $request, int $as): Response
     {
@@ -155,7 +155,7 @@ class DispositionController extends Controller
         $this->addFlash('info', 'La salle '.$salle->getNom().' a été enregistré avec succès.');
         return $this->redirectToRoute('salle_home', ['as' => $as]);
       }
-      return $this->render('ORGBundle:Disposition:salle-add.html.twig', [
+      return $this->render('ISIBundle:Disposition:salle-add.html.twig', [
         'asec'  => $as,
         'annee' => $annee,
         'form' => $form->createView()
@@ -163,7 +163,7 @@ class DispositionController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_ORGANISATION')")
+     * @Security("has_role('ROLE_SCOLARITE')")
      * @param Salle $salle
      */
     public function editSalleAction(Request $request, int $as, Salle $salle): Response
@@ -182,7 +182,7 @@ class DispositionController extends Controller
         $this->addFlash('info', 'La salle '.$salle->getNom().' a été mise à jour avec succès.');
         return $this->redirectToRoute('salle_home', ['as' => $as]);
       }
-      return $this->render('ORGBundle:Disposition:salle-edit.html.twig', [
+      return $this->render('ISIBundle:Disposition:salle-edit.html.twig', [
         'asec'  => $as,
         'annee' => $annee,
         'salle' => $salle,
@@ -191,7 +191,7 @@ class DispositionController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_ORGANISATION')")
+     * @Security("has_role('ROLE_SCOLARITE')")
      */
     public function dispositionAction(Request $request, int $as)
     {
@@ -217,7 +217,7 @@ class DispositionController extends Controller
       }
       // dump($sallesClasses, $salles);
 
-      return $this->render('ORGBundle:Disposition:disposition.html.twig', [
+      return $this->render('ISIBundle:Disposition:disposition.html.twig', [
         'asec'   => $as,
         'annee'  => $annee,
         'salles' => $salles,
@@ -228,7 +228,7 @@ class DispositionController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_ORGANISATION')")
+     * @Security("has_role('ROLE_SCOLARITE')")
      * @param Salle $salle
      */
     public function dispositionDeClasseEnSalleAction(Request $request, int $as, Salle $salle): Response
@@ -313,7 +313,7 @@ class DispositionController extends Controller
         }
       }
 
-      return $this->render('ORGBundle:Disposition:disposition-en-classe.html.twig', [
+      return $this->render('ISIBundle:Disposition:disposition-en-classe.html.twig', [
         'asec'     => $as,
         'annee'    => $annee,
         'salle'    => $salle,
@@ -323,7 +323,7 @@ class DispositionController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_ORGANISATION')")
+     * @Security("has_role('ROLE_SCOLARITE')")
      * @param Salle $salle
      */
     public function editerDispositionDeClasseEnSalleAction(Request $request, int $as, Salle $salle): Response
@@ -444,7 +444,7 @@ class DispositionController extends Controller
         }
       }
       //>>
-      return $this->render('ORGBundle:Disposition:editer-disposition-en-classe.html.twig', [
+      return $this->render('ISIBundle:Disposition:editer-disposition-en-classe.html.twig', [
         'asec'     => $as,
         'annee'    => $annee,
         'salle'    => $salle,

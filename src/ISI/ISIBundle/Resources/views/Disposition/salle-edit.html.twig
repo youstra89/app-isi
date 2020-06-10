@@ -1,0 +1,21 @@
+{% extends 'ISIBundle:Disposition:index.html.twig'%}
+
+
+
+{% block title 'Edition de salle' %}
+
+
+
+{% block body %}
+  <div class="ui right aligned segment">
+    <h1 class="ui header">
+      <i class="student icon"></i>{{ 'Disposition en salle de classe'|trans }}
+    </h1>
+  </div>
+  <h2>Edition de la salle {{ salle.nom }}</h2>
+  {{ include('ISIBundle:Disposition:_salle-form.html.twig') }}
+{% endblock %}
+
+
+{% block javascripts %}
+{% endblock %}

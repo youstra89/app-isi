@@ -2,13 +2,14 @@
 
 namespace ISI\ISIBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
 use ISI\ISIBundle\Entity\Absence;
 use ISI\ISIBundle\Entity\Probleme;
 use ISI\ISIBundle\Entity\Commettre;
+use ISI\ISIBundle\Entity\Memoriser;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class AffairesScolairesController extends Controller
@@ -357,6 +358,54 @@ class AffairesScolairesController extends Controller
     ]);
   }
 
+  public function cartesScolaireDesElevesAction(int $as, string $regime, int $classeId)
+  {
+    $em               = $this->getDoctrine()->getManager();
+    $repoEleve        = $em->getRepository('ISIBundle:Eleve');
+    $repoClasse       = $em->getRepository('ISIBundle:Classe');
+    $repoAnnee        = $em->getRepository('ISIBundle:Annee');
+    $repoInformations = $em->getRepository('ISIBundle:Informations');
+
+    $annee  = $repoAnnee->find($as);
+    $classe = $repoClasse->find($classeId);
+    $eleves = $repoEleve->lesElevesDeLaClasse($as, $classeId);
+    $informations = $repoInformations->find(1);
+
+    $snappy = $this->get("knp_snappy.pdf");
+    $snappy->setOption("encoding", "UTF-8");
+    $filename = "liste-de-classe-de-".$classe->getLibelleFr();
+
+
+    $html = $this->renderView('ISIBundle:Scolarite:cartes-scolaires.html.twig', [
+      // "title" => "Titre de mon document",
+      "annee" => $annee,
+      "classe" => $classe,
+      "eleves" => $eleves,
+      "informations" => $informations,
+      'server'   => $_SERVER["DOCUMENT_ROOT"],   
+    ]);
+
+    $header = $this->renderView( '::header.html.twig' );
+    // $footer = $this->renderView( '::footer.html.twig' );
+
+    $options = [
+      'header-html' => $header,
+      // 'footer-html' => $footer,
+    ];
+
+    // Tcpdf
+    // $this->returnPDFResponseFromHTML($html);
+
+    return new Response(
+        $snappy->getOutputFromHtml($html, $options),
+        200,
+        [
+            'Content-Type'        => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="'.$filename.'.pdf"'
+        ]
+    );
+  }
+
   // Pour tirer la liste de classe d'une classe bien donnée [La function pour la génération du fichier pdf]
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
@@ -392,8 +441,8 @@ class AffairesScolairesController extends Controller
     // $footer = $this->renderView( '::footer.html.twig' );
 
     $options = [
-        'header-html' => $header,
-        // 'footer-html' => $footer,
+      'header-html' => $header,
+      // 'footer-html' => $footer,
     ];
 
     // Tcpdf
@@ -578,19 +627,21 @@ class AffairesScolairesController extends Controller
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
-  public function listeDesElevesDUneHalaqaAction($as, $regime, $halaqaId)
+  public function listeDesElevesDUneHalaqaAction(int $as, string $regime, int $halaqaId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoMemoriser  = $em->getRepository('ISIBundle:Memoriser');
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
+    $repoCours = $em->getRepository('ENSBundle:AnneeContratClasse');
     $repoAnnee = $em->getRepository('ISIBundle:Annee');
     $repoHalaqa = $em->getRepository('ISIBundle:Halaqa');
-    $repoClasse = $em->getRepository('ISIBundle:Classe');
     $repoInformations = $em->getRepository('ISIBundle:Informations');
     
     $annee  = $repoAnnee->find($as);
     $halaqa = $repoHalaqa->find($halaqaId);
     $memoriser = $repoMemoriser->findBy(['halaqa' => $halaqaId]);
+    $enseignant = $repoCours->findOneBy(['halaqa' => $halaqaId, "annee" => $as]);
+    $nomEnseignant = !empty($enseignant) ? $enseignant->getAnneeContrat()->getContrat()->getEnseignant()->getNom() : "Inconnu";
     $informations = $repoInformations->find(1);
     
     $classes = [];
@@ -604,6 +655,9 @@ class AffairesScolairesController extends Controller
       $nom[$key]   = $memo->getEleve()->getNomFr();
       $pnom[$key]  = $memo->getEleve()->getPnomFr();
     }
+
+    // dump($nomEnseignant);
+    // die();
     
     // array_multisort() permet de trier un tableau multidimensionnel
     array_multisort($nom, SORT_ASC, $pnom, SORT_ASC, $memoriser);
@@ -623,6 +677,7 @@ class AffairesScolairesController extends Controller
       "memoriser" => $memoriser,
       'server'   => $_SERVER["DOCUMENT_ROOT"],   
       "informations" => $informations,
+      "nomEnseignant" => $nomEnseignant,
       ]);
 
     $header = $this->renderView( '::header.html.twig' );
@@ -1187,12 +1242,23 @@ class AffairesScolairesController extends Controller
       if($regime == 'A'){
         foreach ($halaqas as $key => $hal) {
           if(!empty($hal)){
-              $eleve = $repoEleve->find($key);
-              $halaqa = $repoHalaqa->find((int) $hal);
+              $eleve     = $repoEleve->find($key);
+              $halaqa    = $repoHalaqa->find((int) $hal);
               $memoriser = $repoMemoriser->findOneBy(['eleve' => $key, 'annee' => $as]);
-              $memoriser->setHalaqa($halaqa);
-              $memoriser->setUpdatedBy($this->getUser());
-              $memoriser->setUpdatedAt(new \Datetime());
+              if(empty($memoriser)){
+                $memoriser = new Memoriser();
+                $memoriser->setEleve($eleve);
+                $memoriser->setAnnee($annee);
+                $memoriser->setHalaqa($halaqa);
+                $memoriser->setCreatedBy($this->getUser());
+                $memoriser->setCreatedAt(new \Datetime());
+                $em->persist($memoriser);
+              }
+              else{
+                $memoriser->setHalaqa($halaqa);
+                $memoriser->setUpdatedBy($this->getUser());
+                $memoriser->setUpdatedAt(new \Datetime());
+              }
               $check_recording = true;
               $halaqa_recording = true;
           }

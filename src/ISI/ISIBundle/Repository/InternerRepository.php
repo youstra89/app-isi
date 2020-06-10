@@ -30,6 +30,7 @@ class InternerRepository extends \Doctrine\ORM\EntityRepository
   {
     $internes = $this->createQueryBuilder('i');
     $internes->join('i.eleve', 'e')
+             ->join('e.frequenter', 'f')
              ->addSelect('e')
              ->join('i.annee', 'an')
              ->addSelect('an')

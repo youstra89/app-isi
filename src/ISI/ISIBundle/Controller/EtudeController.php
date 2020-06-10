@@ -247,11 +247,13 @@ class EtudeController extends Controller
       $repoNiveau  = $em->getRepository('ISIBundle:Niveau');
 
       $matieres = $repoMatiere->lesMatieresDuNiveau($as, $niveauId);
+      $matieresEnfants = $repoMatiere->lesMatieresEnfantsDuNiveau($as, $niveauId);
       $niveau   = $repoNiveau->find($niveauId);
       $annee    = $repoAnnee->find($as);
       $ens      = $repoEns->findBy(['annee' => $as, 'niveau' => $niveauId]);
 
       return $this->render('ISIBundle:Etude:liste-des-matieres-du-niveau.html.twig', [
+        'matieresEnfants' => $matieresEnfants,
         'matieres' => $matieres,
         'asec'     => $as,
         'regime'   => $regime,

@@ -68,7 +68,7 @@ class AdminController extends Controller
         $repoAnnee = $em->getRepository('ISIBundle:Annee');
         $annee = $repoAnnee->find($as);
 
-        $roles = ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN_SCOLARITE', 'ROLE_SCOLARITE', 'ROLE_INTERNAT', 'ROLE_ENSEIGNANT'];
+        $roles = ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN_SCOLARITE', 'ROLE_SCOLARITE', 'ROLE_INTERNAT', 'ROLE_DIRECTION_ENSEIGNANT', 'ROLE_ORGANISATION', 'ROLE_ENSEIGNANT', 'ROLE_ADMIN_ANNEXE', 'ROLE_ETUDE'];
 
         $userManager = $this->get('fos_user.user_manager');
 

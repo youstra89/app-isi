@@ -31,7 +31,8 @@ class SalleType extends AbstractType
                     'choice_label'  => 'nom',
                     'multiple'      => false,
                     'required'      => true
-                  ]);
+                  ])
+        ;
     }/**
      * {@inheritdoc}
      */

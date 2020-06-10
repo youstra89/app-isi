@@ -7,80 +7,53 @@
 {% else %}
     {% if is_granted('ROLE_INTERNAT') %}
         {% set template = "ISIBundle:Internat:layout.html.twig" %}
-    {% elseif is_granted('ROLE_ENSEIGNANT') %}
+    {% elseif is_granted('ROLE_DIRECTION_ENSEIGNANT') %}
         {% set template = "ISIBundle:Enseignant:layout.html.twig" %}
     {% elseif is_granted('ROLE_ETUDE') %}
         {% set template = "ISIBundle:Etude:layout.html.twig" %}
     {% elseif is_granted('ROLE_SCOLARITE') %}
         {% set template = "ISIBundle::layout.html.twig" %}
+    {% elseif is_granted('ROLE_ORGANISATION') %}
+        {% set template = "ORGBundle::layout.html.twig" %}
+    {% elseif is_granted('ROLE_ENSEIGNANT') %}
+        {% set template = "ENSBundle::index-enseignant.html.twig" %}
     {% endif %}
 {% endif %}
 
 {% extends template %}
 
-{% if userType == 'admin' %}
-    {% block titre %}
-      Mon compte
+{% block body %}
+    {% block titre_page %}
+        <i class="student icon"></i>{{ 'Mon compte'|trans }}
     {% endblock %}
-    {% block corps %}
-        <div class="">
-            <p>{{ 'Nom'|trans }}: <strong>{{ app.user.username }}</strong></p>
+    <!-- Début d'affichage des notifications et des messages d'erreur -->
+    {% for message in app.session.flashbag.get('error') %}
+        <div class="ui red message">
+            <div class="header">{{ 'Attention'|trans }} !!! </div>
+            <ul class="list">
+                <li>{{ message }}.</li>
+            </ul>
         </div>
-        <br />
+    {% endfor %} 
+    {% for message in app.session.flashbag.get('info') %}
+        <div class="ui green message">
+            <div class="header">{{ 'Notification'|trans }}: </div>
+            <ul class="list">
+                <li>{{ message }}.</li>
+            </ul>
+        </div>
+    {% endfor %}
+    <!-- Fin d'affichage des notifications et des message d'erreur  -->
+    <div class="">
+        <p>{{ 'Nom'|trans }}: <strong>{{ app.user.username }}</strong></p>
+    </div>
+    <br />
+    <div>
         <a href="{{ path('fos_user_change_password', {'as': asec}) }}">
-                <button class="ui positive button">{{ 'Changer mon mot de passe'|trans }}</button>
-            </a>
-        <!-- Début d'affichage des notifications et des messages d'erreur -->
-        {% for message in app.session.flashbag.get('error') %}
-            <div class="ui red message">
-                <div class="header">{{ 'Attention'|trans }} !!! </div>
-                <ul class="list">
-                    <li>{{ message }}.</li>
-                </ul>
-            </div>
-        {% endfor %} {% for message in app.session.flashbag.get('info') %}
-            <div class="ui green message">
-                <div class="header">{{ 'Notification'|trans }}: </div>
-                <ul class="list">
-                    <li>{{ message }}.</li>
-                </ul>
-            </div>
-        {% endfor %}
-        <!-- Fin d'affichage des notifications et des message d'erreur  -->
-    {% endblock %}
-
-{% else %}
-    {% block body %}
-        <div class="ui {{ dir2 }} aligned segment">
-            <h1 class="ui header">
-                <i class="users icon"></i>{{ 'Mon compte'|trans }}</h1>
-        </div>
-        <!-- Début d'affichage des notifications et des messages d'erreur -->
-        {% for message in app.session.flashbag.get('error') %}
-            <div class="ui red message">
-                <div class="header">{{ 'Attention'|trans }} !!! </div>
-                <ul class="list">
-                    <li>{{ message }}.</li>
-                </ul>
-            </div>
-        {% endfor %} 
-        {% for message in app.session.flashbag.get('info') %}
-            <div class="ui green message">
-                <div class="header">{{ 'Notification'|trans }}: </div>
-                <ul class="list">
-                    <li>{{ message }}.</li>
-                </ul>
-            </div>
-        {% endfor %}
-        <!-- Fin d'affichage des notifications et des message d'erreur  -->
-        <div class="">
-            <p>{{ 'Nom'|trans }}: <strong>{{ app.user.username }}</strong></p>
-        </div>
-        <br />
-        <div>
-            <a href="{{ path('fos_user_change_password', {'as': asec}) }}">
-                <button class="ui positive button">{{ 'Changer mon mot de passe'|trans }}</button>
-            </a>
-        </div>
-    {% endblock %}
-{% endif %}
+            <button class="ui positive button">{{ 'Changer mon mot de passe'|trans }}</button>
+        </a>
+        <a href="{{ path('enseignant_home', {'as': asec}) }}">
+            <button class="ui primary button">{{ 'Espace enseignant'|trans }}</button>
+        </a>
+    </div>
+{% endblock %}

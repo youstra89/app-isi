@@ -1,11 +1,7 @@
-{% extends 'ORGBundle:Disposition:index.html.twig'%}
+{% extends 'ISIBundle::layout.html.twig'%}
 
 
-{% block stylesheets %}
-{% endblock %}
-
-
-{% block title 'Edition de disposition de classe dans une salle' %}
+{% block title 'Disposition de classe dans une salle' %}
 
 
 {% block notification %}
@@ -32,6 +28,11 @@
 
 
 {% block body %}
+  <div class="ui right aligned segment">
+    <h1 class="ui header">
+      <i class="student icon"></i>{{ 'Disposition en salle de classe'|trans }}
+    </h1>
+  </div>
   <h2>Disposition de classe dans la salle : {{ salle.nom }} - {{ salle.batiment.nom }} - {{ salle.localisation }}</h2>
   <div>
     <form action="" method="post" class="ui form">
@@ -41,11 +42,7 @@
           <select class="ui fluid dropdown" name="classeA" id="classeA">
               <option value="">{{ 'Sélectionner une classe'|trans }}</option>
               {% for cl in classesA %}
-                {% if academie|length != 0 and academie.classe == cl %}
-                  <option value="{{ cl.id }}" selected>{{ cl.libelleFr }}</option>
-                {% else %}
                   <option value="{{ cl.id }}">{{ cl.libelleFr }}</option>
-                {% endif %}
               {% endfor %}
           </select>
         </div>
@@ -54,11 +51,7 @@
           <select class="ui fluid dropdown" name="classeF" id="classeF">
               <option value="">{{ 'Sélectionner une classe'|trans }}</option>
               {% for cl in classesF %}
-                {% if centreformation|length != 0 and centreformation.classe == cl %}
-                  <option value="{{ cl.id }}" selected>{{ cl.libelleFr }}</option>
-                {% else %}
-                  <option value="{{ cl.id }}">{{ cl.libelleFr }}</option>
-                {% endif %}
+                <option value="{{ cl.id }}">{{ cl.libelleFr }}</option>
               {% endfor %}
           </select>
         </div>

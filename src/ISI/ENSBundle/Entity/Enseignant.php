@@ -196,6 +196,16 @@ class Enseignant
     private $updatedBy;
 
     /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="user", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $user;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_at", type="datetime", nullable=false)
@@ -208,6 +218,41 @@ class Enseignant
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     private $updatedAt;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="enseignant", type="boolean", nullable=false)
+     */
+    private $enseignant = false;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="arabe", type="boolean", nullable=false)
+     */
+    private $arabe = false;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="francais", type="boolean", nullable=false)
+     */
+    private $francais = false;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="administrateur", type="boolean", nullable=false)
+     */
+    private $administrateur = false;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="autre", type="boolean", nullable=false)
+     */
+    private $autre = false;
 
 
 
@@ -315,6 +360,11 @@ class Enseignant
     public function getPnomFr()
     {
         return $this->pnomFr;
+    }
+
+    public function getNom()
+    {
+        return $this->pnomFr." ".$this->nomFr;
     }
 
     /**
@@ -843,5 +893,149 @@ class Enseignant
     public function getUpdatedBy()
     {
         return $this->updatedBy;
+    }
+
+    /**
+     * Set enseignant
+     *
+     * @param boolean $enseignant
+     *
+     * @return Enseignant
+     */
+    public function setEnseignant($enseignant)
+    {
+        $this->enseignant = $enseignant;
+
+        return $this;
+    }
+
+    /**
+     * Get enseignant
+     *
+     * @return boolean
+     */
+    public function getEnseignant()
+    {
+        return $this->enseignant;
+    }
+
+    /**
+     * Set arabe
+     *
+     * @param boolean $arabe
+     *
+     * @return Enseignant
+     */
+    public function setArabe($arabe)
+    {
+        $this->arabe = $arabe;
+
+        return $this;
+    }
+
+    /**
+     * Get arabe
+     *
+     * @return boolean
+     */
+    public function getArabe()
+    {
+        return $this->arabe;
+    }
+
+    /**
+     * Set francais
+     *
+     * @param boolean $francais
+     *
+     * @return Enseignant
+     */
+    public function setFrancais($francais)
+    {
+        $this->francais = $francais;
+
+        return $this;
+    }
+
+    /**
+     * Get francais
+     *
+     * @return boolean
+     */
+    public function getFrancais()
+    {
+        return $this->francais;
+    }
+
+    /**
+     * Set administrateur
+     *
+     * @param boolean $administrateur
+     *
+     * @return Enseignant
+     */
+    public function setAdministrateur($administrateur)
+    {
+        $this->administrateur = $administrateur;
+
+        return $this;
+    }
+
+    /**
+     * Get administrateur
+     *
+     * @return boolean
+     */
+    public function getAdministrateur()
+    {
+        return $this->administrateur;
+    }
+
+    /**
+     * Set autre
+     *
+     * @param boolean $autre
+     *
+     * @return Enseignant
+     */
+    public function setAutre($autre)
+    {
+        $this->autre = $autre;
+
+        return $this;
+    }
+
+    /**
+     * Get autre
+     *
+     * @return boolean
+     */
+    public function getAutre()
+    {
+        return $this->autre;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \UserBundle\Entity\User $user
+     *
+     * @return Enseignant
+     */
+    public function setUser(\UserBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \UserBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

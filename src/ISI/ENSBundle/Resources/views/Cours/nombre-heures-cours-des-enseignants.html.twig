@@ -1,6 +1,6 @@
 {# Accueil pour l'édition des listes de classe' #}
 
-{% extends "ENSBundle:Enseignant:layout.html.twig" %}
+{% extends "ENSBundle::layout.html.twig" %}
 
 
 {% block pageTitle %}
@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block titre_page %}
-  <i class="student icon"></i>{{ 'GESTION DES COURS'|trans }}
+  <i class="student icon"></i>{{ 'Gestion des cours'|trans }}
 {% endblock %}
 
 
@@ -30,6 +30,7 @@
             <th>Nom</th>
             <th>Prénoms</th>
             <th>Heures Académie</th>
+            <th>Heures Coran</th>
             <th>Heures Centre de Formation</th>
             <th class="two wide">{{ 'Actions'|trans }}</th>
           </tr>
@@ -44,6 +45,7 @@
                 <td>{{ item.contrat.enseignant.pnomFr }}</td>
                 {% if heuresCours[item.id] is defined %}
                   <td>{{ heuresCours[item.id].academie }}</td>
+                  <td>{{ heuresCours[item.id].coran }}</td>
                   <td>{{ heuresCours[item.id].centre }}</td>
                 {% else %}
                   <td></td>
@@ -72,7 +74,8 @@
           col_0: "none",
           col_3: 'select',
           col_4: 'select',
-          col_5: 'none',
+          col_5: 'select',
+          col_6: 'none',
           alternate_rows: true,
           rows_counter: true,
           btn_reset: true,

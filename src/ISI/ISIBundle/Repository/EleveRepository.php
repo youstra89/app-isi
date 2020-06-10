@@ -124,7 +124,7 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
   public function lesElevesDeLaClasse($as, $classeId)
   {
     $em = $this->getEntityManager();
-    $sql = 'SELECT e.id AS id, e.matricule AS matricule, e.nom_fr AS nomFr, e.pnom_fr AS pnomFr, e.nom_ar AS nomAr, e.pnom_ar AS pnomAr, e.sexe AS sexe, IF(er.eleve_id IS NULL OR e.renvoye = 0, FALSE, TRUE) AS renvoye FROM eleve_renvoye er RIGHT JOIN eleve e ON er.eleve_id = e.id AND er.annee_id = :an JOIN frequenter f ON f.eleve_id = e.id JOIN classe c ON c.id = f.classe_id WHERE f.annee_id = :an AND c.id = :classeId;';
+    $sql = 'SELECT e.id AS id, e.matricule AS matricule, e.nom_fr AS nomFr, e.pnom_fr AS pnomFr, e.nom_ar AS nomAr, e.pnom_ar AS pnomAr, e.sexe AS sexe, IF(er.eleve_id IS NULL OR e.renvoye = 0, FALSE, TRUE) AS renvoye, e.photo AS photo, e.date_naissance AS dateNaissance, e.lieu_naissance AS lieuNaissance FROM eleve_renvoye er RIGHT JOIN eleve e ON er.eleve_id = e.id AND er.annee_id = :an JOIN frequenter f ON f.eleve_id = e.id JOIN classe c ON c.id = f.classe_id WHERE f.annee_id = :an AND c.id = :classeId;';
     $statement = $em->getConnection()->prepare($sql);
     $statement->bindValue('classeId', $classeId);
     $statement->bindValue('an', $as);

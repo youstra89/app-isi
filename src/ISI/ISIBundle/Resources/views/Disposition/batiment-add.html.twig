@@ -1,8 +1,5 @@
-{% extends 'ORGBundle:Disposition:index.html.twig'%}
+{% extends 'ISIBundle:Disposition:index.html.twig'%}
 
-
-{% block stylesheets %}
-{% endblock %}
 
 
 {% block title 'Ajout d\'un nouveau bâtiment' %}
@@ -10,6 +7,11 @@
 
 
 {% block body %}
+  <div class="ui right aligned segment">
+    <h1 class="ui header">
+      <i class="student icon"></i>{{ 'Disposition en salle de classe'|trans }}
+    </h1>
+  </div>
   <h2>Ajout d'un nouveau bâtiment</h2>
   <div>
     <form action="" method="post" class="ui form">

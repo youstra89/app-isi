@@ -65,7 +65,7 @@ class DefaultController extends Controller
 
             return $this->redirectToRoute('internat_home', ['as' => $annee->getId()]);
         }
-        elseif($this->get('security.authorization_checker')->isGranted('ROLE_ENSEIGNANT'))
+        elseif($this->get('security.authorization_checker')->isGranted('ROLE_DIRECTION_ENSEIGNANT'))
         {
             if(empty($annee))
                 return new Response('Vous ne pouvez pas utiliser l\'application avant le directeur des affaires écolières/scolaires!!!');
@@ -85,6 +85,13 @@ class DefaultController extends Controller
                 return new Response('Vous ne pouvez pas utiliser l\'application avant le directeur des affaires écolières/scolaires!!!');
 
             return $this->redirectToRoute('org_homepage', ['as' => $annee->getId()]);
+        }
+        elseif($this->get('security.authorization_checker')->isGranted('ROLE_ENSEIGNANT'))
+        {
+            if(empty($annee))
+                return new Response('Vous ne pouvez pas utiliser l\'application avant le directeur des affaires écolières/scolaires!!!');
+
+            return $this->redirectToRoute('enseignant_home', ['as' => $annee->getId()]);
         }
         else
             return new Response("Authentification parfaite. Mais, vous n'avez pas de rôle pour le moment.");
