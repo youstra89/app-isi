@@ -103,6 +103,16 @@ class Classe
      */
     private $cours;
 
+    /**
+     * @var \Annexe
+     *
+     * @ORM\ManyToOne(targetEntity="Annexe")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="annexe_id", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $annexe;
+
 
     /**
      * Get id
@@ -400,5 +410,70 @@ class Classe
     public function getUpdatedBy()
     {
         return $this->updatedBy;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->cours = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add cour
+     *
+     * @param \ISI\ENSBundle\Entity\AnneeContratClasse $cour
+     *
+     * @return Classe
+     */
+    public function addCour(\ISI\ENSBundle\Entity\AnneeContratClasse $cour)
+    {
+        $this->cours[] = $cour;
+
+        return $this;
+    }
+
+    /**
+     * Remove cour
+     *
+     * @param \ISI\ENSBundle\Entity\AnneeContratClasse $cour
+     */
+    public function removeCour(\ISI\ENSBundle\Entity\AnneeContratClasse $cour)
+    {
+        $this->cours->removeElement($cour);
+    }
+
+    /**
+     * Get cours
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCours()
+    {
+        return $this->cours;
+    }
+
+    /**
+     * Set annexe
+     *
+     * @param \ISI\ISIBundle\Entity\Annexe $annexe
+     *
+     * @return Classe
+     */
+    public function setAnnexe(\ISI\ISIBundle\Entity\Annexe $annexe = null)
+    {
+        $this->annexe = $annexe;
+
+        return $this;
+    }
+
+    /**
+     * Get annexe
+     *
+     * @return \ISI\ISIBundle\Entity\Annexe
+     */
+    public function getAnnexe()
+    {
+        return $this->annexe;
     }
 }

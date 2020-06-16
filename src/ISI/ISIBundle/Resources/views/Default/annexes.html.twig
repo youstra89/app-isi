@@ -1,0 +1,50 @@
+{% extends "ISIBundle::index.html.twig" %}
+  {% block title %}
+    Choix d'annexe pour la connexion
+  {% endblock %}
+
+
+  {% block section %}
+    <i class="users icon"></i>Choisir une annexe
+  {% endblock %}
+
+
+  {% block menu %}
+  {% endblock %}
+
+
+  {% block mobile_menu %}
+  {% endblock %}
+
+
+  {% block contextual_menu %}
+  {% endblock %}
+
+
+  {% block body %}
+    <!-- Fin d'affichage des notifications et des message d'erreur  -->
+    <div class="ui four column stackable grid">
+      {% for item in annexes %}  
+        <div class="wide column">
+          <a class="item" href="{{ path('isi_homepage', {'as': asec, 'annexeId': item.id}) }}">
+            <div class="card ui segment">
+              <div class="image" bgcolor="white">
+                <img src="{{ asset('images/logoISI.png') }}" style="width: 50%; height: auto">
+              </div>
+              <div class="content">
+                <div class="header">{{ item.libelle }}</div>
+                <div class="meta">
+                  Annexe
+                </div>
+              </div>
+              <div class="extra content">
+                <span class="right floated">{{ 'Annexe'|trans }} </span>
+                <span>
+                  <i class="user icon"></i></span>
+              </div>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  {% endblock %}

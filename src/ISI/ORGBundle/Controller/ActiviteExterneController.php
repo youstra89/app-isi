@@ -9,16 +9,12 @@ use ISI\ORGBundle\Entity\Tournee;
 use ISI\ORGBundle\Entity\Activite;
 use ISI\ORGBundle\Form\ActiviteType;
 use ISI\ORGBundle\Entity\TourneePays;
-use ISI\ISIBundle\Entity\Annee;
 use ISI\ORGBundle\Entity\TourneeCommune;
 use ISI\ORGBundle\Entity\ActiviteTournee;
 use ISI\ORGBundle\Entity\ActiviteCommune;
 use ISI\ORGBundle\Entity\ActivitePays;
-use Doctrine\ORM\Tools\Pagination\Paginator;
-use ISI\ISIBundle\Repository\AnneeContratRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class ActiviteExterneController extends Controller
 {
@@ -30,6 +26,13 @@ class ActiviteExterneController extends Controller
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoTournee = $em->getRepository('ORGBundle:Tournee');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $annee       = $repoAnnee->find($as);
     $paginator = $this->get('knp_paginator');
     $query = $repoTournee->getTournees();
@@ -76,6 +79,13 @@ class ActiviteExterneController extends Controller
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoPays    = $em->getRepository('ORGBundle:Pays');
     $repoCommune = $em->getRepository('ORGBundle:Commune');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $annee       = $repoAnnee->find($as);
     $communes    = $repoCommune->findAll();
     $pays        = $repoPays->findAll();
@@ -168,6 +178,13 @@ class ActiviteExterneController extends Controller
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoCommune = $em->getRepository('ORGBundle:Commune');
     $repoTournee = $em->getRepository('ORGBundle:Tournee');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $annee       = $repoAnnee->find($as);
     $communes    = $repoCommune->findAll();
     $tournee     = $repoTournee->find($id);
@@ -231,6 +248,13 @@ class ActiviteExterneController extends Controller
     $repoTournee = $em->getRepository('ORGBundle:Tournee');
     $annee       = $repoAnnee->find($as);
     $tournee     = $repoTournee->find($id);
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     return $this->render('ORGBundle:Tournee:tournee-nationale-communes.html.twig', [
       'asec'    => $as,
@@ -250,6 +274,13 @@ class ActiviteExterneController extends Controller
     $repoTournee = $em->getRepository('ORGBundle:Tournee');
     $annee       = $repoAnnee->find($as);
     $tournee     = $repoTournee->find($id);
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     return $this->render('ORGBundle:Tournee:tournee-internationale-pays.html.twig', [
       'asec'    => $as,
@@ -269,6 +300,13 @@ class ActiviteExterneController extends Controller
     $repoTournee = $em->getRepository('ORGBundle:Tournee');
     $annee       = $repoAnnee->find($as);
     $tournee     = $repoTournee->find($id);
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     return $this->render('ORGBundle:Tournee:tournee-nationale-suppression-communes.html.twig', [
       'asec'    => $as,
@@ -284,6 +322,13 @@ class ActiviteExterneController extends Controller
   {
     $em = $this->getDoctrine()->getManager();
     $commune = $em->getRepository('ORGBundle:TourneeCommune')->find($id);
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     if($this->isCsrfTokenValid('delete'.$commune->getId(), $request->get('_token')))
     {
@@ -306,6 +351,13 @@ class ActiviteExterneController extends Controller
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoTournee = $em->getRepository('ORGBundle:Tournee');
     $repoCommune = $em->getRepository('ORGBundle:Commune');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $annee       = $repoAnnee->find($as);
     $tournee     = $repoTournee->find($id);
     $commune     = $repoCommune->find($communeId);
@@ -360,6 +412,13 @@ class ActiviteExterneController extends Controller
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoTournee = $em->getRepository('ORGBundle:Tournee');
     $repoPays = $em->getRepository('ORGBundle:Pays');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $annee       = $repoAnnee->find($as);
     $tournee     = $repoTournee->find($id);
     $pays     = $repoPays->find($paysId);
@@ -373,7 +432,9 @@ class ActiviteExterneController extends Controller
       // On vérifie si la date sélectionnée est inclue dans la durée de la tournée
       if ($date < $tournee->getDebut() || $date > $tournee->getFin()) {
         return new Response('Date incorrecte');
-        $this->addFlash('error', 'La date saisie n\'est pas inclue dans la durée de la tournée.');
+        $this->addFlash('error', 'La date sa    /**
+        * @Route("/", name="homepage")
+        */isie n\'est pas inclue dans la durée de la tournée.');
         return $this->redirectToRoute('activite.tournee.add', ['as' => $as, 'id' => $id, 'communeId' => $communeId]);
       }
       $activite->setCreatedBy($this->getUser());
@@ -412,6 +473,13 @@ class ActiviteExterneController extends Controller
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $annee       = $repoAnnee->find($as);
 
 
@@ -431,7 +499,13 @@ class ActiviteExterneController extends Controller
     $em = $this->getDoctrine()->getManager();
     $repoAnnee     = $em->getRepository('ISIBundle:Annee');
     $repoTournee   = $em->getRepository('ORGBundle:Tournee');
-    $repoActiviteC = $em->getRepository('ORGBundle:ActiviteCommune');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $annee         = $repoAnnee->find($as);
     $tournee       = $repoTournee->find($id);
     $requete_des_activites = "
@@ -484,7 +558,13 @@ class ActiviteExterneController extends Controller
     $em = $this->getDoctrine()->getManager();
     $repoAnnee     = $em->getRepository('ISIBundle:Annee');
     $repoTournee   = $em->getRepository('ORGBundle:Tournee');
-    $repoActiviteC = $em->getRepository('ORGBundle:ActiviteCommune');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $annee         = $repoAnnee->find($as);
     $tournee       = $repoTournee->find($id);
     $requete_des_activites = "

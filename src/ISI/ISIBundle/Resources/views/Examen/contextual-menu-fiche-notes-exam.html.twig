@@ -1,15 +1,5 @@
-<div class="ui vertical menu">
-    <div class="item">
-        <div class="header">{{ 'Fiches de notes'|trans }}</div>
-        <div class="menu">
-            <a class="item" href="{{ path('isi_afficher_fiches_de_notes', {'as': asec, 'regime': 'A'}) }}">{{ 'Académie'|trans }}</a>
-            <a class="item" href="{{ path('isi_afficher_fiches_de_notes', {'as': asec, 'regime': 'F'}) }}">{{ 'Formation'|trans }}</a>
-        </div>
-    </div>
-	<div class="item">
-        <div class="header">{{ 'Bilan'|trans }}</div>
-        <div class="menu">
-            <a class="item" href="{{ path('isi_bilan_annuel_home', {'as': asec}) }}">{{ 'Bilan annuel'|trans }}</a>
-        </div>
-    </div>
-</div>
+<div class="header">{{ 'Fiches de notes'|trans }}</div>
+<a class="item" href="{{ path('isi_afficher_fiches_de_notes', {'as': asec, 'annexeId': annexe.id, 'regime': 'A'}) }}">{{ 'Académie'|trans }}</a>
+<a class="item" href="{{ path('isi_afficher_fiches_de_notes', {'as': asec, 'annexeId': annexe.id, 'regime': 'F'}) }}">{{ 'Formation'|trans }}</a>
+<div class="header">{{ 'Bilan'|trans }}</div>
+<a class="item" href="{{ path('isi_bilan_annuel_home', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Bilan annuel'|trans }}</a>

@@ -254,6 +254,16 @@ class Enseignant
      */
     private $autre = false;
 
+    /**
+     * @var \Annexe
+     *
+     * @ORM\ManyToOne(targetEntity="\ISI\ISIBundle\Entity\Annexe")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="annexe_id", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $annexe;
+
 
 
     /**
@@ -1037,5 +1047,29 @@ class Enseignant
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * Set annexe
+     *
+     * @param \ISI\ISIBundle\Entity\Annexe $annexe
+     *
+     * @return Enseignant
+     */
+    public function setAnnexe(\ISI\ISIBundle\Entity\Annexe $annexe = null)
+    {
+        $this->annexe = $annexe;
+
+        return $this;
+    }
+
+    /**
+     * Get annexe
+     *
+     * @return \ISI\ISIBundle\Entity\Annexe
+     */
+    public function getAnnexe()
+    {
+        return $this->annexe;
     }
 }

@@ -9,5 +9,6 @@ rsync -avp ./ youstra@192.168.1.34:C:/xampp/htdocs/issia --include=app/config/co
 rsync -avp ./ youstra@192.168.1.34:C:/xampp/htdocs/korhogo --include=app/config/config.yml --exclude=.git --exclude=app/config --exclude=vendor --exclude=web --exclude=var --exclude-from=.gitignore --exclude=src/ISI/ORGBundle/Resources/views/Mosquee/.git
 rsync -avp ./ youstra@192.168.1.34:C:/xampp/htdocs/vavoua --include=app/config/config.yml --exclude=.git --exclude=app/config --exclude=vendor --exclude=web --exclude=var --exclude-from=.gitignore --exclude=src/ISI/ORGBundle/Resources/views/Mosquee/.git
 rsync -avp ./ youstra@192.168.1.34:C:/xampp/htdocs/zattry --include=app/config/config.yml --exclude=.git --exclude=app/config --exclude=vendor --exclude=web --exclude=var --exclude-from=.gitignore --exclude=src/ISI/ORGBundle/Resources/views/Mosquee/.git
+rsync -avp ./ youstra@192.168.1.34:C:/xampp/htdocs/boundiali --include=app/config/config.yml --exclude=.git --exclude=app/config --exclude=vendor --exclude=web --exclude=var --exclude-from=.gitignore --exclude=src/ISI/ORGBundle/Resources/views/Mosquee/.git
 #C:\xampp\htdocs\markaz\var\cache>
 #rmdir /S C:\xampp\htdocs\markaz\var\cache

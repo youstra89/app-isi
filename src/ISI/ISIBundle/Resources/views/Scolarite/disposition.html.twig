@@ -5,14 +5,14 @@
 {% endblock %}
 
 
-{% block titre_page %}
+{% block section %}
   <i class="users icon"></i>{{ 'Disposition'|trans }}
 {% endblock %}
 
 
-{% block content %}
+{% block body %}
   <h2>Disposition des classes par salle</h2>
-  <table class="" id="salles">
+  <table class="ui table" id="salles">
     <thead>
       <tr>
         <th>N°</th>
@@ -61,7 +61,7 @@
   <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
   <script data-config>
     var filtersConfig = {
-      base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+      base_path: 'TableFilter/dist/tablefilter/',
       col_0: 'none',
       col_2: 'select',
       col_3: 'select',

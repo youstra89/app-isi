@@ -32,6 +32,14 @@ class ParametresController extends Controller
     //   // Sinon on déclenche une exception « Accès interdit »
     //   throw new AccessDeniedException('Accès limité aux auteurs.');
     // }
+    $em = $this->getDoctrine()->getManager();
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     if ($as == null or $as == 0) {
       throw $this->createNotFoundException("Sélectionnez une année scolaire valide.");
     }
@@ -43,7 +51,7 @@ class ParametresController extends Controller
 
       return $this->render('ISIBundle:Parametres:index.html.twig', [
         'asec'  => $as,
-        'annee' => $annee,
+        'annee' => $annee, 'annexe'   => $annexe,
       ]);
     }
 
@@ -56,8 +64,13 @@ class ParametresController extends Controller
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
-    $repoEleve      = $em->getRepository('ISIBundle:Eleve');
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     // Si $as vaut 0, cela veut dire que nous sommes à la création de la première année scolaire
     if($as == 0)
@@ -118,7 +131,7 @@ class ParametresController extends Controller
 
   	return $this->render('ISIBundle:Parametres:addAnnee.html.twig', array(
         'asec'  => $as,
-        'annee' => $annee,
+        'annee' => $annee, 'annexe'   => $annexe,
   			'form'  => $form->createView()
   		));
   }
@@ -133,6 +146,13 @@ class ParametresController extends Controller
     $repoAnnee = $em->getRepository("ISIBundle:Annee");
     $annee = $repoAnnee->find($as);
     $annees = $repoAnnee->toutesLesAnnees();
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     // $userManager = $this->get('fos_user.user_manager');
     $user = $this->getUser();
@@ -158,7 +178,7 @@ class ParametresController extends Controller
 
     return $this->render('ISIBundle:Parametres:annees-precedentes.html.twig',[
       'asec'   => $as,
-      'annee'  => $annee,
+      'annee' => $annee, 'annexe'   => $annexe,
       'annees' => $annees,
       'route'  => $route,
       'route_params'  => $route_params,
@@ -175,6 +195,13 @@ class ParametresController extends Controller
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoClasse = $em->getRepository('ISIBundle:Classe');
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $classe = $repoClasse->find($classeId);
     $genre  = $classe->getGenre();
@@ -223,7 +250,7 @@ class ParametresController extends Controller
 
     return $this->render('ISIBundle:Parametres:editClasse.html.twig', array(
       'form'  => $form->createView(),
-      'annee' => $annee,
+      'annee' => $annee, 'annexe'   => $annexe,
       'asec'  => $as
     ));
   }
@@ -237,6 +264,13 @@ class ParametresController extends Controller
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoHalaqa = $em->getRepository('ISIBundle:Halaqa');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $halaqa = $repoHalaqa->find($halaqaId);
     $annee  = $repoAnnee->find($as);
@@ -268,7 +302,7 @@ class ParametresController extends Controller
 
     return $this->render('ISIBundle:Parametres:editHalaqa.html.twig', [
       'form'  => $form->createView(),
-      'annee' => $annee,
+      'annee' => $annee, 'annexe'   => $annexe,
       'asec'  => $as
     ]);
   }
@@ -277,12 +311,19 @@ class ParametresController extends Controller
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
-  public function lesClassesAction($as, $regime)
+  public function lesClassesAction(Request $request, int $as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoClasse = $em->getRepository('ISIBundle:Classe');
     $repoNiveau = $em->getRepository('ISIBundle:Niveau');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee   = $repoAnnee->find($as);
     $niveaux = $repoNiveau->niveauxDuGroupe($regime);
@@ -291,7 +332,7 @@ class ParametresController extends Controller
     return $this->render('ISIBundle:Parametres:gestion-des-classes.html.twig', array(
       'asec'    => $as,
       'regime'  => $regime,
-      'annee'   => $annee,
+      'annee' => $annee, 'annexe'   => $annexe,
       'niveaux' => $niveaux,
       'classes' => $classes,
     ));
@@ -302,7 +343,7 @@ class ParametresController extends Controller
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
-  public function lesHalaqasAction($as, $regime)
+  public function lesHalaqasAction(Request $request, int $as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
@@ -316,7 +357,7 @@ class ParametresController extends Controller
     return $this->render('ISIBundle:Parametres:gestionDesHalaqas.html.twig', array(
       'asec'    => $as,
       'regime'  => $regime,
-      'annee'   => $annee,
+      'annee' => $annee, 'annexe'   => $annexe,
       'halaqas' => $listHalaqas
     ));
   }
@@ -330,9 +371,15 @@ class ParametresController extends Controller
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoNiveau = $em->getRepository('ISIBundle:Niveau');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee   = $repoAnnee->find($as);
-    $niveaux = $repoNiveau->niveauDeClasse($regime);
 
     /**
      * Quand l'année scolaire est finie, on doit plus faire des
@@ -354,6 +401,7 @@ class ParametresController extends Controller
       $classe->setAnnee($annee);
       $niveauId = $classe->getNiveau()->getId();
       $niveau   = $repoNiveau->find($niveauId);
+      $classe->setAnnexe($annexe);
       $classe->setLibelleFr($niveau->getLibelleFr().' - '.$classe->getLibelleFr());
       $classe->setLibelleAr($niveau->getLibelleAr().' - '.$classe->getLibelleAr());
       // return new Response(var_dump($classe));
@@ -372,7 +420,7 @@ class ParametresController extends Controller
       'form'   => $form->createView(),
       'asec'   => $as,
       'regime' => $regime,
-      'annee'  => $annee,
+      'annee' => $annee, 'annexe'   => $annexe,
     ));
   }
 
@@ -384,6 +432,13 @@ class ParametresController extends Controller
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee  = $repoAnnee->find($as);
 
@@ -402,6 +457,7 @@ class ParametresController extends Controller
 
     if($form->handleRequest($request)->isValid())
     {
+      $halaqa->setAnnexe($annexe);
       $halaqa->setAnnee($annee);
       $halaqa->setRegime($regime);
       $halaqa->setCreatedBy($this->getUser());
@@ -420,7 +476,7 @@ class ParametresController extends Controller
     return $this->render('ISIBundle:Parametres:addHalaqa.html.twig', array(
       'form'  => $form->createView(),
       'asec'  => $as,
-      'annee' => $annee,
+      'annee' => $annee, 'annexe'   => $annexe,
     ));
   }
 
@@ -428,21 +484,27 @@ class ParametresController extends Controller
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
-  public function niveauxMatieresAction($as, $regime)
+  public function niveauxMatieresAction(Request $request, int $as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoNiveau  = $em->getRepository('ISIBundle:Niveau');
-    $repoMatiere = $em->getRepository('ISIBundle:Matiere');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $listNiveaux = $repoNiveau->findAll();
     $annee  = $repoAnnee->find($as);
-    // $listMatieresNiveaux = $repoMatiere->listMatieresNiveaux($as, );
+    // $listMatieresNiveaux = $repoMatiere->listMatieresNiveaux($as );
 
     return $this->render('ISIBundle:Parametres:niveaux-matieres-home.html.twig', array(
       'asec'    => $as,
       'regime'  => $regime,
-      'annee'   => $annee,
+      'annee' => $annee, 'annexe'   => $annexe,
       'niveaux' => $listNiveaux
     ));
   }
@@ -458,6 +520,13 @@ class ParametresController extends Controller
     $repoEns     = $em->getRepository('ISIBundle:Enseignement');
     $repoMatiere = $em->getRepository('ISIBundle:Matiere');
     $repoNiveau  = $em->getRepository('ISIBundle:Niveau');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $matieres = $repoMatiere->lesMatieresDuNiveau($as, $niveauId);
     $niveau   = $repoNiveau->find($niveauId);
@@ -468,7 +537,7 @@ class ParametresController extends Controller
       'matieres' => $matieres,
       'asec'     => $as,
       'regime'   => $regime,
-      'annee'    => $annee,
+      'annee' => $annee, 'annexe'   => $annexe,
       'niveau'   => $niveau,
       'ens'      => $ens,
     ]);
@@ -478,18 +547,25 @@ class ParametresController extends Controller
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    */
-  public function examenAction($as)
+  public function examenAction(Request $request, int $as)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoExamen = $em->getRepository('ISIBundle:Examen');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $examens = $repoExamen->examensAnneeEnCours($as);
     $annee   = $repoAnnee->find($as);
 
     return $this->render('ISIBundle:Parametres:accueil-examen.html.twig', [
       'asec'    => $as,
-      'annee'   => $annee,
+      'annee' => $annee, 'annexe'   => $annexe,
       'examens' => $examens
     ]);
   }
@@ -502,6 +578,13 @@ class ParametresController extends Controller
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $examen = new Examen();
     $annee = $repoAnnee->find($as);
@@ -522,7 +605,7 @@ class ParametresController extends Controller
 
     return $this->render('ISIBundle:Parametres:add-examen.html.twig', [
       'asec'  => $as,
-      'annee' => $annee,
+      'annee' => $annee, 'annexe'   => $annexe,
       'form'  => $form->createView()
     ]);
   }

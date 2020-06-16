@@ -1,12 +1,15 @@
 {# Fiche de renseignement d'un élève #}
 {% extends 'ISIBundle:Internat:index.html.twig' %}
 
+
+
 {% block title %}
-  Fiche de renseignements - {{eleve.nomFr}} {{eleve.pnomFr}}
+  Fiche de renseignements - {{ eleve.nom }}
 {% endblock %}
 
-{% block corps %}
 
+
+{% block body %}
 <div class="ui container">
   <h2 class="ui horizontal divider header">
     <i class="tag icon"></i>

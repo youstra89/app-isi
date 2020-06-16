@@ -2,7 +2,7 @@
 
 {% extends "ISIBundle:Examen:index.html.twig" %}
 
-{% block pageTitle %}
+{% block title %}
 	Edition des notes
 {% endblock %}
 
@@ -13,7 +13,7 @@
 
 
 
-{% block content %}
+{% block body %}
 	<div class="ui info message" style="width:75%">
 		<center>
 			<h2>{{ 'Modification des notes de'|trans }} {{ classe.libelleFr }} en {{ matiere.libelle }}</h2>
@@ -44,9 +44,9 @@
 					{% set i = i + 1 %}
 					{% set image = "" %}
 					{% if eleve.sexe == 1 %}
-						{% set image = "/markaz/web/images/mark.png" %}
+						{% set image = "{{ asset('images/mark.png') }}" %}
 					{% else %}
-						{% set image = "/markaz/web/images/molly.png" %}
+						{% set image = "{{ asset('images/molly.png') }}" %}
 					{% endif %}
 					{# Pour chaque note #}
 					{% if notes[eleve.id] %}

@@ -2,11 +2,11 @@
 
 {% extends "ISIBundle:Scolarite:index.html.twig" %}
 
-{% block pageTitle %}
+{% block title %}
 	Heures enregistrées - {{ classe.getLibelleFr }}
 {% endblock %}
 
-{% block content %}
+{% block body %}
 	<h3>{{ 'Heures d\'absences enregistrées '|trans }} {{ '"' ~ absence ~ '"' }} {{ ' de la classe'|trans }} {{ classe.getLibelleFr }} </h3>
 	<table class="">
 		<thead>
@@ -19,7 +19,7 @@
 				{% for mois in moisAbsences %}
 					<th colspan="" class="">
 						{{ mois.getMois.getMois }}<br>
-						<a href="{{path('isi_modification_des_heures_d_absence', {'as': asec, 'regime': regime, 'classeId': classe.id, 'absence': absence, 'moisId': mois.getMois.getId })}}" data-tooltip="Modifier les heures d'absence de {{ mois.getMois.getMois }}">
+						<a href="{{path('isi_modification_des_heures_d_absence', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id, 'absence': absence, 'moisId': mois.getMois.getId })}}" data-tooltip="Modifier les heures d'absence de {{ mois.getMois.getMois }}">
 							<i class="edit teal icon"></i>
 						</a>
 					</th>

@@ -1,10 +1,10 @@
 {% extends 'ISIBundle:Scolarite:index.html.twig' %}
 
-{% block pageTitle %}
+{% block title %}
     Réaménagement de{{ classe.libelleFr}}
 {% endblock %}
 
-{% block content %}
+{% block body %}
     {% set grp = '' %}
     {% if regime is same as('A') %}
       {% set grp = 'Académie' %}
@@ -12,7 +12,7 @@
       {% set grp = 'Formation' %}
     {% endif %}
     <h3>{{ 'Réaménagement de la classe'|trans }} {{ classe.libelleFr}} </h3>
-    <form class="ui form" action="{{ path('isi_appliquer_reamenagement', {'as': asec, 'regime': regime, 'classeId': classe.id}) }}" method="post">
+    <form class="ui form" action="{{ path('isi_appliquer_reamenagement', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id}) }}" method="post">
         <button class="ui small primary labeled icon button">
           <i class="save icon"></i> {{ 'Appliquer les changements'|trans }}
         </button>
@@ -35,7 +35,7 @@
                     {% set i = i + 1 %}
                     <tr class="positive">
                         <td>{{ i }}</td> 
-                        <td><img class="ui avatar image" src="/markaz/web/images/logoISI-x.png" /></td> 
+                        <td><img class="ui avatar image" src="{{ asset('images/logoISI-x.png') }}" /></td> 
                         <td>{{ eleve.matricule }}</td> 
                         <td>{{ eleve.nomFr }} {{ eleve.pnomFr }}</td> 
                         <td>

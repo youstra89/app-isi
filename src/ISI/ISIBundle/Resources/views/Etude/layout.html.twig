@@ -16,8 +16,8 @@
       {% endblock %}
     </title>
     {% block stylesheets %}
-      <link rel="stylesheet" type="text/css" href="{{ asset('../vendor/semantic/ui/dist/semantic.min.css') }}" /> {# Site CSS #}
-      <lin rel="stylesheet" href="{{ asset('../vendor/twbs/bootstrap/dist/css/bootstrap.min.css') }}" />
+      <link rel="stylesheet" type="text/css" href="{{ asset('semantic/ui/dist/semantic.min.css') }}" />
+      <link rel="stylesheet" type="text/css" href="{{ asset('TableFilter/dist/tablefilter/style/tablefilter.css') }}">
       <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" />
     {% endblock %}
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
@@ -112,19 +112,18 @@
                 {{ 'Utilisateur'|trans }} :
               {% endif %}
               <a class="ui basic image label">
-                <img src="/markaz/web/images/elliot.jpg">
+                <img src="{{ asset('images/elliot.jpg') }}">
                 <strong>{{ app.user.username }}</strong>
               </a>
             </p>
             {% block contextual_menu %}
-              
             {% endblock %}
           </div>
           <div class="thirteen wide column">
             <div class="ui container">
               
             </div>
-            {% block corps %}
+            {% block body %}
               {% block body %}
               {% endblock %}
             {% endblock %}
@@ -134,35 +133,8 @@
     </div>
   </body>
   <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
-  <script data-config>
-    var filtersConfig = {
-      base_path: '/markaz/web/TableFilter/dist/tablefilter/',
-      col_0: 'none',
-      col_4: 'select',
-      col_6: 'none',
-      alternate_rows: true,
-      rows_counter: true,
-      btn_reset: true,
-      loader: true,
-      status_bar: true,
-      mark_active_columns: true,
-      highlight_keywords: true,
-      no_results_message: true,
-      col_types: [
-        'number', 'string', 'string',
-        'string', 'string', 'string',
-      ],
-      col_widths: [
-        '15px', '130px', '270px', , , '100px'
-      ],
-      extensions: [{ name: 'sort' }]
-    };
-
-    var tf = new TableFilter('table-ens', filtersConfig);
-    tf.init();
-  </script>
   <script src="{{ asset('js/jquery-3.3.1.js') }}"></script>
-  <script src="{{ asset('../vendor/semantic/ui/dist/semantic.min.js') }}"></script>
+  <script src="{{ asset('semantic/ui/dist/semantic.min.js') }}"></script>
   <script>
     $('document').ready(function(){
       var id_livre;

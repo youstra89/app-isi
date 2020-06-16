@@ -7,11 +7,11 @@
 {% endif %}
 {% extends template %}
 
-{% block pageTitle %}
+{% block title %}
   Préinscription
 {% endblock %}
 
-{% block content %}
+{% block body %}
   {% for message in app.session.flashbag.get('info') %}
     <div class="ui green message">
       <div class="header">{{ 'Notification'|trans }}: </div>

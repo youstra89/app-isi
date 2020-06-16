@@ -3,26 +3,21 @@
 {% extends 'ISIBundle:Etude:index.html.twig' %}
 
 {% block title %}
-  {% block pageTitle %}
     Livres étudiés
-  {% endblock %}
 {% endblock %}
 
 {% block contextual_menu %}  
     {% include('ISIBundle:Etude:contextual-menu-parametres.html.twig') %}
 {% endblock %}
 
-{% block head %}
-    <div class="ui {{ dir2 }} aligned segment">
-        <h1 class="ui header">
-            <i class="settings icon"></i>{{ 'PARAMETRES'|trans }}
-        </h1>
-    </div> 
+{% block section %}
+  <i class="settings icon"></i>{{ 'Livres étudiés'|trans }} 
 {% endblock %}
 
-{% block content %}
+
+{% block body %}
   <h3>{{ 'Les livres au programme'|trans }}</h3>
-  <a href="{{ path('etude_nouveau_livre', {'as': asec}) }}">
+  <a href="{{ path('etude_nouveau_livre', {'as': asec, 'annexeId': annexe.id}) }}">
     <button class="positive ui button">
       <i class="plus icon"></i>
       {{ 'Ajouter un livre'|trans }}
@@ -61,7 +56,7 @@
               </td>
               <td>
                 <div class="support">
-                  <a href="{{ path('etude_editer_livre', {'as': asec, 'livreId': livre.id}) }}" data-tooltip="Modifier ce livre"><i class="edit icon"></i></a>
+                  <a href="{{ path('etude_editer_livre', {'as': asec, 'annexeId': annexe.id, 'livreId': livre.id}) }}" data-tooltip="Modifier ce livre"><i class="edit icon"></i></a>
                   {% if livre.support is not null %}
                     <a href="{{ asset('uploads/supports/' ~ livre.support) }}" data-tooltip="Voir le livre"><i class="file alternate icon"></i></a>
                   {% else %}
@@ -116,7 +111,7 @@
       </div> #}
       <script data-config>
         var filtersConfig = {
-          base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+          base_path: 'TableFilter/dist/tablefilter/',
           col_0: "none",
           col_3: 'select',
           col_4: 'none',

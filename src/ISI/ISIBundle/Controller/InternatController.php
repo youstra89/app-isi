@@ -7,19 +7,12 @@ use Symfony\Component\HttpFoundation\Request;
 
 use ISI\ISIBundle\Form\ChambreType;
 
-use ISI\ISIBundle\Entity\Eleve;
 use ISI\ISIBundle\Entity\Interner;
-use ISI\ISIBundle\Entity\Frequenter;
 use ISI\ISIBundle\Entity\Chambre;
 use ISI\ISIBundle\Entity\Probleme;
 use ISI\ISIBundle\Entity\Commettre;
-use ISI\ISIBundle\Entity\Annee;
 use ISI\ISIBundle\Entity\Paiementinternat;
 use ISI\ISIBundle\Entity\Moisdepaiementinternat;
-use ISI\ISIBundle\Repository\PaiementinternatRepository;
-use ISI\ISIBundle\Repository\MoisdepaiementinternatRepository;
-use ISI\ISIBundle\Repository\InternerRepository;
-use ISI\ISIBundle\Repository\AnneeRepository;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
@@ -32,9 +25,15 @@ class InternatController extends Controller
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee    = $em->getRepository('ISIBundle:Annee');
-    $repoEleve    = $em->getRepository('ISIBundle:Eleve');
     $repoInterner = $em->getRepository('ISIBundle:Interner');
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $annee    = $repoAnnee->find($as);
     $internes = $repoInterner->litseDesInternes($as);
     $ids = [];
@@ -59,7 +58,7 @@ class InternatController extends Controller
 
     return $this->render('ISIBundle:Internat:index.html.twig', [
       'asec'       => $as,
-      'annee'      => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'internes'   => $internes,
       'frequenter' => $tabFrequenter
     ]);
@@ -74,11 +73,18 @@ class InternatController extends Controller
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoChambre = $em->getRepository('ISIBundle:Chambre');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $annee    = $repoAnnee->find($as);
     $chambres = $repoChambre->findAll();
     return $this->render('ISIBundle:Internat:gestion-des-chambres-home.html.twig', [
       'asec'     =>$as,
-      'annee'    => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'chambres' => $chambres
     ]);
   }
@@ -91,6 +97,13 @@ class InternatController extends Controller
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $annee = $repoAnnee->find($as);
 
     $chambre = new Chambre;
@@ -110,7 +123,7 @@ class InternatController extends Controller
 
     // return new Response('Que se passe-t-il ?');
     return $this->render('ISIBundle:Internat:add-chambre.html.twig', array(
-      'annee' => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'asec'  => $as,
       'form'  => $form->createView(),
     ));
@@ -124,6 +137,13 @@ class InternatController extends Controller
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoChambre = $em->getRepository('ISIBundle:Chambre');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $annee = $repoAnnee->find($as);
     $chambre = $repoChambre->find($chambreId);
 
@@ -138,13 +158,13 @@ class InternatController extends Controller
       $em->persist($chambre);
       $em->flush();
 
-      $request->getSession()->getFlashBag()->add('info', 'La chambre '.$chambre->getBatiment()->getNom().' - '.$chambre->getLibelle().' a été bien modifiée');
+      $request->getSession()->getFlashBag()->add('info', 'La chambre <strong>'.$chambre->getBatiment()->getNom().' - '.$chambre->getLibelle().'</strong> a été bien modifiée');
       return $this->redirectToRoute('internat_gestion_chambres', array('as' => $as));
     }
 
     // return new Response('Que se passe-t-il ?');
     return $this->render('ISIBundle:Internat:edit-chambre.html.twig', array(
-      'annee' => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'asec'  => $as,
       'chambre'  => $chambre,
       'form'  => $form->createView(),
@@ -159,7 +179,14 @@ class InternatController extends Controller
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee = $em->getRepository('ISIBundle:Annee');
-    $repoEleve = $em->getRepository('ISIBundle:Eleve');    
+    $repoEleve = $em->getRepository('ISIBundle:Eleve');  
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }  
     $annee = $repoAnnee->find($as);
 
     if($request->isMethod('post'))
@@ -195,7 +222,7 @@ class InternatController extends Controller
 
     return $this->render('ISIBundle:Internat:add-interne.html.twig', [
       'asec'  => $as,
-      'annee' => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
     ]);
   }
 
@@ -210,6 +237,13 @@ class InternatController extends Controller
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoEleve   = $em->getRepository('ISIBundle:Eleve');
     $repoReinscription = $em->getRepository('ISIBundle:Reinscription');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     
     
     $annee    = $repoAnnee->find($as);
@@ -244,7 +278,7 @@ class InternatController extends Controller
        **/
       if($annee->getAchevee() == TRUE)
       {
-        $request->getSession()->getFlashBag()->add('error', 'Impossible d\'inscrire un élève à l\'internat car l\'année scolaire '.$annee->getLibelle().' est achevée.');
+        $request->getSession()->getFlashBag()->add('error', 'Impossible d\'inscrire un élève à l\'internat car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
         return $this->redirect($this->generateUrl('internat_add', ['as' => $as]));
       }
 
@@ -280,13 +314,13 @@ class InternatController extends Controller
       $em->persist($commettre);
       $em->persist($interner);
       $em->flush();
-      $request->getSession()->getFlashBag()->add('info', $eleve->getNomFr().' '.$eleve->getPnomFr().' a bien été interné dans la chambre "'.$chambre->getLibelle().'"');
+      $request->getSession()->getFlashBag()->add('info', '<strong>'.$eleve->getNom().'</strong> a bien été interné dans la chambre "<strong>'.$chambre->getLibelle().'</strong>"');
       return $this->redirectToRoute('internat_add', array('as' => $as));
     }
 
     return $this->render('ISIBundle:Internat:infos-eleve-a-interner.html.twig', [
       'asec'     => $as,
-      'annee'    => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'eleve'    => $eleve,
       'fq'       => $fq,
       'chambres' => $chambres,
@@ -303,6 +337,13 @@ class InternatController extends Controller
     $repoAnnee    = $em->getRepository('ISIBundle:Annee');
     $repoEleve    = $em->getRepository('ISIBundle:Eleve');
     $repoInterner = $em->getRepository('ISIBundle:Interner');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee = $repoAnnee->find($as);
 
@@ -339,7 +380,7 @@ class InternatController extends Controller
 
     return $this->render('ISIBundle:Internat:delete-interne.html.twig', [
       'asec'  => $as,
-      'annee' => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
     ]);
   }
 
@@ -354,11 +395,17 @@ class InternatController extends Controller
     $repoChambre  = $em->getRepository('ISIBundle:Chambre');
     $repoAnnee    = $em->getRepository('ISIBundle:Annee');
     $repoEleve    = $em->getRepository('ISIBundle:Eleve');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee    = $repoAnnee->find($as);
     $eleve    = $repoEleve->find($eleveId);
     $fq       = $repoFrequenter->findOneBy(['annee' => $as, 'eleve' => $eleveId]);
-    $chambres = $repoChambre->findBy(['genre' => $eleve->getSexe()]);
 
     if($request->isMethod('post'))
     {
@@ -369,7 +416,7 @@ class InternatController extends Controller
       $date = new \DateTime($data['date']);
       if($annee->getAchevee() == TRUE)
       {
-        $request->getSession()->getFlashBag()->add('error', 'Impossible d\'inscrire un élève à l\'internat car l\'année scolaire '.$annee->getLibelleAnnee().' est achevée.');
+        $request->getSession()->getFlashBag()->add('error', 'Impossible d\'inscrire un élève à l\'internat car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
         return $this->redirect($this->generateUrl('internat_add', ['as' => $as]));
       }
 
@@ -402,13 +449,13 @@ class InternatController extends Controller
       $em->persist($probleme);
       $em->persist($commettre);
       $em->flush();
-      $request->getSession()->getFlashBag()->add('info', $eleve->getNomFr().' '.$eleve->getPnomFr().' a été renvoyé(e) de l\'internat');
+      $request->getSession()->getFlashBag()->add('info', '<strong>'.$eleve->getNom().'</strong> a été renvoyé(e) de l\'internat');
       return $this->redirectToRoute('internat_home', array('as' => $as));
     }
 
     return $this->render('ISIBundle:Internat:infos-eleve-a-retirer-de-l-internat.html.twig', [
       'asec'     => $as,
-      'annee'    => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'eleve'    => $eleve,
       'fq'       => $fq,
     ]);
@@ -425,6 +472,13 @@ class InternatController extends Controller
     $repoEleve       = $em->getRepository('ISIBundle:Eleve');
     $repoProbleme    = $em->getRepository('ISIBundle:Probleme');
     $repoFrequenter  = $em->getRepository('ISIBundle:Frequenter');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     // Sélection de l'année scolaire
     $annee  = $repoAnnee->find($as);
@@ -442,7 +496,7 @@ class InternatController extends Controller
 
     return $this->render('ISIBundle:Internat:info-eleve.html.twig', [
       'asec'      => $as,
-      'annee'     => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'eleve'     => $eleve,
       'fq'        => $fq,
       'problemes' => $problemes
@@ -457,15 +511,21 @@ class InternatController extends Controller
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee    = $em->getRepository('ISIBundle:Annee');
-    $repoEleve    = $em->getRepository('ISIBundle:Eleve');
     $repoInterner = $em->getRepository('ISIBundle:Interner');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee    = $repoAnnee->find($as);
     $internes = $repoInterner->elevesInternesRenvoyes($as);
 
     return $this->render('ISIBundle:Internat:liste-des-eleves-retires-de-l-interant.html.twig', [
       'asec'     => $as,
-      'annee'    => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'internes' => $internes,
     ]);
   }
@@ -479,6 +539,13 @@ class InternatController extends Controller
     $em = $this->getDoctrine()->getManager();
     $repoAnnee = $em->getRepository('ISIBundle:Annee');
     $repoMois  = $em->getRepository('ISIBundle:Mois');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee = $repoAnnee->find($as);
     $mois  = $repoMois->findAll();
@@ -488,7 +555,7 @@ class InternatController extends Controller
 
     return $this->render('ISIBundle:Internat:ajouter-les-mois-de-paiement.html.twig', [
       'asec'  => $as,
-      'annee' => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'mois'  => $mois,
       'moisdepaie' => $moisdepaie
     ]);
@@ -504,6 +571,13 @@ class InternatController extends Controller
     $repoMoisDePaie = $em->getRepository('ISIBundle:Moisdepaiementinternat');
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoMois       = $em->getRepository('ISIBundle:Mois');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee = $repoAnnee->find($as);
     $mois  = $repoMois->find($moisId);
@@ -522,7 +596,7 @@ class InternatController extends Controller
     {
       if($moisId <= $dernierMois[0]->getMois()->getId() && $moisId != 1)
       {
-        $request->getSession()->getFlashBag()->add('error', 'Vous ne pouvez pas ajouer un mois antérieur au mois de '.$mois->getMois());
+        $request->getSession()->getFlashBag()->add('error', 'Vous ne pouvez pas ajouer un mois antérieur au mois de <strong>'.$mois->getMois().'</strong>');
         return $this->redirectToRoute('internat_add_mois_de_paiement', ['as' => $as]);
       }
       elseif($moisId != ($dernierMois[0]->getMois()->getId() + 1) && $moisId != 1)
@@ -540,7 +614,7 @@ class InternatController extends Controller
     $em->persist($moisdepaie);
     $em->flush();
 
-    $request->getSession()->getFlashBag()->add('info', 'Le mois de '.$mois->getMois().' a été ajouté avec succès');
+    $request->getSession()->getFlashBag()->add('info', 'Le mois de <strong>'.$mois->getMois().'</strong> a été ajouté avec succès');
     return $this->redirectToRoute('internat_add_mois_de_paiement', ['as' => $as]);
   }
 
@@ -555,7 +629,13 @@ class InternatController extends Controller
     $repoPaiement   = $em->getRepository('ISIBundle:Paiementinternat');
     $repoInterner   = $em->getRepository('ISIBundle:Interner');
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
-    $repoEleve      = $em->getRepository('ISIBundle:Eleve');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee = $repoAnnee->find($as);
     $moisdepaie = $repoMoisDePaie->findBy(['annee' => $as ]);
@@ -573,7 +653,7 @@ class InternatController extends Controller
 
     return $this->render('ISIBundle:Internat:reglement-des-frais-de-l-internat.html.twig', [
       'asec'       => $as,
-      'annee'      => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'internes'   => $internes,
       'paiements'  => $paiements,
       'moisdepaie' => $moisdepaie,
@@ -634,7 +714,7 @@ class InternatController extends Controller
             $paiement->setCreatedAt(new \Datetime());
             $em->persist($paiement);
             $em->flush();
-            $request->getSession()->getFlashBag()->add('info', 'Le paiement de '.$eleve->getNomFr().' '.$eleve->getPnomFr().' pour le mois de '.$mois->getMois()->getMois().' s\'est bien effectué');
+            $request->getSession()->getFlashBag()->add('info', 'Le paiement de '.$eleve->getNom().' pour le mois de '.$mois->getMois()->getMois().' s\'est bien effectué');
             return $this->redirectToRoute('internat_pay', ['as' => $as]);
           }
         }
@@ -660,13 +740,13 @@ class InternatController extends Controller
         $paiement->setCreatedAt(new \Datetime());
         $em->persist($paiement);
         $em->flush();
-        $request->getSession()->getFlashBag()->add('info', 'Le paiement de '.$eleve->getNomFr().' '.$eleve->getPnomFr().' pour le mois de '.$mois->getMois()->getMois().' s\'est bien effectué');
+        $request->getSession()->getFlashBag()->add('info', 'Le paiement de <strong>'.$eleve->getNom().'</strong>  pour le mois de <strong>'.$mois->getMois()->getMois().'</strong> s\'est bien effectué');
         return $this->redirectToRoute('internat_pay', ['as' => $as]);
       }
     }
     return $this->render('ISIBundle:Internat:paiement-des-frais-pour-un-mois.html.twig', [
       'asec' => $as,
-      'annee' => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'eleve' => $eleve,
       'mois'  => $mois,
     ]);
@@ -691,13 +771,13 @@ class InternatController extends Controller
 
     $snappy = $this->get("knp_snappy.pdf");
     $snappy->setOption("encoding", "UTF-8");
-    $filename = "recu-de-paiement-".$eleve->getNomFr()."-".$eleve->getPnomFr()."-".$mois->getMois()->getMois();
+    $filename = "recu-de-paiement-".$eleve->getNom()."-".$mois->getMois()->getMois();
 
     $html = $this->renderView('ISIBundle:Internat:recu-de-paiement.html.twig', [
       // "title" => "Titre de mon document",
       'as'    => $as,
       'mois'  => $mois,
-      'annee' => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'eleve' => $eleve,
       'paiement' => $paiement,
       'server'   => $_SERVER["DOCUMENT_ROOT"],   

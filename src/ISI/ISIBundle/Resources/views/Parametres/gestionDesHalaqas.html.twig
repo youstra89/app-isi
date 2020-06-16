@@ -6,10 +6,14 @@
   {% set template = 'ISIBundle:Parametres:index.html.twig' %}
 {% endif %}
 {% extends template %}
-{% block pageTitle %} Halaqas {% endblock %}
-{% block content %}
+
+
+{% block title %} Halaqas {% endblock %}
+
+
+{% block body %}
     <h3>{{ 'Gestion des halaqas'|trans }}</h3>
-    <a href="{{ path('isi_nouvelle_halaqa', {'as': asec, 'regime': regime}) }}">
+    <a href="{{ path('isi_nouvelle_halaqa', {'as': asec, 'annexeId': annexe.id, 'regime': regime}) }}">
         <button class="positive ui button">
         <i class="plus icon"></i>
         {{ 'Ajouter une halaqa'|trans }}
@@ -46,7 +50,7 @@
                                 <h4 class="ui image header">{{ genre }}</h4>
                             </td>
                             <td>
-                                <a href="{{ path('isi_edit_halaqa', {'as': asec, 'halaqaId': halaqa.id, 'regime': regime}) }}">
+                                <a href="{{ path('isi_edit_halaqa', {'as': asec, 'annexeId': annexe.id, 'halaqaId': halaqa.id, 'regime': regime}) }}">
                                     <i class="edit icon"></i>
                                 </a>
                                 <a>

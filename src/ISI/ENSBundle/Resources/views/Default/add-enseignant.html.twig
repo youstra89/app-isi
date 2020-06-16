@@ -1,12 +1,10 @@
-{# Page d'ajout d'un nouvel examen #}
+{% extends "ENSBundle:Default:index.html.twig" %}
 
-{% extends "ENSBundle::layout.html.twig" %}
-
-{% block pageTitle %}
+{% block title %}
 	Enregistrer un agent
 {% endblock %}
 
-{% block corps %}
+{% block body %}
 	<h2>{{ 'Enregistrement d\'un nouvel agent'|trans }}</h2>
 	<p>{{ 'Le matricule'|trans }}: <b>{{matricule}}</b></p>
 	<div class="form-group"><br><br>

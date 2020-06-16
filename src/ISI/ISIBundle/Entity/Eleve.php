@@ -305,6 +305,16 @@ class Eleve
      */
     private $eleveRenvoye;
 
+    /**
+     * @var \Annexe
+     *
+     * @ORM\ManyToOne(targetEntity="Annexe")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="annexe_id", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $annexe;
+
 
 
     /**
@@ -363,6 +373,11 @@ class Eleve
     public function getNomFr()
     {
         return $this->nomFr;
+    }
+
+    public function getNom()
+    {
+        return $this->pnomFr." ".$this->nomFr;
     }
 
     /**
@@ -1420,5 +1435,29 @@ class Eleve
     public function getUpdatedBy()
     {
         return $this->updatedBy;
+    }
+
+    /**
+     * Set annexe
+     *
+     * @param \ISI\ISIBundle\Entity\Annexe $annexe
+     *
+     * @return Eleve
+     */
+    public function setAnnexe(\ISI\ISIBundle\Entity\Annexe $annexe = null)
+    {
+        $this->annexe = $annexe;
+
+        return $this;
+    }
+
+    /**
+     * Get annexe
+     *
+     * @return \ISI\ISIBundle\Entity\Annexe
+     */
+    public function getAnnexe()
+    {
+        return $this->annexe;
     }
 }

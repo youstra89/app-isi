@@ -1,48 +1,18 @@
-{% extends "ISIBundle::layout.html.twig" %}
+{% extends "ISIBundle:Disposition:index.html.twig" %}
 
 {% block title %}
   Disposition des classes
 {% endblock %}
 
-{% block contextual_menu %}
-  {# {% include('ISIBundle::contextual-menu.html.twig') %} #}
-{% endblock %}
 
 
-{% block titre_page %}
+{% block section %}
   <i class="users icon"></i>{{ 'Disposition'|trans }}
 {% endblock %}
 
 
-{% block notification %}
-  {% set notif = app.session.flashbag.get('error') %}
-  {% if notif is not empty %}
-    <div class="ui red message">
-      <div class="header">{{ 'Attention'|trans }}</div>
-      <ul class="list">
-        {% for message in notif %}
-          <li>{{ message }}.</li>
-        {% endfor %}
-      </ul>
-    </div>
-  {% endif %}
-  {% for message in app.session.flashbag.get('info') %}
-  <div class="ui green message">
-    <div class="header">{{ 'Notification'|trans }}: </div>
-    <ul class="list">
-      <li>{{ message }}.</li>
-    </ul>
-  </div>
-  {% endfor %}
-{% endblock %}
-
 
 {% block body %}
-  <div class="ui right aligned segment">
-    <h1 class="ui header">
-      <i class="student icon"></i>{{ 'Disposition en salle de classe'|trans }}
-    </h1>
-  </div>
   <h2>Disposition des classes par salle</h2>
   <table class="" id="salles">
     <thead>
@@ -84,9 +54,9 @@
           </td>
           <td>
             {% if editMode == false %}
-              <a href="{{ path('disposition_add', {as: asec, id: salle.id}) }}" data-tooltip="Ajouter des classes"><i class="plus teal icon"></i></a>
+              <a href="{{ path('disposition_add', {as: asec, 'annexeId': annexe.id, id: salle.id}) }}" data-tooltip="Ajouter des classes"><i class="plus teal icon"></i></a>
             {% else %}
-              <a href="{{ path('disposition_edit', {as: asec, id: salle.id}) }}" data-tooltip="Modifier la disposition"><i class="edit red icon"></i></a>
+              <a href="{{ path('disposition_edit', {as: asec, 'annexeId': annexe.id, id: salle.id}) }}" data-tooltip="Modifier la disposition"><i class="edit red icon"></i></a>
             {% endif %}
           </td>
         </tr>
@@ -97,11 +67,11 @@
 
 
 
-{% block javascript %}
+{% block javascripts %}
   <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
   <script data-config>
     var filtersConfig = {
-      base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+      base_path: 'TableFilter/dist/tablefilter/',
       col_0: 'none',
       col_2: 'select',
       col_3: 'select',

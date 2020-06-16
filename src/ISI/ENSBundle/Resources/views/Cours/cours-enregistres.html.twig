@@ -1,15 +1,12 @@
-{# Accueil pour l'édition des listes de classe' #}
-
-{% extends "ENSBundle::layout.html.twig" %}
+{% extends "ENSBundle:Default:index.html.twig" %}
 
 
-
-{% block pageTitle %}
+{% block title %}
   Cours enregistrés au {{ classe.libelleFr }}
 {% endblock %}
 
 
-{% block titre_page %}
+{% block section %}
   <i class="student icon"></i>{{ 'Gestion des cours'|trans }}
 {% endblock %}
 
@@ -20,7 +17,7 @@
 
 
 
-{% block corps %}
+{% block body %}
   <h3>{{ 'Cours enregistrés au '|trans }} {{ classe.libelleFr }}</h3>
   {% if cours is empty %}
     <p>{{ 'Il n y a aucun cours pour cette classe'|trans }}</p>
@@ -52,7 +49,7 @@
                   <td>{{ item.jourdecours }}</td>
                   <td>{{ item.heure }}</td>
                   <td>
-                    <a href="{{path('ens_editer_un_cours', {'as': annee.id, 'regime': regime, 'coursId': item.id})}}"  data-tooltip="Mettre à jour ce cours">
+                    <a href="{{path('ens_editer_un_cours', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'coursId': item.id})}}"  data-tooltip="Mettre à jour ce cours">
                       <i class="edit icon"></i>
                     </a>
                   </td>
@@ -73,7 +70,7 @@
   <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
   <script data-config>
     var filtersConfig = {
-      base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+      base_path: 'TableFilter/dist/tablefilter/',
       col_0: "none",
       col_1: 'select',
       col_2: 'select',

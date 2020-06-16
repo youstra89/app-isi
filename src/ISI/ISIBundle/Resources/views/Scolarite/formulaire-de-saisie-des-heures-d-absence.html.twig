@@ -2,61 +2,46 @@
 
 {% extends "ISIBundle:Scolarite:index.html.twig" %}
 
-{% block pageTitle %}
+{% block title %}
 	Saisie des heures d'absence
 {% endblock %}
 
-{% block content %}
+{% block body %}
 	<h3>{{ 'Enregistrement des heures d\'absence de'|trans }} {{ absence }} {{ 'de la classe'|trans }} {{ classe.libelleFr }}{{ 'pour le mois de'|trans }} {{ mois.mois }} </h3>
 	<table>
 		<div class="well">
 			<form action="" method="post" name="notes">
 				<div class="ui middle aligned divided list">
-				{# Pour chaque élève #}
 				<div class="item">
 					<div class="right floated content">
-						<div class="">
-							<h3>{{ 'Heures d\'absence'|trans }}</h3>
-						</div>
+						<h3>{{ 'Heures d\'absence'|trans }}</h3>
 					</div>
 					<div class="content"><h3>{{ 'Nom & prénoms des élèves'|trans }}</h3></div>
 				</div>
 				{% for eleve in eleves %}
 					{% set image = "" %}
 					{% if eleve.sexe == 1 %}
-						{% set image = "/markaz/web/images/mark.png" %}
+						{% set image = "{{ asset('images/mark.png') }}" %}
 					{% else %}
-						{% set image = "/markaz/web/images/molly.png" %}
+						{% set image = "{{ asset('images/molly.png') }}" %}
 					{% endif %}
-					{# Pour chaque note #}
-					{# {{dump(absencesDuMois)}} #}
-					{# {% for abs in absencesDuMois %} #}
-
-						{# {% if eleve.id == abs.eleve.id %} #}
-							<div class="item ui selectable">
-								<div class="right floated content">
-									<div class="">
-										<div class="ui right labeled input">
-											<input name="eleves[{{eleve.id}}]" type="integer">
-											<div class="ui basic label">{{ 'heures'|trans }}</div>
-										</div>
-									</div>
+					<div class="item ui selectable">
+						<div class="right floated content">
+							<div class="">
+								<div class="ui right labeled input">
+									<input name="eleves[{{eleve.id}}]" type="integer">
+									<div class="ui basic label">{{ 'heures'|trans }}</div>
 								</div>
-								<img class="ui avatar image" src="{{ image }}">
-								<div class="content">{{ eleve.nomFr }} {{ eleve.pnomFr }}</div>
 							</div>
-						{# {% endif %} #}
-					{# {% endfor %} #}
+						</div>
+						<img class="ui avatar image" src="{{ image }}">
+						<div class="content">{{ eleve.nomFr }} {{ eleve.pnomFr }}</div>
+					</div>
 				{% endfor %}
-				</div>
 				<div>
 					<input type="submit" class="ui primary button" value="   Enregistrer les heures d'absence   " name="submit">
 				</div>
 			</form>
 		</div>
-		{# {{dump(notes)}}
-		{{dump(eleves)}} #}
-
-		{# {{dump(form.notes.parent.vars.value[0])}} #}
 	</table>
 {% endblock %}

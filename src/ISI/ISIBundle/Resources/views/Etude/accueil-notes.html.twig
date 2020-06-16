@@ -2,7 +2,7 @@
 
 {% extends "ISIBundle:Etude:index.html.twig" %}
 
-{% block pageTitle %}
+{% block title %}
 	Gestion des examens
 {% endblock %}
 
@@ -12,16 +12,12 @@
 {% endblock %}
 
 
-{% block head %}
-	<div class="ui {{ dir2 }} aligned segment">
-		<h1 class="ui header">
-			<i class="settings icon"></i>{{ 'NOTES D\'EXAMENS'|trans }}
-		</h1>
-	</div> 
+{% block section %}
+	<i class="settings icon"></i>{{ 'Notes d\'examen'|trans }} 
 {% endblock %}
 
 
-{% block content %}
+{% block body %}
 	<h3>{{ 'Gestion des notes d\'examens'|trans }}</h3>
 	{% if examen is empty %}
 		<p>{{ 'Aucune examen n\'a encore été enregistré'|trans }}</p>

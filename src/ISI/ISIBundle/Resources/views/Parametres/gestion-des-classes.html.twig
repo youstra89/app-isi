@@ -2,11 +2,11 @@
 
 {% extends "ISIBundle:Parametres:index.html.twig" %}
 
-{% block pageTitle %}
+{% block title %}
   Gestion des classes
 {% endblock %}
 
-{% block content %}
+{% block body %}
   <h3>{{ 'Gestion des classes'|trans }}</h3>
   <a href="{{ path('isi_nouvelle_classe', {'as': asec, 'regime': regime}) }}">
     <button class="positive ui button">
@@ -67,7 +67,7 @@
       <hr width="75%">
       <script data-config>
         var filtersConfig = {
-          base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+          base_path: 'TableFilter/dist/tablefilter/',
           col_0: "none",
           col_1: 'select',
           col_3: 'select',

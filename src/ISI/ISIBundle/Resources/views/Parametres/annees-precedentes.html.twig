@@ -1,25 +1,25 @@
 {# Page d'ajout d'une nouvelle année scolaire #}
 
-{% extends "ISIBundle::layout.html.twig" %}
+{% extends "ISIBundle:Parametres:index.html.twig" %}
 
-{% block pageTitle %}
+{% block title %}
 	Années précédentes
 {% endblock %}
 
 {% block body %}
 	<h3>{{ 'Années scolaires précédentes'|trans }}</h3>
 	<div class="ui cards">
-		{% for anneeP in annees %}
+		{% for item in annees %}
 			<div class="card">
 				<div class="content">
-					<img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
-					<div class="header">{{ anneeP.libelle }} </div>
+					<img class="right floated mini ui image" src="{{ asset('images/logoISI-x.png') }}">
+					<div class="header">{{ item.libelle }} </div>
 				</div>
 				{% set route_params = "5" %}
 				<div class="extra content">
 					<div class="ui buttons">
-						<a href="{{ path('homepage', {'as': anneeP.id}) }}">
-							<div class="ui basic green button">{{ 'Revenir en '|trans }}{{ anneeP.libelle}} </div>
+						<a href="{{ path('isi_homepage', {'as': item.id, 'annexeId': annexe.id}) }}">
+							<div class="ui basic green button">{{ 'Revenir en '|trans }}{{ item.libelle}} </div>
 						</a>
 					</div>
 				</div>

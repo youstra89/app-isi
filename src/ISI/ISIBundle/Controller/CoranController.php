@@ -2,16 +2,8 @@
 
 namespace ISI\ISIBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
-use ISI\ISIBundle\Entity\AnneeScolaire;
-use ISI\ISIBundle\Entity\Eleve;
-
-use ISI\ISIBundle\Repository\AnneeRepository;
-use ISI\ISIBundle\Repository\EleveRepository;
-
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class CoranController extends Controller
@@ -24,6 +16,14 @@ class CoranController extends Controller
         $em = $this->getDoctrine()->getManager();
         $repoAnnee = $em->getRepository('ISIBundle:Annee');
         $repoEleve = $em->getRepository('ISIBundle:Eleve');
+
+        $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+        $annexeId = $request->get('annexeId');
+        $annexe = $repoAnnexe->find($annexeId);
+        if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+            $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+            return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+        }
 
         $eleves = $repoEleve->findBy(['regime' => $regime]);
         $elevesInternes = $repoEleve->elevesInternes($as);

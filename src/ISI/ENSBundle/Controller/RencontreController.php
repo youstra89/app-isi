@@ -49,7 +49,7 @@ class RencontreController extends Controller
      **/
     if($annee->getAchevee() == TRUE)
     {
-       $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des classes car l\'année scolaire '.$annee->getLibelle().' est achevée.');
+       $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des classes car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
        return $this->redirect($this->generateUrl('ens_rencontre_home', ['as' => $as]));
     }
 
@@ -90,7 +90,7 @@ class RencontreController extends Controller
 
     if($annee->getAchevee() == TRUE)
     {
-      $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des classes car l\'année scolaire '.$annee->getLibelleAnnee().' est achevée.');
+      $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des classes car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
       return $this->redirect($this->generateUrl('ens_rencontre_home', ['as' => $as]));
     }
 
@@ -161,7 +161,7 @@ class RencontreController extends Controller
           $em->persist($EnsRencontre);
         }
         $em->flush();
-        $request->getSession()->getFlashBag()->add('info', $nbr.' participants ont été ajouté(s) à la liste de présence de la : '.$rencontre->getType().' du '.$rencontre->getDate()->format('d-m-Y').'.');
+        $request->getSession()->getFlashBag()->add('info', $nbr.' participants ont été ajouté(s) à la liste de présence de la : <strong>'.$rencontre->getType().'</strong> du <strong>'.$rencontre->getDate()->format('d-m-Y').'</strong>.');
         return $this->redirectToRoute('ens_rencontre_home', ['as' => $as]);
         return new Response(var_dump($contratsId));
       }

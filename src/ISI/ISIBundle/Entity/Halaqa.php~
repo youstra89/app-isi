@@ -88,6 +88,16 @@ class Halaqa
      */
     private $updatedAt;
 
+    /**
+     * @var \Annexe
+     *
+     * @ORM\ManyToOne(targetEntity="Annexe")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="annexe_id", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $annexe;
+
 
     /**
      * Get id
@@ -338,5 +348,29 @@ class Halaqa
     public function getUpdatedBy()
     {
         return $this->updatedBy;
+    }
+
+    /**
+     * Set annexe
+     *
+     * @param \ISI\ISIBundle\Entity\Annexe $annexe
+     *
+     * @return Halaqa
+     */
+    public function setAnnexe(\ISI\ISIBundle\Entity\Annexe $annexe = null)
+    {
+        $this->annexe = $annexe;
+
+        return $this;
+    }
+
+    /**
+     * Get annexe
+     *
+     * @return ISI\ISIBundle\Entity\Annexe
+     */
+    public function getAnnexe()
+    {
+        return $this->annexe;
     }
 }

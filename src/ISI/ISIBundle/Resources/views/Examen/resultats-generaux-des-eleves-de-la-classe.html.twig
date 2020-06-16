@@ -1,6 +1,6 @@
 {# Page d'ajout d'un nouvel examen #}
 {% extends "ISIBundle:Examen:index.html.twig" %}
-{% block pageTitle %}
+{% block title %}
     Résultats généraux - {{ parent() }}
 {% endblock %}
 
@@ -12,7 +12,7 @@
 
 
 
-{% block content %}
+{% block body %}
 {% if examen.getSession == 1 %}
     <h3>Résultats de la 1<sup>ère</sup> session de la classe : {{ classe.getLibelleFr }}</h3>
 {% else %}

@@ -10,7 +10,7 @@
         <div class="ui red message">
             <div class="header">{{ 'Attention'|trans }} !!! </div>
             <ul class="list">
-                <li>{{ message }}.</li>
+                <li>{{ message|raw }}.</li>
             </ul>
         </div>
     {% endfor %} 
@@ -18,7 +18,7 @@
         <div class="ui green message">
             <div class="header">{{ 'Notification'|trans }}: </div>
             <ul class="list">
-                <li>{{ message }}.</li>
+                <li>{{ message|raw }}.</li>
             </ul>
         </div>
     {% endfor %}
@@ -27,7 +27,7 @@
     <div class="ui three cards">
         <div class="card">
             <div class="content">
-                <img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
+                <img class="right floated mini ui image" src="{{ asset('images/logoISI-x.png') }}">
                 <div class="header">Academie</div>
                 <div class="meta">  </div>
                 <div class="description">
@@ -45,7 +45,7 @@
         </div>
         <div class="card">
             <div class="content">
-                <img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
+                <img class="right floated mini ui image" src="{{ asset('images/logoISI-x.png') }}">
                 <div class="header">Centre de formation</div>
                 <div class="meta">  </div>
                 <div class="description">

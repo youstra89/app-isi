@@ -48,7 +48,7 @@ class ImportExportController extends Controller
 
     // /*********** - Etape 1: Sélection des données- ***********/
     // $annee     = $repoAnnee->find($as);
-    // $eleves    = $repoEleve->lesElevesDeLaClasse($as, $classeId);
+    // $eleves    = $repoEleve->lesElevesDeLaClasse($as, $annexeId, $classeId);
     // $classe    = $repoClasse->find($classeId);
     // $examen    = $repoExamen->find($examenId);
     // $niveauId  = $classe->getNiveau()->getId();

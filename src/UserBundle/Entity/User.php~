@@ -28,16 +28,30 @@ class User extends BaseUser
     /**
      * @var string
      *
-     * @ORM\Column(name="nom", type="string")
+     * @ORM\Column(name="nom", type="string", nullable=true)
      */
     protected $nom;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="pnom", type="string")
+     * @ORM\Column(name="pnom", type="string", nullable=true)
      */
     protected $pnom;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="change_pw", type="integer", nullable=true)
+     */
+    private $changemdp;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="pwd_changed_at", type="datetime")
+     */
+    private $pwdChangedAt; 
 
 
     /**
@@ -62,5 +76,29 @@ class User extends BaseUser
     public function getNom()
     {
         return $this->nom;
+    }
+
+    /**
+     * Set pnom
+     *
+     * @param string $pnom
+     *
+     * @return User
+     */
+    public function setPnom($pnom)
+    {
+        $this->pnom = $pnom;
+
+        return $this;
+    }
+
+    /**
+     * Get pnom
+     *
+     * @return string
+     */
+    public function getPnom()
+    {
+        return $this->pnom;
     }
 }

@@ -11,17 +11,17 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class ClasseRepository extends \Doctrine\ORM\EntityRepository
 {
-  public function classesDeLAnnee($as, $regime)
+  public function classesDeLAnnee(int $as, int $annexeId, $regime)
   {
     $qb = $this->createQueryBuilder('c');
     $qb->select('c')
        ->join('c.niveau', 'n')
        ->join('n.groupeFormation', 'grp')
-      //  ->join('grp.referenceRegime', 'r')
        ->join('c.annee', 'a')
        ->where('a.id = :as')
-       ->andWhere('grp.reference = :regime')
+       ->andWhere('grp.reference = :regime AND c.annexe = :annexeId')
        ->setParameter('as', $as)
+       ->setParameter('annexeId', $annexeId)
        ->setParameter('regime', $regime)
     ;
 
@@ -31,26 +31,28 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
   }
 
   // Je récupère les classes d'un niveau avec cette function pour une année scolaire donnée
-  public function lesClassesDuNiveau($as, $niveau)
+  public function lesClassesDuNiveau(int $as, int $annexeId, $niveau)
   {
     $qb = $this->createQueryBuilder('c')
               ->join('c.annee', 'a')
               ->where('c.niveau = :niveau')
-              ->andWhere('a.id = :annee')
+              ->andWhere('a.id = :annee AND c.annexe = :annexeId')
               ->setParameter('niveau', $niveau)
+              ->setParameter('annexeId', $annexeId)
               ->setParameter('annee', $as);
 
     return $qb->getQuery()
               ->getResult();
   }
 
-  public function classeInscription()
+  public function classeInscription(int $annexeId)
   {
     $dql = $this->_em->createQuery(
                     "SELECT c.id, CONCAT(n.libelleFr, ' ', c.libelleFr) nomClasse
                     FROM ISIBundle:Classe c
-                    JOIN c.niveau n"
+                    JOIN c.niveau n WHERE c.annexe = :annexeId"
     );
+    $dql->setParameter('annexeId', $annexeId);
 
     // $dql->setParameter("as", $as);
     return $dql;
@@ -70,28 +72,30 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
   }
 
   // Pour connaitre toutes les classes d'un regime ou groupe de formation une année donnée
-  public function classeGrpFormation($as, $regime)
+  public function classeGrpFormation(int $as, int $annexeId, $regime)
   {
     $qb = $this->createQueryBuilder('c');
     $qb->join('c.niveau', 'n')
        ->join('n.groupeFormation', 'grpF')
        ->join('c.annee', 'an')
-       ->where('grpF.reference = :regime AND an.id = :an')
+       ->where('grpF.reference = :regime AND an.id = :an AND c.annexe = :annexeId')
        ->setParameter('regime', $regime)
+       ->setParameter('annexeId', $annexeId)
        ->setParameter('an', $as)
     ;
     return $qb->getQuery()
               ->getResult();
   }
 
-  public function classesSuperieures($as, $regime, $niveauId, $succession)
+  public function classesSuperieures(int $as, int $annexeId, $regime, $niveauId, $succession)
   {
     $qb = $this->createQueryBuilder('c');
     $qb->join('c.niveau', 'n')
        ->join('n.groupeFormation', 'grpF')
        ->join('c.annee', 'an')
-       ->where('grpF.reference = :regime AND an.id = :an AND n.succession = :succession')
+       ->where('grpF.reference = :regime AND an.id = :an AND n.succession = :succession AND c.annexe = :annexeId')
        ->setParameter('succession', $succession)
+       ->setParameter('annexeId', $annexeId)
        ->setParameter('regime', $regime)
        ->setParameter('an', $as)
     ;
@@ -113,7 +117,7 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
   }
 
   // Cette fonction me permet d'afficher la liste de toutes les classe d'un même regime pour un examen donné
-  public function listeDesClassesPourExamen($as, $regime, $examen)
+  public function listeDesClassesPourExamen(int $as, int $annexeId, $regime, $examen)
   {
     $qb = $this->createQueryBuilder('c');
     $qb->join('c.etatFicheDeNote', 'fiche')
@@ -121,10 +125,11 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
         ->join('n.groupeFormation', 'grpF')
         ->join('fiche.examen', 'exam')
         ->join('c.annee', 'an')
-        ->where('an.id = :as AND exam.id = :examen AND grpF.reference = :regime')
+        ->where('an.id = :as AND exam.id = :examen AND grpF.reference = :regime AND c.annexe = :annexeId')
         ->setParameter('as', $as)
         ->setParameter('examen', $examen)
-        ->setParameter('regime', $regime);
+       ->setParameter('annexeId', $annexeId)
+       ->setParameter('regime', $regime);
 
     return $qb->getQuery()
             ->getResult();
@@ -147,15 +152,16 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
   }
 
-  public function classesAyantEmploiDuTemps(int $as, string $regime)
+  public function classesAyantEmploiDuTemps(int $as, int $annexeId, string $regime)
   {
       $qb = $this->createQueryBuilder('c');
       $qb ->join('c.cours', 'ac')
           ->join('c.niveau', 'n')
           ->join('n.groupeFormation', 'grpF')
           ->join('ac.annee', 'an')
-          ->where('an.id = :as AND grpF.reference = :regime')
+          ->where('an.id = :as AND grpF.reference = :regime AND c.annexe = :annexeId')
           ->setParameter('as', $as)
+          ->setParameter('annexeId', $annexeId)
           ->setParameter('regime', $regime);
 
       return $qb->getQuery()

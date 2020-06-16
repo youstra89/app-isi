@@ -1,139 +1,48 @@
-{% extends "ISIBundle:Admin:layout.html.twig" %}
+{% extends "ISIBundle::index.html.twig" %}
   {% block title %}
     Index Panel Admin
   {% endblock %}
-  {% block titre %}
+
+  {% block stylesheets %}
+    <style>
+      .wide.column.ui.segment{
+
+      }
+    </style>
+  {% endblock %}
+
+  {% block section %}
     <i class="users icon"></i>Panel Admin
   {% endblock %}
 
+
+  {% block menu %}
+    <a class = "item" href = "{{ path('admin_home', {'as'        : annee.id, 'annexeId': annexe.id}) }}"><h4 class = "ui header">Home Panel Admin</h4></a>
+    {% if is_granted("ROLE_SUPER_ADMIN") %}
+      <a class = "item" href = "{{ path('isi_user', {'as'          : asec, 'annexeId': annexe.id}) }}"><h4 class     = "ui header">Utilisateurs</h4></a>
+      <a class = "item" href = "{{ path('agents', {'as'            : asec, 'annexeId': annexe.id}) }}"><h4 class     = "ui header">Agents de l'Institut</h4></a>
+      <a class = "item" href = "{{ path('etude_home', {'as'        : asec, 'annexeId': annexe.id}) }}"><h4 class       = "ui header">Etude</h4></a>
+      <a class = "item" href = "{{ path('internat_home', {'as'     : asec, 'annexeId': annexe.id}) }}"><h4 class     = "ui header">Internat</h4></a>
+      <a class = "item" href = "{{ path('org_homepage', {'as'      : asec, 'annexeId': annexe.id}) }}"><h4 class     = "ui header">Organisation</h4></a>
+    {% endif %}
+    <a class = "item" href = "{{ path('isi_home_scolarite', {'as': annee.id, 'annexeId': annexe.id}) }}"><h4 class = "ui header">Scolarité</h4></a>
+    <a class = "item" href = "{{ path('ens_home', {'as'          : asec, 'annexeId': annexe.id}) }}"><h4 class     = "ui header">Enseignants</h4></a>
+  {% endblock %}
+
+
+  {% block mobile_menu %}
+    <a class = "item" href = "{{ path('admin_home', {'as'        : annee.id, 'annexeId': annexe.id}) }}"><h4 class = "ui header">Home Panel Admin</h4></a>
+    {% if is_granted("ROLE_SUPER_ADMIN") %}
+      <a class = "item" href = "{{ path('isi_user', {'as'          : asec, 'annexeId': annexe.id}) }}"><h4 class     = "ui header">Utilisateurs</h4></a>
+      <a class = "item" href = "{{ path('agents', {'as'            : asec, 'annexeId': annexe.id}) }}"><h4 class     = "ui header">Agents de l'Institut</h4></a>
+      <a class = "item" href = "{{ path('etude_home', {'as'        : asec, 'annexeId': annexe.id}) }}"><h4 class       = "ui header">Etude</h4></a>
+      <a class = "item" href = "{{ path('internat_home', {'as'     : asec, 'annexeId': annexe.id}) }}"><h4 class     = "ui header">Internat</h4></a>
+      <a class = "item" href = "{{ path('org_homepage', {'as'      : asec, 'annexeId': annexe.id}) }}"><h4 class     = "ui header">Organisation</h4></a>
+    {% endif %}
+    <a class = "item" href = "{{ path('isi_home_scolarite', {'as': annee.id, 'annexeId': annexe.id}) }}"><h4 class = "ui header">Scolarité</h4></a>
+    <a class = "item" href = "{{ path('ens_home', {'as'          : asec, 'annexeId': annexe.id}) }}"><h4 class     = "ui header">Enseignants</h4></a>
+  {% endblock %}
+
+
   {% block body %}
-    <!-- Début d'affichage des notifications et des messages d'erreur -->
-    {% for message in app.session.flashbag.get('error') %}
-      <div class="ui red message">
-        <div class="header">Attention !!! </div>
-        <ul class="list">
-          <li>{{ message }}.</li>
-        </ul>
-      </div>
-    {% endfor %}
-    {% for message in app.session.flashbag.get('info') %}
-      <div class="ui green message">
-        <div class="header">Notification: </div>
-        <ul class="list">
-          <li>{{ message }}.</li>
-        </ul>
-      </div>
-    {% endfor %}
-    <!-- Fin d'affichage des notifications et des message d'erreur  -->
-    <div class="ui link three cards">
-      <div class="card">
-        <div class="image">
-          <a class="item" href="{{ path('isi_user', {'as': asec}) }}">
-            <img src="/markaz/web/images/users1.png">
-          </a>
-        </div>
-        <div class="content">
-          <div class="header">{{ 'GESTION DES UTILISATEURS'|trans }}</div>
-          <div class="meta">
-            <a>Amis</a>
-          </div>
-          <div class="description">{{ 'Gestion des utilisateurs du système'|trans }}</div>
-        </div>
-        <div class="extra content">
-          <span class="right floated">{{ 'Dernière connexion'|trans }} </span>
-          <span>
-            <i class="users icon"></i></span>
-        </div>
-      </div>
-      <div class="card">
-        <div class="image">
-          <a href="{{path('isi_home_scolarite')}}">
-            <img src="/markaz/web/images/scolarite.png">
-          </a>
-        </div>
-        <div class="content">
-          <div class="header">{{ 'DIRECTION DES AFFAIRES SCOLAIRES'|trans }}</div>
-          <div class="meta">
-          </div>
-          <div class="description">{{ 'Tout ce qui concerne les élèves: préinscription, réinscription, inscription et autre...'|trans }}</div>
-        </div>
-        <div class="extra content">
-          <span class="right floated"></span>
-          <span>
-            <i class="student icon"></i></span>
-        </div>
-      </div>
-      <div class="card">
-        <div class="image">
-          <a href="{{ path('internat_home', {'as': asec}) }}">
-            <img src="/markaz/web/images/internat.png">
-          </a>
-        </div>
-        <div class="content">
-          <div class="header">{{ 'GESTION DES INTERNES'|trans }}</div>
-          <div class="meta">
-          </div>
-          <div class="description">{{ 'Les élèves qui sont inscrits à l\'internat'|trans }}</div>
-        </div>
-        <div class="extra content">
-          <span class="right floated"></span>
-          <span>
-            <i class="bed icon"></i></span>
-        </div>
-      </div>
-      <div class="card">
-        <div class="image">
-          <a href="{{ path('ens_home', {'as': asec}) }}">
-            <img src="/markaz/web/images/enseignant.jpg">
-          </a>
-        </div>
-        <div class="content">
-          <div class="header">{{ 'GESTION DES ENSEIGNANTS'|trans }}</div>
-          <div class="meta">
-          </div>
-          <div class="description">{{ 'Les enseignants de l\'institut'|trans }}</div>
-        </div>
-        <div class="extra content">
-          <span class="right floated"></span>
-          <span>
-            <i class="student icon"></i></span>
-        </div>
-      </div>
-      <div class="card">
-        <div class="image">
-          <a href="{{ path('etude_home', {'as': asec}) }}">
-            <img src="/markaz/web/images/etude.jpg">
-          </a>
-        </div>
-        <div class="content">
-          <div class="header">{{ 'GESTION DES ETUDES'|trans }}</div>
-          <div class="meta">
-          </div>
-          <div class="description">{{ 'Les programmes d\'étude, les progressions des différents niveaux, découpage de l\'année scolaire...'|trans }}</div>
-        </div>
-        <div class="extra content">
-          <span class="right floated"></span>
-          <span>
-            <i class="bed icon"></i></span>
-        </div>
-      </div>
-      <div class="card">
-        <div class="image">
-          <a href="{{ path('org_homepage', {'as': asec}) }}">
-            <img src="/markaz/web/images/org.jpg">
-          </a>
-        </div>
-        <div class="content">
-          <div class="header">{{ 'MODULE D\'ORGANISATION'|trans }}</div>
-          <div class="meta">
-          </div>
-          <div class="description">{{ 'Tous les programmes d\'organisation '|trans }}</div>
-        </div>
-        <div class="extra content">
-          <span class="right floated"></span>
-          <span>
-            <i class="settings icon"></i></span>
-        </div>
-      </div>
-    </div>
   {% endblock %}

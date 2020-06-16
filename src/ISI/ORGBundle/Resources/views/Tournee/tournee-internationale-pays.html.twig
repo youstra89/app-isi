@@ -1,4 +1,5 @@
-{% extends "ORGBundle::layout.html.twig" %}
+{% extends 'ORGBundle:Default:index.html.twig'%}
+
 
 {% block title %}
   Destinations de la tournée du {{ tournee.debut|date('d-m-Y') }} au {{ tournee.fin|date('d-m-Y') }}
@@ -26,18 +27,18 @@
 {% endblock %}
 
 
-{% block titre_page %}
+{% block section %}
   <i class="plane icon"></i>{{ 'Tournées'|trans }}
 {% endblock %}
 
 
-{% block corps %}
+{% block body %}
     <h2>Destinations de la du {{ tournee.debut|date('d-m-Y') }} au {{ tournee.fin|date('d-m-Y') }}</h2>
     <div class="ui three cards">
       {% for item in tournee.pays %}
       <div class="card">
         <div class="content">
-          <img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
+          <img class="right floated mini ui image" src="{{ asset('images/logoISI-x.png') }}">
           <div class="header">{{ item.pays.nom }}</div>
           <div class="description">
             <div class="ui link list">

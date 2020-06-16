@@ -1,13 +1,11 @@
-{# Accueil pour l'édition des listes de classe' #}
-
-{% extends "ENSBundle::layout.html.twig" %}
+{% extends "ENSBundle:Default:index.html.twig" %}
 
 
-{% block pageTitle %}
+{% block title %}
   Nombre heure de cours des enseignants
 {% endblock %}
 
-{% block titre_page %}
+{% block section %}
   <i class="student icon"></i>{{ 'Gestion des cours'|trans }}
 {% endblock %}
 
@@ -17,7 +15,7 @@
 {% endblock %}
 
 
-{% block corps %}
+{% block body %}
   <h3>{{ 'Nombre heure de cours des enseignants'|trans }}</h3>
 {% if anneeContrats is empty %}
   <p>{{ 'Pas de données disponibles pour l\'heure'|trans }}</p>
@@ -53,7 +51,7 @@
                 {% endif %}
                 <td>
                   {% set nom = item.contrat.enseignant.nomFr ~ ' ' ~ item.contrat.enseignant.pnomFr %}
-                  <a href="{{ path('ens_cours_d_un_enseignant', {'as': annee.id, 'anneeContratId': item.id}) }}" data-tooltip="Voir les cours de l'enseigannt {{ nom }}">
+                  <a href="{{ path('ens_cours_d_un_enseignant', {'as': asec, 'annexeId': annexe.id, 'anneeContratId': item.id}) }}" data-tooltip="Voir les cours de l'enseigannt {{ nom }}">
                     <i class="list icon"></i>
                   </a>
                 </td>
@@ -70,7 +68,7 @@
     <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
 <script data-config>
         var filtersConfig = {
-          base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+          base_path: 'TableFilter/dist/tablefilter/',
           col_0: "none",
           col_3: 'select',
           col_4: 'select',

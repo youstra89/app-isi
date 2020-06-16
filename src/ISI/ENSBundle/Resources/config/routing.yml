@@ -4,6 +4,12 @@ espace_eleve:
     resource: "@ENSBundle/Resources/config/routing/enseignant.yml"
     prefix:   /enseignant
 
+agents:
+    path:     /direction-technique-{as}.html
+    defaults: { _controller: ENSBundle:DirectionEnseignant:agents }
+    requirements:
+        as: \d+
+
 ens_home:
     path:     /direction-enseignant-{as}.html
     defaults: { _controller: ENSBundle:DirectionEnseignant:index }

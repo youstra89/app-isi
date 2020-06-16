@@ -22,7 +22,7 @@ class AnneeContratRepository extends \Doctrine\ORM\EntityRepository
            ->addSelect('c')
            ->join('c.enseignant', 'e')
            ->addSelect('e')
-           ->where('an.id = :anneeId AND c.fini = :bool')
+           ->where('an.id = :anneeId AND c.fini = :bool AND e.enseignant = true')
            ->orderBy('e.nomFr', 'ASC')
            ->addOrderBy('e.pnomFr', 'ASC')
            ->setParameter('anneeId', $anneeId)

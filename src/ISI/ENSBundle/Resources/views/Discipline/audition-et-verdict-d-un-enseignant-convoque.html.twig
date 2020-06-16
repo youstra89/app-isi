@@ -1,5 +1,5 @@
-{# Fiche de renseignement d'un élève #}
-{% extends 'ENSBundle:Enseignant:index.html.twig' %}
+{% extends "ENSBundle:Default:index.html.twig" %}
+
 
 {% block title %}
   Audition et verdict | {{ convocation.contrat.getEnseignant.getNomFr }} {{ convocation.contrat.getEnseignant.getPnomFr }}
@@ -9,11 +9,11 @@
   {# {{ include("ENSBundle::contextual-menu-fonction.html.twig") }} #}
 {% endblock %}
 
-{% block titre_page %}
+{% block section %}
   <i class="american sign language interpreting icon"></i>{{ 'Discipline - Conduites'|trans }}
 {% endblock %}
 
-{% block corps %}
+{% block body %}
 <div class="">
   <h2>{{ 'Audition et Verdict '|trans }} <font class="ui massive green tag label">{{ convocation.contrat.getEnseignant.getNomFr }} {{ convocation.contrat.getEnseignant.getPnomFr }}</font></h2>
   <form class="ui form" method="post">

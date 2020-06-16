@@ -1,5 +1,4 @@
-{# templates/lucky/number.html.twig #}
-{% extends 'ORGBundle::layout.html.twig'%}
+{% extends 'ORGBundle:Default:index.html.twig'%}
 
 
 {% block title 'Administration des localités' %}
@@ -31,7 +30,7 @@
 {% endblock %}
 
 
-{% block titre_page %}
+{% block section %}
   <i class="location arrow icon"></i>{{ 'Localités'|trans }}
 {% endblock %}
 

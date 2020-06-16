@@ -2,12 +2,6 @@
 
 namespace ISI\ENSBundle\Repository;
 
-use ENSBundle\Repository;
-use ENSBundle\Entity\Examen;
-
-use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\EntityManagerInterface;
 
 class EnseignantRepository extends \Doctrine\ORM\EntityRepository
 {

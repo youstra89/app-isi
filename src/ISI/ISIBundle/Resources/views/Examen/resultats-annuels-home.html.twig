@@ -6,7 +6,7 @@
 {% endif %}
 {% extends template %}
 
-{% block pageTitle %}
+{% block title %}
   Accueil résultats annuels
 {% endblock %}
 
@@ -16,7 +16,7 @@
 {% endblock %}
 
 
-{% block content %}
+{% block body %}
   {% set grp = '' %}
   {% if regime is same as('A') %}
     {% set grp = 'Académie' %}
@@ -32,13 +32,13 @@
         {% for classe in classes %}
           {% for key, mc in moyenneC %}
             {% if niveau.getId == classe.getNiveau.getId and key == classe.getId and mc == FALSE %}
-              <a href="{{ path('isi_resultats_annuels_d_une_classe', {'as': asec, 'regime': regime, 'classeId': classe.getId}) }}">
+              <a href="{{ path('isi_resultats_annuels_d_une_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.getId}) }}">
                 <div class="classe-n" data-tooltip="Les moyennes ne sont pas encore calculées">
                   <center>{{ classe.getLibelleFr }}</center>
                 </div>
               </a>
             {% elseif niveau.getId == classe.getNiveau.getId and key == classe.getId and mc == TRUE %}
-              <a href="{{ path('isi_classement_annuel', {'as': asec, 'regime': regime, 'classeId': classe.getId, 'direction': direction}) }}">
+              <a href="{{ path('isi_classement_annuel', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.getId, 'direction': direction}) }}">
                 <div class="classe">
                   <center>{{ classe.getLibelleFr }}</center>
                 </div>

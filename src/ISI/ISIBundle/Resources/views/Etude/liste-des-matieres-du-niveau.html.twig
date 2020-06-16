@@ -2,17 +2,14 @@
 
 {% extends "ISIBundle:Etude:index.html.twig" %}
 
-{% block pageTitle %}
+{% block title %}
   Liste des matieres
 {% endblock %}
 
-{% block content %}
+{% block body %}
   <h3>{{ 'Les matières enseignées en'|trans }} {{ niveau.libelleFr }}</h3>
-  <a href="{{path('etude_niveaux_matieres', {'as': asec, 'regime': regime})}}">
-    <div class="ui animated fade button" tabindex="0">
-      <div class="visible content">{{ 'Retour aux niveaux'|trans }}</div>
-      <div class="hidden content"><i class="left arrow icon"></i></div>
-    </div>
+  <a href="javascript:history.back()" class="ui animated fade button" >
+      {{ 'Retour aux niveaux'|trans }}
   </a>
   <div class="ui hidden divider"></div>
   {% if matieres is empty %}
@@ -69,7 +66,7 @@
                   </td>
                   <td>
                     <h3>
-                      <a href="{{ path('editer_liaison_niveaux_matieres', {'as': asec, 'regime': regime, 'enseignementId': en.id}) }}">
+                      <a href="{{ path('editer_liaison_niveaux_matieres', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'enseignementId': en.id}) }}">
                         <i class="edit icon"></i>
                       </a>
                       <a href="">

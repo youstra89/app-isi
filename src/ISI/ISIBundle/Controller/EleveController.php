@@ -21,13 +21,18 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class EleveController extends Controller
 {
-  public function indexAction($as, $regime)
+  public function indexAction(Request $request, int $as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoEleve      = $em->getRepository('ISIBundle:Eleve');
-    $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
-    $repo = get_class($repoEleve);
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     // Sélection de l'année scolaire
     $annee  = $repoAnnee->find($as);
@@ -74,6 +79,7 @@ class EleveController extends Controller
       // 'eleves'  => $eleves,
       'eleves'  => $infoEleve,
       'annee'   => $annee,
+      'annexe'  => $annexe,
       'regime'  => $regime,
       'elevesI' => $elevesInternes
     ]);
@@ -109,16 +115,6 @@ class EleveController extends Controller
   public function selectionDesElevesDuRegimeAction($regime)
   {
     $em = $this->getDoctrine()->getManager();
-
-    // // Ajax dans le controller
-    // // if($request->isXMLHttpRequest())
-    // // {
-    //   $cnx = $this->get('database_connection');
-    //   $query = "SELECT * FROM eleve e WHERE e.matricule LIKE '*A___'";
-    //   $rows = $cnx->fetchAll($query);
-    //   return new JsonResponse(array('data' => json_encode($rows)));
-    // // }
-    //
     // return new Response("Erreur: Ce n'est pas une requête Ajax", 400);
     // Ajax dans le controller
 
@@ -270,8 +266,16 @@ class EleveController extends Controller
   //Function de présincription
   public function preinscriptionAction(Request $request, $as, $regime)
   {
+    die();
     $em = $this->getDoctrine()->getManager();
-    $repoEleve  = $em->getRepository('ISIBundle:Eleve');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
+    $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
 
     // Sélection de l'année scolaire
@@ -307,13 +311,15 @@ class EleveController extends Controller
       $eleve->setDateNaissance($date);
       $eleve->setRegime($regime);
       $eleve->setCreatedBy($user);
+      $eleve->setAnnexe($annexe);
+
 
       $em = $this->getDoctrine()->getManager();
       $em->persist($eleve);
 
       try{
         $em->flush();
-        $request->getSession()->getFlashBag()->add('info', 'L\'élève <strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> a été bien enregistré avec le matricule <strong>'.$eleve->getMatricule().'</strong>.');
+        $request->getSession()->getFlashBag()->add('info', 'L\'élève <strong>'.$eleve->getNom().'</strong> a été bien enregistré avec le matricule <strong>'.$eleve->getMatricule().'</strong>.');
       } 
       catch(\Doctrine\ORM\ORMException $e){
         $this->addFlash('error', $e->getMessage());
@@ -325,7 +331,8 @@ class EleveController extends Controller
 
 
       return $this->redirect($this->generateUrl('isi_preinscription', array(
-        'as'     => $as,
+        'as'     => $as, 
+        'annexeId'     => $annexeId, 
         'regime' => $regime
       )));
     }
@@ -333,6 +340,7 @@ class EleveController extends Controller
     return $this->render('ISIBundle:Eleve:preinscription.html.twig', array(
       'asec'        => $as,
       'regime'      => $regime,
+      'annexe'  => $annexe,
       'annee'       => $annee,
       'professions' => $professions,
       'form'        => $form->createView(),
@@ -347,6 +355,13 @@ class EleveController extends Controller
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.'); 
+        return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as, 'annexeId' => $annexeId]));
+    }
 
     // Sélection de l'année scolaire
     $annee  = $repoAnnee->find($as);
@@ -374,7 +389,7 @@ class EleveController extends Controller
       
       try{
         $em->flush();
-        $request->getSession()->getFlashBag()->add('info', 'Les informations de <strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> ont bien été mise à jour.');
+        $request->getSession()->getFlashBag()->add('info', 'Les informations de <strong>'.$eleve->getNom().'</strong> ont bien été mise à jour.');
       } 
       catch(\Doctrine\ORM\ORMException $e){
         $this->addFlash('error', $e->getMessage());
@@ -386,6 +401,7 @@ class EleveController extends Controller
 
       return $this->redirect($this->generateUrl('isi_espace_eleve', [
         'as'     => $as,
+        'annexeId' => $annexeId,
         'regime' => $regime
       ]));
     }
@@ -394,14 +410,15 @@ class EleveController extends Controller
       'asec'   => $as,
       'regime' => $regime,
       'annee'  => $annee,
+      'annexe'  => $annexe,
       'eleve'  => $eleve,
-    'professions'     => $professions,
-    'form'   => $form->createView()
+      'professions'     => $professions,
+      'form'   => $form->createView()
     ]);
   }
 
   //Affichage de la fiche de renseignement d'un élève
-  public function infoEleveAction($as, $regime, $eleveId)
+  public function infoEleveAction(Request $request, int $as, $regime, $eleveId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee       = $em->getRepository('ISIBundle:Annee');
@@ -411,6 +428,13 @@ class EleveController extends Controller
     $repoEleveRenvoye     = $em->getRepository('ISIBundle:Eleverenvoye');
     $repoEleveReintegre   = $em->getRepository('ISIBundle:Elevereintegre');
     $repoEleveAutreregime = $em->getRepository('ISIBundle:Eleveautreregime');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     // Sélection de l'année scolaire
     $annee  = $repoAnnee->find($as);
@@ -436,6 +460,7 @@ class EleveController extends Controller
       'annee'      => $annee,
       'eleve'      => $eleve,
       'problemes'  => $problemes,
+      'annexe'  => $annexe,
       'frequenter' => $fq,
       'renvoye'    => $renvoye,
       'reintegre'  => $reintegre,
@@ -444,12 +469,19 @@ class EleveController extends Controller
   }
 
   //Pour voir la liste des élèves inscrits pour une année donnée
-  public function elevesInscritsAction($as, $regime)
+  public function elevesInscritsAction(Request $request, int $as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoEleve      = $em->getRepository('ISIBundle:Eleve');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     // Sélection de l'année scolaire
     $annee  = $repoAnnee->find($as);
@@ -472,6 +504,7 @@ class EleveController extends Controller
     return $this->render('ISIBundle:Eleve:eleves-inscrits.html.twig', array(
     	'asec'     => $as,
       'eleves'   => $eleves,
+      'annexe'  => $annexe,
       'annee'    => $annee,
       'regime'   => $regime,
       'elevesI'  => $elevesInternes,
@@ -496,8 +529,6 @@ class EleveController extends Controller
     $repoFrequenter = $em->getRepository("ISIBundle:Frequenter");
     // $repo->getRepository("ISIBundle:");
 
-    $anPrec = $as - 1;
-    $eleve  = $repoEleve->find($eleveId);
     $niveau = $repoNiveau->find($niveauId);
     // $frequenter = $repoFrequenter->findOneBy(["eleve" => $eleveId, "annee" => $anPrec]);
     $frequenter = $repoFrequenter->derniereFrequentation($eleveId);
@@ -552,6 +583,13 @@ class EleveController extends Controller
     $repoHalaqa = $em->getRepository('ISIBundle:Halaqa');
     $repoReinscription = $em->getRepository('ISIBundle:Reinscription');
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $annee  = $repoAnnee->find($as);
     /**
      * Quand l'année scolaire est finie, on doit plus faire des
@@ -560,11 +598,11 @@ class EleveController extends Controller
     if($annee->getAchevee() == TRUE)
     {
       $request->getSession()->getFlashBag()->add('error', 'Impossible d\'inscrire un élève car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
-      return $this->redirect($this->generateUrl('isi_espace_eleve', ['as' => $as, 'regime' => $regime]));
+      return $this->redirect($this->generateUrl('isi_espace_eleve', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
     }
     $grp = $regime == 'A' ? 1 : 2 ;
     $niveaux   = $repoNiveau->findBy(['groupeFormation' => $grp]);
-    $halaqas   = $repoHalaqa->findBy(['annee' => $as, 'regime' => $regime]);
+    $halaqas   = $repoHalaqa->findBy(['annee' => $as, 'annexe' => $annexeId, 'regime' => $regime]);
     $tousLesMatricules = $repoEleve->getMatricules($regime);
     $matricules = [];
     foreach ($tousLesMatricules as $matricule) {
@@ -612,26 +650,26 @@ class EleveController extends Controller
       // de l'élève dont on a entré le matricule
       if ($eleve->getRegime() != $regime) {
         $request->getSession()->getFlashBag()->add('error', 'Placez-vous dans le bon regime de formation pour procéder à l\'inscription.');
-        return $this->redirect($this->generateUrl('isi_inscription', ['as' => $as, 'regime' => $regime]));
+        return $this->redirect($this->generateUrl('isi_inscription', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
       }
 
       if ($eleve->getRenvoye() == 1) {
-        $request->getSession()->getFlashBag()->add('error', '<strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> ne peut être inscrit. Il(elle) a été renvoyé(e)');
-        return $this->redirect($this->generateUrl('isi_inscription', ['as' => $as, 'regime' => $regime]));
+        $request->getSession()->getFlashBag()->add('error', '<strong>'.$eleve->getNom().'</strong> ne peut être inscrit. Il(elle) a été renvoyé(e)');
+        return $this->redirect($this->generateUrl('isi_inscription', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
       }
 
       // Ici on vérifie que l'élève n'est pas encore inscrit dans une classe quelconque
       if(!empty($frequente)) {
-        $request->getSession()->getFlashBag()->add('error', '<strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> est déjà inscrit(e) en <strong>'.$frequente->getClasse()->getLibelleFr().'</strong>');
-        return $this->redirect($this->generateUrl('isi_inscription', ['as' => $as, 'regime' => $regime]));
+        $request->getSession()->getFlashBag()->add('error', '<strong>'.$eleve->getNom().'</strong> est déjà inscrit(e) en <strong>'.$frequente->getClasse()->getLibelleFr().'</strong>');
+        return $this->redirect($this->generateUrl('isi_inscription', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
       }
 
       $anneeId  = $as - 1;
       $frequentationAnterieures = $repoFrequenter->findOneBy(["eleve" => $eleveId]);
       $reinscription = $repoReinscription->findOneBy(['eleve' => $eleveId, 'annee' => $anneeId]);
       if(empty($reinscription) and count($frequentationAnterieures) != 0){
-        $request->getSession()->getFlashBag()->add('error', '<strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> ne s\'est pas réinscrit');
-        return $this->redirect($this->generateUrl('isi_inscription', ['as' => $as, 'regime' => $regime]));
+        $request->getSession()->getFlashBag()->add('error', '<strong>'.$eleve->getNom().'</strong> ne s\'est pas réinscrit');
+        return $this->redirect($this->generateUrl('isi_inscription', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
       }
 
 
@@ -668,8 +706,8 @@ class EleveController extends Controller
           $frequenter = $repoFrequenter->findOneBy(["eleve" => $eleveId, "annee" => $anPrec]);
           $niveauPrecedantId = $frequenter->getClasse()->getNiveau()->getId();
           $niveau  = $repoNiveau->find($niveauPrecedantId);
-          $request->getSession()->getFlashBag()->add('error', '<strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> redouble sa classe. Il(elle) doit être inscrit(e) en <strong>'.$niveau->getLibelleFr().'</strong>');
-          return $this->redirect($this->generateUrl('isi_inscription', ['as' => $as, 'regime' => $regime]));
+          $request->getSession()->getFlashBag()->add('error', '<strong>'.$eleve->getNom().'</strong> redouble sa classe. Il(elle) doit être inscrit(e) en <strong>'.$niveau->getLibelleFr().'</strong>');
+          return $this->redirect($this->generateUrl('isi_inscription', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
         }
         elseif ($redouble == 5) {
           # code...
@@ -677,8 +715,8 @@ class EleveController extends Controller
           $frequenter = $repoFrequenter->derniereFrequentation($eleveId); //findOneBy(["eleve" => $eleveId, "annee" => $anPrec]);
           $niveauPrecedantId = $frequenter[0]->getClasse()->getNiveau()->getId();
           $niveau  = $repoNiveau->find($niveauPrecedantId + 1);
-          $request->getSession()->getFlashBag()->add('error', '<strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> est admis(e). Il(elle) doit être inscrit(e) en <strong>'.$niveau->getLibelleFr().'</strong>');
-          return $this->redirect($this->generateUrl('isi_inscription', ['as' => $as, 'regime' => $regime]));
+          $request->getSession()->getFlashBag()->add('error', '<strong>'.$eleve->getNom().'</strong> est admis(e). Il(elle) doit être inscrit(e) en <strong>'.$niveau->getLibelleFr().'</strong>');
+          return $this->redirect($this->generateUrl('isi_inscription', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
         }
         elseif($redouble == 4)
         {
@@ -697,8 +735,8 @@ class EleveController extends Controller
           $frequenterDeuxAns = $repoFrequenter->findOneBy(["eleve" => $eleveId, "annee" => $idDeuxAnsAvant]);
           if(!empty($frequenterDeuxAns)){
             if($frequenterDeuxAns->getClasse()->getNiveau()->getId() == $niveauPrecedantId){
-              $request->getSession()->getFlashBag()->add('error', $eleve->getNomFr().' '.$eleve->getPnomFr().' ne peut être inscrit(e) en '.$niveau->getLibelleFr().'. Il a déjà repris la classe 2 fois.');
-              return $this->redirect($this->generateUrl('isi_inscription', ['as' => $as, 'regime' => $regime]));
+              $request->getSession()->getFlashBag()->add('error', '<strong>'.$eleve->getNom().'</strong> ne peut être inscrit(e) en <strong>'.$niveau->getLibelleFr().'</strong>. Il a déjà repris la classe 2 fois.');
+              return $this->redirect($this->generateUrl('isi_inscription', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
             }
           }
         }
@@ -720,9 +758,9 @@ class EleveController extends Controller
       if($autoriserInscriptionGrp == FALSE)
       {
         // Impossible de poursuivre l'inscription
-        $request->getSession()->getFlashBag()->add('error', '<strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> ne peut être inscrit(e) en <strong>'.$classe->getLibelleFr().'</strong>. Il(elle) n\'est pas de ce regime de formation.');
+        $request->getSession()->getFlashBag()->add('error', '<strong>'.$eleve->getNom().'</strong> ne peut être inscrit(e) en <strong>'.$classe->getLibelleFr().'</strong>. Il(elle) n\'est pas de ce regime de formation.');
         return $this->redirect($this->generateUrl('isi_inscription', [
-          'as' => $as, 'regime' => $regime
+          'as' => $as, 'annexeId' => $annexeId, 'regime' => $regime
         ]));
         // return new Response(substr($eleve->getMatricule(), -4, 1));
         // return new Response("Impossible d'inscrire cet élève.");
@@ -745,9 +783,9 @@ class EleveController extends Controller
         if($autoriserInscriptionSexe == FALSE)
         {
           // Impossible de poursuivre l'inscription
-          $request->getSession()->getFlashBag()->add('error', '<strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> ne peut être inscrit(e) en <strong>'.$classe->getLibelleFr().'</strong>. Vous ne pouvez pas inscrire les hommes chez les femmes.');
+          $request->getSession()->getFlashBag()->add('error', '<strong>'.$eleve->getNom().'</strong> ne peut être inscrit(e) en <strong>'.$classe->getLibelleFr().'</strong>. Vous ne pouvez pas inscrire les hommes chez les femmes.');
           return $this->redirect($this->generateUrl('isi_inscription', [
-            'as' => $as, 'regime' => $regime
+            'as' => $as, 'annexeId' => $annexeId, 'regime' => $regime
           ]));
           // return new Response("sexe different.");
         }
@@ -763,9 +801,9 @@ class EleveController extends Controller
               $autoriserInscriptionHalaqa = $this->autorisationSexe($eleve->getSexe(), $halaqa->getGenre());
               if($autoriserInscriptionHalaqa == FALSE)
               {
-                $request->getSession()->getFlashBag()->add('error', '<strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> ne peut être inscrit(e) en <strong>'.$halaqa->getLibelle().' - '.$halaqa->getGenre().'</strong>. Vous ne pouvez pas inscrire les hommes chez les femmes.');
+                $request->getSession()->getFlashBag()->add('error', '<strong>'.$eleve->getNom().'</strong> ne peut être inscrit(e) en <strong>'.$halaqa->getLibelle().' - '.$halaqa->getGenre().'</strong>. Vous ne pouvez pas inscrire les hommes chez les femmes.');
                 return $this->redirect($this->generateUrl('isi_inscription', [
-                  'as' => $as, 'regime' => $regime
+                  'as' => $as, 'annexeId' => $annexeId, 'regime' => $regime
                 ]));
               }
 
@@ -794,13 +832,13 @@ class EleveController extends Controller
           try{
             $em->flush();
             if ($regime == 'A') {
-              $request->getSession()->getFlashBag()->add('info', '<strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> a bien été inscrit(e) en <strong>'.$classe->getLibelleFr().'</strong> et dans la halaqa <strong>'.$halaqa->getLibelle().'</strong>');
+              $request->getSession()->getFlashBag()->add('info', '<strong>'.$eleve->getNom().'</strong> a bien été inscrit(e) en <strong>'.$classe->getLibelleFr().'</strong> et dans la halaqa <strong>'.$halaqa->getLibelle().'</strong>');
             }
             elseif ($regime == 'F') {
-              $request->getSession()->getFlashBag()->add('info', '<strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> a bien été inscrit(e) en <strong>'.$classe->getLibelleFr().'</strong>');
+              $request->getSession()->getFlashBag()->add('info', '<strong>'.$eleve->getNom().'</strong> a bien été inscrit(e) en <strong>'.$classe->getLibelleFr().'</strong>');
             }
             else {
-              $request->getSession()->getFlashBag()->add('info', '<strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> a bien été inscrit(e) dans la halaqa <strong>'.$halaqa->getLibelle().'</strong>');
+              $request->getSession()->getFlashBag()->add('info', '<strong>'.$eleve->getNom().'</strong> a bien été inscrit(e) dans la halaqa <strong>'.$halaqa->getLibelle().'</strong>');
             }
           } 
           catch(\Doctrine\ORM\ORMException $e){
@@ -812,7 +850,7 @@ class EleveController extends Controller
           }
 
           // return $this->render('ISIBundle:Default:index.html.twig', ['data' => $data, 'asec' => $as, 'regime' => 'A']);
-          return $this->redirect($this->generateUrl('isi_inscription', ['as' => $as, 'regime' => $regime]));
+          return $this->redirect($this->generateUrl('isi_inscription', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
         } // Fin  -  Autorisation liée au sexe de l'élève et au genre de la classe
 
       } // Fin  -  Autorisation liée à au groupe de formation de l'élève et au regime de la classe
@@ -823,6 +861,7 @@ class EleveController extends Controller
       'regime'  => $regime,
       'niveaux'  => $niveaux,
       'annee'   => $annee,
+      'annexe'  => $annexe,
       'halaqas' => $halaqas,
       'form'    => $form->createView(),
       'matricules' => $matricules
@@ -830,13 +869,20 @@ class EleveController extends Controller
   }
 
   // Pour les inscriptions en masse
-  public function flashInscriptionAction($as, $regime)
+  public function flashInscriptionAction(Request $request, int $as, $regime)
   {
     // return new Response("Ca demarre bien!");
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoClasse  = $em->getRepository('ISIBundle:Classe');
     $repoNiveau  = $em->getRepository('ISIBundle:Niveau');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as, 'annexeId' => $annexeId]));
+    }
     
     // Sélection des entités
     $annee = $repoAnnee->find($as);
@@ -846,32 +892,40 @@ class EleveController extends Controller
     return $this->render('ISIBundle:Eleve:flash-inscription-home.html.twig', [
       'asec'     => $as,
       'regime'   => $regime,
+      'annexe'  => $annexe,
       'annee'    => $annee,
       'niveaux'  => $niveaux,
       'classes'  => $classes,
     ]);
   }
 
-  public function flashInscriptionDUneClasseAction($as, $regime, $classeId)
+  public function flashInscriptionDUneClasseAction(Request $request, int $as, $regime, $classeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoClasse  = $em->getRepository('ISIBundle:Classe');
     $repoEleve   = $em->getRepository('ISIBundle:Eleve');
     $repoFrequenter   = $em->getRepository('ISIBundle:Frequenter');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $halaqas   = [];
 
     if ($regime == 'A') {
       # code...
       $repoHalaqa = $em->getRepository('ISIBundle:Halaqa');
-      $halaqas    = $repoHalaqa->findBy(['annee' => $as, 'regime' => $regime]);
+      $halaqas    = $repoHalaqa->findBy(['annee' => $as, 'annexe' => $annexeId, 'regime' => $regime]);
     }
     
     // Sélection des entités
     $annee         = $repoAnnee ->find($as);
     $classe        = $repoClasse->find($classeId);
     $niveauId      = $classe    ->getNiveau()->getId();
-    $classesR      = $repoClasse->lesClassesDuNiveau($as, $niveauId);
+    $classesR      = $repoClasse->lesClassesDuNiveau($as, $annexeId, $niveauId);
     $frequenter    = $repoFrequenter->statistiquesClasse($classeId);
     $reinscription = $this->idsDesElevesReinscrits($classeId, $as -1);
     $eleves        = $repoEleve->lesElevesDeLaClasse($as - 1, $classeId);
@@ -919,6 +973,7 @@ class EleveController extends Controller
       'regime'      => $regime,
       'annee'       => $annee,
       'eleves'      => $eleves,
+      'annexe'  => $annexe,
       'halaqas'     => $halaqas,
       'classe'      => $classe,
       'classesR'    => $classesR,
@@ -951,7 +1006,13 @@ class EleveController extends Controller
     $repoHalaqa     = $em->getRepository('ISIBundle:Halaqa');
     $repoEleve      = $em->getRepository('ISIBundle:Eleve');
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
-    $repoExamen  = $em->getRepository('ISIBundle:Examen');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as, 'annexeId' => $annexeId]));
+    }
     $classe   = $repoClasse->find($classeId);
     
     // Sélection des entités
@@ -964,7 +1025,7 @@ class EleveController extends Controller
     if($annee->getAchevee() == TRUE)
     {
       $request->getSession()->getFlashBag()->add('error', 'Impossible de faire le réaménagement car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
-      return $this->redirect($this->generateUrl('isi_flash_inscription', ['as' => $as, 'regime' => $regime]));
+      return $this->redirect($this->generateUrl('isi_flash_inscription', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
     }
 
     if($request->isMethod('post'))
@@ -1047,7 +1108,7 @@ class EleveController extends Controller
       if ($check_recording == false && $classe_recording == false) {
         # On entre dans cette condition s'il n'y a pas eu d'enregistrement
         $request->getSession()->getFlashBag()->add('error', 'Aucun changement constaté. Veuillez reprendre <strong>Flash inscription</strong>.');
-        return $this->redirect($this->generateUrl('isi_flash_inscription', ['as' => $as, 'regime' => $regime]));
+        return $this->redirect($this->generateUrl('isi_flash_inscription', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
       } else {
         # Beuh, sinon on flush les entités nouvellement créées
         if ($classe_recording) {
@@ -1070,7 +1131,7 @@ class EleveController extends Controller
           }
         }
       }
-      return $this->redirect($this->generateUrl('isi_flash_inscription', ['as' => $as, 'regime' => $regime]));
+      return $this->redirect($this->generateUrl('isi_flash_inscription', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
     }
   }
 
@@ -1081,6 +1142,13 @@ class EleveController extends Controller
     $repoEleve       = $em->getRepository('ISIBundle:Eleve');
     $repoAnnee       = $em->getRepository('ISIBundle:Annee');
     $repoFrequenter  = $em->getRepository('ISIBundle:Frequenter');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee = $repoAnnee->find($as);
 
@@ -1093,17 +1161,18 @@ class EleveController extends Controller
       $fq    = $repoFrequenter->findOneBy(['eleve' => $eleve->getId(), 'annee' => $as]);
       if(empty($eleve)) {
         $request->getSession()->getFlashBag()->add('error', 'Le matricule saisi n\'est pas correct');
-        return $this->redirect($this->generateUrl('isi_problemes_home', ['as' => $as, 'regime' => $regime]));
+        return $this->redirect($this->generateUrl('isi_problemes_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
       }
       else {
         if (empty($fq)) {
           $request->getSession()->getFlashBag()->add('error', 'Cet élève n\'est pas inscrit. \n Impossible d\'enregister sa conduite.');
-          return $this->redirect($this->generateUrl('isi_problemes_home', ['as' => $as, 'regime' => $regime]));
+          return $this->redirect($this->generateUrl('isi_problemes_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
         }
           return $this->render('ISIBundle:Eleve:saisie-de-probleme-d-un-eleve.html.twig', [
             'asec'   => $as,
             'regime' => $regime,
             'annee'  => $annee,
+            'annexe'  => $annexe,
             'eleve'  => $eleve,
             'fq'     => $fq
           ]);
@@ -1114,6 +1183,7 @@ class EleveController extends Controller
       'asec'    => $as,
       'regime'  => $regime,
       'annee'   => $annee,
+      'annexe'   => $annexe,
     ]);
   }
 
@@ -1123,6 +1193,13 @@ class EleveController extends Controller
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoEleve      = $em->getRepository('ISIBundle:Eleve');
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee = $repoAnnee->find($as);
     $eleve = $repoEleve->find($eleveId);
@@ -1133,9 +1210,9 @@ class EleveController extends Controller
       $request->getSession()->getFlashBag()->add('error', 'Cet élève n\'est pas inscrit cette année. Vous ne pouvez donc pas enregistrer une conduite à son nom.');
       if ($regime == 'C') {
         # code...
-        return $this->redirect($this->generateUrl('isi_espace_coran_home', ['as' => $as, 'regime' => $regime]));
+        return $this->redirect($this->generateUrl('isi_espace_coran_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
       }
-      return $this->redirect($this->generateUrl('isi_espace_eleve', ['as' => $as, 'regime' => $regime]));
+      return $this->redirect($this->generateUrl('isi_espace_eleve', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
     }
 
     // Sélection des objets
@@ -1157,7 +1234,7 @@ class EleveController extends Controller
       if(empty($description))
       {
         $request->getSession()->getFlashBag()->add('error', 'La description de la conduite ne doit pas être vide.');
-        return $this->redirect($this->generateUrl('isi_problemes_home', ['as' => $as, 'regime' => $regime]));
+        return $this->redirect($this->generateUrl('isi_problemes_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
       }
 
       // Un renvoi peut être considéré comme effet immédiat ou non d'un problème
@@ -1180,7 +1257,7 @@ class EleveController extends Controller
       // return new Response(var_dump($request));
       try{
         $em->flush();
-        $request->getSession()->getFlashBag()->add('info', 'La conduite de <strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> a été bien enregistrée avec la mention "<strong>'.$probleme->getAppreciation().'</strong>".');
+        $request->getSession()->getFlashBag()->add('info', 'La conduite de <strong>'.$eleve->getNom().'</strong> a été bien enregistrée avec la mention "<strong>'.$probleme->getAppreciation().'</strong>".');
       } 
       catch(\Doctrine\ORM\ORMException $e){
         $this->addFlash('error', $e->getMessage());
@@ -1190,13 +1267,14 @@ class EleveController extends Controller
         $this->addFlash('error', $e->getMessage());
       }
 
-      return $this->redirect($this->generateUrl('isi_problemes_home', ['as' => $as, 'regime' => $regime]));
+      return $this->redirect($this->generateUrl('isi_problemes_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
     }
 
     $dernierePage = 'eleveInscrits';
     return $this->render('ISIBundle:Eleve:saisie-de-probleme-d-un-eleve.html.twig', [
       'asec'   => $as,
       'regime' => $regime,
+      'annexe'  => $annexe,
       'annee'  => $annee,
       'eleve'  => $eleve,
       'fq'     => $fq,
@@ -1211,6 +1289,13 @@ class EleveController extends Controller
     $repoEleve       = $em->getRepository('ISIBundle:Eleve');
     $repoAnnee       = $em->getRepository('ISIBundle:Annee');
     $repoFrequenter  = $em->getRepository('ISIBundle:Frequenter');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee = $repoAnnee->find($as);
     $tousLesMatricules = $repoEleve->getMatricules($regime);
@@ -1228,13 +1313,14 @@ class EleveController extends Controller
       $fq    = $repoFrequenter->findOneBy(['eleve' => $eleve->getId(), 'annee' => $as]);
       if(empty($eleve)) {
         $request->getSession()->getFlashBag()->add('error', 'Le matricule saisi n\'est pas correct');
-        return $this->redirect($this->generateUrl('isi_renvoi_home', ['as' => $as, 'regime' => $regime]));
+        return $this->redirect($this->generateUrl('isi_renvoi_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
       }
       else {
         return $this->render('ISIBundle:Eleve:infos-eleve-a-renvoyer.html.twig', [
           'asec'   => $as,
           'regime' => $regime,
           'annee'  => $annee,
+          'annexe'  => $annexe,
           'eleve'  => $eleve,
           'fq'     => $fq
         ]);
@@ -1246,7 +1332,8 @@ class EleveController extends Controller
       'asec'    => $as,
       'regime'  => $regime,
       'annee'   => $annee,
-      'matricules' => $matricules,
+          'annexe'  => $annexe,
+          'matricules' => $matricules,
     ]);
   }
 
@@ -1257,7 +1344,13 @@ class EleveController extends Controller
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoEleve      = $em->getRepository('ISIBundle:Eleve');
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
-    $repoEleverenvoye = $em->getRepository('ISIBundle:Eleverenvoye');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     if($request->isMethod('post'))
     {
@@ -1266,7 +1359,7 @@ class EleveController extends Controller
       if(empty($motifRenvoi))
       {
         $request->getSession()->getFlashBag()->add('error', 'Il vaut impérativement saisir le motif pour lequel vous voulez renvoyer cet(te) élève.');
-        return $this->redirect($this->generateUrl('isi_renvoi_home', ['as' => $as, 'regime' => $regime]));
+        return $this->redirect($this->generateUrl('isi_renvoi_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
       }
 
       $annee = $repoAnnee->find($as);
@@ -1277,13 +1370,13 @@ class EleveController extends Controller
       if($annee->getAchevee() == TRUE)
       {
         $request->getSession()->getFlashBag()->add('error', 'Impossible de renvoyer un(e) élève car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
-        return $this->redirect($this->generateUrl('isi_renvoi_home', ['as' => $as, 'regime' => $regime]));
+        return $this->redirect($this->generateUrl('isi_renvoi_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
       }
       $eleve = $repoEleve->find($eleveId);
       if($eleve->getRenvoye() == TRUE)
       {
-        $request->getSession()->getFlashBag()->add('error', '<strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> est déjà renvoyé(e).');
-        return $this->redirect($this->generateUrl('isi_renvoi_home', ['as' => $as, 'regime' => $regime]));
+        $request->getSession()->getFlashBag()->add('error', '<strong>'.$eleve->getNom().'</strong> est déjà renvoyé(e).');
+        return $this->redirect($this->generateUrl('isi_renvoi_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
       }
       $fq    = $repoFrequenter->findOneBy(['eleve' => $eleveId, 'annee' => $as]);
 
@@ -1312,7 +1405,7 @@ class EleveController extends Controller
       $em->persist($eleveRenvoye);
       try{
         $em->flush();
-        $request->getSession()->getFlashBag()->add('info', 'Le renvoi de <strong>'.$eleve->getNomFr().' '.$eleve->getPnomFr().'</strong> s\'est bien effectué');      } 
+        $request->getSession()->getFlashBag()->add('info', 'Le renvoi de <strong>'.$eleve->getNom().'</strong> s\'est bien effectué');      } 
       catch(\Doctrine\ORM\ORMException $e){
         $this->addFlash('error', $e->getMessage());
         $this->get('logger')->error($e->getMessage());
@@ -1321,7 +1414,7 @@ class EleveController extends Controller
         $this->addFlash('error', $e->getMessage());
       }
 
-      return $this->redirect($this->generateUrl('isi_renvoi_home', ['as' => $as, 'regime' => $regime]));
+      return $this->redirect($this->generateUrl('isi_renvoi_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
     }
   }
 
@@ -1332,6 +1425,13 @@ class EleveController extends Controller
     $repoAnnee        = $em->getRepository('ISIBundle:Annee');
     $repoEleve        = $em->getRepository('ISIBundle:Eleve');
     $repoFrequenter   = $em->getRepository('ISIBundle:Frequenter');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $eleve = $repoEleve->find($eleveId);
     $annee = $repoAnnee->find($as);
@@ -1347,8 +1447,8 @@ class EleveController extends Controller
     elseif(count($er) > 2)
     {
       $fq = $repoFrequenter->findOneBy(['eleve' => $eleveId, 'annee' => $er[1]->getAnnee()->getId()]);
-      $request->getSession()->getFlashBag()->add('error', $eleve->getNomFr().' '.$eleve->getPnomFr().' ne peut être réintégré(e) car il(elle) a été renvoyé(e) plus de deux fois.');
-      return $this->redirect($this->generateUrl('isi_eleves_renvoyes', ['as' => $as, 'regime' => $regime]));
+      $request->getSession()->getFlashBag()->add('error', '<strong>'.$eleve->getNomFr().'</strong> ne peut être réintégré(e) car il(elle) a été renvoyé(e) plus de deux fois.');
+      return $this->redirect($this->generateUrl('isi_eleves_renvoyes', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
     }
 
     if($request->isMethod('post'))
@@ -1357,8 +1457,8 @@ class EleveController extends Controller
       $motifReintegration = $data['motifReintegration'];
       if(empty($motifReintegration))
       {
-        $request->getSession()->getFlashBag()->add('error', 'Quel est le motif de la réintégration de '.$eleve->getNomFr().' '.$eleve->getPnomFr().' ?');
-        return $this->redirect($this->generateUrl('isi_eleves_renvoyes', ['as' => $as, 'regime' => $regime]));
+        $request->getSession()->getFlashBag()->add('error', 'Quel est le motif de la réintégration de <strong>'.$eleve->getNom().'</strong> ?');
+        return $this->redirect($this->generateUrl('isi_eleves_renvoyes', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
       }
 
       $annee = $repoAnnee->find($as);
@@ -1368,8 +1468,8 @@ class EleveController extends Controller
        **/
       if($annee->getAchevee() == TRUE)
       {
-        $request->getSession()->getFlashBag()->add('error', 'Impossible de réintégrer un(e) élève car l\'année scolaire '.$annee->getLibelle().' est achevée.');
-        return $this->redirect($this->generateUrl('isi_renvoi_home', ['as' => $as, 'regime' => $regime]));
+        $request->getSession()->getFlashBag()->add('error', 'Impossible de réintégrer un(e) élève car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
+        return $this->redirect($this->generateUrl('isi_renvoi_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
       }
 
       $fq = $repoFrequenter->findOneBy(['eleve' => $eleveId, 'annee' => $er[0]->getAnnee()->getId()]);
@@ -1399,7 +1499,7 @@ class EleveController extends Controller
       $em->persist($eleveReintegre);
       try{
         $em->flush();
-        $request->getSession()->getFlashBag()->add('info', 'La réintegration de '.$eleve->getNomFr().' '.$eleve->getPnomFr().' s\'est bien effectué');
+        $request->getSession()->getFlashBag()->add('info', 'La réintegration de <strong>'.$eleve->getNom().'</strong> s\'est bien effectué');
       } 
       catch(\Doctrine\ORM\ORMException $e){
         $this->addFlash('error', $e->getMessage());
@@ -1410,30 +1510,37 @@ class EleveController extends Controller
       }
       // $em->flush();
 
-      return $this->redirect($this->generateUrl('isi_eleves_renvoyes', ['as' => $as, 'regime' => $regime]));
+      return $this->redirect($this->generateUrl('isi_eleves_renvoyes', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
     }
 
     return $this->render('ISIBundle:Eleve:infos-eleve-a-reintegrer.html.twig', [
       'asec'        => $as,
       'regime'      => $regime,
       'annee'       => $annee,
+      'annexe'  => $annexe,
       'eleve'       => $eleve,
       'anneeRenvoi' => $anneeRenvoi,
     ]);
   }
 
   //Pour voir la liste des élèves renvoyés
-  public function elevesRenvoyesAction($as, $regime)
+  public function elevesRenvoyesAction(Request $request, int $as, $regime)
   {
     $em               = $this->getDoctrine()->getManager();
     $repoEleverenvoye = $em->getRepository('ISIBundle:Eleverenvoye');
     $repoFrequenter   = $em->getRepository('ISIBundle:Frequenter');
     $repoAnnee        = $em->getRepository('ISIBundle:Annee');
     $repoEleve        = $em->getRepository('ISIBundle:Eleve');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     // Sélection de l'année scolaire
     $annee  = $repoAnnee->find($as);
-    $repo = get_class($repoEleve);
     $eleves = $repoEleve->elevesRenvoyes($regime);
 
     $renvoyes  = [];
@@ -1477,6 +1584,7 @@ class EleveController extends Controller
       'eleves'        => $eleves,
       'annee'         => $annee,
       'regime'        => $regime,
+      'annexe'  => $annexe,
       'renvoyes'      => $renvoyes,
       // 'frequentation' => $frequentation
     ));
@@ -1485,7 +1593,7 @@ class EleveController extends Controller
                                                                                                                                                             
 
   //Pour voir la liste des élèves renvoyés
-  public function infoEleveRenvoyeAction($as, $regime, $eleveId)
+  public function infoEleveRenvoyeAction(Request $request, int $as, $regime, $eleveId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee       = $em->getRepository('ISIBundle:Annee');
@@ -1495,6 +1603,13 @@ class EleveController extends Controller
     $repoEleveRenvoye     = $em->getRepository('ISIBundle:Eleverenvoye');
     $repoEleveReintegre   = $em->getRepository('ISIBundle:Elevereintegre');
     $repoEleveAutreregime = $em->getRepository('ISIBundle:Eleveautreregime');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     // Sélection de l'année scolaire
     $annee  = $repoAnnee->find($as);
@@ -1519,6 +1634,7 @@ class EleveController extends Controller
       'regime'     => $regime,
       'annee'      => $annee,
       'eleve'      => $eleve,
+      'annexe'  => $annexe,
       'problemes'  => $problemes,
       'frequenter' => $fq,
       'renvoye'    => $renvoye,
@@ -1533,6 +1649,13 @@ class EleveController extends Controller
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoEleve      = $em->getRepository('ISIBundle:Eleve');
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee  = $repoAnnee->find($as);
 
@@ -1545,14 +1668,15 @@ class EleveController extends Controller
       $fq    = $repoFrequenter->findOneBy(['eleve' => $eleve->getId(), 'annee' => $as]);
       if(empty($eleve)) {
         $request->getSession()->getFlashBag()->add('error', 'Le matricule saisi n\'est pas correct');
-        return $this->redirect($this->generateUrl('isi_changer_regime_home', ['as' => $as, 'regime' => $regime]));
+        return $this->redirect($this->generateUrl('isi_changer_regime_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
       } else {
-        return $this->redirect($this->generateUrl('isi_changer_regime_eleve', ['as' => $as, 'regime' => $regime, 'eleveId' => $eleve->getId()]));
+        return $this->redirect($this->generateUrl('isi_changer_regime_eleve', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime, 'eleveId' => $eleve->getId()]));
       }
     }
 
     return $this->render('ISIBundle:Eleve:changement-de-regime-home.html.twig', [
       'asec'   => $as,
+      'annexe'  => $annexe,
       'regime' => $regime,
       'annee'  => $annee,
     ]);
@@ -1565,6 +1689,13 @@ class EleveController extends Controller
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoEleve      = $em->getRepository('ISIBundle:Eleve');
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee = $repoAnnee->find($as);
     $eleve = $repoEleve->find($eleveId);
@@ -1576,32 +1707,32 @@ class EleveController extends Controller
       if(empty($motifChangement))
       {
         $request->getSession()->getFlashBag()->add('error', 'Il vaut impérativement saisir le motif pour lequel vous voulez renvoyer cet(te) élève.');
-        return $this->redirect($this->generateUrl('isi_changer_regime_home', ['as' => $as, 'regime' => $regime]));
+        return $this->redirect($this->generateUrl('isi_changer_regime_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
       }
 
       if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN_SCOLARITE')) {
         // Sinon on déclenche une exception « Accès interdit »
         // throw new AccessDeniedException('Accès limité aux auteurs.');
         $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisé à faire ce changement. Veuillez contacter le Directeur des affaires scolaires.');
-        return $this->redirect($this->generateUrl('isi_changer_regime_home', ['as' => $as, 'regime' => $regime]));
+        return $this->redirect($this->generateUrl('isi_changer_regime_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
       }
 
       if($annee->getAchevee() == TRUE)
       {
-        $request->getSession()->getFlashBag()->add('error', 'Impossible d\'effectuer le changement car l\'année scolaire '.$annee->getLibelle().' est achevée.');
-        return $this->redirect($this->generateUrl('isi_changer_regime_home', ['as' => $as, 'regime' => $regime]));
+        $request->getSession()->getFlashBag()->add('error', 'Impossible d\'effectuer le changement car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
+        return $this->redirect($this->generateUrl('isi_changer_regime_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
       }
 
       $eleve = $repoEleve->find($eleveId);
       $fq    = $repoFrequenter->findOneBy(['eleve' => $eleveId, 'annee' => $as]);
       if (!empty($fq)) {
         $request->getSession()->getFlashBag()->add('error', 'Cet(te) élève est déjà inscrit(e), vous ne pouvez pas changer son regime de formation. Vueillez contacter l\'administrateur du système.');
-        return $this->redirect($this->generateUrl('isi_changer_regime_home', ['as' => $as, 'regime' => $regime]));
+        return $this->redirect($this->generateUrl('isi_changer_regime_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
       }
 
       if ($regime != $eleve->getRegime()) {
         $request->getSession()->getFlashBag()->add('error', 'Avant de procéder au changement, veuillez changer le regime de formation dans lequel vous vous trouvez.');
-        return $this->redirect($this->generateUrl('isi_changer_regime_eleve', ['as' => $as, 'regime' => $regime, 'eleveId' => $eleveId]));
+        return $this->redirect($this->generateUrl('isi_changer_regime_eleve', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime, 'eleveId' => $eleveId]));
       }
 
       // Mise à jour des informations concernant le changement
@@ -1619,7 +1750,7 @@ class EleveController extends Controller
 
       try{
         $em->flush();
-        $request->getSession()->getFlashBag()->add('info', 'Le changement de regime de '.$eleve->getNomFr().' '.$eleve->getPnomFr().' s\'est bien effectué');
+        $request->getSession()->getFlashBag()->add('info', 'Le changement de regime de <strong>'.$eleve->getNomFr().'</strong> s\'est bien effectué');
       } 
       catch(\Doctrine\ORM\ORMException $e){
         $this->addFlash('error', $e->getMessage());
@@ -1631,32 +1762,41 @@ class EleveController extends Controller
 
       // $em->flush();
 
-      return $this->redirect($this->generateUrl('isi_changer_regime_home', ['as' => $as, 'regime' => $regime]));
+      return $this->redirect($this->generateUrl('isi_changer_regime_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
     }
 
     return $this->render('ISIBundle:Eleve:infos-eleve-pour-changement-de-regime.html.twig', [
       'asec'   => $as,
       'regime' => $regime,
       'annee'  => $annee,
+      'annexe'  => $annexe,
       'eleve'  => $eleve,
     ]);
   }
 
   // L'action permettra de modifier l'inscription d'un élève dans une classe
-  public function editInscriptionAction($as, $regime)
+  public function editInscriptionAction(Request $request, int $as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoClasse = $em->getRepository('ISIBundle:Classe');
     $repoNiveau = $em->getRepository('ISIBundle:Niveau');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
-    $classes = $repoClasse->classesDeLAnnee($as, $regime);
+    $classes = $repoClasse->classesDeLAnnee($as, $annexeId, $regime);
     $niveaux = $repoNiveau->niveauxDuGroupe($regime);
     $annee   = $repoAnnee->find($as);
 
     return $this->render('ISIBundle:Eleve:afficher-classes-pour-modifier-inscription.html.twig', [
       'asec'    => $as,
       'regime'  => $regime,
+      'annexe'  => $annexe,
       'annee'   => $annee,
       'classes' => $classes,
       'niveaux' => $niveaux
@@ -1664,20 +1804,28 @@ class EleveController extends Controller
   }
 
   // Modification effective de l'inscription d'un élève donnée
-  public function modifierInscriptionDUnEleveAction($as, $regime, $classeId)
+  public function modifierInscriptionDUnEleveAction(Request $request, int $as, $regime, $classeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoEleve  = $em->getRepository('ISIBundle:Eleve');
     $repoClasse = $em->getRepository('ISIBundle:Classe');
     // $repo = $em->getRepository('ISIBundle:')
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee = $repoAnnee->find($as);
     $classe = $repoClasse->find($classeId);
-    $eleves = $repoEleve->lesElevesDeLaClasse($as, $classeId);
+    $eleves = $repoEleve->lesElevesDeLaClasse($as, $annexeId, $classeId);
 
     return $this->render('ISIBundle:Eleve:modifier-l-inscription-d-un-eleve.html.twig', [
       'asec'   => $as,
+      'annexe'  => $annexe,
       'classe' => $classe,
       'annee'  => $annee,
       'regime' => $regime,
@@ -1697,12 +1845,19 @@ class EleveController extends Controller
     $repoNiveau      = $em->getRepository('ISIBundle:Niveau');
     $repoExamen      = $em->getRepository('ISIBundle:Examen');
     $repoClasse      = $em->getRepository('ISIBundle:Classe');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     // $repo = $em->getRepository('ISIBundle:')
 
     $annee           = $repoAnnee->find($as);
     $classeActuelle  = $repoClasse->find($classeId);
     $niveau          = $repoNiveau->find($classeActuelle->getNiveau());
-    $classes         = $repoClasse->lesClassesDuNiveau($as, $niveau->getId());
+    $classes         = $repoClasse->lesClassesDuNiveau($as, $annexeId, $niveau->getId());
     $eleve           = $repoEleve->find($eleveId);
     $examens         = $repoExamen->findBy(['annee' => $as]);
     $halaqas = [];
@@ -1710,7 +1865,7 @@ class EleveController extends Controller
     if ($regime == 'A') {
       $repoHalaqa = $em->getRepository('ISIBundle:Halaqa');
       $genre = ($eleve->getSexe() == 1) ? 'H' : 'F' ;
-      $tousLesHalaqas  = $repoHalaqa->findBy(['annee' => $as]);
+      $tousLesHalaqas  = $repoHalaqa->findBy(['annee' => $as, 'annexe' => $annexeId]);
       $halaqas = [];
       foreach($tousLesHalaqas as $key => $value)
       {
@@ -1731,6 +1886,7 @@ class EleveController extends Controller
         return $this->redirect($this->generateUrl('isi_modifier_inscription_d_un_eleve', [
           'as'       => $as,
           'regime'   => $regime,
+          'annexeId' => $annexeId,
           'classeId' => $classeId,
         ]));
       }
@@ -1751,11 +1907,11 @@ class EleveController extends Controller
 
         $frequenter->setClasse($nouvelleClasse);
         $frequenter->setUpdatedAt(new \Datetime());
-        $request->getSession()->getFlashBag()->add('info', 'Le changement de la classe de '.$eleve->getNomFr().' '.$eleve->getPnomFr().' s\'est terminé avec succès.');
+        $request->getSession()->getFlashBag()->add('info', 'Le changement de la classe de <strong>'.$eleve->getNom().'</strong> s\'est terminé avec succès.');
       }
       else {
         # code...
-        $request->getSession()->getFlashBag()->add('error', 'Le changement de la classe de '.$eleve->getNomFr().' '.$eleve->getPnomFr().' ne peut être effectué. Vous n\'avez pas sélectionné une classe.');
+        $request->getSession()->getFlashBag()->add('error', 'Le changement de la classe de <strong>'.$eleve->getNom().'</strong> ne peut être effectué. Vous n\'avez pas sélectionné une classe.');
       }
 
 
@@ -1779,10 +1935,10 @@ class EleveController extends Controller
             $memoriser->setUpdatedBy($this->getUser());
             $memoriser->setUpdatedAt(new \Datetime());
           }
-          $request->getSession()->getFlashBag()->add('info', 'La halaqa de '.$eleve->getNomFr().' '.$eleve->getPnomFr().' a été mise à jour avec succès.');
+          $request->getSession()->getFlashBag()->add('info', 'La halaqa de <strong>'.$eleve->getNom().'</strong> a été mise à jour avec succès.');
         } else {
           # code...
-          $request->getSession()->getFlashBag()->add('error', 'La halaqa de '.$eleve->getNomFr().' '.$eleve->getPnomFr().' ne peut être changer car vous n\'avez sélectionné aucune halaqa.');
+          $request->getSession()->getFlashBag()->add('error', 'La halaqa de <strong>'.$eleve->getNom().'</strong> ne peut être changer car vous n\'avez sélectionné aucune halaqa.');
         }
       }
       try{
@@ -1799,6 +1955,7 @@ class EleveController extends Controller
       return $this->redirect($this->generateUrl('isi_modifier_inscription_d_un_eleve', [
         'as'       => $as,
         'regime'   => $regime,
+        'annexeId' => $annexeId,
         'classeId' => $classeId,
       ]));
     }
@@ -1808,6 +1965,7 @@ class EleveController extends Controller
       'classes'        => $classes,
       'regime'         => $regime,
       'annee'          => $annee,
+      'annexe'  => $annexe,
       'niveau'         => $niveau,
       'halaqas'        => $halaqas,
       'eleve'          => $eleve,
@@ -1827,11 +1985,18 @@ class EleveController extends Controller
     $repoEleve       = $em->getRepository('ISIBundle:Eleve');
     $repoExamen      = $em->getRepository('ISIBundle:Examen');
     $repoClasse      = $em->getRepository('ISIBundle:Classe');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     // $repo = $em->getRepository('ISIBundle:')
 
     $annee           = $repoAnnee->find($as);
     $classeActuelle  = $repoClasse->find($classeId);
-    $classes         = $repoClasse->classeGrpFormation($as, $regime);
+    $classes         = $repoClasse->classeGrpFormation($as, $annexeId, $regime);
     $eleve           = $repoEleve->find($eleveId);
     $examens         = $repoExamen->findBy(['annee' => $as]);
     $halaqas = [];
@@ -1850,7 +2015,7 @@ class EleveController extends Controller
     if ($regime == 'A') {
       $repoHalaqa = $em->getRepository('ISIBundle:Halaqa');
       $genre = ($eleve->getSexe() == 1) ? 'H' : 'F' ;
-      $halaqas  = $repoHalaqa->findBy(['annee' => $as, 'genre' => $genre]);
+      $halaqas  = $repoHalaqa->findBy(['annee' => $as, 'annexe' => $annexeId, 'genre' => $genre]);
     }
 
     // $eleveASupprimer = $repoEleve->find($eleveId);
@@ -1864,7 +2029,8 @@ class EleveController extends Controller
         $request->getSession()->getFlashBag()->add('error', 'Vous ne pouvez pas changer/modifier cet(te) élève. Il(elle) a déjà participe à un examen.');
         return $this->redirect($this->generateUrl('isi_modifier_inscription_d_un_eleve', [
           'as'       => $as,
-          'regime'   => $regime,
+          'regime'   => $regime, 
+          'annexeId' => $annexeId,
           'classeId' => $classeId,
         ]));
       }
@@ -1886,11 +2052,11 @@ class EleveController extends Controller
         $frequenter->setClasse($nouvelleClasse);
         $frequenter->setUpdatedBy($this->getUser());
         $frequenter->setUpdatedAt(new \Datetime());
-        $request->getSession()->getFlashBag()->add('info', 'Le changement du niveau de '.$eleve->getNomFr().' '.$eleve->getPnomFr().' s\'est terminé avec succès.');
+        $request->getSession()->getFlashBag()->add('info', 'Le changement du niveau de <strong>'.$eleve->getNom().'</strong> s\'est terminé avec succès.');
       }
       else {
         # code...
-        $request->getSession()->getFlashBag()->add('error', 'Le changement du niveau de '.$eleve->getNomFr().' '.$eleve->getPnomFr().' ne peut être effectué. Vous n\'avez pas sélectionné une classe.');
+        $request->getSession()->getFlashBag()->add('error', 'Le changement du niveau de <strong>'.$eleve->getNom().'</strong> ne peut être effectué. Vous n\'avez pas sélectionné une classe.');
       }
 
 
@@ -1903,10 +2069,10 @@ class EleveController extends Controller
           $memoriser->setHalaqa($halaqa);
           $memoriser->setUpdatedBy($this->getUser());
           $memoriser->setUpdatedAt(new \Datetime());
-          $request->getSession()->getFlashBag()->add('info', 'La halaqa de '.$eleve->getNomFr().' '.$eleve->getPnomFr().' a été mise à jour avec succès.');
+          $request->getSession()->getFlashBag()->add('info', 'La halaqa de <strong>'.$eleve->getNom().'</strong> a été mise à jour avec succès.');
         } else {
           # code...
-          $request->getSession()->getFlashBag()->add('error', 'La halaqa de '.$eleve->getNomFr().' '.$eleve->getPnomFr().' ne peut être changer car vous n\'avez sélectionné aucune halaqa.');
+          $request->getSession()->getFlashBag()->add('error', 'La halaqa de <strong>'.$eleve->getNom().'</strong> ne peut être changer car vous n\'avez sélectionné aucune halaqa.');
         }
       }
       try{
@@ -1918,7 +2084,8 @@ class EleveController extends Controller
 
       return $this->redirect($this->generateUrl('isi_modifier_inscription_d_un_eleve', [
         'as'       => $as,
-        'regime'   => $regime,
+        'regime'   => $regime, 
+        'annexeId' => $annexeId,
         'classeId' => $classeId,
       ]));
     }
@@ -1931,6 +2098,7 @@ class EleveController extends Controller
       'regime'         => $regime,
       'annee'          => $annee,
       'halaqas'        => $halaqas,
+      'annexe'  => $annexe,
       'eleve'          => $eleve,
       'classeActuelle' => $classeActuelle
     ]);
@@ -1942,6 +2110,13 @@ class EleveController extends Controller
     $em = $this->getDoctrine()->getManager();
     $repoAnnee = $em->getRepository('ISIBundle:Annee');
     $annee     = $repoAnnee->find($as);
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     if($request->isMethod('post'))
     {
       $data      = $request->request->all();
@@ -1959,7 +2134,7 @@ class EleveController extends Controller
         else {
           return $this->redirect($this->generateUrl('permission', [
             'as'       => $as,
-            'regime'   => $regime,
+            'regime'   => $regime, 'annexeId' => $annexeId,
             'eleveId'  => $eleve[0]->getId(),
           ]));
         }
@@ -1969,6 +2144,7 @@ class EleveController extends Controller
     return $this->render('ISIBundle:Eleve:permission-home.html.twig', [
       'asec'   => $as,
       'regime' => $regime,
+      'annexe'  => $annexe,
       'annee'  => $annee,
     ]);
   }
@@ -1983,6 +2159,13 @@ class EleveController extends Controller
     $eleve = $repoEleve->find($eleveId);
     $fq = $repoFrequenter->findOneBy(["eleve" => $eleveId, "annee" => $as]);
     $annee     = $repoAnnee->find($as);
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     if($request->isMethod('post'))
     {
       $data      = $request->request->all();
@@ -2009,13 +2192,13 @@ class EleveController extends Controller
           $em->persist($permission);
           try{
             $em->flush();
-            $request->getSession()->getFlashBag()->add('info', 'Permission de l\'élève '.$eleve->getNomFr().' '.$eleve->getPnomFr().' enregistrée avec succès.');
+            $request->getSession()->getFlashBag()->add('info', 'Permission de l\'élève <strong>'.$eleve->getNom().'</strong> enregistrée avec succès.');
           } 
           catch(\Exception $e){
             $this->addFlash('error', $e->getMessage());
           }
           return $this->redirect($this->generateUrl('liste_des_permissions', [
-            'as'     => $as,
+            'as'     => $as, 'annexeId' => $annexeId,
             'regime' => $regime,
           ]));
         }
@@ -2024,6 +2207,7 @@ class EleveController extends Controller
 
     return $this->render('ISIBundle:Eleve:enregistrer-permission.html.twig', [
       'asec'   => $as,
+      'annexe'  => $annexe,
       'regime' => $regime,
       'annee'  => $annee,
       'eleve'  => $eleve,
@@ -2032,29 +2216,44 @@ class EleveController extends Controller
   }
 
 
-  public function liste_des_permissionsAction(int $as, $regime)
+  public function liste_des_permissionsAction(Request $request, int $as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee = $em->getRepository('ISIBundle:Annee');
     $repoPermission = $em->getRepository('ISIBundle:Permission');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $permissions = $repoPermission->findByAnnee($as);
     $annee     = $repoAnnee->find($as);
 
     return $this->render('ISIBundle:Eleve:liste-des-permissions.html.twig', [
       'asec'   => $as,
       'regime' => $regime,
+      'annexe'  => $annexe,
       'annee'  => $annee,
       'permissions'  => $permissions,
     ]);
   }
 
 
-  public function details_permissionAction(int $as, int $permissionId, $regime)
+  public function details_permissionAction(Request $request, int $as, int $permissionId, $regime)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee = $em->getRepository('ISIBundle:Annee');
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
     $repoPermission = $em->getRepository('ISIBundle:Permission');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $permission = $repoPermission->find($permissionId);
     $fq = $repoFrequenter->findOneBy(["eleve" => $permission->getEleve()->getId(), "annee" => $as]);
     $annee     = $repoAnnee->find($as);
@@ -2063,6 +2262,7 @@ class EleveController extends Controller
       'asec'   => $as,
       'regime' => $regime,
       'annee'  => $annee,
+      'annexe'  => $annexe,
       'fq'     => $fq,
       'permission'  => $permission,
     ]);
@@ -2078,7 +2278,13 @@ class EleveController extends Controller
     $permission = $repoPermission->find($permissionId);
     $fq = $repoFrequenter->findOneBy(["eleve" => $permission->getEleve()->getId(), "annee" => $as]);
     $annee     = $repoAnnee->find($as);
-    dump($permission);
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     if($request->isMethod('post'))
     {
@@ -2097,7 +2303,7 @@ class EleveController extends Controller
         elseif($motif == $permission->getMotif() && $depart == $permission->getDepart() && $retour == $permission->getRetour()) {
           $request->getSession()->getFlashBag()->add('error', 'Aucun changement n\'a été constaté.');
           return $this->redirect($this->generateUrl('liste_des_permissions', [
-            'as'     => $as,
+            'as'     => $as, 'annexeId' => $annexeId,
             'regime' => $regime,
           ]));
         }
@@ -2109,13 +2315,13 @@ class EleveController extends Controller
           $permission->setUpdatedBy($this->getUser());
           try{
             $em->flush();
-            $request->getSession()->getFlashBag()->add('info', 'Permission de l\'élève '.$permission->getEleve()->getNomFr().' '.$permission->getEleve()->getPnomFr().' mise à jour avec succès.');
+            $request->getSession()->getFlashBag()->add('info', 'Permission de l\'élève <strong>'.$permission->getEleve()->getNom().'</strong> mise à jour avec succès.');
           } 
           catch(\Exception $e){
             $this->addFlash('error', $e->getMessage());
           }
           return $this->redirect($this->generateUrl('liste_des_permissions', [
-            'as'     => $as,
+            'as'     => $as, 'annexeId' => $annexeId,
             'regime' => $regime,
           ]));
         }
@@ -2126,6 +2332,7 @@ class EleveController extends Controller
       'asec'   => $as,
       'regime' => $regime,
       'annee'  => $annee,
+      'annexe'  => $annexe,
       'fq'     => $fq,
       'permission'  => $permission,
     ]);
@@ -2209,17 +2416,23 @@ class EleveController extends Controller
   // Des inscriptions ont été faites avant qu'on ne ajoute certaines matierès.
   // Alors on va les ajoutées
   // /ajout-de-frequenter-pour-une-matiere-qui-n-a-pas-ete-ajoutee-avant-les-inscriptions/{as}/{regime}/{classeId}/{matiereId}
-  public function ajoutMatieresOublieesAvantInscriptionAction($as, $regime, $classeId, $matiereId)
+  public function ajoutMatieresOublieesAvantInscriptionAction(Request $request, int $as, $regime, $classeId, $matiereId)
   {
     $em = $this->getDoctrine()->getManager();
-
     $repoAnnee = $em->getRepository('ISIBundle:Annee');
     $repoEleve = $em->getRepository('ISIBundle:Eleve');
     $repoClasse = $em->getRepository('ISIBundle:Classe');
     $repoMatiere = $em->getRepository('ISIBundle:Matiere');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     // On sélectionne les élèves de la classe
-    $eleves = $repoEleve->lesElevesDeLaClasse($as, $classeId);
+    $eleves = $repoEleve->lesElevesDeLaClasse($as, $annexeId, $classeId);
     $matiere = $repoMatiere->find($matiereId);
     $classe = $repoClasse->find($classeId);
     $annee = $repoAnnee->find($as);
@@ -2242,16 +2455,23 @@ class EleveController extends Controller
   // Cette fonction est en quelque sorte la réciproque de celle qui la
   // précède à savoir ajoutMatieresOublieesAvantInscriptionAction
   // /ajout-de-notes-pour-une-matiere-qui-n-a-pas-ete-ajoutee-après-la-generation-des-fiches-de-notes/{as}/{regime}/{classeId}/{matiereId}/{examenId}
-  public function ajoutNotesDesMatieresOublieesAvantInscriptionAction($as, $regime, $classeId, $matiereId, $examenId)
+  public function ajoutNotesDesMatieresOublieesAvantInscriptionAction(Request $request, int $as, $regime, $classeId, $matiereId, $examenId)
   {
     $em = $this->getDoctrine()->getManager();
 
     $repoEleve = $em->getRepository('ISIBundle:Eleve');
     $repoExamen = $em->getRepository('ISIBundle:Examen');
     $repoMatiere = $em->getRepository('ISIBundle:Matiere');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     // On sélectionne les élèves de la classe
-    $eleves = $repoEleve->lesElevesDeLaClasse($as, $classeId);
+    $eleves = $repoEleve->lesElevesDeLaClasse($as, $annexeId, $classeId);
     $matiere = $repoMatiere->find($matiereId);
     $examen = $repoExamen->find($examenId);
 
@@ -2279,16 +2499,11 @@ class EleveController extends Controller
   public function AjouterNotesDesElevesSansNotesAction($classeId, $examenId)
   {
       $em = $this->getDoctrine()->getManager();
-      // $repoAnnee   = $em->getRepository('ISIBundle:');
-      $repoNiveau  = $em->getRepository('ISIBundle:Niveau');
-      $repoClasse  = $em->getRepository('ISIBundle:Classe');
-      $repoEleve   = $em->getRepository('ISIBundle:Eleve');
-      $repoMatiere = $em->getRepository('ISIBundle:Matiere');
       $repoNote    = $em->getRepository('ISIBundle:Note');
       // $repo = $em->getRepository('ISIBundle:');
 
       // $niveaux = $repoNiveau->niveauxDuGroupe($regime);
-      // $classes = $repoClasse->classeGrpFormation($as, $regime);
+      // $classes = $repoClasse->classeGrpFormation($as, $annexeId, $regime);
 
       return $this->render('ISIBundle:Eleve:elevesSansAucuneNote.html.php');
 

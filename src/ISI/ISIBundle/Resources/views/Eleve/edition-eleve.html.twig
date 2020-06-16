@@ -7,11 +7,11 @@
 {% endif %}
 {% extends template %}
 
-{% block pageTitle %}
+{% block title %}
   Edition de l'élève {{ eleve.nomFr }} {{ eleve.pnomFr}}
 {% endblock %}
 
-{% block content %}
+{% block body %}
 <center><h2><font color="red">{{ eleve.matricule }}</font></h2></center>
 <div class="ui large form">
   {{form_start(form, {'attr': {'class': 'ui form'}})}}

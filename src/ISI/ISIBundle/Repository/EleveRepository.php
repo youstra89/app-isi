@@ -12,7 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class EleveRepository extends \Doctrine\ORM\EntityRepository
 {
   // Récuperation des élèves qui sont inscrits en fonction du regime
-  public function elevesInscrits($as, $regime)
+  public function elevesInscrits(int $as, int $annexeId, $regime)
   {
     // $elevesAcademie = $this->_em->createQuery('SELECT * FROM ISIBundle:Eleve e WHERE e.matricule LIKE '*A*'');
     $qb = $this->createQueryBuilder('e');
@@ -25,6 +25,7 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
        ->where('an.id = :as AND e.regime = :regime AND e.renvoye = 0')
        ->setParameter('regime', $regime)
        ->setParameter('as', $as)
+       ->setParameter('annexeId', $annexeId)
        ->orderBy('e.nomFr', 'ASC')
        ->addOrderBy('e.pnomFr', 'ASC');
     // return $elevesAcademie->getResult();
@@ -33,7 +34,7 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
   }
 
   // Récuperation des élèves du centre de formation qui sont inscrits
-  public function tousLesElevesInscrits($as)
+  public function tousLesElevesInscrits(int $as, int $annexeId)
   {
     $qb = $this->createQueryBuilder('e');
     $qb->join('e.frequenter', 'f')
@@ -43,6 +44,7 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
        ->join('f.classe', 'cl')
        ->addSelect('cl')
        ->where('an.id = :as AND e.renvoye = 0')
+       ->setParameter('annexeId', $annexeId)
        ->setParameter('as', $as)
        ->orderBy('e.nomFr', 'ASC')
        ->addOrderBy('e.pnomFr', 'ASC');
@@ -52,7 +54,7 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
   }
 
   // Récuperation des élèves appartenant à un même niveau
-  public function elevesDuMemeNiveau($as, $niveauId)
+  public function elevesDuMemeNiveau(int $as, int $annexeId, $niveauId)
   {
     $qb = $this->createQueryBuilder('e');
     $qb->join('e.frequenter', 'f')
@@ -65,6 +67,7 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
        ->addSelect('n')
        ->where('an.id = :as AND n.id = :niveauId AND e.renvoye = 0')
        ->setParameter('as', $as)
+       ->setParameter('annexeId', $annexeId)
        ->setParameter('niveauId', $niveauId)
        ->orderBy('e.nomFr', 'ASC')
        ->addOrderBy('e.pnomFr', 'ASC');
@@ -75,11 +78,12 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
   }
 
   // Récuperation des élèves d'un regime
-  public function elevesDUnRegime($regime)
+  public function elevesDUnRegime(int $annexeId, $regime)
   {
     // $elevesAcademie = $this->_em->createQuery('SELECT * FROM ISIBundle:Eleve e WHERE e.matricule LIKE '*A*'');
     $qb = $this->createQueryBuilder('e');
     $qb->where('e.regime = :regime')
+       ->setParameter('annexeId', $annexeId)
        ->setParameter('regime', $regime)
        ->orderBy('e.nomFr', 'ASC')
        ->addOrderBy('e.pnomFr', 'ASC');
@@ -121,12 +125,13 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
 
   // Cette fonction renvoie la liste des élève d'une classe donnée. On l'utilisera ici pour la
   // génération de la liste de classe en pdf
-  public function lesElevesDeLaClasse($as, $classeId)
+  public function lesElevesDeLaClasse(int $as, int $annexeId, int $classeId)
   {
     $em = $this->getEntityManager();
-    $sql = 'SELECT e.id AS id, e.matricule AS matricule, e.nom_fr AS nomFr, e.pnom_fr AS pnomFr, e.nom_ar AS nomAr, e.pnom_ar AS pnomAr, e.sexe AS sexe, IF(er.eleve_id IS NULL OR e.renvoye = 0, FALSE, TRUE) AS renvoye, e.photo AS photo, e.date_naissance AS dateNaissance, e.lieu_naissance AS lieuNaissance FROM eleve_renvoye er RIGHT JOIN eleve e ON er.eleve_id = e.id AND er.annee_id = :an JOIN frequenter f ON f.eleve_id = e.id JOIN classe c ON c.id = f.classe_id WHERE f.annee_id = :an AND c.id = :classeId;';
+    $sql = 'SELECT e.id AS id, e.matricule AS matricule, e.nom_fr AS nomFr, e.pnom_fr AS pnomFr, e.nom_ar AS nomAr, e.pnom_ar AS pnomAr, e.sexe AS sexe, IF(er.eleve_id IS NULL OR e.renvoye = 0, FALSE, TRUE) AS renvoye, e.photo AS photo, e.date_naissance AS dateNaissance, e.lieu_naissance AS lieuNaissance FROM eleve_renvoye er RIGHT JOIN eleve e ON er.eleve_id = e.id AND er.annee_id = :an JOIN frequenter f ON f.eleve_id = e.id JOIN classe c ON c.id = f.classe_id WHERE f.annee_id = :an AND c.id = :classeId AND e.annexe_id = :annexeId;';
     $statement = $em->getConnection()->prepare($sql);
     $statement->bindValue('classeId', $classeId);
+    $statement->bindValue('annexeId', $annexeId);
     $statement->bindValue('an', $as);
     $statement->execute();
     $eleves = $statement->fetchAll();
@@ -147,15 +152,16 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
   }
 
 
-  public function elevesDeLaClasse($as, $classeId)
+  public function elevesDeLaClasse(int $as, int $annexeId, $classeId)
   {
     $qb = $this->createQueryBuilder('e');
     $qb->join('e.frequenter', 'f')
        ->join('f.classe', 'c')
        ->join('c.annee', 'an')
-       ->where('an.id = :as AND c.id = :classeId AND e.renvoye = 0')
+       ->where('an.id = :as AND c.id = :classeId AND e.renvoye = 0 AND e.annexe = :annexeId')
        ->orderBy('e.nomFr', 'ASC')
        ->addOrderBy('e.pnomFr', 'ASC')
+       ->setParameter('annexeId', $annexeId)
        ->setParameter('as', $as)
        ->setParameter('classeId', $classeId);
 
@@ -179,7 +185,7 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
   }
 
   // Sélection des membres d'une halaqa
-  public function laHalaqaDUnEleve($as, $eleveId)
+  public function laHalaqaDUnEleve(int $as, int $annexeId, $eleveId)
     {
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.memoriser', 'm')
@@ -189,13 +195,14 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
             ->orderBy('e.nomFr', 'ASC')
             ->addOrderBy('e.pnomFr', 'ASC')
             ->setParameter('as', $as)
+            ->setParameter('annexeId', $annexeId)
             ->setParameter('eleveId', $eleveId);
     
         return $qb->getQuery()
                     ->getResult();
     }
 
-  public function elevesDuNiveau($niveauId, $as)
+  public function elevesDuNiveau($niveauId, int $as, int $annexeId)
   {
     $qb = $this->createQueryBuilder('e');
     $qb->join('e.frequenter', 'f')
@@ -206,6 +213,7 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
        ->orderBy('e.nomFr', 'ASC')
        ->addOrderBy('e.pnomFr', 'ASC')
        ->setParameter('as', $as)
+       ->setParameter('annexeId', $annexeId)
        ->setParameter('niveauId', $niveauId);
 
     return $qb->getQuery()
@@ -213,11 +221,12 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
   }
 
   // Récuperation des élèves d'un regime qui ont été renvoyés
-  public function elevesRenvoyes($regime)
+  public function elevesRenvoyes(int $annexeId, s$regime)
   {
     // $elevesAcademie = $this->_em->createQuery('SELECT * FROM ISIBundle:Eleve e WHERE e.matricule LIKE '*A*'');
     $qb = $this->createQueryBuilder('e');
     $qb->where('e.regime = :regime AND e.renvoye = 1')
+       ->setParameter('annexeId', $annexeId)
        ->setParameter('regime', $regime)
        ->orderBy('e.nomFr', 'ASC')
        ->addOrderBy('e.pnomFr', 'ASC');
@@ -227,7 +236,7 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
   }
 
   // Sélection des élèves de l'internat
-  public function elevesInternes($as)
+  public function elevesInternes(int $as, int $annexeId)
   {
     $qb = $this->createQueryBuilder('e');
     $qb->join('e.interner', 'i')
@@ -237,6 +246,7 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
        ->join('i.chambre', 'ch')
        ->addSelect('ch')
        ->where('an.id = :as AND e.renvoye = 0 AND i.renvoye = 0')
+       ->setParameter('annexeId', $annexeId)
        ->setParameter('as', $as)
        ->orderBy('e.nomFr', 'ASC')
        ->addOrderBy('e.pnomFr', 'ASC');
@@ -246,7 +256,7 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
   }
 
   // Sélection des élèves de l'internat
-  public function elevesInternesRenvoyes($as)
+  public function elevesInternesRenvoyes(int $as, int $annexeId)
   {
     $qb = $this->createQueryBuilder('e');
     $qb->join('e.interner', 'i')
@@ -256,6 +266,7 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
        ->join('i.chambre', 'ch')
        ->addSelect('ch')
        ->where('an.id = :as AND e.renvoye = 0 AND i.renvoye = 1')
+       ->setParameter('annexeId', $annexeId)
        ->setParameter('as', $as)
        ->orderBy('e.nomFr', 'ASC')
        ->addOrderBy('e.pnomFr', 'ASC');

@@ -2,12 +2,12 @@
 
 {% extends 'ISIBundle:Scolarite:index.html.twig' %}
 
-{% block pageTitle %}
+{% block title %}
   Heures enregistrées | Home
 {% endblock %}
 
 
-{% block content %}
+{% block body %}
   {% set grp = '' %}
   {% if regime is same as('A') %}
     {% set grp = 'Académie' %}
@@ -15,24 +15,6 @@
     {% set grp = 'Formation' %}
   {% endif %}
   <h3>{{ 'Voir les heures d\'absence enregistrées'|trans }} : {{grp}}</h3>
-  {# Cas de fiches de notes déjà éditées #}
-    {% for message in app.session.flashbag.get('error') %}
-      <div class="ui red message">
-        <div class="header">{{ 'Attention'|trans }} !!! </div>
-        <ul class="list">
-          <li>{{ message|raw }}</li>
-        </ul>
-      </div>
-    {% endfor %}
-    {% for message in app.session.flashbag.get('info') %}
-      <div class="ui green message">
-        <div class="header">{{ 'Notification'|trans }}: </div>
-        <ul class="list">
-          <li>{{ message|raw }}.</li>
-        </ul>
-      </div>
-    {% endfor %}
-  {# Fin des notifications #}
 {% if classes is empty %}
   <p>{{ 'Pas de classes pour le moment'|trans }}</p>
 {% else %}
@@ -43,7 +25,7 @@
         {% if classe.getNiveau.getGroupeFormation.getReference is same as(regime) and niveau.id == classe.niveau.id %}
           <div class="card">
             <div class="content">
-              <img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
+              <img class="right floated mini ui image" src="{{ asset('images/logoISI-x.png') }}">
               <div class="header">{{ classe.getLibelleFr }}</div>
               <div class="meta">{{ classe.getNiveau.getGroupeFormation.getLibelleFr }}</div>
               <div class="description"></div>
@@ -51,15 +33,15 @@
             <div class="extra content">
               {% if regime == 'A' %}
                 <div class="ui two buttons">
-                  <a href="{{path('isi_heures_absences_enregistrees', {'as': asec, 'regime': regime, 'classeId': classe.id, 'absence': 'Cours'})}}">
+                  <a href="{{path('isi_heures_absences_enregistrees', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id, 'absence': 'Cours'})}}">
                     <div class="ui basic green button">{{ 'Cours'|trans }}</div>
                   </a>
-                  <a href="{{path('isi_heures_absences_enregistrees', {'as': asec, 'regime': regime, 'classeId': classe.id, 'absence': 'Coran'})}}">
+                  <a href="{{path('isi_heures_absences_enregistrees', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id, 'absence': 'Coran'})}}">
                     <div class="ui basic blue button">{{ 'Qur\'an'|trans }}</div>
                   </a>
                 </div>
               {% else %}
-                <a href="{{path('isi_heures_absences_enregistrees', {'as': asec, 'regime': regime, 'classeId': classe.id, 'absence': 'Cours'})}}">
+                <a href="{{path('isi_heures_absences_enregistrees', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id, 'absence': 'Cours'})}}">
                   <div class="ui basic green button">{{ 'Cours'|trans }}</div>
                 </a>
               {% endif %}

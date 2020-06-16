@@ -1,11 +1,11 @@
-{# Fiche de renseignement d'un élève #}
-{% extends 'ENSBundle::layout.html.twig' %}
+{% extends "ENSBundle:Default:index.html.twig" %}
+
 
 {% block title %}
   Fiche de renseignements - {{enseignant.getNomFr}} {{enseignant.getPnomFr}}
 {% endblock %}
 
-{% block corps %}
+{% block body %}
 
 <div class="ui container">
   <h2 class="ui horizontal divider header">

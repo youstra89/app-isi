@@ -2,7 +2,7 @@
 
 {% extends 'ISIBundle:Examen:index.html.twig' %}
 
-{% block pageTitle %}
+{% block title %}
   Fiches de notes des classes
 {% endblock %}
 
@@ -13,7 +13,7 @@
 
 
 
-{% block content %}
+{% block body %}
   {% set grp = '' %}
   {% if regime is same as('A') %}
     {% set grp = 'Académie' %}
@@ -31,7 +31,7 @@
         {% if niveau.getId == classe.getNiveau.getId and classe.getNiveau.getGroupeFormation.getReference is same as(regime) %}
           <div class="card">
             <div class="content">
-              <img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
+              <img class="right floated mini ui image" src="{{ asset('images/logoISI-x.png') }}">
               <div class="header">{{ classe.getLibelleFr }}</div>
               <div class="meta">{{ classe.getNiveau.getGroupeFormation.getLibelleFr }} </div>
               <div class="description">
@@ -41,7 +41,7 @@
             </div>
             <div class="extra content">
               <div class="ui buttons">
-                <a href="{{path('isi_tirer_fiches_de_notes', {'as': asec, 'regime': regime, 'classeId': classe.getId})}}">
+                <a href="{{path('isi_tirer_fiches_de_notes', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.getId})}}">
                   <div class="ui basic green button">{{ 'Fiches de notes'|trans }}</div>
                 </a>
               </div>

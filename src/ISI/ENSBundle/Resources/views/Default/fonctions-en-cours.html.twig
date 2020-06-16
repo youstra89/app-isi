@@ -1,4 +1,5 @@
-{% extends "ENSBundle::layout.html.twig" %}
+{% extends "ENSBundle:Default:index.html.twig" %}
+
 
 {% block title %}
   Fonctions en cours
@@ -8,11 +9,11 @@
   {{ include("ENSBundle::contextual-menu-fonction.html.twig") }}
 {% endblock %}
 
-{% block titre_page %}
+{% block section %}
   <i class="student icon"></i>{{ 'Fonctions'|trans }}
 {% endblock %}
 
-{% block corps %}
+{% block body %}
     <h2>{{ 'Fonctions en cours'|trans }}</h2>
     {% if contrats is not defined %}
         <p>{{ 'Aucune fonction en cours pour le moment'|trans }}</p>
@@ -52,10 +53,10 @@
                 {# <!-- <td>{{ contrat.getEnseignant.getdateNaissance|localizeddate('full', 'none', 'locale') }}</td> --> #}
                 <td>{{ contrat.getEnseignant.getDateNaissance|date("d-m-Y") }}</td>
                 <td>
-                  <a href="{{ path('ens_ajouter_a_l_annee', {'as': asec, 'contratId': contrat.getid}) }}" data-tooltip="Utiliser l'enseignant pour cette année">
+                  <a href="{{ path('ens_ajouter_a_l_annee', {'as': asec, 'annexeId': annexe.id, 'contratId': contrat.getid}) }}" data-tooltip="Utiliser l'enseignant pour cette année">
                     <i class="plus icon"></i>
                   </a>
-                  <a href="{{ path('ens_info', {'as': asec, 'enseignantId': contrat.getEnseignant.getid}) }}" data-tooltip="Voir les informations de l'enseignant">
+                  <a href="{{ path('ens_info', {'as': asec, 'annexeId': annexe.id, 'enseignantId': contrat.getEnseignant.getid}) }}" data-tooltip="Voir les informations de l'enseignant">
                     <i class="info circle icon"></i>
                   </a>
                 </td>

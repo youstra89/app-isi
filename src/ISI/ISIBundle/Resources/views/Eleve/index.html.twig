@@ -1,72 +1,44 @@
-{% extends "ISIBundle::layout.html.twig" %}
+{% extends "ISIBundle::index.html.twig" %}
 
 
 {% block stylesheets %}
-  {# <link rel="stylesheet" href="http://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css"> #}
-  <link rel="stylesheet" type="text/css" href="{{ asset('../vendor/semantic/ui/dist/semantic.min.css') }}" />
+  <link rel="stylesheet" href="http://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="{{ asset('semantic/ui/dist/semantic.min.css') }}" />
   <link rel="stylesheet" type="text/css" href="{{ asset('DataTables/datatables.min.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" />
 {% endblock %}
+
+
 {% block title %}
-  {% block pageTitle %}
-    {% if regime is same as ('A') %}
-      {{ 'Eleve - Académie'|trans }}
-    {% else %}
-      {{ 'Eleve - Centre de formation'|trans }}
-    {% endif %}
-  {% endblock %}
+  {% if regime is same as ('A') %}
+    {{ 'Eleve - Académie'|trans }}
+  {% else %}
+    {{ 'Eleve - Centre de formation'|trans }}
+  {% endif %}
 {% endblock %}
 
 {% block contextual_menu %}
   {% if is_granted('ROLE_PREINSCRIPTION') %}
   
   {% else %}
-    <div class="ui vertical menu">
-      <div class="item">
-        <div class="header">{{ 'Affectations'|trans }}</div>
-        <div class="menu">
-          {# Cette partie permet de voir la liste de tous les élèves de la l'institut #}
-          <a class="item" href="{{path('isi_eleves_inscrits', {'as': asec, 'regime': regime})}}">{{ 'Elèves inscrits'|trans }}</a>
-          <a class="item" href="{{path('isi_modifier_inscription', {'as': asec, 'regime': regime})}}">{{ 'Modifier inscription'|trans }}</a>
-          <a class="item" href="{{path('isi_inscription', {'as': asec, 'regime': regime})}}">{{ 'Inscription'|trans }}</a>
-          <a class="item" href="{{path('isi_flash_inscription', {'as': asec, 'regime': regime})}}">{{ 'Flash Inscription'|trans }}</a>
-          <a class="item" href="{{path('isi_renvoi_home', {'as': asec, 'regime': regime})}}">{{ 'Renvoi'|trans }}</a>
-        </div>
-      </div>
-      <div class="item">
-        <div class="header">{{ 'Infos. Elève'|trans }}</div>
-        <div class="menu">
-          <a class="item" href="{{ path('isi_changer_regime_home', {'as': asec, 'regime': regime}) }}">{{ 'Changer le regime de formation'|trans }}</a>
-          <a class="item">{{ 'Fiche d\'information'|trans }}</a>
-          <a class="item">{{ 'Modifier'|trans }}</a>
-          <a class="item">{{ 'Supprimer'|trans }}</a>
-        </div>
-      </div>
-      <div class="item">
-        <div class="header">{{ 'Divers'|trans }}</div>
-        <div class="menu">
-          <a class="item" href="{{ path('liste_des_permissions', {'as': asec, 'regime': regime}) }}">{{ 'Permission'|trans }}</a>
-          <a class="item" href="{{ path('isi_problemes_home', { 'as': asec, 'regime': regime }) }}">{{ 'Signaler un problème'|trans }}</a>
-        </div>
-      </div>
-    </div>
+    {% include "ISIBundle::contextual-menu-scolarite.html.twig" %}
   {% endif %}
 {% endblock %}
 
+
+{% block section %}
+  <i class="student icon"></i>{{ 'Espace élèves'|trans }}
+  {% if regime is same as ('A') %}
+    {{ ' - Academie' }}
+  {% else %}
+    {{' - Formation'}}
+  {% endif %}
+{% endblock %}
+
+
 {% block body %}
-<div class="ui {{ dir2 }} aligned segment">
-  <h1 class="ui header">
-    <i class="student icon"></i>{{ 'Espace élèves'|trans }}
-    {% if regime is same as ('A') %}
-      {{ ' - Academie' }}
-    {% else %}
-      {{' - Formation'}}
-    {% endif %}
-  </h1>
-</div>
   {% if eleves is not defined %}
-    {% block content %}
-    {% endblock %}
+    Aucun élève inscrit
   {% else %}
     {% set notif = app.session.flashbag.get('info') %}
     {% if notif is not empty %}
@@ -89,9 +61,9 @@
     {% endfor %}
     {#<table class="ui very basic table">#}
     {% if regime is same as('A') %}
-    <a href="{{ path('isi_preinscription', {'as': asec, 'regime': 'A'}) }}">
+    <a href="{{ path('isi_preinscription', {'as': asec, 'annexeId': annexe.id, 'regime': 'A'}) }}">
     {% else %}
-    <a href="{{ path('isi_preinscription', {'as': asec, 'regime': 'F'}) }}">
+    <a href="{{ path('isi_preinscription', {'as': asec, 'annexeId': annexe.id, 'regime': 'F'}) }}">
     {% endif %}
       <button class="positive ui button">
         <i class="plus icon"></i>
@@ -139,13 +111,13 @@
             <font color={{ color }}>
               <div class="ui grid">
                 <div class="wide column" data-tooltip="Modifier les information de l'élève">
-                  <a href="{{ path('isi_edit_eleve', {'as': asec, 'regime': regime, 'eleveId': eleve.id}) }}"><i class="edit icon"></i></a>
+                  <a href="{{ path('isi_edit_eleve', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'eleveId': eleve.id}) }}"><i class="edit icon"></i></a>
                 </div>
                 <div class="wide column" data-tooltip="Voir les informations de l'élève">
-                  <a href="{{ path('isi_info_eleve', {'as': asec, 'regime': regime, 'eleveId': eleve.id}) }}"><i class="info circle icon"></i></a>
+                  <a href="{{ path('isi_info_eleve', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'eleveId': eleve.id}) }}"><i class="info circle icon"></i></a>
                 </div>
                 <div class="wide column" data-tooltip="Enregistrer une conduite de l'élève">
-                  <a href="{{ path('isi_enregistrer_conduite', {'as': asec, 'regime': regime, 'eleveId': eleve.id}) }}"><i class="certificate icon"></i></a>
+                  <a href="{{ path('isi_enregistrer_conduite', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'eleveId': eleve.id}) }}"><i class="certificate icon"></i></a>
                 </div>
                 {% for eleveI in elevesI %}
                     {% if eleve.id == eleveI.getId %}
@@ -173,53 +145,39 @@
       </tfoot>
     </table>
 
-    <script>
-      // $(document).ready(function() { 
-      //   $('#example').DataTable( {
-      //     "scrollY": 500,
-      //     "scrollX": true,
-      //     "pageLength": 100,
-      //     "lengthMenu": [ 50, 100, 200 ]
-      //   });
-      //   $.ajax({
-      //       type: "GET",
-      //       dataType: "json",
-      //       success: function (data){
-      //           $('#example').DataTable( {
-      //             "scrollY": 500,
-      //             "scrollX": true,
-      //             "pageLength": 100,
-      //             "lengthMenu": [ 50, 100, 200 ]
-      //           });
-      //       },
-      //     });
-        
-      // });
-      $(document).ready(function() {
-				// Setup - add a text input to each footer cell
-				$('#example tfoot th').each( function () {
-					var title = $(this).text();
-					$(this).html( '<input type="text" placeholder="Search '+title+'" />' );
-				} );
-			
-				// DataTable
-				var table = $('#example').DataTable();
-			
-				// Apply the search
-				table.columns().every( function () {
-					var that = this;
-			
-					$( 'input', this.footer() ).on( 'keyup change clear', function () {
-						if ( that.search() !== this.value ) {
-							that
-								.search( this.value )
-								.draw();
-						}
-					} );
-				} );
-			} );
-    </script>
     </div>
   {% endif %}
+{% endblock %}
+
+
+{% block javascripts %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script src="{{ asset('Highcharts-6.1.0/code/highcharts.js') }}"></script>
+  <script src="{{ asset('DataTables/datatables.min.js') }}"></script>
+  <script>
+    $(document).ready(function() {
+      // Setup - add a text input to each footer cell
+      $('#example tfoot th').each( function () {
+        var title = $(this).text();
+        $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+      } );
+    
+      // DataTable
+      var table = $('#example').DataTable();
+    
+      // Apply the search
+      table.columns().every( function () {
+        var that = this;
+    
+        $( 'input', this.footer() ).on( 'keyup change clear', function () {
+          if ( that.search() !== this.value ) {
+            that
+              .search( this.value )
+              .draw();
+          }
+        } );
+      } );
+    } );
+  </script>
 {% endblock %}
 

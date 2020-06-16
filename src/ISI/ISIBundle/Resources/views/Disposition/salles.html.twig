@@ -1,4 +1,5 @@
-{% extends "ISIBundle::layout.html.twig" %}
+{% extends "ISIBundle:Disposition:index.html.twig" %}
+{# {% extends "ISIBundle::layout.html.twig" %} #}
 
 {% block title %}
   Gestion des salles
@@ -9,43 +10,15 @@
 {% endblock %}
 
 
-{% block notification %}
-  {% set notif = app.session.flashbag.get('error') %}
-  {% if notif is not empty %}
-    <div class="ui red message">
-      <div class="header">{{ 'Attention'|trans }}</div>
-      <ul class="list">
-        {% for message in notif %}
-          <li>{{ message }}.</li>
-        {% endfor %}
-      </ul>
-    </div>
-  {% endif %}
-  {% for message in app.session.flashbag.get('info') %}
-    <div class="ui green message">
-        <div class="header">{{ 'Notification'|trans }}: </div>
-        <ul class="list">
-        <li>{{ message }}.</li>
-        </ul>
-    </div>
-  {% endfor %}
-{% endblock %}
-
-
-{% block titre_page %}
-  <i class="users icon"></i>{{ 'Salles'|trans }}
+{% block section %}
+  <i class="users icon"></i>{{ 'Disposition en salle de classe'|trans }}
 {% endblock %}
 
 
 {% block body %}
-  <div class="ui right aligned segment">
-    <h1 class="ui header">
-      <i class="student icon"></i>{{ 'Disposition en salle de classe'|trans }}
-    </h1>
-  </div>
   <h2>Salles enregistrés</h2>
   <div>
-    <a href="{{ path('salle_add', {'as' : asec}) }}" class="ui primary button">Ajouter une salle</a>
+    <a href="{{ path('salle_add', {'as' : asec, 'annexeId': annexe.id}) }}" class="ui primary button">Ajouter une salle</a>
   </div>
   <table class="" id="salles">
     <thead>
@@ -69,7 +42,7 @@
           <td>{{ salle.localisation }}</td>
           <td>{{ salle.nombrePlace }}</td>
           <td>
-            <a href="{{ path('salle_edit', {as: asec, id: salle.id}) }}" data-tooltip="Editer les informations de la salle"><i class="edit icon"></i></a>
+            <a href="{{ path('salle_edit', {as: asec, 'annexeId': annexe.id, id: salle.id}) }}" data-tooltip="Editer les informations de la salle"><i class="edit icon"></i></a>
           </td>
         </tr>
       {% endfor %}
@@ -79,11 +52,11 @@
 
 
 
-{% block javascript %}
+{% block javascripts %}
   <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
   <script data-config>
     var filtersConfig = {
-      base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+      base_path: 'TableFilter/dist/tablefilter/',
       col_0: 'none',
       col_2: 'select',
       col_3: 'select',

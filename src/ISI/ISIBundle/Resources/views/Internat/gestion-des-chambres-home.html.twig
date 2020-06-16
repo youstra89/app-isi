@@ -4,7 +4,13 @@
     Gestion des chambres
 {% endblock %}
 
-{% block corps %}
+
+{% block section %}
+  <i class="student icon"></i>{{ 'Gestion des chambres'|trans }}
+{% endblock %}
+
+
+{% block body %}
   <h3>Accueil de la gestion des chambres</h3>
   <a href="{{ path('internat_add_chambre', {'as': asec}) }}" class="ui positive button" type="button" name="button">{{ 'Ajouter une chambre'|trans }}</a>
   <br />

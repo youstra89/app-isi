@@ -5,9 +5,8 @@
 <head>
     <meta charset="UTF-8" />
     <title>Impression des bulletins | {{classe.libelleFr}} </title>
-    {% block stylesheets %}
+    {% block stylesheets %}{% endblock %}
 
-    <lin rel="stylesheet" href="{{ asset('../vendor/twbs/bootstrap/dist/css/bootstrap.min.css') }}" /> {% endblock %}
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     <style>
         {% if server == '/var/www/html' %}
@@ -249,7 +248,7 @@
         {% set session = "الاختبار الثاني" %}
     {% endif %}
     {% set totalNote = 0 %}
-    {% block content %}    
+    {% block body %}    
     {% endblock %}  
 </body>
 

@@ -1,8 +1,8 @@
 {% extends 'ISIBundle:Eleve:index.html.twig' %}
 
-{% block pageTitle %} Modification de niveau - {{ eleve.nomFr }} {{ eleve.pnomfr }} {% endblock %}
+{% block title %} Modification de niveau - {{ eleve.nomFr }} {{ eleve.pnomfr }} {% endblock %}
 
-{% block content %}
+{% block body %}
     <h3>{{ 'Modification dniveau de'|trans }} {{ eleve.getNomFr }} {{ eleve.getPnomfr }} </h3>
     <p>{{ 'Classe actuelle'|trans }}: {{ classeActuelle.getLibelleFr }} </p>
     <form action="" class="ui form" method="post">

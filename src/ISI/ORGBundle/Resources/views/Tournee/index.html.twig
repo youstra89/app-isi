@@ -1,4 +1,5 @@
-{% extends "ORGBundle::layout.html.twig" %}
+{% extends 'ORGBundle:Default:index.html.twig'%}
+
 
 {% block title %}
   Index Activités externes
@@ -33,13 +34,13 @@
 
 
 
-{% block titre_page %}
+{% block section %}
   <i class="plane icon"></i>{{ 'Tournées'|trans }}
 {% endblock %}
 
 
 
-{% block corps %}
+{% block body %}
     <a href="{{ path('tournee.add', {as: asec, nationale: 1}) }}" class="positive ui button">
       <i class="plus icon"></i>
       {{ 'Enregistrer une tournée nationale'|trans }}

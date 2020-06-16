@@ -16,8 +16,8 @@
       {% endblock %}
     </title>
     {% block stylesheets %}
-      <link rel="stylesheet" type="text/css" href="{{ asset('../vendor/semantic/ui/dist/semantic.min.css') }}" /> {# Site CSS #}
-      <lin rel="stylesheet" href="{{ asset('../vendor/twbs/bootstrap/dist/css/bootstrap.min.css') }}" />
+      <link rel="stylesheet" type="text/css" href="{{ asset('semantic/ui/dist/semantic.min.css') }}" /> 
+      <link rel="stylesheet" type="text/css" href="{{ asset('TableFilter/dist/tablefilter/style/tablefilter.css') }}">
       <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" />
     {% endblock %}
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
@@ -91,7 +91,7 @@
                 {{ 'Utilisateur'|trans }} :
               {% endif %}
               <a class="ui basic image label">
-                <img src="/markaz/web/images/elliot.jpg">
+                <img src="{{ asset('images/elliot.jpg') }}">
                 <strong>{{ app.user.username }}</strong>
               </a>
             </p>
@@ -109,7 +109,7 @@
               <div class="ui red message">
                 <div class="header">{{ 'Attention'|trans }} !!! </div>
                 <ul class="list">
-                  <li>{{ message }}.</li>
+                  <li>{{ message|raw }}.</li>
                 </ul>
               </div>
             {% endfor %}
@@ -117,12 +117,12 @@
               <div class="ui green message">
                 <div class="header">{{ 'Notification'|trans }}: </div>
                 <ul class="list">
-                  <li>{{ message }}.</li>
+                  <li>{{ message|raw }}.</li>
                 </ul>
               </div>
             {% endfor %}
             <!-- Fin d'affichage des notifications et des message d'erreur  -->
-            {% block corps %}
+            {% block body %}
               {% block body %}
               {% endblock %}
             {% endblock %}
@@ -137,7 +137,7 @@
   <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
   <script data-config>
     var filtersConfig = {
-      base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+      base_path: 'TableFilter/dist/tablefilter/',
       col_0: "none",
       col_4: 'select',
       col_5: 'select',
@@ -168,7 +168,7 @@
   </script>
   <script data-config>
     var filtersConfig = {
-      base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+      base_path: 'TableFilter/dist/tablefilter/',
       col_0: "none",
       col_2: 'select',
       col_3: 'select',
@@ -195,5 +195,5 @@
     var tf = new TableFilter('table1', filtersConfig);
     tf.init();
   </script>
-  <script src="{{ asset('../vendor/semantic/ui/examples/assets/library/jquery.min.js') }}"></script>
+  <script src="{{ asset('semantic/ui/examples/assets/library/jquery.min.js') }}"></script>
 </html>

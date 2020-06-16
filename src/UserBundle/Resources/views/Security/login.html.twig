@@ -9,7 +9,7 @@
   {# <link rel="stylesheet" type="text/css" media="screen" href="main.css" /> #}
   <!-- <script src="main.js"></script> -->
   {% block stylesheets %}
-    <link rel="stylesheet" type="text/css" href="{{ asset('../vendor/semantic/ui/dist/semantic.min.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('semantic/ui/dist/semantic.min.css') }}" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/mdb.min.css') }}" rel="stylesheet">
@@ -25,7 +25,7 @@
 </head>
   <body>
     <br /><br /><br />
-    <div class="mon-alignement">
+    <div>
       {# <center>{{ 'Connexion à Markaz'|trans }} </center> #}
       <div class="ui raised very padded text container segment test">
         {% if error %}

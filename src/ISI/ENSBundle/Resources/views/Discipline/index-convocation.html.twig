@@ -1,4 +1,5 @@
-{% extends "ENSBundle:Enseignant:layout.html.twig" %}
+{% extends "ENSBundle:Default:index.html.twig" %}
+
 
 {% block title %}
   Index Convocations
@@ -8,11 +9,11 @@
   {{ include("ENSBundle:Discipline:contextual-menu-convocation.html.twig") }}
 {% endblock %}
 
-{% block titre_page %}
+{% block section %}
   <i class="american sign language interpreting icon"></i>{{ 'Discipline - Convocation'|trans }}
 {% endblock %}
 
-{% block corps %}
+{% block body %}
   <h2>{{ 'Liste des convocations de l\'année '|trans }}</h2>
   {% if convocations is not defined %}
     <p>{{ 'Aucun enseignant n\'a encore été inscrit'|trans }}</p>

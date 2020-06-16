@@ -4,10 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <title>{% block title %}Impression{% endblock %}</title>
-    {% block stylesheets %}
-
-        <lin rel="stylesheet" href="{{ asset('../vendor/twbs/bootstrap/dist/css/bootstrap.min.css') }}" />
-    {% endblock %}
+    {% block stylesheets %}{% endblock %}
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     <style>
         {% if server == '/var/www/html' %}

@@ -1,4 +1,4 @@
-{% extends "ENSBundle::layout.html.twig" %}
+{% extends "ENSBundle:Default:index.html.twig" %}
 
 {% block title %}
   Fonctions en cours
@@ -8,11 +8,11 @@
   {{ include("ENSBundle::contextual-menu-fonction.html.twig") }}
 {% endblock %}
 
-{% block titre_page %}
+{% block section %}
   <i class="student icon"></i>{{ 'Fonctions'|trans }}
 {% endblock %}
 
-{% block corps %}
+{% block body %}
     <h2>{{ 'Enseignants de l\'année '|trans }} {{ annee.libelle }}</h2>
     {% if contrats is not defined %}
         <p>{{ 'Il n y a auccun enseignant enregistré pour le moment'|trans }}</p>
@@ -61,10 +61,10 @@
                 <td>{{ total }} h</td>
                 {# <!-- <td>{{ contrat.getContrat.getEnseignant.getdateNaissance|localizeddate('full', 'none', 'locale') }}</td> --> #}
                 <td>
-                  <a href="{{ path('ens_edit_enseignant_annee', {'as': asec, 'anneeContratId':contrat.getid}) }}" data-tooltip="Mettre à jour les informations de l'enseignant">
+                  <a href="{{ path('ens_edit_enseignant_annee', {'as': asec, 'annexeId': annexe.id, 'anneeContratId':contrat.getid}) }}" data-tooltip="Mettre à jour les informations de l'enseignant">
                     <i class="edit icon"></i>
                   </a>
-                  <a href="{{ path('ens_info', {'as': asec, 'enseignantId':contrat.getContrat.getEnseignant.getid}) }}" data-tooltip="Voir les informations de l'enseignant">
+                  <a href="{{ path('ens_info', {'as': asec, 'annexeId': annexe.id, 'enseignantId':contrat.getContrat.getEnseignant.getid}) }}" data-tooltip="Voir les informations de l'enseignant">
                     <i class="info circle icon"></i>
                   </a>
                 </td>

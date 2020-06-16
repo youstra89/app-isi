@@ -72,7 +72,7 @@ class DisciplineController extends Controller
 
     if($annee->getAchevee() == TRUE)
     {
-       $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des classes car l\'année scolaire '.$annee->getLibelleAnneeScolaire().' est achevée.');
+       $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des classes car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
        return $this->redirect($this->generateUrl('ens_conduite_home', ['as' => $as]));
     }
 
@@ -94,7 +94,7 @@ class DisciplineController extends Controller
       $em->persist($conduite);
       $em->flush();
 
-      $request->getSession()->getFlashBag()->add('info', 'La conduite de l\'enseignant(e) '.$contrat->getEnseignant()->getNomFr().' '.$contrat->getEnseignant()->getPnomFr().' a été enrégistré(e) avec succès.');
+      $request->getSession()->getFlashBag()->add('info', 'La conduite de l\'enseignant(e) <strong>'.$contrat->getEnseignant()->getNom().'</strong> a été enrégistré(e) avec succès.');
 
       // On redirige l'utilisateur vers index paramèTraversable
       return $this->redirect($this->generateUrl('ens_conduite_home',
@@ -206,13 +206,13 @@ class DisciplineController extends Controller
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoContrat = $em->getRepository('ENSBundle:Contrat');
 
+    $annee = $repoAnnee->find($as);
     if($annee->getAchevee() == TRUE)
     {
-       $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des classes car l\'année scolaire '.$annee->getLibelleAnneeScolaire().' est achevée.');
+       $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des classes car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
        return $this->redirect($this->generateUrl('ens_convocation_home', ['as' => $as]));
     }
 
-    $annee = $repoAnnee->find($as);
     $ids = $this->get('session')->get('ids');
     $convocation = new Convocation();
     $form = $this->createForm(ConvocationType::class, $convocation);
@@ -281,7 +281,7 @@ class DisciplineController extends Controller
 
     if($annee->getAchevee() == TRUE)
     {
-       $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des classes car l\'année scolaire '.$annee->getLibelleAnneeScolaire().' est achevée.');
+       $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des classes car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
        return $this->redirect($this->generateUrl('ens_convocation_home', ['as' => $as]));
     }
 
@@ -296,7 +296,7 @@ class DisciplineController extends Controller
       $convocation->setUpdatedBy($this->getUser());
       $convocation->setUpdatedAt(new \Datetime());
       $em->flush();
-      $request->getSession()->getFlashBag()->add('info', 'Le verdict pour l\'esnseignant '.$convocation->getContrat()->getEnseignant()->getNomFr().' '.$convocation->getContrat()->getEnseignant()->getPnomFr().' a bien été enregistré.');
+      $request->getSession()->getFlashBag()->add('info', 'Le verdict pour l\'esnseignant <strong>'.$convocation->getContrat()->getEnseignant()->getNom().'</strong> a bien été enregistré.');
       return $this->redirectToRoute('ens_convocation_home', ['as' => $as]);
 
     }
@@ -375,7 +375,7 @@ class DisciplineController extends Controller
 
       if($annee->getAchevee() == TRUE)
       {
-        $request->getSession()->getFlashBag()->add('error', 'Impossible de sanctionner car l\'année scolaire '.$annee->getLibelleAnneeScolaire().' est achevée.');
+        $request->getSession()->getFlashBag()->add('error', 'Impossible de sanctionner car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
         return $this->redirect($this->generateUrl('ens_sanction_home', ['as' => $as]));
       }
       $sanction = new AnneeContratSanction();
@@ -396,7 +396,7 @@ class DisciplineController extends Controller
         $em->persist($sanction);
         $em->flush();
 
-        $request->getSession()->getFlashBag()->add('info', 'La canstion pour l\'enseignant '.$contrat->getEnseignant()->getNomFr().' '.$contrat->getEnseignant()->getPnomFr().' a enregistré avec succès.');
+        $request->getSession()->getFlashBag()->add('info', 'La canstion pour l\'enseignant <strong>'.$contrat->getEnseignant()->getNom().'</strong> a enregistré avec succès.');
 
         return $this->redirect($this->generateUrl('ens_sanction_home', ['as'=> $as]));
       }
@@ -424,13 +424,13 @@ class DisciplineController extends Controller
 
     if($annee->getAchevee() == TRUE)
     {
-      $request->getSession()->getFlashBag()->add('error', 'Impossible d\'ajouter un enseignant car l\'année scolaire '.$annee->getLibelleAnneeScolaire().' est achevée.');
+      $request->getSession()->getFlashBag()->add('error', 'Impossible d\'ajouter un enseignant car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
       return $this->redirect($this->generateUrl('ens_enseignant_de_l_annee', ['as' => $as]));
     }
 
     if(!is_null($anneeContrat))
     {
-      $request->getSession()->getFlashBag()->add('error', $anneeContrat->getContrat()->getEnseignant()->getNomFr().' '.$anneeContrat->getContrat()->getEnseignant()->getPnomFr().' est déjà utilisé(e) pour l\'année '.$annee->getLibelleAnneeScolaire().'.');
+      $request->getSession()->getFlashBag()->add('error', '<strong>'.$anneeContrat->getContrat()->getEnseignant()->getNom().'</strong> est déjà utilisé(e) pour l\'année <strong>'.$annee->getLibelle().'</strong>.');
       return $this->redirectToRoute('ens_fonctions_en_cours', ['as' => $as]);
     }
 
@@ -447,7 +447,7 @@ class DisciplineController extends Controller
       $em->persist($newAnneeContrat);
       $em->flush();
 
-      $request->getSession()->getFlashBag()->add('info', 'Les heures de cours de '.$contrat->getEnseignant()->getNomFr().' '.$contrat->getEnseignant()->getPnomFr().' a été bien enregistrée pour l\'année '.$annee->getLibelleAnneeScolaire().'.');
+      $request->getSession()->getFlashBag()->add('info', 'Les heures de cours de <strong>'.$contrat->getEnseignant()->getNom().'</strong> a été bien enregistrée pour l\'année <strong>'.$annee->getLibelle().'</strong>.');
 
       return $this->redirect($this->generateUrl('ens_fonctions_en_cours', ['as'=> $as]));
     }

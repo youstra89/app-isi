@@ -1,7 +1,4 @@
-{# Accueil pour l'édition des listes de classe' #}
-
-{% extends "ENSBundle::layout.html.twig" %}
-
+{% extends "ENSBundle:Default:index.html.twig" %}
 
 
 {% block stylesheets %}
@@ -17,7 +14,7 @@
 {% endblock %}
 
 
-{% block titre_page %}
+{% block section %}
   <i class="student icon"></i>{{ 'Gestion des cours'|trans }}
 {% endblock %}
 
@@ -28,7 +25,7 @@
 
 
 
-{% block corps %}
+{% block body %}
   <h3>{{ 'Edition des cours de la classe '|trans }} {{ classe.libelleFr }}</h3>
   {% if matieres is empty %}
     <p>{{ 'Il n y a aucune matière pour ce niveau'|trans }}</p>

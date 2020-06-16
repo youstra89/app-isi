@@ -15,8 +15,8 @@
       {% block title %}
       {% endblock %}
     </title>
-      <link rel="stylesheet" type="text/css" href="{{ asset('../vendor/semantic/ui/dist/semantic.min.css') }}" /> {# Site CSS #}
-      <lin rel="stylesheet" href="{{ asset('../vendor/twbs/bootstrap/dist/css/bootstrap.min.css') }}" />
+      <link rel="stylesheet" type="text/css" href="{{ asset('semantic/ui/dist/semantic.min.css') }}" />
+      <link rel="stylesheet" type="text/css" href="{{ asset('TableFilter/dist/tablefilter/style/tablefilter.css') }}">
       <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" />
     {% block stylesheets %}
     {% endblock %}
@@ -95,9 +95,6 @@
             <h4 class="ui header"><span class="style-main-menu"><i class="handshake icon"></i> {{ 'Rencontres'|trans }}</span></h4>
           </a>
         </div>
-        {# <a class="item" href="{{ path('ens_home', {'as': asec}) }}">
-          <h4 class="ui header"><span class="style-main-menu"><i class="home icon"></i> {{ 'Informations'|trans }}</span></h4>
-        </a> #}
         <div class="{{ dir2 }} item">
           <div class="ui input">
             <div class="ui simple dropdown item">
@@ -134,7 +131,7 @@
                 {{ 'Utilisateur'|trans }} :
               {% endif %}
               <a class="ui basic image label">
-                <img src="/markaz/web/images/elliot.jpg">
+                <img src="{{ asset('images/elliot.jpg') }}">
                 <strong>{{ app.user.username }}</strong>
               </a>
             
@@ -145,7 +142,7 @@
           <div class="thirteen wide column">
             <div class="ui {{ dir2 }} aligned segment">
               <h1 class="ui header">
-                {% block titre_page %}
+                {% block section %}
                   <i class="student icon"></i>{{ 'Gestion des enseignants'|trans }}
                 {% endblock %}
               </h1>
@@ -155,7 +152,7 @@
               <div class="ui red message">
                 <div class="header">{{ 'Attention'|trans }} !!! </div>
                 <ul class="list">
-                  <li>{{ message }}.</li>
+                  <li>{{ message|raw }}.</li>
                 </ul>
               </div>
             {% endfor %}
@@ -163,15 +160,13 @@
               <div class="ui green message">
                 <div class="header">{{ 'Notification'|trans }}: </div>
                 <ul class="list">
-                  <li>{{ message }}.</li>
+                  <li>{{ message|raw }}.</li>
                 </ul>
               </div>
             {% endfor %}
             <!-- Fin d'affichage des notifications et des message d'erreur  -->
-            {% block corps %}
               {% block body %}
               {% endblock %}
-            {% endblock %}
           </div>
         </div>
       </div>
@@ -182,7 +177,7 @@
     <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
     <script data-config>
       var filtersConfig = {
-        base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+        base_path: 'TableFilter/dist/tablefilter/',
         col_0: 'none',
         col_4: 'select',
         col_6: 'select',
@@ -210,7 +205,7 @@
       tf.init();
     </script>
     <script src="{{ asset('js/jquery-3.3.1.js') }}"></script>
-    <script src="{{ asset('../vendor/semantic/ui/dist/semantic.min.js') }}"></script>
+    <script src="{{ asset('semantic/ui/dist/semantic.min.js') }}"></script>
     <script>
       $('.ui.accordion')
         .accordion()

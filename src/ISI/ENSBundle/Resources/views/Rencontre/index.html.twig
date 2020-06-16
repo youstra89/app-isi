@@ -8,11 +8,11 @@
   {{ include("ENSBundle:Rencontre:contextual-menu-rencontre.html.twig") }}
 {% endblock %}
 
-{% block titre_page %}
+{% block section %}
   <i class="handshake icon"></i>{{ 'Rencontres'|trans }}
 {% endblock %}
 
-{% block corps %}
+{% block body %}
   <h2>{{ 'Rencontres de l\'année '|trans }}</h2>
   {% if rencontres is empty %}
     <p>{{ 'Aucune rencontre n\'a encore été enregistrée'|trans }}</p>

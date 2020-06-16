@@ -2,7 +2,7 @@
 
 {% extends 'ISIBundle:Examen:index.html.twig' %}
 
-{% block pageTitle %}
+{% block title %}
   Résultats annuels {{ classe.libelleFr }}
 {% endblock %}
 
@@ -13,7 +13,7 @@
 
 
 
-{% block content %}
+{% block body %}
   {% set grp = '' %}
   {% if regime is same as('A') %}
     {% set grp = 'Académie' %}
@@ -21,25 +21,9 @@
     {% set grp = 'Formation' %}
   {% endif %}
   <h3>{{ 'Résultats annuels de'|trans }} {{ classe.libelleFr }}</h3>
-    {% for message in app.session.flashbag.get('info') %}
-      <div class="ui green message">
-        <div class="header">{{ 'Attention'|trans }} !!! </div>
-        <ul class="list">
-          <li>{{ message|raw }}</li>
-        </ul>
-      </div>
-    {% endfor %} 
-    {% for message in app.session.flashbag.get('error') %}
-      <div class="ui red message">
-        <div class="header">{{ 'Attention'|trans }} !!! </div>
-        <ul class="list">
-          <li>{{ message|raw }}</li>
-        </ul>
-      </div>
-    {% endfor %}
     <div class="ui cards">
       {% if moyennesPretes == FALSE %}
-        <a class="ui card" href="{{ path('isi_classement_annuel', {'as': asec, 'regime': regime, 'classeId': classe.id}) }}">
+        <a class="ui card" href="{{ path('isi_classement_annuel', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id}) }}">
           <div class="content">
             <div class="header">{{ 'Calcul des résultats annuels'|trans }}</div>
             <div class="meta">
@@ -48,12 +32,12 @@
           </div>
           <div class="extra content">
             <div class="right floated author">
-              <img class="ui avatar image" src="/markaz/web/images/logoISI-x.png">
+              <img class="ui avatar image" src="{{ asset('images/logoISI-x.png') }}">
             </div>
           </div>
         </a>
       {% else %}
-        <a class="ui card" href="{{ path('isi_notes_des_deux_examens', {'as': asec, 'regime': regime, 'classeId': classe.id}) }}">
+        <a class="ui card" href="{{ path('isi_notes_des_deux_examens', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id}) }}">
           <div class="content">
             <div class="header">{{ 'Les notes des examens'|trans }}</div>
             <div class="meta">
@@ -62,11 +46,11 @@
           </div>
           <div class="extra content">
             <div class="right floated author">
-              <img class="ui avatar image" src="/markaz/web/images/logoISI-x.png">
+              <img class="ui avatar image" src="{{ asset('images/logoISI-x.png') }}">
             </div>
           </div>
         </a>
-        <a class="ui card" href="{{ path('isi_classement_annuel', {'as': asec, 'regime': regime, 'classeId': classe.id}) }}">
+        <a class="ui card" href="{{ path('isi_classement_annuel', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id}) }}">
           <div class="content">
             <div class="header">{{ 'Classement annuel'|trans }}</div>
             <div class="meta">
@@ -75,11 +59,11 @@
           </div>
           <div class="extra content">
             <div class="right floated author">
-              <img class="ui avatar image" src="/markaz/web/images/logoISI-x.png">
+              <img class="ui avatar image" src="{{ asset('images/logoISI-x.png') }}">
             </div>
           </div>
         </a>
-        <a class="ui card" href="{{ path('isi_statistiques_annuelles', {'as': asec, 'regime': regime, 'classeId': classe.id}) }}">
+        <a class="ui card" href="{{ path('isi_statistiques_annuelles', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id}) }}">
           <div class="content">
             <div class="header">{{ 'Les statistiques'|trans }}</div>
             <div class="meta">
@@ -88,7 +72,7 @@
           </div>
           <div class="extra content">
             <div class="right floated author">
-              <img class="ui avatar image" src="/markaz/web/images/logoISI-x.png">
+              <img class="ui avatar image" src="{{ asset('images/logoISI-x.png') }}">
             </div>
           </div>
         </a>

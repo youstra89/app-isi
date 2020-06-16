@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 use FOS\UserBundle\Model\User as BaseUser;
 
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -39,6 +40,62 @@ class User extends BaseUser
      */
     protected $pnom;
 
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="pwd_changed_at", type="datetime", nullable=true)
+     */
+    private $pwdChangedAt; 
+    
+    /**
+     * @var integer
+     * @ORM\Column(name="change_pw", type="integer", nullable=true)
+     */
+    private $changemdp;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ISI\ISIBundle\Entity\UserAnnexe", mappedBy="user")
+     */
+    private $annexes;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->annexes = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+
+    /**
+     * @return Collection|Annexe[]
+     */
+    public function getAnnexes(): Collection
+    {
+        return $this->annexes;
+    }
+
+    public function idsAnnexes()
+    {
+        $ids = [];
+        foreach ($this->annexes as $value) {
+            $ids[] = $value->getAnnexe()->getId();
+        }
+
+        return $ids;
+    }
+
+    public function findAnnexe(int $annexeId)
+    {
+        $userAnnexe = null;
+        foreach ($this->annexes as $value) {
+            if($value->getAnnexe()->getId() == $annexeId){
+                $userAnnexe = $value;
+            }
+        }
+
+        return $userAnnexe;
+    }
 
     /**
      * Set nom
@@ -79,6 +136,30 @@ class User extends BaseUser
     }
 
     /**
+     * Get changemdp
+     *
+     * @return integer
+     */
+    public function getChangemdp()
+    {
+        return $this->changemdp;
+    }
+
+    /**
+     * Set changemdp
+     *
+     * @param integer $changemdp
+     *
+     * @return User
+     */
+    public function setChangemdp($changemdp)
+    {
+        $this->changemdp = $changemdp;
+
+        return $this;
+    }
+
+    /**
      * Get pnom
      *
      * @return string
@@ -86,5 +167,29 @@ class User extends BaseUser
     public function getPnom()
     {
         return $this->pnom;
+    }
+
+    /**
+     * Set pwdChangedAt
+     *
+     * @param \DateTime $pwdChangedAt
+     *
+     * @return User
+     */
+    public function setPwdChangedAt($pwdChangedAt)
+    {
+        $this->pwdChangedAt = $pwdChangedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get pwdChangedAt
+     *
+     * @return \DateTime
+     */
+    public function getPwdChangedAt()
+    {
+        return $this->pwdChangedAt;
     }
 }

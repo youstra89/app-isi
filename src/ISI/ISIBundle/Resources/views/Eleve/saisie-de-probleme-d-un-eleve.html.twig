@@ -6,7 +6,7 @@
   Accueil conduite
 {% endblock %}
 
-{% block content %}
+{% block body %}
   {% set grp = '' %}
   {% if regime is same as('A') %}
     {% set grp = 'Académie' %}
@@ -128,7 +128,7 @@
         </tr>
       </table>
     </div>
-    <form class="ui form" action="{{ path('isi_enregistrer_conduite', { 'as': asec, 'regime': 'F', 'eleveId': eleve.id }) }}" method="post">
+    <form class="ui form" action="{{ path('isi_enregistrer_conduite', { 'as': asec, 'annexeId': annexe.id, 'regime': 'F', 'eleveId': eleve.id }) }}" method="post">
       <br />
       <div class="fields">
         <div class="four wide field">

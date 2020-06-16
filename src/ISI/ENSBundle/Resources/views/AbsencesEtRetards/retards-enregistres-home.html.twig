@@ -1,8 +1,6 @@
-{# On affiche toues les classes d'un niveau de formation. On sélectionne alors une classe pour aller saisir les notes #}
+{% extends "ENSBundle:Default:index.html.twig" %}
 
-{% extends 'ENSBundle:Enseignant:layout.html.twig' %}
-
-{% block pageTitle %}
+{% block title %}
   Voir les retards enregistrés
 {% endblock %}
 
@@ -10,7 +8,7 @@
   {{ include("ENSBundle:AbsencesEtRetards:contextual-menu-retards-et-absences.html.twig") }}
 {% endblock %}
 
-{% block titre_page %}
+{% block section %}
   <i class="flag checkered icon"></i>{{ 'Retards'|trans }}
 {% endblock %}
 
@@ -21,7 +19,7 @@
       <div class="ui red message">
         <div class="header">{{ 'Attention'|trans }} !!! </div>
         <ul class="list">
-          <li>{{ message }}</li>
+          <li>{{ message|raw }}</li>
         </ul>
       </div>
     {% endfor %}
@@ -29,7 +27,7 @@
       <div class="ui green message">
         <div class="header">{{ 'Notification'|trans }}: </div>
         <ul class="list">
-          <li>{{ message }}.</li>
+          <li>{{ message|raw }}.</li>
         </ul>
       </div>
     {% endfor %}
@@ -44,7 +42,7 @@
             <div class="content">
               <a href="{{ path('ens_voir_retards_mois', {'as': asec, 'moisId': m.id}) }}">
                 <div class="content">
-                  <img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
+                  <img class="right floated mini ui image" src="{{ asset('images/logoISI-x.png') }}">
                   <div class="header"><h4>{{ m.mois }}</h4> </div>
                   <div class="meta"></div>
                   <div class="description"></div>

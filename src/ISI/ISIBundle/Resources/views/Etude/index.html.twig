@@ -1,58 +1,81 @@
-{% extends "ISIBundle:Etude:layout.html.twig" %}
+{% extends "ISIBundle::index.html.twig" %}
+
 
 {% block title %}
     Etude | Page d'accueil
 {% endblock %}
 
+
+{% block menu %}
+  <a class="item" href="{{ path('etude_home', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header"><i class="home icon"></i> {{ 'Accueil'|trans }}</h4></a>
+  <a class="item" href="{{ path('etude_home', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header"><i class="book icon"></i> {{ 'Mémorisation de coran'|trans }}</h4></a>
+  <div class="ui input">
+    <div class="ui simple dropdown item">
+      <a><h4 class="ui header"><i class="users icon"></i>{{ 'Progression'|trans }}</h4></a>
+      <i class="dropdown icon"></i>
+      <div class="menu">
+        <span class="sub-menu">
+          <a class="item" href="{{ path('etude_niveaux_matieres', {'as': asec, 'annexeId': annexe.id, 'regime': 'A'}) }}">{{ 'Académie'|trans }}</a>
+          <a class="item" href="{{ path('etude_niveaux_matieres', {'as': asec, 'annexeId': annexe.id, 'regime': 'F'}) }}">{{ 'Centre de formation'|trans }}</a>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="ui input">
+    <div class="ui simple dropdown item">
+      <a><h4 class="ui header"><i class="users icon"></i>{{ 'Notes'|trans }}</h4></a>
+      <i class="dropdown icon"></i>
+      <div class="menu">
+        <span class="sub-menu">
+          <a class="item" href="{{ path('etude_notes', {'as': asec, 'annexeId': annexe.id, 'regime': 'A'}) }}">{{ 'Académie'|trans }}</a>
+          <a class="item" href="{{ path('etude_notes', {'as': asec, 'annexeId': annexe.id, 'regime': 'F'}) }}">{{ 'Centre de formation'|trans }}</a>
+        </span>
+      </div>
+    </div>
+  </div>
+  <a class="item" href="{{ path('etude_examen', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header"><i class="setting icon"></i> {{ 'Examens'|trans }}</h4></a>
+  <a class="item" href="{{ path('etude_parametres', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header"><i class="settings icon"></i> {{ 'Paramètres'|trans }}</h4></a>
+{% endblock %}
+
+
+
+{% block mobile_menu %}
+  <a class="item" href="{{ path('etude_home', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header">{{ 'Accueil'|trans }}</h4></a>
+  <a class="item" href="{{ path('etude_home', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header">{{ 'Mémorisation de coran'|trans }}</h4></a>
+  <span class="ui simple dropdown item">
+    <a><h4 class="ui header">{{ 'Progression'|trans }}<i class="dropdown icon"></i></h4></a>
+    <div class="menu">
+      <a class="item" href="{{ path('etude_niveaux_matieres', {'as': asec, 'annexeId': annexe.id, 'regime': 'A'}) }}">{{ 'Académie'|trans }}</a>
+      <a class="item" href="{{ path('etude_niveaux_matieres', {'as': asec, 'annexeId': annexe.id, 'regime': 'F'}) }}">{{ 'Centre de formation'|trans }}</a>
+    </div>
+  </span>
+  <span class="ui simple dropdown item">
+    <a><h4 class="ui header">{{ 'Notes'|trans }}<i class="dropdown icon"></i></h4></a>
+    <div class="menu">
+      <a class="item" href="{{ path('etude_notes', {'as': asec, 'annexeId': annexe.id, 'regime': 'A'}) }}">{{ 'Académie'|trans }}</a>
+      <a class="item" href="{{ path('etude_notes', {'as': asec, 'annexeId': annexe.id, 'regime': 'F'}) }}">{{ 'Centre de formation'|trans }}</a>
+    </div>
+  </span>
+  <a class="item" href="{{ path('etude_examen', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header">{{ 'Examens'|trans }}</h4></a>
+  <a class="item" href="{{ path('etude_parametres', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header">{{ 'Paramètres'|trans }}</h4></a>
+{% endblock %}
+
+
 {% block contextual_menu %}
   {% if is_granted('ROLE_SUPER_ADMIN') %}
     {{ include("ISIBundle::contextual-menu-panel-admin.html.twig") }}
   {% elseif is_granted('ROLE_ADMIN_ANNEXE') %}
-      <div class="ui vertical menu">
-        <div class="item">
-          <div class="header">{{ 'Autres modules'|trans }}</div>
-          <div class="menu">
-            {# Cette partie permet de voir la liste de tous les élèves de la l'institut #}
-            <a class="item" href="{{ path('isi_home_scolarite') }}">{{ 'Scolarité'|trans }}</a>
-            <a class="item" href="{{ path('ens_home', {'as': asec}) }}">{{ 'Enseignants'|trans }}</a>
-          </div>
-        </div>
-      </div>
-  {% else %}
-    {{ include("ISIBundle::contextual-menu-user.html.twig") }}
+    <div class="header">{{ 'Autres modules'|trans }}</div>
+    <a class="item" href="{{ path('isi_home_scolarite') }}">{{ 'Scolarité'|trans }}</a>
+    <a class="item" href="{{ path('ens_home', {'as': asec}) }}">{{ 'Enseignants'|trans }}</a>
   {% endif %}
 {% endblock %}
 
-{% block corps %}
-    {% block head %}
-        <div class="ui {{ dir2 }} aligned segment">
-            <h1 class="ui header">
-                <i class="student icon"></i>{{ 'GESTION DES PROGRAMMES D\'ETUDE'|trans }}
-            </h1>
-        </div>
-    {% endblock %}
 
-    {% block notif %}
-        <!-- Début d'affichage des notifications et des messages d'erreur -->
-        {% for message in app.session.flashbag.get('error') %}
-            <div class="ui red message">
-            <div class="header">{{ 'Attention'|trans }} !!! </div>
-            <ul class="list">
-                <li>{{ message|raw }}.</li>
-            </ul>
-            </div>
-        {% endfor %}
-        {% for message in app.session.flashbag.get('info') %}
-            <div class="ui green message">
-            <div class="header">{{ 'Notification'|trans }}: </div>
-            <ul class="list">
-                <li>{{ message|raw }}.</li>
-            </ul>
-            </div>
-        {% endfor %}
-        <!-- Fin d'affichage des notifications et des message d'erreur  -->
-    {% endblock %}
+{% block section %}
+  <i class="student icon"></i>{{ 'Gestion du programme d\'étude'|trans }}
+{% endblock %}
 
-    {% block content %}
-    {% endblock %}
+
+{% block body %}
 {% endblock %}

@@ -1,4 +1,5 @@
-{% extends "ENSBundle:Enseignant:layout.html.twig" %}
+{% extends "ENSBundle:Default:index.html.twig" %}
+
 
 {% block title %}
   Sanctions d'un enseignant
@@ -8,11 +9,11 @@
   {# {{ include("ENSBundle:Discipline:contextual-menu-convocation.html.twig") }} #}
 {% endblock %}
 
-{% block titre_page %}
+{% block section %}
   <i class="american sign language interpreting icon"></i>{{ 'Discipline - Sanction'|trans }}
 {% endblock %}
 
-{% block corps %}
+{% block body %}
   <h2>{{ 'Sanctions enregistrées au compte de '|trans }} {{ contrat.enseignant.nomAr }} {{ contrat.enseignant.pnomAr }}</h2>
   {% if sanctions is not defined %}
     <p>{{ 'Aucune sanction n\'a encore été enregistrée pour cet enseignant'|trans }}</p>

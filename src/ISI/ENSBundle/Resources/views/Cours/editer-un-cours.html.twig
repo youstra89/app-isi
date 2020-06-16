@@ -1,7 +1,4 @@
-{# Accueil pour l'édition des listes de classe' #}
-
-{% extends "ENSBundle::layout.html.twig" %}
-
+{% extends "ENSBundle:Default:index.html.twig" %}
 
 
 {% block stylesheets %}
@@ -17,7 +14,7 @@
 {% endblock %}
 
 
-{% block titre_page %}
+{% block section %}
   <i class="student icon"></i>{{ 'Gestion des cours'|trans }}
 {% endblock %}
 
@@ -27,7 +24,7 @@
 {% endblock %}
 
 
-{% block corps %}
+{% block body %}
   <h3>Edition du cours de {{ cours.matiere.libelle }} en {{ classe.libelleFr }}</h3>
   <div class="column form-group">
     <form action="" method="post" class="ui form">

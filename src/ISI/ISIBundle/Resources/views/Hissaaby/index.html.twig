@@ -3,7 +3,7 @@
 
 {% set template = '' %}
 {% if userType == 'admin' or is_granted('ROLE_SUPER_ADMIN') %}
-    {% set template = "ISIBundle:Admin:layout.html.twig" %}
+    {% set template = "ISIBundle:Admin:index.html.twig" %}
 {% else %}
     {% if is_granted('ROLE_INTERNAT') %}
         {% set template = "ISIBundle:Internat:layout.html.twig" %}
@@ -16,14 +16,14 @@
     {% elseif is_granted('ROLE_ORGANISATION') %}
         {% set template = "ORGBundle::layout.html.twig" %}
     {% elseif is_granted('ROLE_ENSEIGNANT') %}
-        {% set template = "ENSBundle::index-enseignant.html.twig" %}
+        {% set template = "ENSBundle:Enseignant:index.html.twig" %}
     {% endif %}
 {% endif %}
 
 {% extends template %}
 
 {% block body %}
-    {% block titre_page %}
+    {% block section %}
         <i class="student icon"></i>{{ 'Mon compte'|trans }}
     {% endblock %}
     <!-- Début d'affichage des notifications et des messages d'erreur -->
@@ -31,7 +31,7 @@
         <div class="ui red message">
             <div class="header">{{ 'Attention'|trans }} !!! </div>
             <ul class="list">
-                <li>{{ message }}.</li>
+                <li>{{ message|raw }}.</li>
             </ul>
         </div>
     {% endfor %} 
@@ -39,7 +39,7 @@
         <div class="ui green message">
             <div class="header">{{ 'Notification'|trans }}: </div>
             <ul class="list">
-                <li>{{ message }}.</li>
+                <li>{{ message|raw }}.</li>
             </ul>
         </div>
     {% endfor %}
@@ -49,10 +49,10 @@
     </div>
     <br />
     <div>
-        <a href="{{ path('fos_user_change_password', {'as': asec}) }}">
+        <a href="{{ path('fos_user_change_password', {'as': asec, 'annexeId': annexe.id}) }}">
             <button class="ui positive button">{{ 'Changer mon mot de passe'|trans }}</button>
         </a>
-        <a href="{{ path('enseignant_home', {'as': asec}) }}">
+        <a href="{{ path('enseignant_home', {'as': asec, 'annexeId': annexe.id}) }}">
             <button class="ui primary button">{{ 'Espace enseignant'|trans }}</button>
         </a>
     </div>

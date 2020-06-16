@@ -1,37 +1,20 @@
-<div class="ui vertical menu">
-    <div class="item">
-        <div class="header">{{ 'Année scolaire'|trans }}</div>
-        <div class="menu">
-            {% if is_granted('ROLE_ADMIN_SCOLARITE') or is_granted('ROLE_ADMIN_ANNEXE') %}
-                <a class="item" href="{{ path('isi_nouvelle_annee', {'as': asec}) }}">{{ 'Nouvelle année'|trans }}</a>
-            {% endif %}
-        </div>
-    </div>
-    <div class="item">
-        <div class="header">{{ 'Académie'|trans }}</div>
-        <div class="menu">
-            {% if is_granted('ROLE_ADMIN_SCOLARITE') or is_granted('ROLE_ADMIN_ANNEXE') %}
-                <a class="item" href="{{ path('isi_gestion_classes', {'as': asec, 'regime': 'A'}) }}">{{ 'Gestion des classes'|trans }}</a>
-                <a class="item" href="{{ path('isi_gestion_halaqas', {'as': asec, 'regime': 'A'}) }}">{{ 'Gestion des halaqas'|trans }}</a>
-            {% endif %}
-            <a class="item" href="{{ path('isi_niveaux_matieres', {'as': asec, 'regime': 'A'}) }}">{{ 'Contenu de formation'|trans }}</a>
-        </div>
-    </div>
-    <div class="item">
-        <div class="header">{{ 'Centre de formation'|trans }}</div>
-        <div class="menu">
-            {% if is_granted('ROLE_ADMIN_SCOLARITE') or is_granted('ROLE_ADMIN_ANNEXE') %}
-                <a class="item" href="{{ path('isi_gestion_classes', {'as': asec, 'regime': 'F'}) }}">{{ 'Gestion des classes'|trans }}</a>
-            {% endif %}
-            <a class="item" href="{{ path('isi_niveaux_matieres', {'as': asec, 'regime': 'F'}) }}">{{ 'Contenu de formation'|trans }}</a>
-        </div>
-    </div>
-    <div class="item">
-        <div class="header">{{ 'Espace Coran'|trans }}</div>
-        <div class="menu">
-            {% if is_granted('ROLE_ADMIN_SCOLARITE') or is_granted('ROLE_ADMIN_ANNEXE') %}
-                <a class="item" href="{{ path('isi_gestion_halaqas', {'as': asec, 'regime': 'C'}) }}">{{ 'Gestion des halaqa'|trans }}</a>
-            {% endif %}
-        </div>
-    </div>
-</div>
+<div class="ui divider"></div>
+<div class="header">{{ 'Année scolaire'|trans }}</div>
+{% if is_granted('ROLE_ADMIN_SCOLARITE') or is_granted('ROLE_ADMIN_ANNEXE') %}
+    <a class="item" href="{{ path('isi_nouvelle_annee', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Nouvelle année'|trans }}</a>
+{% endif %}
+<div class="header">{{ 'Académie'|trans }}</div>
+{% if is_granted('ROLE_ADMIN_SCOLARITE') or is_granted('ROLE_ADMIN_ANNEXE') %}
+    <a class="item" href="{{ path('isi_gestion_classes', {'as': asec, 'annexeId': annexe.id, 'regime': 'A'}) }}">{{ 'Gestion des classes'|trans }}</a>
+    <a class="item" href="{{ path('isi_gestion_halaqas', {'as': asec, 'annexeId': annexe.id, 'regime': 'A'}) }}">{{ 'Gestion des halaqas'|trans }}</a>
+{% endif %}
+<a class="item" href="{{ path('isi_niveaux_matieres', {'as': asec, 'annexeId': annexe.id, 'regime': 'A'}) }}">{{ 'Contenu de formation'|trans }}</a>
+<div class="header">{{ 'Centre de formation'|trans }}</div>
+{% if is_granted('ROLE_ADMIN_SCOLARITE') or is_granted('ROLE_ADMIN_ANNEXE') %}
+    <a class="item" href="{{ path('isi_gestion_classes', {'as': asec, 'annexeId': annexe.id, 'regime': 'F'}) }}">{{ 'Gestion des classes'|trans }}</a>
+{% endif %}
+<a class="item" href="{{ path('isi_niveaux_matieres', {'as': asec, 'annexeId': annexe.id, 'regime': 'F'}) }}">{{ 'Contenu de formation'|trans }}</a>
+<div class="header">{{ 'Espace Coran'|trans }}</div>
+{% if is_granted('ROLE_ADMIN_SCOLARITE') or is_granted('ROLE_ADMIN_ANNEXE') %}
+    <a class="item" href="{{ path('isi_gestion_halaqas', {'as': asec, 'annexeId': annexe.id, 'regime': 'C'}) }}">{{ 'Gestion des halaqa'|trans }}</a>
+{% endif %}

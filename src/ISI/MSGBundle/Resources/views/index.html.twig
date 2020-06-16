@@ -36,7 +36,7 @@
             <!-- Links -->
             <ul class="navbar-nav ml-auto p-0">
                 <li class="nav-item active">
-                    <a class="nav-link" href="{{ path('isi_homepage') }}">Retour à l'application
+                    <a class="nav-link" href="{{ path('isi_homepage', {'annexeId': annexe.id}) }}">Retour à l'application
                     <span class="sr-only">(current)</span>
                     </a>
                 </li>
@@ -70,7 +70,7 @@
         <main class="mt-5">
             <div class="container">
         <!--/.Navbar-->
-    {% block content %}
+    {% block body %}
     {% endblock %}
     <!-- /Start your project here-->
 </div>

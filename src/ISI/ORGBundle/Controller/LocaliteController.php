@@ -28,7 +28,7 @@ class LocaliteController extends Controller
    * @Route("/index-{as}", name="localite", methods="GET")
    * @Security("has_role('ROLE_ORGANISATION')")
    */
-  public function indexAction($as)
+  public function indexAction(Request $request, int $as)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');

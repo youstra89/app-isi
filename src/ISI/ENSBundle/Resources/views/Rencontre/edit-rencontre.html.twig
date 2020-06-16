@@ -8,11 +8,11 @@
   {{ include("ENSBundle:Rencontre:contextual-menu-rencontre.html.twig") }}
 {% endblock %}
 
-{% block titre_page %}
+{% block section %}
   <i class="handshake icon"></i>{{ 'Rencontres'|trans }}
 {% endblock %}
 
-{% block corps %}
+{% block body %}
   <h2>{{ 'Mise à jours des informations de la rencontre'|trans }}</h2>
   <div class="form-group">
     {{ form_start(form, { 'attr': { 'class': 'ui form' }})}}

@@ -1,6 +1,12 @@
-isi_homepage:
+annexes_homepage:
     path:     /
+    defaults: { _controller: ISIBundle:Default:choixAnnexe }
+
+isi_homepage:
+    path:     /accueil/{annexeId}
     defaults: { _controller: ISIBundle:Default:index }
+    requirements:
+        annexeId: \d+
 
 espace_eleve:
     resource: "@ISIBundle/Resources/config/routing/espace-eleve.yml"

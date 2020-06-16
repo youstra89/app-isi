@@ -15,7 +15,7 @@
       {% block title %}
       {% endblock %}
     </title>
-      <link rel="stylesheet" type="text/css" href="{{ asset('../vendor/semantic/ui/dist/semantic.min.css') }}" /> {# Site CSS #}
+      <link rel="stylesheet" type="text/css" href="{{ asset('semantic/ui/dist/semantic.min.css') }}" /> {# Site CSS #}
       <lin rel="stylesheet" href="{{ asset('../vendor/twbs/bootstrap/dist/css/bootstrap.min.css') }}" />
       <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" />
     {% block stylesheets %}
@@ -25,55 +25,9 @@
   <body>
     <div class="ui fixed borderless main menu">
       <div class="ui container">
-        <a class="item" href="{{ path('homepage', {'as': asec}) }}">
+        <a class="item" href="{{ path('isi_homepage', {'as': asec, 'annexeId': annexe.id}) }}">
           <h4 class="ui header"><span class="style-main-menu"><i class="home icon"></i> {{ 'Accueil'|trans }}</span></h4>
         </a>
-        {# <div class="ui input">
-          <div class="ui simple dropdown item">
-            <a href="{{ path('ens_fonctions_en_cours', {'as': asec}) }}">
-              <h4 class="ui header"><span class="style-main-menu"><i class="tasks icon"></i>{{ 'Fonctions'|trans }}</span></h4>
-            </a>
-          </div>
-        </div>
-        <div class="ui input">
-          <div class="ui simple dropdown item">
-            <a>
-              <h4 class="ui header"><span class="style-main-menu"><i class="student icon"></i>{{ 'Cours'|trans }}</span></h4>
-            </a>
-            <i class="dropdown icon"></i>
-            <div class="menu">
-              <span class="sub-menu">
-                <a class="item" href="{{ path('ens_liste_des_classes_save_cours', {'as': asec, 'regime': 'A'}) }}">
-                  {{ 'Académie'|trans }}
-                </a>
-                <a class="item" href="{{ path('ens_liste_des_classes_save_cours', {'as': asec, 'regime': 'F'}) }}">
-                  {{ 'Centre de formation'|trans }}
-                </a>
-              </span>
-            </div>
-          </div>
-        </div>
-        <div class="ui input">
-          <div class="ui simple dropdown item">
-            <a>
-              <h4 class="ui header"><span class="style-main-menu"><i class="flag checkered icon"></i>{{ 'Contrôle'|trans }}</span></h4>
-            </a>
-            <i class="dropdown icon"></i>
-            <div class="menu">
-              <span class="sub-menu">
-                <a class="item" href="{{ path('ens_absences_home', {'as': asec}) }}">
-                  {{ 'Absences'|trans }}
-                </a>
-                <a class="item" href="{{ path('ens_retards_home', {'as': asec}) }}">
-                  {{ 'Retards'|trans }}
-                </a>
-              </span>
-            </div>
-          </div>
-        </div> #}
-        {# <a class="item" href="{{ path('ens_home', {'as': asec}) }}">
-          <h4 class="ui header"><span class="style-main-menu"><i class="home icon"></i> {{ 'Informations'|trans }}</span></h4>
-        </a> #}
         <div class="{{ dir2 }} item">
           <div class="ui input">
             <div class="ui simple dropdown item">
@@ -110,7 +64,7 @@
                 {{ 'Utilisateur'|trans }} :
               {% endif %}
               <a class="ui basic image label">
-                <img src="/markaz/web/images/elliot.jpg">
+                <img src="{{ asset('images/elliot.jpg') }}">
                 <strong>{{ app.user.username }}</strong>
               </a>
             
@@ -121,7 +75,7 @@
           <div class="thirteen wide column">
             <div class="ui {{ dir2 }} aligned segment">
               <h1 class="ui header">
-                {% block titre_page %}
+                {% block section %}
                   <i class="student icon"></i>{{ 'Espace enseignant'|trans }}
                 {% endblock %}
               </h1>
@@ -131,7 +85,7 @@
               <div class="ui red message">
                 <div class="header">{{ 'Attention'|trans }} !!! </div>
                 <ul class="list">
-                  <li>{{ message }}.</li>
+                  <li>{{ message|raw }}.</li>
                 </ul>
               </div>
             {% endfor %}
@@ -139,7 +93,7 @@
               <div class="ui green message">
                 <div class="header">{{ 'Notification'|trans }}: </div>
                 <ul class="list">
-                  <li>{{ message }}.</li>
+                  <li>{{ message|raw }}.</li>
                 </ul>
               </div>
             {% endfor %}
@@ -156,7 +110,7 @@
     <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
     <script data-config>
       var filtersConfig = {
-        base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+        base_path: 'TableFilter/dist/tablefilter/',
         col_0: 'none',
         col_4: 'select',
         col_6: 'select',
@@ -184,7 +138,7 @@
       tf.init();
     </script>
     <script src="{{ asset('js/jquery-3.3.1.js') }}"></script>
-    <script src="{{ asset('../vendor/semantic/ui/dist/semantic.min.js') }}"></script>
+    <script src="{{ asset('semantic/ui/dist/semantic.min.js') }}"></script>
     <script>
       $('.ui.accordion')
         .accordion()

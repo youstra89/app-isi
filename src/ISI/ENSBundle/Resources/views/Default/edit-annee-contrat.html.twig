@@ -1,5 +1,5 @@
-{# Fiche de renseignement d'un élève #}
-{% extends 'ENSBundle::layout.html.twig' %}
+{% extends "ENSBundle:Default:index.html.twig" %}
+
 
 {% block title %}
   Mise à jour des heures d'enseignement | {{ contrat.getContrat.getEnseignant.getNomFr }} {{ contrat.getContrat.getEnseignant.getPnomFr }}
@@ -9,11 +9,11 @@
   {{ include("ENSBundle::contextual-menu-fonction.html.twig") }}
 {% endblock %}
 
-{% block titre_page %}
+{% block section %}
   <i class="student icon"></i>{{ 'Fonctions'|trans }}
 {% endblock %}
 
-{% block corps %}
+{% block body %}
 
 <div class="">
 	<h2>{{ 'Mise à jour du programme d\'enseignement de '|trans }} <font  class="ui massive green tag label">{{ contrat.getContrat.getEnseignant.getNomFr }} {{ contrat.getContrat.getEnseignant.getPnomFr }}</font></h2>

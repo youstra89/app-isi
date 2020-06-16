@@ -1,18 +1,25 @@
 {% trans_default_domain 'FOSUserBundle' %}{##}
-{% extends "ISIBundle:Admin:layout.html.twig" %}
+{% extends "ISIBundle:Admin:index.html.twig" %}
+
+
+{% block stylesheets %}
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+  <link href="{{ asset('css/select2.min.css') }}" rel="stylesheet" />
+{% endblock %}
+
 
 {% block title %}
     Ajout d'un nouvel user
 {% endblock %}
 
 {% block titre %}
-    <i class="user icon"></i>AJOUTER NOUVEL UTILISATEUR
+    <i class="user icon"></i>Ajouter un nouvel utilisateur
 {% endblock %}
 
-{% block corps %}
+{% block body %}
     <div class="ui form">
-        {{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register'), 'attr': {'class': 'fos_user_registration_register'}}) }}
-            <div class="two fields">
+        {{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register', {'as': asec}), 'attr': {'class': 'fos_user_registration_register'}}) }}
+            <div class="three fields">
                 <div class="field">
                     <label for="">
                         {{ form_label(form.email, "E-mail", {'label_attr': {'class': ''}}) }} {{ form_errors(form.email) }}
@@ -24,6 +31,15 @@
                         {{ form_label(form.username, "Nom d'utilisateur", {'label_attr': {'class': ''}}) }} {{ form_errors(form.username) }}
                     </label>
                     {{ form_widget(form.username, {'attr': {'class': '', 'placeholder': 'Exemple: youstra'}}) }}
+                </div>
+                <div class="field">
+                    <label for="agentId">Personnel</label>
+                    <select class="js-example-basic-single" name="agentId" id="agentId">
+                        <option value="">Choisir un agent</option>
+                        {% for agent in agents if agent.user is empty %}
+                            <option value="{{ agent.id }}">{{ agent.matricule }} --- {{ agent.nomFr }} {{ agent.pnomFr }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
             <div class="two fields">
@@ -39,7 +55,30 @@
                     </label>
                     {{ form_widget(form.plainPassword.second, {'attr': {'class': '', 'placeholder': 'Confirmation du mot de passe'}}) }}
                 </div>
-                <!--  -->
+            </div>
+            <div class="three fields">
+                <div class="field">
+                    <h3>Rôles</h3>
+                    {% set cpt = 0 %}
+                    {% for role in rolesDispo %}
+                        {% set cpt = cpt + 1 %}
+                        <div class="ui toggle checkbox">
+                            <input type="checkbox" name="roles[]" id="role{{cpt}}" value="{{ role }}">
+                            <label for="role{{cpt}}">{{ role }}</label>
+                        </div><br /><br />
+                    {% endfor %}
+                </div>
+                <div class="field">
+                    <h3>Annexes</h3>
+                    {% set cpt = 0 %}
+                    {% for item in annexes %}
+                        {% set cpt = cpt + 1 %}
+                        <div class="ui toggle checkbox">
+                            <input type="checkbox" name="annexes[]" id="annexe{{item.id}}" value="{{ item.libelle }}" {% if item.id == annexe.id %}checked{% endif %}>
+                            <label for="annexe{{item.id}}">{{ item.libelle }}</label>
+                        </div><br /><br />
+                    {% endfor %}
+                </div>
             </div>
             {{ form_widget(form) }}
             <div>
@@ -47,4 +86,16 @@
             </div>
         {{ form_end(form) }}
     </div>
+{% endblock %}
+
+
+{% block scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <script src="{{ asset('js/jquery-3.3.1.js') }}"></script>
+    <script src="{{ asset('js/select2.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $('.js-example-basic-single').select2();
+        });
+    </script>
 {% endblock %}

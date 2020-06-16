@@ -8,11 +8,11 @@
   {{ include("ENSBundle:Rencontre:contextual-menu-rencontre.html.twig") }}
 {% endblock %}
 
-{% block titre_page %}
+{% block section %}
   <i class="handshake icon"></i>{{ 'Rencontres'|trans }}
 {% endblock %}
 
-{% block corps %}
+{% block body %}
   <h2>{{ 'Sélection d\'enseignants aynat participé à la rencontre: '|trans }} <font  class="ui massive blue tag label">{{ rencontre.type }} du {{ rencontre.date|date("d-m-Y") }}</font></h2>
   {% if contrats is not defined %}
     <p>{{ 'Aucun enseignant n\'a encore été inscrit'|trans }}</p>

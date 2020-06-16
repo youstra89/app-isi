@@ -78,7 +78,7 @@
     <div id="header">
         <!-- Grâce aux options définies dans le contrôleur on peut insérer des 
         images à partir de leur url absolue -->
-        <img src="{{ app.request.getSchemeAndHttpHost() ~ asset('/markaz/web/images/mark.png') }}" alt="logo">
+        <img src="{{ app.request.getSchemeAndHttpHost() ~ asset('{{ asset('images/mark.png') }}') }}" alt="logo">
     </div>
     <div id="footer">Texte du footer</div>
     <!-- Maintenant on rempli le document -->

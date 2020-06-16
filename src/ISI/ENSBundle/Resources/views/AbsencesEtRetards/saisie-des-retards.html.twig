@@ -1,4 +1,4 @@
-{% extends "ENSBundle:Enseignant:layout.html.twig" %}
+{% extends "ENSBundle:Default:index.html.twig" %}
 
 {% block title %}
   Saisie des retards
@@ -8,11 +8,11 @@
   {{ include("ENSBundle:AbsencesEtRetards:contextual-menu-retards-et-absences.html.twig") }}
 {% endblock %}
 
-{% block titre_page %}
+{% block section %}
   <i class="flag checkered icon"></i>{{ 'Retards'|trans }}
 {% endblock %}
 
-{% block corps %}
+{% block body %}
     <h2>{{ 'Saisie des retards du '|trans }} {{ date|date('d-m-Y') }} {{ periode }}</h2>
     {% if contrats is not defined %}
         <p>{{ 'Il n y a auccun enseignant enregistré pour le moment'|trans }}</p>
@@ -42,9 +42,9 @@
               {% for contrat in contrats %}
                 {% set image = "" %}
                 {% if contrat.getContrat.getEnseignant.getSexe == 1 %}
-                  {% set image = "/markaz/web/images/mark.png" %}
+                  {% set image = "{{ asset('images/mark.png') }}" %}
                 {% else %}
-                  {% set image = "/markaz/web/images/molly.png" %}
+                  {% set image = "{{ asset('images/molly.png') }}" %}
                 {% endif %}
                 {% set num = num + 1 %}
                 <div class="item ui selectable">

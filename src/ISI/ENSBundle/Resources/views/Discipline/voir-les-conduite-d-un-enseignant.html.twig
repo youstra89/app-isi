@@ -1,5 +1,5 @@
-{# Fiche de renseignement d'un élève #}
-{% extends 'ENSBundle:Enseignant:index.html.twig' %}
+{% extends "ENSBundle:Default:index.html.twig" %}
+
 
 {% block title %}
   Voir les conduites | {{ contrat.getEnseignant.getNomFr }} {{ contrat.getEnseignant.getPnomFr }}
@@ -9,11 +9,11 @@
   {# {{ include("ENSBundle::contextual-menu-fonction.html.twig") }} #}
 {% endblock %}
 
-{% block titre_page %}
+{% block section %}
   <i class="american sign language interpreting icon"></i>{{ 'Discipline - Conduites'|trans }}
 {% endblock %}
 
-{% block corps %}
+{% block body %}
 
 <div class="">
 	<h2>{{ 'Les conduites de '|trans }} <font  class="ui massive orange tag label">{{ contrat.getEnseignant.getNomFr }} {{ contrat.getEnseignant.getPnomFr }}</font></h2>

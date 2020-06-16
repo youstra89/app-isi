@@ -2,27 +2,37 @@
 
 namespace ISI\ISIBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Response;
+use ISI\ISIBundle\Entity\UserAnnexe;
+use ISI\ISIBundle\Repository\AnneeRepository;
 use Symfony\Component\HttpFoundation\Request;
 
-use ISI\ISIBundle\Repository\AnneeRepository;
+use Symfony\Component\HttpFoundation\Response;
 
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class AdminController extends Controller
 {
     /**
-     * @Security("has_role('ROLE_SUPER_ADMIN')")
+     * @Security("has_role('ROLE_SUPER_ADMIN' or 'ROLE_ADMIN_ANNEXE')")
      */
     public function indexAction(Request $request, int $as)
     {
         $em = $this->getDoctrine()->getManager();
         $repoAnnee = $em->getRepository('ISIBundle:Annee');
         $annee = $repoAnnee->find($as);
+        $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+        $annexeId = $request->get('annexeId');
+        $annexe = $repoAnnexe->find($annexeId);
+        if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+            $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+            return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+        }
+
         return $this->render('ISIBundle:Admin:index.html.twig', [
-            'asec' => $annee->getId(),
-            'annee' => $annee
+            'asec'   => $annee->getId(),
+            'annee' => $annee,'annexe'   => $annexe,
+            'annexe' => $annexe,
         ]);
     }
 
@@ -34,6 +44,9 @@ class AdminController extends Controller
         $em = $this->getDoctrine()->getManager();
         $repoAnnee = $em->getRepository('ISIBundle:Annee');
         $annee = $repoAnnee->find($as);
+        $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+        $annexeId = $request->get('annexeId');
+        $annexe = $repoAnnexe->find($annexeId);
 
         // Pour récupérer le service UserManager du bundle
         $userManager = $this->get('fos_user.user_manager');
@@ -54,7 +67,7 @@ class AdminController extends Controller
         // $request->query->get('as')
         return $this->render('ISIBundle:Admin:index-user.html.twig', array(
         'asec'  => $as,
-        'annee' => $annee,
+        'annee' => $annee, 'annexe'   => $annexe,
         'users' => $users
         ));
     }
@@ -64,9 +77,14 @@ class AdminController extends Controller
      */
     public function addRolesUserAction(Request $request, $as, $userId)
     {
-        $em = $this->getDoctrine()->getManager();
-        $repoAnnee = $em->getRepository('ISIBundle:Annee');
-        $annee = $repoAnnee->find($as);
+        $em         = $this->getDoctrine()->getManager();
+        $repoAnnee  = $em->getRepository('ISIBundle:Annee');
+        $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+        $annee      = $repoAnnee->find($as);
+        $annexes    = $repoAnnexe->findAll();
+        $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+        $annexeId = $request->get('annexeId');
+        $annexe = $repoAnnexe->find($annexeId);
 
         $roles = ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN_SCOLARITE', 'ROLE_SCOLARITE', 'ROLE_INTERNAT', 'ROLE_DIRECTION_ENSEIGNANT', 'ROLE_ORGANISATION', 'ROLE_ENSEIGNANT', 'ROLE_ADMIN_ANNEXE', 'ROLE_ETUDE'];
 
@@ -77,25 +95,63 @@ class AdminController extends Controller
         if($request->isMethod('post')){
             $em = $this->getDoctrine()->getManager();
             $data = $request->request->all();
-            $roles = $data['role'];
+            $annexeId = $data['annexeId'];
+            $roles = isset($data['roles']) ? $data['roles'] : [];
             // return new Response(var_dump($data));
-            if(!empty($roles))
-            {
+            if(!empty($roles)){
                 $user->setRoles($roles);
-                $userManager->updateUser($user);
-                $request->getSession()->getFlashBag()->add('info', 'Les rôles de '.$user->getUsername().' ont été mises à jour avec succès.');
-                return $this->redirect($this->generateUrl('isi_user', ['as' => $as]));
+                $request->getSession()->getFlashBag()->add('info', 'Les rôles de <strong>'.$user->getUsername().'</strong> ont été mises à jour avec succès.');
             }
             else{
-                return new Response('Vous n\'avez rien ajouter comme rôle pour cet user');
+                $user->setRoles($roles);
+                $request->getSession()->getFlashBag()->add('error', 'Vous n\'avez rien ajouter comme rôle pour l\'utilisateur <strong>'.$user->getUsername().'</strong>.');
             }
+
+            if(!empty($data['annexes'])){
+                $tab = [];
+                foreach ($annexes as $value) {
+                    $annexeId = $value->getId();
+                    if(isset($data['annexes'][$annexeId]) and !in_array($annexeId, $user->idsAnnexes())){
+                        $userAnnexe = new UserAnnexe();
+                        $userAnnexe->setUser($user);
+                        $userAnnexe->setAnnexe($value);
+                        $userAnnexe->setDisabled(false);
+                        $userAnnexe->setCreatedAt(new \DateTime());
+                        $userAnnexe->setCreatedBy($this->getUser());
+                        $em->persist($userAnnexe);
+                        $tab[] = $userAnnexe;
+                    }
+                    if(!isset($data['annexes'][$annexeId]) and in_array($annexeId, $user->idsAnnexes())){
+                        $userAnnexe = $user->findAnnexe($annexeId);
+                        $userAnnexe->setDisabled(true);
+                        $userAnnexe->setUpdatedAt(new \DateTime());
+                        $userAnnexe->setUpdatedBy($this->getUser());
+                        $tab[] = $userAnnexe;
+                    }
+                    if(isset($data['annexes'][$annexeId]) and in_array($annexeId, $user->idsAnnexes())){
+                        $userAnnexe = $user->findAnnexe($annexeId);
+                        $userAnnexe->setDisabled(false);
+                        $userAnnexe->setUpdatedAt(new \DateTime());
+                        $userAnnexe->setUpdatedBy($this->getUser());
+                        $tab[] = $userAnnexe;
+                    }
+                }
+            }
+            // dump($data['annexes'], $tab);
+            // die();
+            
+            $userManager->updateUser($user);
+            $em->flush();
+            return $this->redirect($this->generateUrl('isi_user', ['as' => $as, 'annexeId' => $annexeId]));
         }
 
         return $this->render('ISIBundle:Admin:add-roles-user.html.twig', array(
-        'asec'  => $as,
-        'user'  => $user,
-        'annee' => $annee,
-        'rolesDispo' => $roles,
+            'asec'       => $as,
+            'user'       => $user,
+            'annee'      => $annee,
+            'annexe'      => $annexe,
+            'annexes'    => $annexes,
+            'rolesDispo' => $roles,
         ));
     }
 }

@@ -1,21 +1,21 @@
-{% extends 'ENSBundle:Enseignant:layout.html.twig' %}
+{% extends "ENSBundle:Default:index.html.twig" %}
 
 {% block title %}
-  Enregistrement d'absence pour | {{ contrat.getEnseignant.getNomFr }} {{ contrat.getEnseignant.getPnomFr }}
+  Enregistrement d'absence pour | {{ contrat.getEnseignant.getNom }}
 {% endblock %}
 
 {% block contextual_menu %}
   {{ include("ENSBundle:AbsencesEtRetards:contextual-menu-retards-et-absences.html.twig") }}
 {% endblock %}
 
-{% block titre_page %}
+{% block section %}
   <i class="flag checkered icon"></i>{{ 'Absences'|trans }}
 {% endblock %}
 
-{% block corps %}
+{% block body %}
 
 <div class="">
-	<h2>{{ 'Enregistrement d\'absence pour l\'enseignant: '|trans }} <font color="green">{{ contrat.getEnseignant.getNomFr }} {{ contrat.getEnseignant.getPnomFr }}</font></h2>
+	<h2>{{ 'Enregistrement d\'absence pour l\'enseignant: '|trans }} <font color="green">{{ contrat.getEnseignant.getNom }}</font></h2>
 	<div class="form-group">
 		{{ form_start(form, {'attr': {'class': 'ui form'}}) }}
 			<center>

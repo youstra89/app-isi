@@ -1,30 +1,7 @@
-{% extends 'ISIBundle::layout.html.twig'%}
+{% extends 'ISIBundle:Disposition:index.html.twig'%}
 
 
 {% block title 'Disposition de classe dans une salle' %}
-
-
-{% block notification %}
-  {% set notif = app.session.flashbag.get('error') %}
-  {% if notif is not empty %}
-    <div class="ui red message">
-      <div class="header">{{ 'Attention'|trans }}</div>
-      <ul class="list">
-        {% for message in notif %}
-          <li>{{ message }}.</li>
-        {% endfor %}
-      </ul>
-    </div>
-  {% endif %}
-  {% for message in app.session.flashbag.get('info') %}
-  <div class="ui green message">
-    <div class="header">{{ 'Notification'|trans }}: </div>
-    <ul class="list">
-      <li>{{ message }}.</li>
-    </ul>
-  </div>
-  {% endfor %}
-{% endblock %}
 
 
 {% block body %}

@@ -1,54 +1,24 @@
-{% extends "ISIBundle::layout.html.twig" %}
+{% extends "ISIBundle:Disposition:index.html.twig" %}
 
 {% block title %}
   Dispositions
 {% endblock %}
 
-{% block contextual_menu %}
-  {# {% include('ISIBundle::contextual-menu.html.twig') %} #}
-{% endblock %}
 
-
-{% block notification %}
-  {% for message in app.session.flashbag.get('error') %}
-  <div class="ui red message">
-    <div class="header">{{ 'Attention'|trans }} !!! </div>
-    <ul class="list">
-      <li>{{ message }}.</li>
-    </ul>
-  </div>
-  {% endfor %}
-  {% for message in app.session.flashbag.get('info') %}
-  <div class="ui green message">
-    <div class="header">{{ 'Notification'|trans }}: </div>
-    <ul class="list">
-      <li>{{ message }}.</li>
-    </ul>
-  </div>
-  {% endfor %}
-{% endblock %}
-
-
-{% block titre_page %}
+{% block section %}
   <i class="users icon"></i>{{ 'Bâtiments'|trans }}
 {% endblock %}
 
 
 {% block body %}
-  <div class="ui right aligned segment">
-    <h1 class="ui header">
-      <i class="student icon"></i>{{ 'Disposition en salle de classe'|trans }}
-    </h1>
-  </div>
   <h2 class="ui header">
-    {# <img src="/images/icons/plugin.png"> #}
     <div class="content">
       Bâtiments
       <div class="sub header">Gestion des bâtiments</div>
     </div>
   </h2>
   <div>
-    <a href="{{ path('batiment_add', {'as' : asec}) }}" class="ui primary button">Ajouter un bâtiment</a>
+    <a href="{{ path('batiment_add', {'as' : asec, 'annexeId': annexe.id}) }}" class="ui primary button">Ajouter un bâtiment</a>
   </div>
   <br>
   <div class="ui cards">
@@ -56,13 +26,13 @@
       <div class="card">
         <div class="content">
           <div class="header">{{ batiment.nom }}
-            <a href="{{ path('batiment_edit', {'as': asec, 'id': batiment.id}) }}"><i class="ui edit icon"></i></a>
+            <a href="{{ path('batiment_edit', {'as': asec, 'annexeId': annexe.id, 'id': batiment.id}) }}"><i class="ui edit icon"></i></a>
           </div>
           <div class="description">
             Nombre de salle de cours : {{ batiment.salles|length }}
           </div>
         </div>
-        <a href="{{ path('salle_add', {'as': asec, 'id': batiment.id}) }}">
+        <a href="{{ path('salle_add', {'as': asec, 'annexeId': annexe.id, 'id': batiment.id}) }}">
           <div class="ui bottom attached button">
             <i class="add icon"></i>
             Ajouter une salle de cours
@@ -72,7 +42,6 @@
     {% endfor %}
   </div>
 {% endblock %}
-
 
 
 {% block javascript %}

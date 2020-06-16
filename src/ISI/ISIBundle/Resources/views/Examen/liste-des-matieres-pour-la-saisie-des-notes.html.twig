@@ -1,7 +1,7 @@
 {# Page d'ajout d'un nouvel examen #}
 {% extends "ISIBundle:Examen:index.html.twig" %}
 {% block title %}
-    {% block pageTitle %}
+    {% block title %}
         Saisie des notes
     {% endblock %}
 {% endblock %}
@@ -14,7 +14,7 @@
 
 
 
-{% block content %}
+{% block body %}
 <div class="ui info message">
     <center>
         <h3>{{ 'Saisie des notes de la classe '|trans }}: {{ classe.getLibelleFr }}</h3>
@@ -22,7 +22,7 @@
     </center>
 </div>
 <div>
-    <a href="{{path('isi_notes_eleves_une_classe', {'as': asec, 'regime': regime, 'classeId':classe.getId, 'examenId': examen.getId})}}">
+    <a href="{{path('isi_notes_eleves_une_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId':classe.getId, 'examenId': examen.getId})}}">
         <button class="ui violet basic button">{{ 'Voir les notes des élèves de'|trans }} {{ classe.getLibelleFr }}</button>
     </a>
 </div><br>
@@ -41,7 +41,7 @@
                         <div class="header">{{ matiere.libelle }}</div>
                         <div class="description"></div>
                     </div>
-                    <a href="{{path('isi_saisie_de_notes_de_la_classe_pour_une_matiere', {'as': asec, 'regime': regime, 'classeId': classe.id, 'examenId': examen.getId, 'matiereId': matiere.getId})}}">
+                    <a href="{{path('isi_saisie_de_notes_de_la_classe_pour_une_matiere', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id, 'examenId': examen.getId, 'matiereId': matiere.getId})}}">
                         <div class="ui positive bottom attached button">{{ 'Saisir les notes'|trans }}</div>
                     </a>
                 </div>
@@ -51,7 +51,7 @@
                         <div class="header">{{ matiere.libelle }}</div>
                         <div class="description"></div>
                     </div>
-                    <a href="{{path('isi_edition_des_notes', {'as': asec, 'regime': regime, 'classeId': classe.getId, 'examenId': examen.getId, 'matiereId': matiere.getId})}}">
+                    <a href="{{path('isi_edition_des_notes', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.getId, 'examenId': examen.getId, 'matiereId': matiere.getId})}}">
                         <div class="ui bottom attached button">{{ 'Modifier les notes'|trans }} </div>
                     </a>
                 </div>

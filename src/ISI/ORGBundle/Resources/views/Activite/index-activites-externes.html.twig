@@ -1,4 +1,5 @@
-{% extends "ORGBundle::layout.html.twig" %}
+{% extends 'ORGBundle:Default:index.html.twig'%}
+
 
 {% block title %}
   Index Activités externes
@@ -46,13 +47,13 @@
 
 
 
-{% block titre_page %}
+{% block section %}
   <i class="users icon"></i>{{ 'Activités locales'|trans }}
 {% endblock %}
 
 
 
-{% block corps %}
+{% block body %}
     <a href="{{ path('activite.nationale.add', {as: asec}) }}" class="positive ui button">
       <i class="plus icon"></i>
       {{ 'Enregistrer une tournée nationale'|trans }}
@@ -65,7 +66,7 @@
       {% for activite in activites %}
         <div class="card">
           <div class="content">
-            <img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
+            <img class="right floated mini ui image" src="{{ asset('images/logoISI-x.png') }}">
             <div class="header">{{ activite.getTypeType }}</div>
             <div class="meta">{{ activite.date|date('d-m-Y') }} </div>
             <div class="description">

@@ -1,4 +1,5 @@
-{% extends "ORGBundle::layout.html.twig" %}
+{% extends 'ORGBundle:Default:index.html.twig'%}
+
 
 {% block title %}
   Index Activités locales
@@ -25,19 +26,19 @@
 
 
 
-{% block titre_page %}
+{% block section %}
   <i class="users icon"></i>{{ 'Activités locales'|trans }}
 {% endblock %}
 
 
 
-{% block corps %}
+{% block body %}
     <h3 class="ui header">{{ 'Choix de la commune pour l\'enregistrement d\'une activité locale'|trans }}</h3>
     <div class="ui four cards">
       {% for commune in communes %}
         <div class="card">
           <div class="content">
-            <img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
+            <img class="right floated mini ui image" src="{{ asset('images/logoISI-x.png') }}">
             <div class="header">{{ commune.nom }}</div>
             <div class="meta">{{ commune.ville.nom }} </div>
             <div class="description">

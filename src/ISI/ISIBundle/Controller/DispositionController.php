@@ -9,13 +9,8 @@ use ISI\ISIBundle\Entity\Salle;
 use ISI\ISIBundle\Entity\SalleClasse;
 use ISI\ISIBundle\Form\SalleType;
 use ISI\ISIBundle\Entity\Batiment;
-use ISI\ISIBundle\Form\BatimentType;
-use ISI\ISIBundle\Entity\Annee;
-use ISI\ISIBundle\Repository\SalleClasseRepository;
-use ISI\ISIBundle\Repository\AnneeContratRepository;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class DispositionController extends Controller
@@ -28,9 +23,17 @@ class DispositionController extends Controller
       $em = $this->getDoctrine()->getManager();
       $repoAnnee = $em->getRepository('ISIBundle:Annee');
       $annee     = $repoAnnee->find($as);
+      $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+      $annexeId = $request->get('annexeId');
+      $annexe = $repoAnnexe->find($annexeId);
+      if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+        $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+        return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+      }
 
       return $this->render('ISIBundle:Disposition:index.html.twig', [
         'asec'  => $as,
+        'annexe'  => $annexe,
         'annee' => $annee,
       ]);
     }
@@ -46,9 +49,18 @@ class DispositionController extends Controller
       $annee     = $repoAnnee->find($as);
       $batiments = $repoBatiment->findBy(['utilisation' => 1]);
 
+      $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+      $annexeId = $request->get('annexeId');
+      $annexe = $repoAnnexe->find($annexeId);
+      if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+        $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+        return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+      }
+
       return $this->render('ISIBundle:Disposition:batiments.html.twig', [
         'asec'      => $as,
         'annee'     => $annee,
+        'annexe'  => $annexe,
         'batiments' => $batiments,
       ]);
     }
@@ -61,6 +73,13 @@ class DispositionController extends Controller
       $em = $this->getDoctrine()->getManager();
       $repoAnnee = $em->getRepository('ISIBundle:Annee');
       $annee     = $repoAnnee->find($as);
+      $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+      $annexeId = $request->get('annexeId');
+      $annexe = $repoAnnexe->find($annexeId);
+      if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+        $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+        return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+      }
       if($request->isMethod('post'))
       {
         $data = $request->request->all();
@@ -82,7 +101,8 @@ class DispositionController extends Controller
       //>>
       return $this->render('ISIBundle:Disposition:batiment-add.html.twig', [
         'asec'  => $as,
-        'annee' => $annee
+      'annexe'  => $annexe,
+      'annee' => $annee
       ]);
     }
 
@@ -95,6 +115,13 @@ class DispositionController extends Controller
       $em = $this->getDoctrine()->getManager();
       $repoAnnee   = $em->getRepository('ISIBundle:Annee');
       $annee       = $repoAnnee->find($as);
+      $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+      $annexeId = $request->get('annexeId');
+      $annexe = $repoAnnexe->find($annexeId);
+      if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+        $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+        return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+      }
       if($request->isMethod('post'))
       {
         $data = $request->request->all();
@@ -113,7 +140,8 @@ class DispositionController extends Controller
       return $this->render('ISIBundle:Disposition:batiment-edit.html.twig', [
         'asec'  => $as,
         'annee' => $annee,
-        'batiment' => $batiment,
+      'annexe'  => $annexe,
+      'batiment' => $batiment,
       ]);
     }
 
@@ -125,13 +153,21 @@ class DispositionController extends Controller
       $em = $this->getDoctrine()->getManager();
       $repoAnnee    = $em->getRepository('ISIBundle:Annee');
       $repoSalle = $em->getRepository('ISIBundle:Salle');
+      $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+      $annexeId = $request->get('annexeId');
+      $annexe = $repoAnnexe->find($annexeId);
+      if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+        $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+        return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+      }
       $annee     = $repoAnnee->find($as);
-      $salles = $repoSalle->findAll();
+      $salles = $repoSalle->findBy(["annexe" => $annexeId]);
 
       return $this->render('ISIBundle:Disposition:salles.html.twig', [
         'asec'   => $as,
         'annee'  => $annee,
-        'salles' => $salles,
+      'annexe'  => $annexe,
+      'salles' => $salles,
       ]);
     }
 
@@ -143,11 +179,19 @@ class DispositionController extends Controller
       $em = $this->getDoctrine()->getManager();
       $repoAnnee = $em->getRepository('ISIBundle:Annee');
       $annee     = $repoAnnee->find($as);
+      $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+      $annexeId = $request->get('annexeId');
+      $annexe = $repoAnnexe->find($annexeId);
+      if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+        $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+        return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+      }
       $salle = new Salle();
       $form = $this->createForm(SalleType::class, $salle);
       $form->handleRequest($request);
       if($form->isSubmitted() && $form->isValid())
       {
+        $salle->setAnnexe($annexe);
         $salle->setCreatedBy($this->getUser());
         $salle->setCreatedAt(new \DateTime());
         $em->persist($salle);
@@ -158,7 +202,8 @@ class DispositionController extends Controller
       return $this->render('ISIBundle:Disposition:salle-add.html.twig', [
         'asec'  => $as,
         'annee' => $annee,
-        'form' => $form->createView()
+      'annexe'  => $annexe,
+      'form' => $form->createView()
       ]);
     }
 
@@ -171,6 +216,13 @@ class DispositionController extends Controller
       $em = $this->getDoctrine()->getManager();
       $repoAnnee = $em->getRepository('ISIBundle:Annee');
       $annee     = $repoAnnee->find($as);
+      $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+      $annexeId = $request->get('annexeId');
+      $annexe = $repoAnnexe->find($annexeId);
+      if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+        $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+        return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+      }
       $form = $this->createForm(SalleType::class, $salle);
       $form->handleRequest($request);
       if($form->isSubmitted() && $form->isValid())
@@ -186,7 +238,8 @@ class DispositionController extends Controller
         'asec'  => $as,
         'annee' => $annee,
         'salle' => $salle,
-        'form' => $form->createView()
+      'annexe'  => $annexe,
+      'form' => $form->createView()
       ]);
     }
 
@@ -199,8 +252,15 @@ class DispositionController extends Controller
       $repoAnnee = $em->getRepository('ISIBundle:Annee');
       $repoSalle = $em->getRepository('ISIBundle:Salle');
       $repoSC    = $em->getRepository('ISIBundle:SalleClasse');
+      $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+      $annexeId = $request->get('annexeId');
+      $annexe = $repoAnnexe->find($annexeId);
+      if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+        $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+        return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+      }
       $annee     = $repoAnnee->find($as);
-      $salles    = $repoSalle->findAll();
+      $salles = $repoSalle->findBy(["annexe" => $annexeId]);
       $sallesClasses = $repoSC->findBy(['annee' => $as]);
       $sallesAOQP = [];
       $sallesFOQP = [];
@@ -220,7 +280,8 @@ class DispositionController extends Controller
       return $this->render('ISIBundle:Disposition:disposition.html.twig', [
         'asec'   => $as,
         'annee'  => $annee,
-        'salles' => $salles,
+      'annexe'  => $annexe,
+      'salles' => $salles,
         'sallesAOQP' => $sallesAOQP,
         'sallesFOQP' => $sallesFOQP,
         'sallesClasses' => $sallesClasses,
@@ -240,9 +301,16 @@ class DispositionController extends Controller
       $repoSC     = $em->getRepository('ISIBundle:SalleClasse');
       $repoGrpF   = $em->getRepository('ISIBundle:Groupeformation');
       $annee      = $repoAnnee->find($as);
+      $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+      $annexeId = $request->get('annexeId');
+      $annexe = $repoAnnexe->find($annexeId);
+      if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+        $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+        return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+      }
       // On sélectionne toutes les classes de l'académie et du centre de formation
-      $classesA   = $repoClasse->classesDeLAnnee($as, 'A');
-      $classesF   = $repoClasse->classesDeLAnnee($as, 'F');
+      $classesA   = $repoClasse->classesDeLAnnee($as, $annexeId, 'A');
+      $classesF   = $repoClasse->classesDeLAnnee($as, $annexeId, 'F');
 
       //On sélectionne ensuite toutes les classes qui ont déjà été disposées dans des salles
       $sallesClasses = $repoSC->findBy(['annee' => $as]);
@@ -317,7 +385,8 @@ class DispositionController extends Controller
         'asec'     => $as,
         'annee'    => $annee,
         'salle'    => $salle,
-        'classesA' => $classesA,
+      'annexe'  => $annexe,
+      'classesA' => $classesA,
         'classesF' => $classesF,
       ]);
     }
@@ -335,9 +404,16 @@ class DispositionController extends Controller
       $repoSC     = $em->getRepository('ISIBundle:SalleClasse');
       $repoGrpF   = $em->getRepository('ISIBundle:Groupeformation');
       $annee      = $repoAnnee->find($as);
+      $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+      $annexeId = $request->get('annexeId');
+      $annexe = $repoAnnexe->find($annexeId);
+      if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+        $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+        return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+      }
       // On sélectionne toutes les classes de l'académie et du centre de formation
-      $classesA   = $repoClasse->classesDeLAnnee($as, 'A');
-      $classesF   = $repoClasse->classesDeLAnnee($as, 'F');
+      $classesA   = $repoClasse->classesDeLAnnee($as, $annexeId, 'A');
+      $classesF   = $repoClasse->classesDeLAnnee($as, $annexeId, 'F');
 
       //On sélectionne ensuite toutes les classes qui ont déjà été disposées dans des salles
       $sallesClasses = $repoSC->findBy(['annee' => $as]);
@@ -449,6 +525,7 @@ class DispositionController extends Controller
         'annee'    => $annee,
         'salle'    => $salle,
         'classesA' => $classesA,
+        'annexe'  => $annexe,
         'classesF' => $classesF,
         'academie' => $academie,
         'centreformation' => $centreformation,

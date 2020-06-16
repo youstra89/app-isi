@@ -15,14 +15,22 @@ class AccountController extends Controller
 {
   public function indexAction(Request $request, $as)
   {
+    $em = $this->getDoctrine()->getManager();
     $repoAnnee = $this->getDoctrine()->getManager()->getRepository('ISIBundle:Annee');
     $annee = $repoAnnee->find($as);
 
     $userType = $request->query->get('userType');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     return $this->render('ISIBundle:Hissaaby:index.html.twig', array(
       'asec'  => $as,
-      'annee' => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'userType' => $userType
     ));
   }

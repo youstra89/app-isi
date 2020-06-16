@@ -1,23 +1,9 @@
-<div class="ui vertical menu">
-  <div class="item">
-    <div class="header">{{ 'Mosquées'|trans }}</div>
-    <div class="menu">
-      <a class="item" href="{{ path('home_mosquees', {'as': asec}) }}">Liste</a>
-      <a class="item" href="{{ path('mosquee.add', {'as': asec}) }}">Ajouter</a>
-    </div>
-  </div>
-  <div class="item">
-    <div class="header">{{ 'Imams'|trans }}</div>
-    <div class="menu">
-      <a class="item" href="{{ path('home_imams', {'as': asec}) }}">Liste</a>
-      <a class="item" href="{{ path('imam.add', {'as': asec}) }}">Ajouter</a>
-    </div>
-  </div>
-  <div class="item">
-    <div class="header">{{ 'Vendredis'|trans }}</div>
-    <div class="menu">
-      <a class="item" href="{{ path('vendredi.add', {'as': asec}) }}">Programmer une prière</a>
-      <a class="item" href="{{ path('home_vendredis', {'as': asec}) }}">Vendredis enregistrés</a>
-    </div>
-  </div>
-</div>
+<div class="header">{{ 'Mosquées'|trans }}</div>
+<a class="item" href="{{ path('home_mosquees', {'as': asec}) }}">Liste</a>
+<a class="item" href="{{ path('mosquee.add', {'as': asec}) }}">Ajouter</a>
+<div class="header">{{ 'Imams'|trans }}</div>
+<a class="item" href="{{ path('home_imams', {'as': asec}) }}">Liste</a>
+<a class="item" href="{{ path('imam.add', {'as': asec}) }}">Ajouter</a>
+<div class="header">{{ 'Vendredis'|trans }}</div>
+<a class="item" href="{{ path('vendredi.add', {'as': asec}) }}">Programmer une prière</a>
+<a class="item" href="{{ path('home_vendredis', {'as': asec}) }}">Vendredis enregistrés</a>

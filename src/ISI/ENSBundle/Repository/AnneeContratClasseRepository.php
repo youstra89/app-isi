@@ -17,7 +17,7 @@ class AnneeContratClasseRepository extends \Doctrine\ORM\EntityRepository
             ->join('ac.contrat', 'cont')
             ->join('cont.enseignant', 'e')
             ->join('ac.annee', 'an')
-            ->where('an.id = :as AND e.id = :enseignantId')
+            ->where('an.id = :as AND e.id = :enseignantId AND e.enseignant = true')
             ->setParameter('as', $as)
             ->setParameter('enseignantId', $enseignantId)
             ->setParameter('as', $as);

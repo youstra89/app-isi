@@ -1,10 +1,10 @@
-{% extends 'ISIBundle:Scolarite:index.html.twig' %}
+{% extends 'ISIBundle:Eleve:index.html.twig' %}
 
-{% block pageTitle %}
+{% block title %}
     Flash inscription de {{ classe.niveau.libelleFr }} - {{ classe.libelleFr}}
 {% endblock %}
 
-{% block content %}
+{% block body %}
     {% set grp = '' %}
     {% if regime is same as('A') %}
       {% set grp = 'Académie' %}
@@ -16,7 +16,7 @@
     {% if frequenter|length == 0 %}
         <p>Tous les élèves de cette classe sont déjà inscrits</p>
     {% else %}
-        <form class="ui form" action="{{ path('isi_appliquer_flash_inscription', {'as': asec, 'regime': regime, 'classeId': classe.id}) }}" method="post">
+        <form class="ui form" action="{{ path('isi_appliquer_flash_inscription', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id}) }}" method="post">
             <button class="ui small primary labeled icon button">
             <i class="save icon"></i> {{ 'Appliquer les changements'|trans }}
             </button>
@@ -49,7 +49,7 @@
                                 {% endif %}
                                 <tr class="{{ class }}" {% if reinscrit == false %}title="{{ fq.eleve.nomFr }} {{ fq.eleve.pnomFr }} ne s'est pas réinscrit(e) pour l'année scolaire {{ annee.libelle }}"{% endif %}>
                                     <td>{{ i }}</td> 
-                                    <td><img class="ui avatar image" src="/markaz/web/images/logoISI-x.png" /></td> 
+                                    <td><img class="ui avatar image" src="{{ asset('images/logoISI-x.png') }}" /></td> 
                                     <td>{{ fq.eleve.matricule }}</td> 
                                     <td>{{ fq.eleve.nomFr }} {{ fq.eleve.pnomFr }}</td> 
                                     <td>

@@ -2,12 +2,12 @@
 
 {% extends 'ISIBundle:Scolarite:index.html.twig' %}
 
-{% block pageTitle %}
+{% block title %}
   Gestion des absences - {{ parent() }}
 {% endblock %}
 
 
-{% block content %}
+{% block body %}
   {% set grp = '' %}
   {% if regime is same as('A') %}
     {% set grp = 'Académie' %}
@@ -20,7 +20,7 @@
       <div class="ui red message">
         <div class="header">{{ 'Attention'|trans }} !!! </div>
         <ul class="list">
-          <li>{{ message }}</li>
+          <li>{{ message|raw }}</li>
         </ul>
       </div>
     {% endfor %}
@@ -28,7 +28,7 @@
       <div class="ui green message">
         <div class="header">{{ 'Notification'|trans }}: </div>
         <ul class="list">
-          <li>{{ message }}.</li>
+          <li>{{ message|raw }}.</li>
         </ul>
       </div>
     {% endfor %}
@@ -39,9 +39,9 @@
       <div class="card">
         <div class="content">
 
-          <a href="{{ path('isi_saisie_des_heures_d_absence', {'as': asec, 'regime': regime, 'classeId': classe.id, 'absence': absence, 'moisId': m.id}) }}">
+          <a href="{{ path('isi_saisie_des_heures_d_absence', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id, 'absence': absence, 'moisId': m.id}) }}">
             <div class="content">
-              <img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
+              <img class="right floated mini ui image" src="{{ asset('images/logoISI-x.png') }}">
               <div class="header"><h4>{{ m.mois }}</h4> </div>
               <div class="meta"></div>
               <div class="description"></div>

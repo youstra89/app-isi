@@ -1,12 +1,11 @@
-{# Page d'ajout d'un nouvel examen #}
+{% extends "ENSBundle:Default:index.html.twig" %}
 
-{% extends "ENSBundle::layout.html.twig" %}
 
 {% block title %}
 	Mise à jour info. {{ enseignant.pnomAr }} {{ enseignant.nomAr }}
 {% endblock %}
 
-{% block corps %}
+{% block body %}
 	<h2>{{ 'Mise à jour des informations'|trans }}  <font  class="ui massive blue tag label">{{ enseignant.nomFr }} {{ enseignant.pnomFr }}</font></h2>
 	<center><h2>{{ enseignant.matricule }}</h2></center><br><br>
 	<div class="form-group">

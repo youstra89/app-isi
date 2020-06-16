@@ -1,18 +1,71 @@
-{% extends "ISIBundle:Internat:layout.html.twig" %}
+{% extends "ISIBundle::index.html.twig" %}
+
+
+{% block stylesheets %}
+  <link rel="stylesheet" href="http://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="{{ asset('semantic/ui/dist/semantic.min.css') }}" />
+  <link rel="stylesheet" type="text/css" href="{{ asset('DataTables/datatables.min.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" />
+{% endblock %}
+
 
 {% block title %}
   Index Internat
 {% endblock %}
 
+
+{% block menu %}
+  <a class="item" href="{{ path('internat_home', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header"><i class="home icon"></i> {{ 'Accueil'|trans }}</h4></a>
+  <a class="item" href="{{ path('internat_gestion_chambres', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header"><i class="bed icon"></i> {{ 'Gestion des chambres'|trans }}</h4></a>
+  <div class="ui input">
+    <div class="ui simple dropdown item">
+      <a><h4 class="ui header"><i class="users icon"></i>{{ 'Gestion des internes'|trans }}</h4></a>
+      <i class="dropdown icon"></i>
+      <div class="menu">
+        <span class="sub-menu">
+          <a class="item" href="{{ path('internat_add', {'as': asec, 'annexeId': annexe.id}) }}"><i class="user plus icon"></i> {{ 'Ajouter un(e) interne'|trans }}</a>
+          <a class="item" href="{{ path('internat_delete', {'as': asec, 'annexeId': annexe.id}) }}"><i class="user times icon"></i>{{ 'Retirer un(e) interne'|trans }}</a>
+          <a class="item" href="{{ path('internat_deleted', {'as': asec, 'annexeId': annexe.id}) }}"><i class="delete icon"></i>{{ 'Liste des retiré(e)s'|trans }}</a>
+        </span>
+      </div>
+    </div>
+  </div>
+  <a class="item" href="{{ path('internat_pay', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header"><i class="money bill alternate outline icon"></i> {{ 'Règlement des frais'|trans }}</h4></a>
+{% endblock %}
+
+
+
+{% block mobile_menu %}
+  <a class="item" href="{{ path('internat_home', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Accueil'|trans }}</a>
+  <a class="item" href="{{ path('internat_gestion_chambres', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Gestion des chambres'|trans }}</a>
+  <span class="ui simple dropdown item">
+    {{ 'Gestion des internes'|trans }}<i class="dropdown icon"></i>
+    <div class="menu">
+      <div class="item"><a href="{{ path('internat_add', {'as': asec, 'annexeId': annexe.id}) }}"><i class="user plus icon"></i> {{ 'Ajouter un(e) interne'|trans }}</a></div>
+      <div class="item"><a href="{{ path('internat_delete', {'as': asec, 'annexeId': annexe.id}) }}"><i class="user times icon"></i>{{ 'Retirer un(e) interne'|trans }}</a></div>
+      <div class="item"><a href="{{ path('internat_deleted', {'as': asec, 'annexeId': annexe.id}) }}"><i class="delete icon"></i>{{ 'Liste des retiré(e)s'|trans }}</a></div>
+    </div>
+  </span>
+  <a class="item" href="{{ path('internat_pay', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Règlement des frais'|trans }}</a>
+{% endblock %}
+
+
+
 {% block contextual_menu %}
   {% if is_granted('ROLE_SUPER_ADMIN') %}
     {{ include("ISIBundle::contextual-menu-panel-admin.html.twig") }}
-  {% else %}
-    {{ include("ISIBundle::contextual-menu-user.html.twig") }}
   {% endif %}
 {% endblock %}
 
-{% block corps %}
+
+{% block section %}
+  <i class="student icon"></i>{{ 'Elèves internés'|trans }}
+{% endblock %}
+
+
+
+{% block body %}
+  {% if internes is defined %}
     {% if internes is empty %}
         <p>{{ 'Aucun élève n\'a encore été inscrit cette année'|trans }}</p>
     {% else %}
@@ -78,4 +131,44 @@
           </tbody>
         </table>
     {% endif %}
+  {% endif %}
+{% endblock %}
+
+
+
+{% block javascripts %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script src="{{ asset('Highcharts-6.1.0/code/highcharts.js') }}"></script>
+  <script src="{{ asset('DataTables/datatables.min.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: 'TableFilter/dist/tablefilter/',
+      col_0: "none",
+      col_4: 'select',
+      col_5: 'select',
+      col_7: 'select',
+      col_8: 'select',
+      col_9: 'none',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string',
+        'string', 'string', 'string',
+        'string', 'none'
+      ],
+      col_widths: [
+        '15px', '130px', '300px', '150px'
+      ],
+      extensions: [{ name: 'sort' }]
+    };
+
+    var tf = new TableFilter('table-internes', filtersConfig);
+    tf.init();
+  </script>
 {% endblock %}

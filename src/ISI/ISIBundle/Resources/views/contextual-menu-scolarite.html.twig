@@ -1,0 +1,11 @@
+<div class="header">{{ 'Affectations'|trans }}</div>
+<a class="item" href="{{path('isi_eleves_inscrits', {'as': asec, 'annexeId': annexe.id, 'regime': regime})}}">{{ 'Elèves inscrits'|trans }}</a>
+<a class="item" href="{{path('isi_modifier_inscription', {'as': asec, 'annexeId': annexe.id, 'regime': regime})}}">{{ 'Modifier inscription'|trans }}</a>
+<a class="item" href="{{path('isi_inscription', {'as': asec, 'annexeId': annexe.id, 'regime': regime})}}">{{ 'Inscription'|trans }}</a>
+<a class="item" href="{{path('isi_flash_inscription', {'as': asec, 'annexeId': annexe.id, 'regime': regime})}}">{{ 'Flash Inscription'|trans }}</a>
+<a class="item" href="{{path('isi_renvoi_home', {'as': asec, 'annexeId': annexe.id, 'regime': regime})}}">{{ 'Renvoi'|trans }}</a>
+<div class="header">{{ 'Infos. Elève'|trans }}</div>
+<a class="item" href="{{ path('isi_changer_regime_home', {'as': asec, 'annexeId': annexe.id, 'regime': regime}) }}">{{ 'Changer le regime de formation'|trans }}</a>
+<div class="header">{{ 'Divers'|trans }}</div>
+<a class="item" href="{{ path('liste_des_permissions', {'as': asec, 'annexeId': annexe.id, 'regime': regime}) }}">{{ 'Permission'|trans }}</a>
+<a class="item" href="{{ path('isi_problemes_home', { 'as': asec, 'annexeId': annexe.id, 'regime': regime }) }}">{{ 'Signaler un problème'|trans }}</a>

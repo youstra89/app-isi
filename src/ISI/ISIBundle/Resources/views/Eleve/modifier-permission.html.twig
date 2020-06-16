@@ -6,7 +6,7 @@
   Modification de la permission du {{ permission.depart|date('d-m-Y') }} pour l'élève {{ permission.eleve.nomFr }} {{ permission.eleve.pnomFr }}
 {% endblock %}
 
-{% block content %}
+{% block body %}
   {% set grp = '' %}
   {% if regime is same as('A') %}
     {% set grp = 'Académie' %}

@@ -3,13 +3,15 @@
 {% extends 'ISIBundle:Scolarite:index.html.twig' %}
 
 {% block title %}
-  {% block pageTitle %}
-    Liste des classes | Afficher les conduites saisies
-  {% endblock %}
+  Liste des classes | Afficher les conduites saisies
 {% endblock %}
 
 
-{% block content %}
+{% block section %}
+  <i class="student icon"></i>{{ 'Conduite des élèves'|trans }} {% if regime is same as ('A') %} {{' - Academie'}} {% else %} {{' - Formation'}} {% endif %}
+{% endblock %}
+
+{% block body %}
   {% set grp = '' %}
   {% if regime is same as('A') %}
     {% set grp = 'Académie' %}
@@ -66,7 +68,7 @@
                   <h4 class="ui image header">{{ genre }}</h4>
                 </td>
                 <td>
-                  <a href="{{path('isi_conduites_des_eleves_d_une_classe', {'as': asec, 'regime': regime, 'classeId': classe.id})}}">
+                  <a href="{{path('isi_conduites_des_eleves_d_une_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}">
                     <i class="list icon"></i>
                   </a>
                 </td>
@@ -78,7 +80,7 @@
       <hr width="75%">
       <script data-config>
         var filtersConfig = {
-          base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+          base_path: 'TableFilter/dist/tablefilter/',
           col_0: "none",
           col_1: 'select',
           col_3: 'select',

@@ -13,8 +13,6 @@
 
 
 {% block body %}
-
-    {% block content %}
       {% set regimeDeFormation = '' %}
       {% if regime == 'A' %}
         {% set regimeDeFormation = 'Academie' %}
@@ -29,11 +27,11 @@
         </h1>
       </div>
     {% if regime is same as('A') %}
-      <a href="{{ path('isi_renvoi_home', {'as': asec, 'regime': 'A'}) }}">
+      <a href="{{ path('isi_renvoi_home', {'as': asec, 'annexeId': annexe.id, 'regime': 'A'}) }}">
     {% elseif regime is same as('F') %}
-      <a href="{{ path('isi_renvoi_home', {'as': asec, 'regime': 'F'}) }}">
+      <a href="{{ path('isi_renvoi_home', {'as': asec, 'annexeId': annexe.id, 'regime': 'F'}) }}">
     {% else %}
-      <a href="{{ path('isi_renvoi_home', {'as': asec, 'regime': 'C'}) }}">
+      <a href="{{ path('isi_renvoi_home', {'as': asec, 'annexeId': annexe.id, 'regime': 'C'}) }}">
     {% endif %}
 
       <button class="negative ui button">
@@ -98,17 +96,18 @@
               <td>{{ eleve.dateRenvoi|date("d-m-Y") }}</td>
               {% if is_granted('ROLE_ADMIN_SCOLARITE') or is_granted('ROLE_ADMIN_ANNEXE') %}
                 <td>
-                  <a href="{{ path('isi_reintegration', {'as': asec, 'regime': regime, 'eleveId': eleve.id}) }}" data-tooltip="Réintegrer l'élève"><i class="plus icon"></i></a>
-                  <a href="{{ path('isi_info_eleve_renvoye', {'as': asec, 'regime': regime, 'eleveId': eleve.id}) }}" data-tooltip="Plus de détails"><i class="list icon"></i></a></td>
+                  <a href="{{ path('isi_reintegration', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'eleveId': eleve.id}) }}" data-tooltip="Réintegrer l'élève"><i class="plus icon"></i></a>
+                  <a href="{{ path('isi_info_eleve_renvoye', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'eleveId': eleve.id}) }}" data-tooltip="Plus de détails"><i class="list icon"></i></a></td>
               {% endif %}
             </tr>
             {% endfor %}
           </tbody>
         </table>
-    {% endblock %}
+{% endblock %}
+{% block javascripts %}
     <script data-config>
       var filtersConfig = {
-        base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+        base_path: 'TableFilter/dist/tablefilter/',
         col_0: 'none',
         col_4: 'select',
         col_6: 'select',

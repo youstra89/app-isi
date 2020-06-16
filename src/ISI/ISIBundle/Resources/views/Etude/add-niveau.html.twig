@@ -2,7 +2,7 @@
 
 {% extends "ISIBundle:Etude:index.html.twig" %}
 
-{% block pageTitle %}
+{% block title %}
 	Enregistrer niveau
 {% endblock %}
 
@@ -10,15 +10,8 @@
     {% include('ISIBundle:Etude:contextual-menu-parametres.html.twig') %}
 {% endblock %}
 
-{% block head %}
-	<div class="ui {{ dir2 }} aligned segment">
-		<h1 class="ui header">
-			<i class="settings icon"></i>{{ 'Paramètres'|trans }}
-		</h1>
-	</div> 
-{% endblock %}
 
-{% block content %}
+{% block body %}
 	<h3>{{ 'Enregistrement d\'un nouveau niveau de formation'|trans }}</h3>
 
 	<div class="well">

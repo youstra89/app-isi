@@ -1,6 +1,6 @@
 {# Page d'ajout d'un nouvel examen #}
 {% extends "ISIBundle:Examen:index.html.twig" %}
-{% block pageTitle %}
+{% block title %}
     Les notes de {{ classe.getLibelleFr }} | {{ parent() }}
 {% endblock %}
 
@@ -13,7 +13,7 @@
 
 
 
-{% block content %}
+{% block body %}
 <h2>{{ 'Notes de la classe'|trans }} : {{ classe.getLibelleFr }}</h2>
 <h3>{{ 'Session '|trans }} : {{ examen.getSession }}</h3>
 

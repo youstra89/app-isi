@@ -386,4 +386,28 @@ class Enseignement
     {
         return $this->updatedBy;
     }
+
+    /**
+     * Set nombreHeureCours
+     *
+     * @param integer $nombreHeureCours
+     *
+     * @return Enseignement
+     */
+    public function setNombreHeureCours($nombreHeureCours)
+    {
+        $this->nombreHeureCours = $nombreHeureCours;
+
+        return $this;
+    }
+
+    /**
+     * Get nombreHeureCours
+     *
+     * @return integer
+     */
+    public function getNombreHeureCours()
+    {
+        return $this->nombreHeureCours;
+    }
 }

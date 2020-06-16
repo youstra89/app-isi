@@ -1,8 +1,8 @@
 {% extends 'ISIBundle:Eleve:index.html.twig' %}
 
-{% block pageTitle %} Modification de classe - {{ eleve.nomFr }} {{ eleve.pnomfr }} {% endblock %}
+{% block title %} Modification de classe - {{ eleve.nomFr }} {{ eleve.pnomfr }} {% endblock %}
 
-{% block content %}
+{% block body %}
     <h3>{{ 'Modification de la classe de'|trans }} {{ eleve.nomFr }} {{ eleve.pnomfr }} </h3>
     <p>{{ 'Classe actuelle'|trans }}: {{ classeActuelle.libelleFr }} </p>
     {% set genreEleve = '' %}

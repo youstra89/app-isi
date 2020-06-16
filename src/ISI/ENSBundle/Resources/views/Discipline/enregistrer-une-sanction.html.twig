@@ -1,4 +1,5 @@
-{% extends "ENSBundle:Enseignant:layout.html.twig" %}
+{% extends "ENSBundle:Default:index.html.twig" %}
+
 
 {% block title %}
   Enregistrer une sanctions
@@ -8,11 +9,11 @@
   {# {{ include("ENSBundle:Discipline:contextual-menu-convocation.html.twig") }} #}
 {% endblock %}
 
-{% block titre_page %}
+{% block section %}
   <i class="american sign language interpreting icon"></i>{{ 'Discipline - Sanction'|trans }}
 {% endblock %}
 
-{% block corps %}
+{% block body %}
 <h2>{{ 'Enregistrement de sanction '|trans }} <font class="ui massive green tag label">{{ contrat.getEnseignant.getNomFr }} {{ contrat.getEnseignant.getPnomFr }}</font></h2>
   {{ form_start(form, {'attr': {'class': 'ui form'}}) }}
     <div class="">

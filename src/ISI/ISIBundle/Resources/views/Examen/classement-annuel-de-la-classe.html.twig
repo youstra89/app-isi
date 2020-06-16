@@ -4,7 +4,7 @@
 {% endif %}
 {% extends template %}
 
-{% block pageTitle %}
+{% block title %}
     Résultats de la classe
 {% endblock %}
 
@@ -16,7 +16,7 @@
 
 
 
-{% block content %}
+{% block body %}
 <h3>{{ 'Résultats de'|trans }} : {{ classe.libelleFr }}</h3>    
     <div class="">
         {# Cette petite partie me permet de vérifier que le classemnt à été fait ou pas encore #}
@@ -35,7 +35,7 @@
         <!-- C'est pour cela qu'on va demander à l'utilisateur de faire le classement -->
         {% if uneMoyenne.rang == null %}
             <p>{{ 'Le classement n\'a pas encore été fait'|trans }}.
-                <a href=" {{path('isi_resultats_de_la_classe', {'as': asec, 'regime': regime, 'classeId': classe.classeId, 'examenId': examenId})}} ">
+                <a href=" {{path('isi_resultats_de_la_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.classeId, 'examenId': examenId})}} ">
                     {{ 'Cliquer ici pour le faire'|trans }}
                 </a>
             </p>
@@ -44,22 +44,22 @@
                 <h4>{{ 'Classement annuel'|trans }}</h4>
                 {% if direction == 'etude' %}
                     {% if moyennes|length > 45 %}
-                        <a href="{{ path('isi_bulletins_moyennes_annuelles', {'as': asec, 'regime': regime, 'classeId': classe.id, 'partie': 1}) }}">
+                        <a href="{{ path('isi_bulletins_moyennes_annuelles', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id, 'partie': 1}) }}">
                             <button class="ui teal basic button">{{ 'Voir / Imprimer les bulletins annuels (1)'|trans }}</button>
                         </a>
-                        <a href="{{ path('isi_bulletins_moyennes_annuelles', {'as': asec, 'regime': regime, 'classeId': classe.id, 'partie': 2}) }}">
+                        <a href="{{ path('isi_bulletins_moyennes_annuelles', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id, 'partie': 2}) }}">
                             <button class="ui teal basic button">{{ 'Voir / Imprimer les bulletins annuels (2)'|trans }}</button>
                         </a>
                     {% else %}
-                        <a href="{{ path('isi_bulletins_moyennes_annuelles', {'as': asec, 'regime': regime, 'classeId': classe.id}) }}">
+                        <a href="{{ path('isi_bulletins_moyennes_annuelles', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id}) }}">
                             <button class="ui teal basic button">{{ 'Voir / Imprimer les bulletins annuels'|trans }}</button>
                         </a>
                     {% endif %}
                 {% endif %}
-                <a href="{{path('isi_statistiques_annuelles', {'as': asec, 'regime': regime, 'classeId':classe.id})}}">
+                <a href="{{path('isi_statistiques_annuelles', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId':classe.id})}}">
                     <button class="ui blue basic button">{{ 'Résultats généraux & statistiques'|trans }}</button>
                 </a>
-                <a href="{{ path('isi_notes_des_deux_examens', {'as': asec, 'regime': regime, 'classeId': classe.id}) }}">
+                <a href="{{ path('isi_notes_des_deux_examens', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id}) }}">
                     <button class="ui violet basic button">{{ 'Voir les notes des élèves'|trans }}</button>
                 </a>
             </div>
@@ -71,9 +71,9 @@
                          <!--  Cette partie me permet seulement de sélectionner l'image qui se trouve à côte de l'élève  -->
                         {% set image = "" %}
                         {% if eleve.sexe == 1 %}
-                            {% set image = "/markaz/web/images/mark.png" %}
+                            {% set image = "{{ asset('images/mark.png') }}" %}
                         {% else %}
-                            {% set image = "/markaz/web/images/molly.png" %}
+                            {% set image = "{{ asset('images/molly.png') }}" %}
                         {% endif %}
                         <!-- Ici on compare l'id de l'élève et la référence de l'élève dans l'objet moyenne -->
                         <!-- S'il y a égalité, on affiche l'élève et son rang -->
@@ -93,7 +93,7 @@
                             {% endif %}
                             <div class="item">
                                 <div class="right floated content">
-                                    <a href="{{ path('isi_bulletin_annuel_individuel', {'as': asec, 'regime': regime, 'classeId': classe.id, 'eleveId': eleve.id}) }}">
+                                    <a href="{{ path('isi_bulletin_annuel_individuel', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id, 'eleveId': eleve.id}) }}">
                                         <button class="ui red basic button">{{ 'Voir le bulletin annuel'|trans }}</button>
                                     </a>
                                 </div>

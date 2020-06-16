@@ -1,27 +1,65 @@
-{% extends "ORGBundle::layout.html.twig" %}
+{% extends "ISIBundle::index.html.twig" %}
 
 {% block title %}
   Index Organisation
 {% endblock %}
 
+
+
+{% block menu %}
+  <a class="item" href="{{ path('org_homepage', {'as': asec}) }}"><h4 class="ui header"><i class="home icon"></i> {{ 'Accueil'|trans }}</h4></a>
+  <a class="item" href="{{ path('home_mosquees', {'as': asec}) }}"><h4 class="ui header"><i class="tasks icon"></i> {{ 'Mosquées'|trans }}</h4></a>
+  <a class="item" href="{{ path('home_convertis', {'as': asec}) }}"><h4 class="ui header"><i class="tasks icon"></i> {{ 'Convertis'|trans }}</h4></a>
+  <span class="ui simple dropdown item">
+    <a><h4 class="ui header"><span class="style-main-menu"><i class="american sign language interpreting icon"></i>{{ 'Activités'|trans }}</span></h4></a>
+    <i class="dropdown icon"></i>
+    <div class="menu">
+      <a class="item" href="{{ path('cours_home', {'as': asec}) }}">{{ 'Cours'|trans }}</a>
+      <a class="item" href="{{ path('activites_externes', {'as': asec}) }}">{{ 'Tournées'|trans }}</a>
+      <a class="item" href="{{ path('activites_locales', {'as': asec}) }}">{{ 'Activités locales'|trans }}</a>
+    </div>
+  </span>
+  <a class="item" href="{{ path('localite', {'as': asec}) }}"><h4 class="ui header"><span class="style-main-menu"><i class="tasks icon"></i>{{ 'Matrimoniale'|trans }}</span></h4></a>
+  <a class="item" href="{{ path('localite', {'as': asec}) }}"><h4 class="ui header"><span class="style-main-menu"><i class="tasks icon"></i>{{ 'Localités'|trans }}</span></h4></a>
+{% endblock %}
+
+
+
+{% block mobile_menu %}
+  <a class="item" href="{{ path('org_homepage', {'as': asec}) }}"><h4 class="ui header">{{ 'Accueil'|trans }}</h4></a>
+  <a class="item" href="{{ path('home_mosquees', {'as': asec}) }}"><h4 class="ui header">{{ 'Mosquées'|trans }}</h4></a>
+  <a class="item" href="{{ path('home_convertis', {'as': asec}) }}"><h4 class="ui header">{{ 'Convertis'|trans }}</h4></a>
+  <span class="ui simple dropdown item">
+    <a><h4 class="ui header">{{ 'Activités'|trans }}</span><i class="dropdown icon"></i></h4></a>
+    <div class="menu">
+      <a class="item" href="{{ path('cours_home', {'as': asec}) }}">{{ 'Cours'|trans }}</a>
+      <a class="item" href="{{ path('activites_externes', {'as': asec}) }}">{{ 'Tournées'|trans }}</a>
+      <a class="item" href="{{ path('activites_locales', {'as': asec}) }}">{{ 'Activités locales'|trans }}</a>
+    </div>
+  </span>
+  <a class="item" href="{{ path('localite', {'as': asec}) }}"><h4 class="ui header"><span class="style-main-menu">{{ 'Matrimoniale'|trans }}</span></h4></a>
+  <a class="item" href="{{ path('localite', {'as': asec}) }}"><h4 class="ui header"><span class="style-main-menu">{{ 'Localités'|trans }}</span></h4></a>
+{% endblock %}
+
+
+
 {% block contextual_menu %}
   {% if is_granted('ROLE_SUPER_ADMIN') %}
       {{ include("ISIBundle::contextual-menu-panel-admin.html.twig") }}
   {% elseif is_granted('ROLE_ADMIN_ANNEXE') %}
-      <div class="ui vertical menu">
-        <div class="item">
-          <div class="header">{{ 'Autres modules'|trans }}</div>
-          <div class="menu">
-            {# Cette partie permet de voir la liste de tous les élèves de la l'institut #}
-            <a class="item" href="{{path('isi_home_scolarite')}}">{{ 'Scolarité'|trans }}</a>
-            <a class="item" href="{{path('etude_home', {'as': asec})}}">{{ 'Programmes d\'étude'|trans }}</a>
-          </div>
-        </div>
-      </div>
+    <div class="header">{{ 'Autres modules'|trans }}</div>
+    <a class="item" href="{{path('isi_home_scolarite')}}">{{ 'Scolarité'|trans }}</a>
+    <a class="item" href="{{path('etude_home', {'as': asec})}}">{{ 'Programmes d\'étude'|trans }}</a>
   {% else %}
     {{ include("ISIBundle::contextual-menu-user.html.twig") }}
   {% endif %}
 {% endblock %}
 
-{% block corps %}
+
+{% block section %}
+  <i class="student icon"></i>{{ 'Organisation'|trans }}
+{% endblock %}
+
+
+{% block body %}
 {% endblock %}

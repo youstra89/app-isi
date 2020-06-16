@@ -1,4 +1,4 @@
-{% extends "ENSBundle:Enseignant:layout.html.twig" %}
+{% extends "ENSBundle:Default:index.html.twig" %}
 
 {% block title %}
   Index Absence
@@ -8,11 +8,11 @@
   {{ include("ENSBundle:AbsencesEtRetards:contextual-menu-retards-et-absences.html.twig") }}
 {% endblock %}
 
-{% block titre_page %}
+{% block section %}
   <i class="flag checkered icon"></i>{{ 'Absences'|trans }}
 {% endblock %}
 
-{% block corps %}
+{% block body %}
     <h2>{{ 'Enregistrement d\'absences des enseignants '|trans }} {{ annee.getLibelle }}</h2>
     {% if contrats is not defined %}
         <p>{{ 'Il n y a auccun enseignant enregistré pour le moment'|trans }}</p>

@@ -1,4 +1,4 @@
-{% extends "ENSBundle:Enseignant:layout.html.twig" %}
+{% extends "ENSBundle:Default:index.html.twig" %}
 
 {% block title %}
   Accueil retards enseignants
@@ -8,11 +8,11 @@
   {{ include("ENSBundle:AbsencesEtRetards:contextual-menu-retards-et-absences.html.twig") }}
 {% endblock %}
 
-{% block titre_page %}
+{% block section %}
   <i class="flag checkered icon"></i>{{ 'Retards'|trans }}
 {% endblock %}
 
-{% block corps %}
+{% block body %}
     <h2>{{ 'Enregistrement des retards des enseignants '|trans }} {{ annee.getLibelle }}</h2>
     <div class="ui raised very padded text container segment">
       <center>

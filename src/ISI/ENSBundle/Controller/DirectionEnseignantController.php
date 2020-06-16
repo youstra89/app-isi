@@ -26,12 +26,45 @@ class DirectionEnseignantController extends Controller
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoEnseignant = $em->getRepository('ENSBundle:Enseignant');
     $annee       = $repoAnnee->find($as);
-    $enseignants = $repoEnseignant->findAll();
+    $annexeId = $request->get('annexeId');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
+    $enseignants = $repoEnseignant->findBy(["enseignant" => true, "annexe" => $annexeId]);
 
 
     return $this->render('ENSBundle:Default:index.html.twig', [
-      'asec'        =>$as,
-      'annee'       => $annee,
+      'asec'        => $as,
+      'annee'   => $annee, 'annexe'   => $annexe,
+      'enseignants' => $enseignants,
+    ]);
+  }
+
+  /**
+   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+   */
+  public function agentsAction(Request $request, $as)
+  {
+    $em = $this->getDoctrine()->getManager();
+    $repoAnnee      = $em->getRepository('ISIBundle:Annee');
+    $repoEnseignant = $em->getRepository('ENSBundle:Enseignant');
+    $annee       = $repoAnnee->find($as);
+    $enseignants = $repoEnseignant->findAll();
+    $annexeId = $request->get('annexeId');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
+
+
+    return $this->render('ENSBundle:Default:agents.html.twig', [
+      'asec'        => $as,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'enseignants' => $enseignants,
     ]);
   }
@@ -73,6 +106,13 @@ class DirectionEnseignantController extends Controller
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee = $em->getRepository('ISIBundle:Annee');
+    $annexeId = $request->get('annexeId');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $annee = $repoAnnee->find($as);
 
     $enseignant = new Enseignant();
@@ -87,16 +127,17 @@ class DirectionEnseignantController extends Controller
       $date = new \DateTime($date);
 
       //Ici on procède à l'enrigistrement effectif de l'année scolaire en base de données
+      $enseignant->setAnnexe($annexe);
       $enseignant->setMatricule($matriculeNew);
       $enseignant->setDateNaissance($date);
-      $enseignant->setRupture(FALSE);
-      $enseignant->setDateRupture(NULL);
+      $enseignant->setRupture(false);
+      $enseignant->setDateRupture(null);
       $enseignant->setCreatedBy($this->getUser());
       $enseignant->setCreatedAt(new \Datetime());
       $em->persist($enseignant);
       try{
         $em->flush();
-        $request->getSession()->getFlashBag()->add('info', 'L\'enseignant(e) '.$enseignant->getNomFr().' '.$enseignant->getPnomFr().' a été enrégistré(e) avec succès.');
+        $request->getSession()->getFlashBag()->add('info', 'L\'enseignant(e) <strong>'.$enseignant->getNom().'</strong> a été enrégistré(e) avec succès.');
       } 
       catch(\Exception $e){
         $this->addFlash('error', $e->getMessage());
@@ -111,7 +152,7 @@ class DirectionEnseignantController extends Controller
     return $this->render('ENSBundle:Default:add-enseignant.html.twig', [
       'asec'    => $as,
       'form'  => $form->createView(),
-      'annee' => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'matricule' => $matriculeNew
     ]);
   }
@@ -124,6 +165,13 @@ class DirectionEnseignantController extends Controller
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoEnseignant = $em->getRepository('ENSBundle:Enseignant');
+    $annexeId = $request->get('annexeId');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee  = $repoAnnee->find($as);
     $enseignant = $repoEnseignant->find($enseignantId);
@@ -136,7 +184,7 @@ class DirectionEnseignantController extends Controller
       $date = new \DateTime($date);
       $enseignant->setDateNaissance($date);
       $em->flush();
-      $request->getSession()->getFlashBag()->add('info', 'Mise à jour des informations relatives à '.$enseignant->getNomFr().' '.$enseignant->getPnomFr().' terminée avec succès.');
+      $request->getSession()->getFlashBag()->add('info', 'Mise à jour des informations relatives à <strong>'.$enseignant->getNom().'</strong> terminée avec succès.');
 
       return $this->redirect($this->generateUrl('ens_home', array(
         'as'     => $as,
@@ -145,7 +193,7 @@ class DirectionEnseignantController extends Controller
 
     return $this->render('ENSBundle:Default:edit-enseignant.html.twig', [
       'asec'  => $as,
-      'annee' => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'form'  => $form->createView(),
       'enseignant' => $enseignant,
     ]);
@@ -159,6 +207,13 @@ class DirectionEnseignantController extends Controller
     $em = $this->getDoctrine()->getManager();
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoEnseignant = $em->getRepository('ENSBundle:Enseignant');
+    $annexeId = $request->get('annexeId');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     // $repoContrat = $em->getRepository('ENSBundle:Contrat');
     // $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
     // $repoConduite = $em->getRepository('ENSBundle:AnneeContratConduite');
@@ -173,7 +228,7 @@ class DirectionEnseignantController extends Controller
     $enseignant = $repoEnseignant->find($enseignantId);
     return $this->render('ENSBundle:Default:info-enseignant.html.twig', [
       'asec'       => $as,
-      'annee'      => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'enseignant' => $enseignant,
     ]);
   }
@@ -186,11 +241,18 @@ class DirectionEnseignantController extends Controller
     $em = $this->getDoctrine()->getManager();
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoEnseignant = $em->getRepository('ENSBundle:Enseignant');
+    $annexeId = $request->get('annexeId');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee  = $repoAnnee->find($as);
     if($annee->getAchevee() == TRUE)
     {
-      $request->getSession()->getFlashBag()->add('error', 'Impossible d\'ajouter une prise de fonction car l\'année scolaire '.$annee->getLibelle().' est achevée.');
+      $request->getSession()->getFlashBag()->add('error', 'Impossible d\'ajouter une prise de fonction car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
       return $this->redirect($this->generateUrl('ens_initialisation_prise_de_fonction', ['as' => $as]));
     }
 
@@ -215,7 +277,7 @@ class DirectionEnseignantController extends Controller
 
     return $this->render('ENSBundle:Default:initialisation-de-prise-de-fonction-enseignant.html.twig', [
       'asec'       => $as,
-      'annee'      => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       // 'enseignant' => $enseignant,
     ]);
   }
@@ -229,13 +291,20 @@ class DirectionEnseignantController extends Controller
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoContrat    = $em->getRepository('ENSBundle:Contrat');
     $repoEnseignant = $em->getRepository('ENSBundle:Enseignant');
+    $annexeId = $request->get('annexeId');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $enseignant = $repoEnseignant->find($enseignantId);
 
     $annee   = $repoAnnee->find($as);
     $contrat = $repoContrat->dernierContrat($enseignantId);
     if(!is_null($contrat) and $contrat->getFini() == FALSE)
     {
-      $request->getSession()->getFlashBag()->add('error', $enseignant->getNomFr().' '.$enseignant->getPnomFr().' est déjà en fonction.');
+      $request->getSession()->getFlashBag()->add('error', '<strong>'.$enseignant->getNom().'</strong> est déjà en fonction.');
       return $this->redirect($this->generateUrl('ens_initialisation_prise_de_fonction', ['as'=> $as]));
     }
 
@@ -251,14 +320,14 @@ class DirectionEnseignantController extends Controller
       $em->persist($contrat);
       $em->flush();
 
-      $request->getSession()->getFlashBag()->add('info', 'La prise de fonction de l\'enseignant(e) '.$enseignant->getNomFr().' '.$enseignant->getPnomFr().' a été enregistrée avec succès.');
+      $request->getSession()->getFlashBag()->add('info', 'La prise de fonction de l\'enseignant(e) <strong>'.$enseignant->getNom().'</strong> a été enregistrée avec succès.');
 
       return $this->redirect($this->generateUrl('ens_initialisation_prise_de_fonction', ['as'=> $as]));
     }
 
     return $this->render('ENSBundle:Default:prise-de-fonction.html.twig', [
       'asec'       => $as,
-      'annee'      => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'form'       => $form->createView(),
       'enseignant' => $enseignant,
     ]);
@@ -272,13 +341,20 @@ class DirectionEnseignantController extends Controller
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoContrat = $em->getRepository('ENSBundle:Contrat');
+    $annexeId = $request->get('annexeId');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee    = $repoAnnee->find($as);
-    $contrats = $repoContrat->findBy(['fini' => FALSE]);
+    $contrats = $repoContrat->contratsEnCours();
 
     return $this->render('ENSBundle:Default:fonctions-en-cours.html.twig', [
       'asec'     => $as,
-      'annee'    => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'contrats' => $contrats,
     ]);
   }
@@ -293,12 +369,19 @@ class DirectionEnseignantController extends Controller
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoContrat    = $em->getRepository('ENSBundle:Contrat');
     $repoEnseignant = $em->getRepository('ENSBundle:Enseignant');
+    $annexeId = $request->get('annexeId');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee  = $repoAnnee->find($as);
 
     if($annee->getAchevee() == TRUE)
     {
-      $request->getSession()->getFlashBag()->add('error', 'Impossible d\'ajouter une prise de fonction car l\'année scolaire '.$annee->getLibelle().' est achevée.');
+      $request->getSession()->getFlashBag()->add('error', 'Impossible d\'ajouter une prise de fonction car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
       return $this->redirect($this->generateUrl('ens_initialisation_l_arret_de_fonction', ['as' => $as]));
     }
 
@@ -330,12 +413,12 @@ class DirectionEnseignantController extends Controller
         $contrat = $repoContrat->dernierContrat($enseignant->getId());
         if(is_null($contrat))
         {
-          $request->getSession()->getFlashBag()->add('error', 'Vous n\'avez jamais eu de relation de travail avec l\'enseignant(e) '.$enseignant->getNomFr().' '.$enseignant->getPnomFr().' ('.$matricule.').');
+          $request->getSession()->getFlashBag()->add('error', 'Vous n\'avez jamais eu de relation de travail avec l\'enseignant(e) <strong>'.$enseignant->getNom().' ('.$matricule.')</strong>.');
           return $this->redirectToRoute('ens_initialisation_l_arret_de_fonction', ['as' => $as]);
         }
         elseif($contrat->getFini() == TRUE)
         {
-          $request->getSession()->getFlashBag()->add('error', 'Il n y a pas de contrat en cours pour l\'enseignant(e) '.$enseignant->getNomFr().' '.$enseignant->getPnomFr().' ('.$matricule.').');
+          $request->getSession()->getFlashBag()->add('error', 'Il n y a pas de contrat en cours pour l\'enseignant(e) <strong>'.$enseignant->getNom().' ('.$matricule.')</strong>.');
           return $this->redirectToRoute('ens_initialisation_l_arret_de_fonction', ['as' => $as]);
         }
         else
@@ -348,7 +431,7 @@ class DirectionEnseignantController extends Controller
 
     return $this->render('ENSBundle:Default:initialisation-de-l-arret-de-fonction-enseignant.html.twig', [
       'asec'       => $as,
-      'annee'      => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       // 'enseignant' => $enseignant,
     ]);
   }
@@ -361,6 +444,13 @@ class DirectionEnseignantController extends Controller
     $em = $this->getDoctrine()->getManager();
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoContrat    = $em->getRepository('ENSBundle:Contrat');
+    $annexeId = $request->get('annexeId');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee   = $repoAnnee->find($as);
     $contrat = $repoContrat->find($contratId);
@@ -383,7 +473,7 @@ class DirectionEnseignantController extends Controller
       $contrat->setUpdatedAt(new \Datetime());
       $em->flush();
 
-      $request->getSession()->getFlashBag()->add('info', 'L\'arrêt de fonction de l\'enseignant '.$contrat->getEnseignant()->getNomFr().' '.$contrat->getEnseignant()->getPnomFr().' a s\'est effectué avec succès.');
+      $request->getSession()->getFlashBag()->add('info', 'L\'arrêt de fonction de l\'enseignant <strong>'.$contrat->getEnseignant()->getNom().'</strong> a s\'est effectué avec succès.');
 
       return $this->redirect($this->generateUrl('ens_initialisation_l_arret_de_fonction', ['as'=> $as]));
     }
@@ -402,8 +492,14 @@ class DirectionEnseignantController extends Controller
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
-    $repoContrat = $em->getRepository('ENSBundle:Contrat');
     $repoAnneeContrat   = $em->getRepository('ENSBundle:AnneeContrat');
+    $annexeId = $request->get('annexeId');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee    = $repoAnnee->find($as);
     $anneeContrats = $repoAnneeContrat->findBy(['annee' => $as]);
@@ -411,7 +507,7 @@ class DirectionEnseignantController extends Controller
 
     return $this->render('ENSBundle:Default:enseignants-de-l-annee.html.twig', [
       'asec'     => $as,
-      'annee'    => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'contrats' => $anneeContrats,
     ]);
   }
@@ -423,8 +519,14 @@ class DirectionEnseignantController extends Controller
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
-    $repoContrat = $em->getRepository('ENSBundle:Contrat');
     $repoAnneeContrat   = $em->getRepository('ENSBundle:AnneeContrat');
+    $annexeId = $request->get('annexeId');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee    = $repoAnnee->find($as);
     $anneeContrats = $repoAnneeContrat->fonctionDeLAnnee($as);
@@ -467,7 +569,7 @@ class DirectionEnseignantController extends Controller
 
     return $this->render('ENSBundle:Default:enseignants-de-l-annee.html.twig', [
       'asec'     => $as,
-      'annee'    => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'contrats' => $anneeContrats,
     ]);
   }
@@ -479,8 +581,14 @@ class DirectionEnseignantController extends Controller
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
-    $repoContrat = $em->getRepository('ENSBundle:Contrat');
     $repoAnneeContrat   = $em->getRepository('ENSBundle:AnneeContrat');
+    $annexeId = $request->get('annexeId');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee    = $repoAnnee->find($as);
     $anneeContrats = $repoAnneeContrat->fonctionDeLAnnee($as);
@@ -524,7 +632,7 @@ class DirectionEnseignantController extends Controller
 
     return $this->render('ENSBundle:Default:enseignants-de-l-annee.html.twig', [
       'asec'     => $as,
-      'annee'    => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'contrats' => $anneeContrats,
     ]);
   }
@@ -538,6 +646,13 @@ class DirectionEnseignantController extends Controller
     $repoAnnee        = $em->getRepository('ISIBundle:Annee');
     $repoContrat      = $em->getRepository('ENSBundle:Contrat');
     $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
+    $annexeId = $request->get('annexeId');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee        = $repoAnnee->find($as);
     $contrat      = $repoContrat->find($contratId);
@@ -545,13 +660,13 @@ class DirectionEnseignantController extends Controller
 
     if($annee->getAchevee() == TRUE)
     {
-      $request->getSession()->getFlashBag()->add('error', 'Impossible d\'ajouter une prise de fonction car l\'année scolaire '.$annee->getLibelle().' est achevée.');
+      $request->getSession()->getFlashBag()->add('error', 'Impossible d\'ajouter une prise de fonction car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
       return $this->redirect($this->generateUrl('ens_fonctions_en_cours', ['as' => $as]));
     }
 
     if(!is_null($anneeContrat))
     {
-      $request->getSession()->getFlashBag()->add('error', $anneeContrat->getContrat()->getEnseignant()->getNomFr().' '.$anneeContrat->getContrat()->getEnseignant()->getPnomFr().' est déjà utilisé(e) pour l\'année '.$annee->getLibelle().'.');
+      $request->getSession()->getFlashBag()->add('error', '<strong>'.$anneeContrat->getContrat()->getEnseignant()->getNom().'</strong> est déjà utilisé(e) pour l\'année <strong>'.$annee->getLibelle().'</strong>.');
       return $this->redirectToRoute('ens_fonctions_en_cours', ['as' => $as]);
     }
 
@@ -568,7 +683,7 @@ class DirectionEnseignantController extends Controller
       $em->persist($newAnneeContrat);
       $em->flush();
 
-      $request->getSession()->getFlashBag()->add('info', 'Les heures de cours de '.$contrat->getEnseignant()->getNomFr().' '.$contrat->getEnseignant()->getPnomFr().' ont été bien enregistrées pour l\'année '.$annee->getLibelle().'.');
+      $request->getSession()->getFlashBag()->add('info', 'Les heures de cours de <strong>'.$contrat->getEnseignant()->getNom().'</strong> ont été bien enregistrées pour l\'année <strong>'.$annee->getLibelle().'</strong>.');
 
       return $this->redirect($this->generateUrl('ens_enseignant_de_l_annee', ['as'=> $as]));
     }
@@ -589,13 +704,20 @@ class DirectionEnseignantController extends Controller
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoAnneeContrat   = $em->getRepository('ENSBundle:AnneeContrat');
+    $annexeId = $request->get('annexeId');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee    = $repoAnnee->find($as);
     $anneeContrat    = $repoAnneeContrat->find($anneeContratId);
 
     if($annee->getAchevee() == TRUE)
     {
-      $request->getSession()->getFlashBag()->add('error', 'Impossible d\'ajouter une prise de fonction car l\'année scolaire '.$annee->getLibelle().' est achevée.');
+      $request->getSession()->getFlashBag()->add('error', 'Impossible d\'ajouter une prise de fonction car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
       return $this->redirect($this->generateUrl('ens_enseignant_de_l_annee', ['as' => $as]));
     }
 
@@ -606,7 +728,7 @@ class DirectionEnseignantController extends Controller
       $em = $this->getDoctrine()->getManager();
       $em->flush();
 
-      $request->getSession()->getFlashBag()->add('info', 'Les heures de cours de '.$anneeContrat->getContrat()->getEnseignant()->getNomFr().' '.$anneeContrat->getContrat()->getEnseignant()->getPnomFr().' ont été mise à jour avec succès pour l\'année '.$annee->getLibelle().'.');
+      $request->getSession()->getFlashBag()->add('info', 'Les heures de cours de <strong>'.$anneeContrat->getContrat()->getEnseignant()->getNom().'</strong> ont été mise à jour avec succès pour l\'année <strong>'.$annee->getLibelle().'</strong>.');
 
       return $this->redirect($this->generateUrl('ens_enseignant_de_l_annee', ['as'=> $as]));
     }

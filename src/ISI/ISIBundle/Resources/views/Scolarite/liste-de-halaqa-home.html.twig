@@ -7,11 +7,11 @@
 {% endif %}
 {% extends template %}
 
-{% block pageTitle %}
+{% block title %}
   Gestion des halaqa
 {% endblock %}
 
-{% block content %}
+{% block body %}
   <h3>{{ 'Gestion des halaqas'|trans }}</h3>
   <div class="ui hidden divider"></div>
   {% if halaqas is empty %}
@@ -50,7 +50,7 @@
                 <h4 class="ui image header">{{ genre }}</h4>
               </td>
               <td>
-                <a href="{{ path('isi_liste_d_une_halaqa', {'as': asec, 'regime': regime, 'halaqaId': halaqa.getId}) }}" data-tooltip="Imprimer la liste des élèves">
+                <a href="{{ path('isi_liste_d_une_halaqa', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'halaqaId': halaqa.getId}) }}" data-tooltip="Imprimer la liste des élèves">
                   <i class="print icon"></i>
                 </a>
               </td>
@@ -61,7 +61,7 @@
       <hr width="75%">
       <script data-config>
         var filtersConfig = {
-          base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+          base_path: 'TableFilter/dist/tablefilter/',
           col_0: "none",
           col_2: 'select',
           col_3: 'select',

@@ -2,11 +2,11 @@
 
 {% extends "ISIBundle:Eleve:index.html.twig" %}
 
-{% block pageTitle %}
+{% block title %}
   Changement de classe
 {% endblock %}
 
-{% block content %}
+{% block body %}
   <h3>{{ 'Modifier l\'inscription d\'un élève dans une classe'|trans }}</h3>
   <div class="ui hidden divider"></div>
   {% if classes is empty %}
@@ -21,7 +21,7 @@
                 <div class="content">
                     <div class="header">{{ classe.getLibelleFr }}</div>
                     <div class="meta"></div>
-                    <a href="{{path('isi_modifier_inscription_d_un_eleve', {'as': asec, 'regime': regime, 'classeId': classe.getId})}}">
+                    <a href="{{path('isi_modifier_inscription_d_un_eleve', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.getId})}}">
                       <div class="description">{{ 'Accéder à la liste des élèves'|trans }}</div>
                     </a>
                 </div>

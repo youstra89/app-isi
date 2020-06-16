@@ -17,7 +17,7 @@ class ContratRepository extends \Doctrine\ORM\EntityRepository
         $limit = 1;
         $qb->select('c')
            ->join('c.enseignant', 'e')
-           ->where('e.id = :idEns')
+           ->where('e.id = :idEns AND e.enseignant = true')
            ->orderBy('c.id', 'DESC')
            ->setFirstResult($offset)
            ->setMaxResults($limit)
@@ -27,6 +27,20 @@ class ContratRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getOneOrNullResult()
             // ->getResult()
+        ;
+    }
+
+    public function contratsEnCours()
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb->select('c')
+           ->join('c.enseignant', 'e')
+           ->where('c.fini = false AND e.enseignant = true')
+           ->orderBy('c.id', 'DESC')
+        ;
+        return $qb
+            ->getQuery()
+            ->getResult()
         ;
     }
 }

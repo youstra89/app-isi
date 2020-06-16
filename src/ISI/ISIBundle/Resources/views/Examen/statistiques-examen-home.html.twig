@@ -1,7 +1,7 @@
 {# On affiche toues les classes d'un niveau de formation. On sélectionne alors une classe pour aller saisir les notes #}
 {% extends 'ISIBundle:Examen:index.html.twig' %}
 
-{% block pageTitle %}
+{% block title %}
   Accueil Statistiques
 {% endblock %}
 
@@ -12,7 +12,7 @@
 
 
 
-{% block content %}
+{% block body %}
   {% set grp = '' %}
   {% if regime is same as('A') %}
     {% set grp = 'Académie' %}

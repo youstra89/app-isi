@@ -2,14 +2,14 @@
 
 {% extends "ISIBundle:Parametres:index.html.twig" %}
 
-{% block pageTitle %}
+{% block title %}
 	Index | Matières
 {% endblock %}
 
-{% block content %}
+{% block body %}
 	<h3>{{ 'Gestion des matieres'|trans }}</h3>
 	{% if is_granted('ROLE_ETUDE') %}
-		<a href="{{ path('isi_nouvelle_matiere', {'as': asec}) }}">
+		<a href="{{ path('isi_nouvelle_matiere', {'as': asec, 'annexeId': annexe.id}) }}">
 			<button class="positive ui button">
 				<i class="plus icon"></i>
 				{{ 'Ajouter une matière'|trans }}
@@ -24,14 +24,14 @@
 		{% for matiere in matieres %}
 			<div class="card">
 				<div class="content">
-					<img class="right floated mini ui image" src="/markaz/web/images/logoISI-x.png">
+					<img class="right floated mini ui image" src="{{ asset('images/logoISI-x.png') }}">
 					<div class="header">{{ matiere.libelle }} </div>
 					<div class="meta">{{ matiere.referenceLangue.libelleLangue }}</div>
 				</div>
 				<div class="extra content">
 					<div class="ui two buttons">
 						{% if is_granted('ROLE_ADMIN_SCOLARITE') %}
-							<a href="{{ path('isi_edit_matiere', {'as': asec, 'matiereId': matiere.id}) }}">
+							<a href="{{ path('isi_edit_matiere', {'as': asec, 'annexeId': annexe.id, 'matiereId': matiere.id}) }}">
 								<div class="ui basic green button">{{ 'Modifier'|trans }}</div>
 							</a>
 							<a href="">

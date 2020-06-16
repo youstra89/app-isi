@@ -2,18 +2,18 @@
 
 {% extends "ISIBundle:Parametres:index.html.twig" %}
 
-{% block pageTitle %}
+{% block title %}
 	Gestion des examens
 {% endblock %}
 
-{% block content %}
+{% block body %}
 	<h3>{{ 'Gestion des examens'|trans }}</h3>
-  <a href="{{ path('isi_add_examen', {'as': asec}) }}">
-    <button class="positive ui button">
-      <i class="plus icon"></i>
-      {{ 'Ajouter un examen'|trans }}
-    </button>
-  </a>
+	<a href="{{ path('isi_add_examen', {'as': asec, 'annexeId': annexe.id}) }}">
+		<button class="positive ui button">
+		<i class="plus icon"></i>
+		{{ 'Ajouter un examen'|trans }}
+		</button>
+	</a>
 	{% if examens is empty %}
 		<p>{{ 'Aucune examen n\'a encore été enregistré'|trans }}</p>
 	{% else %}
@@ -32,17 +32,16 @@
 		        <h4 class="ui image header">{{ examen.libelleFr }}</h4>
 					</td>
 		      <td>
-						<h4 class="ui image header">{{ examen.libelleAr }}</h4>
+				<h4 class="ui image header">{{ examen.libelleAr }}</h4>
 		      </td>
 		      <td>
-						<div class="ui small basic icon buttons">
-							{#<a href="{{ path('isi_edit_examen', {'as': asec, 'niveauId': niveau.id}) }}">#}
-						  	<button class="ui button"><i class="edit icon"></i></button>
-							</a>
-						</div>
-						<div class="ui small basic icon buttons">
-						  <button class="ui button"><i class="delete icon"></i></button>
-						</div>
+				<div class="ui small basic icon buttons">
+					<button class="ui button"><i class="edit icon"></i></button>
+					</a>
+				</div>
+				<div class="ui small basic icon buttons">
+					<button class="ui button"><i class="delete icon"></i></button>
+				</div>
 		      </td>
 		    </tr>
 		{% endfor %}

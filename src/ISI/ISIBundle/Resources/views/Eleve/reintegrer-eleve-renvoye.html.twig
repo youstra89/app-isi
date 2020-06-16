@@ -1,8 +1,8 @@
 {% extends 'ISIBundle:Eleve:index.html.twig' %}
 
-{% block pageTitle %} Réintegration d'un élève renvoyé{% endblock %}
+{% block title %} Réintegration d'un élève renvoyé{% endblock %}
 
-{% block content %}
+{% block body %}
     {% for message in app.session.flashbag.get('error') %}
       <div class="ui red message">
         <div class="header">{{ 'Attention'|trans }} !!! </div>

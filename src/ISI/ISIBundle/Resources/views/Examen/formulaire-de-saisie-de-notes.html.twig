@@ -2,7 +2,7 @@
 
 {% extends "ISIBundle:Examen:index.html.twig" %}
 
-{% block pageTitle %}
+{% block title %}
 	Enregistrement des notes
 {% endblock %}
 
@@ -13,7 +13,7 @@
 
 
 
-{% block content %}
+{% block body %}
 	<div class="ui info message" style="width:75%">
 		<center>
 			<h2>{{ 'Enregistrement des notes de'|trans }} {{classe.libelleFr}} en {{matiere.libelle}}</h2>
@@ -22,7 +22,7 @@
 	</div>
 	<table>
 		<div class="well" style="width:75%">
-			<form action="{{path('isi_saisie_de_notes_de_la_classe_pour_une_matiere', {'as': asec, 'regime': regime, 'classeId': classe.id, 'examenId': examen.id, 'matiereId': matiere.id, 'note': 1})}}" method="post" name="notes">
+			<form action="{{path('isi_saisie_de_notes_de_la_classe_pour_une_matiere', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id, 'examenId': examen.id, 'matiereId': matiere.id, 'note': 1})}}" method="post" name="notes">
 				<div class="ui middle aligned divided list">
 				{# Pour chaque élève #}
 				<div class="item">
@@ -47,9 +47,9 @@
 					{% set i = i + 1 %}
 					{% set image = "" %}
 					{% if eleve.sexe == 1 %}
-						{% set image = "/markaz/web/images/mark.png" %}
+						{% set image = "{{ asset('images/mark.png') }}" %}
 					{% else %}
-						{% set image = "/markaz/web/images/molly.png" %}
+						{% set image = "{{ asset('images/molly.png') }}" %}
 					{% endif %}
 							{% set num = num + 1 %}
 							<div class="item ui selectable">

@@ -2,13 +2,13 @@
 
 {% extends "ISIBundle:Parametres:index.html.twig" %}
 
-{% block pageTitle %}
+{% block title %}
   Liste des matieres
 {% endblock %}
 
-{% block content %}
+{% block body %}
   <h3>{{ 'Les matières enseignées en'|trans }} {{ niveau.libelleFr }}</h3>
-  <a href="{{path('isi_niveaux_matieres', {'as': asec, 'regime': regime})}}">
+  <a href="{{path('isi_niveaux_matieres', {'as': asec, 'annexeId': annexe.id, 'regime': regime})}}">
     <div class="ui animated fade button" tabindex="0">
       <div class="visible content">{{ 'Retour aux niveaux'|trans }}</div>
       <div class="hidden content"><i class="left arrow icon"></i></div>

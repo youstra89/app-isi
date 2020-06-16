@@ -1,4 +1,4 @@
-{% extends "::layout.html.twig" %}
+{# {% extends "::layout.html.twig" %} #}
 
 {% block title %}
     Index - {{ parent() }}
@@ -20,7 +20,7 @@
         {% for type, messages in app.session.flashbag.all() %}
             {% for message in messages %}
                 <div class="flash-{{ type }}">
-                    {{ message }}
+                    {{ message|raw }}
                 </div>
             {% endfor %}
         {% endfor %}

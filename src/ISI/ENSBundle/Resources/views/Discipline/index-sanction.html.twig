@@ -1,4 +1,5 @@
-{% extends "ENSBundle:Enseignant:layout.html.twig" %}
+{% extends "ENSBundle:Default:index.html.twig" %}
+
 
 {% block title %}
   Index Sanctions
@@ -8,11 +9,11 @@
   {# {{ include("ENSBundle:Discipline:contextual-menu-convocation.html.twig") }} #}
 {% endblock %}
 
-{% block titre_page %}
+{% block section %}
   <i class="american sign language interpreting icon"></i>{{ 'Discipline - Sanction'|trans }}
 {% endblock %}
 
-{% block corps %}
+{% block body %}
   <h2>{{ 'Sanctions'|trans }}</h2>
   {% if sanctions is not defined %}
     <p>{{ 'Aucun contrat n\'a encore été enregistrée'|trans }}</p>

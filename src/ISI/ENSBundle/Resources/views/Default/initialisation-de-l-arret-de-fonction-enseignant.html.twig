@@ -1,5 +1,5 @@
-{# Fiche de renseignement d'un élève #}
-{% extends 'ENSBundle::layout.html.twig' %}
+{% extends "ENSBundle:Default:index.html.twig" %}
+
 
 {% block title %}
   Index arrêt de fonction
@@ -9,11 +9,11 @@
   {{ include("ENSBundle::contextual-menu-fonction.html.twig") }}
 {% endblock %}
 
-{% block titre_page %}
+{% block section %}
   <i class="student icon"></i>{{ 'Fonctions'|trans }}
 {% endblock %}
 
-{% block corps %}
+{% block body %}
 
 <div class="ui container">
   <h2>{{ 'Arrêt de fonction'|trans }}</h2>

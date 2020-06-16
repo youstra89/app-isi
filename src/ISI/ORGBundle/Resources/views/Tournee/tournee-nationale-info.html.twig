@@ -1,4 +1,5 @@
-{% extends 'ORGBundle::layout.html.twig'%}
+{% extends 'ORGBundle:Default:index.html.twig'%}
+
 
 
 {% block stylesheets %}
@@ -16,7 +17,7 @@
   <div class="ui red message">
     <div class="header">{{ 'Attention'|trans }} !!! </div>
     <ul class="list">
-      <li>{{ message }}.</li>
+      <li>{{ message|raw }}.</li>
     </ul>
   </div>
   {% endfor %}
@@ -24,7 +25,7 @@
   <div class="ui green message">
     <div class="header">{{ 'Notification'|trans }}: </div>
     <ul class="list">
-      <li>{{ message }}.</li>
+      <li>{{ message|raw }}.</li>
     </ul>
   </div>
   {% endfor %}
@@ -32,7 +33,7 @@
 
 
 
-{% block titre_page %}
+{% block section %}
   <i class="plane icon"></i>{{ 'Tournées'|trans }}
 {% endblock %}
 

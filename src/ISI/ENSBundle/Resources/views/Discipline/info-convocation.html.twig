@@ -1,4 +1,5 @@
-{% extends "ENSBundle:Enseignant:layout.html.twig" %}
+{% extends "ENSBundle:Default:index.html.twig" %}
+
 
 {% block title %}
   Enregistrement d'une convocation
@@ -8,18 +9,18 @@
   {{ include("ENSBundle:Discipline:contextual-menu-convocation.html.twig") }}
 {% endblock %}
 
-{% block titre_page %}
+{% block section %}
   <i class="american sign language interpreting icon"></i>{{ 'Discipline - Convocation'|trans }}
 {% endblock %}
 
-{% block corps %}
+{% block body %}
   <h2>{{ 'Enregistrement d\'une nouvelle convocation'|trans }}</h2><br />
   <div class="ui ordered horizontal list">
     {% for contrat in contrats %}
       {% if contrat.getEnseignant.getSexe == 1 %}
-        {% set image = "/markaz/web/images/mark.png" %}
+        {% set image = "{{ asset('images/mark.png') }}" %}
       {% else %}
-        {% set image = "/markaz/web/images/molly.png" %}
+        {% set image = "{{ asset('images/molly.png') }}" %}
       {% endif %}
       <div class="item">
         <img class="ui avatar image" src="{{ image }}">

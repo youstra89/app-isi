@@ -1,30 +1,53 @@
-{% extends "ISIBundle:Admin:layout.html.twig" %}
+{% extends "ISIBundle:Admin:index.html.twig" %}
+
 
 {% block title %}
   Ajouter rôles User
 {% endblock %}
 
-{% block titre %}
-  <i class="users icon"></i>{{ 'AJOUTER ROLES A UN USER'|trans }}
+
+{% block section %}
+  <i class="users icon"></i>Editer les rôles et l'annexe de {{user.username}}
 {% endblock %}
+
 
 {% block body %}
   <div>
-    <p>{{user.username}}</p>
     <p>{{ 'Les rôles de'|trans }} {{user.username}}:</p>
     <ul>
       {% for role in user.roles %}
         <li>{{role}}</li>
       {% endfor %}
     </ul>
-    <form action="" method="post" name="">
-      {% for role in rolesDispo %}
-        <div class="ui toggle checkbox">
-          <input type="checkbox" name="role[]"  value="{{ role }}" id="" {% if role in user.roles %}checked{% endif %}>
-          <label for="">{{ role }}</label>
-        </div><br /><br />
-      {% endfor %}
+    <br><br>
+    <form action="{{ path('add_roles_user', {'as': asec, 'userId': user.id, 'annexeId': annexe.id}) }}" method="post" name="" class="ui form">
+      <div class="two fields">
+        <div class="field">
+          <h2>Rôles</h2>
+          {% set cpt = 0 %}
+          {% for role in rolesDispo %}
+            {% set cpt = cpt + 1 %}
+            <div class="ui toggle checkbox">
+              <input type="checkbox" name="roles[]" id="role{{cpt}}" value="{{ role }}" {% if role in user.roles %}checked{% endif %}>
+              <label for="role{{cpt}}">{{ role }}</label>
+            </div><br /><br />
+          {% endfor %}
+        </div>
+        <div class="field">
+          <h2>Annexes</h2>
+          {% set cpt = 0 %}
+          {% for item in annexes %}
+            {% set cpt = cpt + 1 %}
+            <div class="ui toggle checkbox">
+              <input type="checkbox" name="annexes[{{item.id}}]" id="annexe{{item.id}}" value="{{ item.libelle }}" {% if item.id in user.idsAnnexes and user.findAnnexe(item.id).disabled == 0 %}checked{% endif %}>
+              <label for="annexe{{item.id}}">{{ item.libelle }}</label>
+            </div><br /><br />
+          {% endfor %}
+        </div>
+      </div>
+      <input type="hidden" value="{{ annexe.id }}" name="annexeId">
       <input type="submit" class="ui primary button" value="   Ajouter les rôles   ">
     </form>
   </div>
+  <br><br>
 {% endblock %}

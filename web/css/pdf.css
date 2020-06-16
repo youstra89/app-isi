@@ -1,97 +1,95 @@
-@font-face 
-{
-	font-family: "majalla";
-	src: url("/markaz/web/polices/majalla.ttf");
+@font-face {
+    font-family: "majalla";
+    src: url("/polices/majalla.ttf");
 }
 
-@font-face 
-{
-	font-family: "Lato";
-	src: url("/markaz/web/polices/Lato-Regular.ttf");
+@font-face {
+    font-family: "Lato";
+    src: url("/polices/Lato-Regular.ttf");
 }
 
-body{
-	font-family: Lato;
+body {
+    font-family: Lato;
 }
 
-.titre-document{
-	border: solid 5px;
-	border-radius: 10px;
-	line-height: 10px;
-	width: 60%;
-	margin: auto;
-	font-size: 2.5em
+.titre-document {
+    border: solid 5px;
+    border-radius: 10px;
+    line-height: 10px;
+    width: 60%;
+    margin: auto;
+    font-size: 2.5em
 }
 
-h1{
-	font-family: majalla, traditional arabic;
-	font-weight: bold;
+h1 {
+    font-family: majalla, traditional arabic;
+    font-weight: bold;
 }
 
-.id-fiche{
-	font-size: 2.5em; 
-	direction: rtl;
+.id-fiche {
+    font-size: 2.5em;
+    direction: rtl;
 }
 
-.classe{
-	font-family: majalla, traditional arabic;
-	display: inline;
-	
+.classe {
+    font-family: majalla, traditional arabic;
+    display: inline;
 }
 
-.matiere{
-	font-family: majalla, traditional arabic;
-	display: inline;
-	margin-right: 700px;
+.matiere {
+    font-family: majalla, traditional arabic;
+    display: inline;
+    margin-right: 700px;
 }
 
-.libelleClasse, .libelleMatiere{
-	font-weight: bold;
+.libelleClasse,
+.libelleMatiere {
+    font-weight: bold;
 }
 
-th{
-	border: 3px solid grey;
-	border-collapse: initial;
-	border-spacing:none;
-	background-color: ;
-	height: 25px;
+th {
+    border: 3px solid grey;
+    border-collapse: initial;
+    border-spacing: none;
+    background-color: ;
+    height: 25px;
 }
 
-table{
-	#border: 3px solid black;
-	display: inline-table;
-	border-spacing: 0px
+table {
+    #border: 3px solid black;
+    display: inline-table;
+    border-spacing: 0px
 }
 
-td{
-	border: 1px solid black;
+td {
+    border: 1px solid black;
 }
 
-.line-table{
-	font-size: 1.5em;
-	height: 50px;
+.line-table {
+    font-size: 1.5em;
+    height: 50px;
 }
 
-.table-header{
-	border: solid 2px black;
-	font-weight: bold;
-	font-size: 2.2em;
-	height: 100px;
+.table-header {
+    border: solid 2px black;
+    font-weight: bold;
+    font-size: 2.2em;
+    height: 100px;
 }
 
-.nomAr{
-	font-family: "sakkal majalla", "majalla", "sakkal", "traditional arabic";
-	font-size: 1.1em;
-	font-weight: bold;
+.nomAr {
+    font-family: "sakkal majalla", "majalla", "sakkal", "traditional arabic";
+    font-size: 1.1em;
+    font-weight: bold;
 }
 
-.nomEleveAr{
-	font-family: "sakkal majalla", "majalla", "sakkal", "traditional arabic";
-	font-weight: bold;
-	font-size: 1.5em
+.nomEleveAr {
+    font-family: "sakkal majalla", "majalla", "sakkal", "traditional arabic";
+    font-weight: bold;
+    font-size: 1.5em
 }
 
-.effectif{
-	font-size: 2.5em;
-	font-family: majalla;
+.effectif {
+    font-size: 2.5em;
+    font-family: majalla;
 }

@@ -1,6 +1,6 @@
 {# Page d'ajout d'un nouvel examen #}
 {% extends "ISIBundle:Examen:index.html.twig" %}
-{% block pageTitle %}
+{% block title %}
     Cumul des notes en {{ classe.getLibelleFr }}
 {% endblock %}
 
@@ -13,7 +13,7 @@
 
 
 
-{% block content %}
+{% block body %}
 <h3>{{ 'Total des notes des élèves de'|trans }} : {{ classe.getLibelleFr }}</h3>
     <div class="">
         {% set numero = 0 %}

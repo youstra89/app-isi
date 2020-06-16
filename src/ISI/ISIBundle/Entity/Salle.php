@@ -86,6 +86,16 @@ class Salle
      */
     private $batiment;
 
+    /**
+     * @var \Annexe
+     *
+     * @ORM\ManyToOne(targetEntity="\ISI\ISIBundle\Entity\Annexe")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="annexe_id", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $annexe;
+
 
     /**
      * Get id
@@ -287,5 +297,29 @@ class Salle
     public function getUpdatedBy()
     {
         return $this->updatedBy;
+    }
+
+    /**
+     * Set annexe
+     *
+     * @param \ISI\ISIBundle\Entity\Annexe $annexe
+     *
+     * @return Salle
+     */
+    public function setAnnexe(\ISI\ISIBundle\Entity\Annexe $annexe = null)
+    {
+        $this->annexe = $annexe;
+
+        return $this;
+    }
+
+    /**
+     * Get annexe
+     *
+     * @return \ISI\ISIBundle\Entity\Annexe
+     */
+    public function getAnnexe()
+    {
+        return $this->annexe;
     }
 }

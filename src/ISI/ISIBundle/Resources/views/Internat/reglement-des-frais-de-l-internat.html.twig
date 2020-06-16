@@ -4,7 +4,7 @@
     Règlement des frais
 {% endblock %}
 
-{% block corps %}
+{% block body %}
     <div class="">
         <h3>{{ 'Règlement des droits d\'un(e) interne'|trans }}</h3>
         {% if moisdepaie is empty %}
@@ -80,4 +80,38 @@
             </table>
         {% endif %}
     </div>
+{% endblock %}
+
+{% block javascripts %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script src="{{ asset('Highcharts-6.1.0/code/highcharts.js') }}"></script>
+  <script src="{{ asset('DataTables/datatables.min.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: 'TableFilter/dist/tablefilter/',
+      col_0: "none",
+      col_3: 'select',
+      col_4: 'none',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string',
+        'string', 'string', 'string',
+        'string', 'none'
+      ],
+      col_widths: [
+        '15px', '130px', '300px', '150px'
+      ],
+      extensions: [{ name: 'sort' }]
+    };
+
+    var tf = new TableFilter('table-internes', filtersConfig);
+    tf.init();
+  </script>
 {% endblock %}

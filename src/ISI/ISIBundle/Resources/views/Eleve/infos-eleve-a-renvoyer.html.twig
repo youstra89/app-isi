@@ -6,7 +6,7 @@
   Home renvoi
 {% endblock %}
 
-{% block content %}
+{% block body %}
   {% set grp = '' %}
   {% if regime is same as('A') %}
     {% set grp = 'Académie' %}
@@ -30,7 +30,7 @@
     </div>
   {% endfor %}
   <center>
-    <form class="ui form" action="{{ path('isi_renvoi', { 'as': asec, 'regime': regime, 'eleveId': eleve.id }) }}" method="post">
+    <form class="ui form" action="{{ path('isi_renvoi', { 'as': asec, 'annexeId': annexe.id, 'regime': regime, 'eleveId': eleve.id }) }}" method="post">
       <button class="negative ui button">
         <i class="minus icon"></i>
         {{ 'Renvoyer'|trans }} {{ eleve.nomFr }} {{ eleve.pnomFr }}

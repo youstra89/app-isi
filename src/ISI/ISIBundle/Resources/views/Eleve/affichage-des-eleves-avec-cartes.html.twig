@@ -2,11 +2,11 @@
 
 {% extends "ISIBundle:Eleve:index.html.twig" %}
 
-{% block pageTitle %}
+{% block title %}
   Suppression inscription
 {% endblock %}
 
-{% block content %}
+{% block body %}
   <h3>{{ 'Supprimer l\'inscription d\'un élève de'|trans }} {{classe.niveau.libelleFr}}-{{classe.libelleFr}} </h3>
   <div class="ui hidden divider"></div>
   {% if elevesClasse is empty %}
@@ -18,9 +18,9 @@
       {% set image = "" %}
       {% set i = i + 1 %}
       {% if eleve.sexeFr == 1 %}
-        {% set image = "/markaz/web/images/mark.png" %}
+        {% set image = "{{ asset('images/mark.png') }}" %}
       {% else %}
-        {% set image = "/markaz/web/images/molly.png" %}
+        {% set image = "{{ asset('images/molly.png') }}" %}
       {% endif %}
         <div class="card">
           <div class="blurring dimmable image">
@@ -35,7 +35,7 @@
           </div>
           <div class="content">
             <h4>{{ eleve.nomFr }} {{ eleve.pnomFr }}</h4>
-            <a class="supprimer" href="{{path('isi_supprime_eleve',{'as': asec, 'regime': regime, 'classeId': classe.classeId, 'eleveId': eleve.id})}}">Supprimer</a>
+            <a class="supprimer" href="{{path('isi_supprime_eleve',{'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.classeId, 'eleveId': eleve.id})}}">Supprimer</a>
 
             {#<span class="supprimeEleve">Supprimer</span>
             <a>Supprimer</a>#}

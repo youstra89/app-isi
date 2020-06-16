@@ -7,11 +7,11 @@
 {% endif %}
 {% extends template %}
 
-{% block pageTitle %}
+{% block title %}
   Inscription
 {% endblock %}
 
-{% block content %}
+{% block body %}
   {# Cas de fiches de notes déjà éditées #}
   {% for message in app.session.flashbag.get('error') %}
     <div class="ui red message">
@@ -134,4 +134,11 @@
   {{ form_widget(form.save, {'attr': {'class': 'ui primary button'}}) }}
 
   {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+  <script src="{{ asset('js/main.js') }}"></script>
+  <script src="{{ asset('js/ajax.js') }}"></script>
+  <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+  <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
 {% endblock %}

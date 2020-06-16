@@ -60,10 +60,14 @@ class EnseignementType extends AbstractType
               'query_builder' => function (MatiereRepository $er) use ($as, $niveauId, $em)
               {
                 $subquery = $er->lesMatieresDuNiveau($as, $niveauId, true);
-                                    $ids = [];
-                                    foreach ($subquery as $value) {
-                                      $ids[] = $value->getId();
-                                    }
+                $ids = [];
+                foreach ($subquery as $value) {
+                  $ids[] = $value->getId();
+                }
+                // dump($subquery);
+                // die();
+                if(empty($ids))
+                  return $er->createQueryBuilder('m');
                 return $er->createQueryBuilder('m')
                           ->where('m.id NOT IN (:ids)')
                           ->setParameter('ids', $ids);

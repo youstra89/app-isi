@@ -2,11 +2,11 @@
 
 {% extends "ISIBundle:Eleve:index.html.twig" %}
 
-{% block pageTitle %}
+{% block title %}
   Changement de classe | {{ classe.libelleFr }}
 {% endblock %}
 
-{% block content %}
+{% block body %}
   <h3>{{ 'Modifier l\'inscription d\'un(e) élève de'|trans }} {{classe.libelleFr}} </h3>
    {% for message in app.session.flashbag.get('info') %}
     <div class="ui green message">
@@ -34,9 +34,9 @@
         {% set image = "" %}
         {% set i = i + 1 %}
         {% if eleve.sexe == 1 %}
-          {% set image = "/markaz/web/images/mark.png" %}
+          {% set image = "{{ asset('images/mark.png') }}" %}
         {% else %}
-          {% set image = "/markaz/web/images/molly.png" %}
+          {% set image = "{{ asset('images/molly.png') }}" %}
         {% endif %}
         <div class="card">
           <div class="blurring dimmable image">
@@ -45,11 +45,11 @@
           <div class="content">
             <h4>{{ eleve.nomFr }} {{ eleve.pnomFr }}
             <br />{{ eleve.matricule }}</h4>
-            <a class="" href="{{path('isi_modifier_classe_eleve',{'as': asec, 'regime': regime, 'classeId': classe.getId, 'eleveId': eleve.id})}}">
+            <a class="" href="{{path('isi_modifier_classe_eleve',{'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.getId, 'eleveId': eleve.id})}}">
               {{ 'Modifier la classe'|trans }}
             </a>
             {% if is_granted('ROLE_ADMIN_SCOLARITE') %}
-              <a class="ui button" href="{{path('isi_modifier_niveau_eleve',{'as': asec, 'regime': regime, 'classeId': classe.getId, 'eleveId': eleve.id})}}">
+              <a class="ui button" href="{{path('isi_modifier_niveau_eleve',{'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.getId, 'eleveId': eleve.id})}}">
                 {{ 'Modifier le niveau'|trans }}
               </a>
             {% endif %}

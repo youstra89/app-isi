@@ -14,7 +14,7 @@ class MySecurityController extends Controller
     {
         if($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_REMEMBERED'))
         {
-            return $this->redirectToRoute('isi_homepage');
+            return $this->redirectToRoute('annexes_homepage');
         }
 
         $authenticationUtils = $this->get('security.authentication_utils');

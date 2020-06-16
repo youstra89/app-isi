@@ -1,13 +1,12 @@
 {# ISIBundle/Ressources/views/Scolarite #}
 {% extends "ISIBundle:Scolarite:index.html.twig" %}
 {% block title %}
-    {% block pageTitle %}
-        Liste de classe
-    {% endblock %}
+    Liste de classe
 {% endblock %}
 
-{% block body %}
 
+
+{% block body %}
     {% if eleves is empty %}
         <p>{{ 'Inscrivez d\'abord des élèves dans cette classe.'|trans }}</p>
     {% else %}

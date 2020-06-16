@@ -2,15 +2,15 @@
 
 {% extends "ISIBundle:Parametres:index.html.twig" %}
 
-{% block pageTitle %}
+{% block title %}
 	Nouvelle année
 {% endblock %}
 
-{% block content %}
+{% block body %}
 	<h3>{{ 'Enregistrement d\'une nouvelle année scolaire'|trans }}</h3>
 
 	<div class="well">
-		{{ form_start(form, {'attr': {'class': ''}}) }}
+		{{ form_start(form, {'attr': {'class': 'ui form'}}) }}
 			<div class="field">
 				<label for="">
 					{# Génération du label. #}

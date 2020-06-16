@@ -1,8 +1,7 @@
-{# On affiche toues les classes d'un niveau de formation. On sélectionne alors une classe pour aller saisir les notes #}
+{% extends "ENSBundle:Default:index.html.twig" %}
 
-{% extends 'ENSBundle:Enseignant:layout.html.twig' %}
 
-{% block pageTitle %}
+{% block title %}
   Voir les absences enregistrées
 {% endblock %}
 
@@ -10,7 +9,7 @@
   {{ include("ENSBundle:AbsencesEtRetards:contextual-menu-retards-et-absences.html.twig") }}
 {% endblock %}
 
-{% block titre_page %}
+{% block section %}
   <i class="flag checkered icon"></i>{{ 'Absences'|trans }}
 {% endblock %}
 
@@ -21,7 +20,7 @@
       <div class="ui red message">
         <div class="header">{{ 'Attention'|trans }} !!! </div>
         <ul class="list">
-          <li>{{ message }}</li>
+          <li>{{ message|raw }}</li>
         </ul>
       </div>
     {% endfor %}
@@ -29,7 +28,7 @@
       <div class="ui green message">
         <div class="header">{{ 'Notification'|trans }}: </div>
         <ul class="list">
-          <li>{{ message }}.</li>
+          <li>{{ message|raw }}.</li>
         </ul>
       </div>
     {% endfor %}

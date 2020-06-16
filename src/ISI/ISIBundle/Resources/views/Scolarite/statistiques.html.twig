@@ -3,13 +3,16 @@
 {% extends 'ISIBundle:Scolarite:index.html.twig' %}
 
 {% block title %}
-  {% block pageTitle %}
     Statistiques
-  {% endblock %}
 {% endblock %}
 
 
-{% block content %}
+{% block section %}
+  <i class="folder open icon"></i>{{ 'Statistiques'|trans }} {% if regime is same as ('A') %} {{' - Academie'}} {% else %} {{' - Formation'}} {% endif %}
+{% endblock %}
+
+
+{% block body %}
   {% set grp = '' %}
   {% if regime is same as('A') %}
     {% set grp = 'Académie' %}

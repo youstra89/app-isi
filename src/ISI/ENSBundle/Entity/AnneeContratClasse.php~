@@ -18,6 +18,15 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class AnneeContratClasse
 {
+    const JOURS = [
+        1 => 'Samedi',
+        2 => 'Dimanche',
+        3 => 'Lundi',
+        4 => 'Mardi',
+        5 => 'Mercredi',
+        6 => 'Jeudi',
+    ];
+
     /**
      * @var int
      *
@@ -165,6 +174,14 @@ class AnneeContratClasse
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+
+    /**
+     * @return AnneeContratClasse
+     */
+    public function jourdecours()
+    {
+        return self::JOURS[$this->jour];
     }
 
     /**
@@ -357,5 +374,77 @@ class AnneeContratClasse
     public function getHalaqa()
     {
         return $this->halaqa;
+    }
+
+    /**
+     * Set numero
+     *
+     * @param integer $numero
+     *
+     * @return AnneeContratClasse
+     */
+    public function setNumero($numero)
+    {
+        $this->numero = $numero;
+
+        return $this;
+    }
+
+    /**
+     * Get numero
+     *
+     * @return integer
+     */
+    public function getNumero()
+    {
+        return $this->numero;
+    }
+
+    /**
+     * Set jour
+     *
+     * @param integer $jour
+     *
+     * @return AnneeContratClasse
+     */
+    public function setJour($jour)
+    {
+        $this->jour = $jour;
+
+        return $this;
+    }
+
+    /**
+     * Get jour
+     *
+     * @return integer
+     */
+    public function getJour()
+    {
+        return $this->jour;
+    }
+
+    /**
+     * Set heure
+     *
+     * @param integer $heure
+     *
+     * @return AnneeContratClasse
+     */
+    public function setHeure($heure)
+    {
+        $this->heure = $heure;
+
+        return $this;
+    }
+
+    /**
+     * Get heure
+     *
+     * @return integer
+     */
+    public function getHeure()
+    {
+        return $this->heure;
     }
 }

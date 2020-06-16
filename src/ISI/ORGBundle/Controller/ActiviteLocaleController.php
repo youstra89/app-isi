@@ -24,6 +24,13 @@ class ActiviteLocaleController extends Controller
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoActivite   = $em->getRepository('ORGBundle:Activite');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $annee       = $repoAnnee->find($as);
     $paginator = $this->get('knp_paginator');
     $query = $repoActivite->getActivites();
@@ -36,7 +43,7 @@ class ActiviteLocaleController extends Controller
 
     return $this->render('ORGBundle:Activite:index-activites-locales.html.twig', [
       'asec'  => $as,
-      'annee' => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'activites' => $activites,
     ]);
   }
@@ -51,10 +58,17 @@ class ActiviteLocaleController extends Controller
     $annee       = $repoAnnee->find($as);
     $repoCommune = $em->getRepository('ORGBundle:Commune');
     $communes    = $repoCommune->findBy(['ville' => 105]);
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     return $this->render('ORGBundle:Activite:choix-commune-activites-locales.html.twig', [
       'asec'  => $as,
-      'annee' => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'communes' => $communes,
     ]);
   }
@@ -67,6 +81,13 @@ class ActiviteLocaleController extends Controller
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoCommune = $em->getRepository('ORGBundle:Commune');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $annee       = $repoAnnee->find($as);
     $commune     = $repoCommune->find($communeId);
     $activite = new Activite();
@@ -89,7 +110,7 @@ class ActiviteLocaleController extends Controller
 
     return $this->render('ORGBundle:Activite:activite-add.html.twig', [
       'asec'  => $as,
-      'annee' => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'commune' => $commune,
       'form'  => $form->createView()
     ]);
@@ -103,6 +124,13 @@ class ActiviteLocaleController extends Controller
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoActivite = $em->getRepository('ORGBundle:Activite');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $annee       = $repoAnnee->find($as);
     $activite     = $repoActivite->find($id);
     $form = $this->createForm(ActiviteType::class, $activite);
@@ -122,7 +150,7 @@ class ActiviteLocaleController extends Controller
 
     return $this->render('ORGBundle:Activite:activite-edit.html.twig', [
       'asec'  => $as,
-      'annee' => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'activite' => $activite,
       'form'  => $form->createView()
     ]);
@@ -138,10 +166,17 @@ class ActiviteLocaleController extends Controller
     $repoActivite = $em->getRepository('ORGBundle:Activite');
     $annee       = $repoAnnee->find($as);
     $activite     = $repoActivite->find($id);
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     return $this->render('ORGBundle:Activite:activite-info.html.twig', [
       'asec'     => $as,
-      'annee'    => $annee,
+      'annee'   => $annee, 'annexe'   => $annexe,
       'activite' => $activite,
     ]);
   }

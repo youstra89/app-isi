@@ -2,11 +2,14 @@
 
 {% extends "ISIBundle:Scolarite:index.html.twig" %}
 
-{% block pageTitle %}
+
+{% block title %}
 	Modification des heures d'absence
 {% endblock %}
 
-{% block content %}
+
+
+{% block body %}
 	<h3>{{ 'Modification des heures d\'absence de'|trans }} {{ absence }} {{ 'de la classe'|trans }} {{ classe.libelleFr }}{{ 'pour le mois de'|trans }} {{ mois.mois }} </h3>
 	<table>
 		<div class="well">
@@ -24,9 +27,9 @@
 				{% for eleve in eleves %}
 					{% set image = "" %}
 					{% if eleve.sexe == 1 %}
-						{% set image = "/markaz/web/images/mark.png" %}
+						{% set image = "{{ asset('images/mark.png') }}" %}
 					{% else %}
-						{% set image = "/markaz/web/images/molly.png" %}
+						{% set image = "{{ asset('images/molly.png') }}" %}
 					{% endif %}
 					{# Pour chaque note #}
 					{# {{dump(absencesDuMois)}} #}

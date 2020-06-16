@@ -11,7 +11,7 @@
   Accueil problèmes
 {% endblock %}
 
-{% block content %}
+{% block body %}
   {% set grp = '' %}
   {% if regime is same as('A') %}
     {% set grp = 'Académie' %}
@@ -34,7 +34,7 @@
     </div>
   {% endfor %}
   <h3>{{ 'Regime de formation'|trans }} : {{ grp }}</h3>
-  <a href="{{ path('isi_eleves_renvoyes', { 'as': asec, 'regime': regime }) }}">{{ 'Cliquez ici pour voir les conduites/problèmes enregistrés'|trans }}</a>
+  <a href="{{ path('isi_eleves_renvoyes', { 'as': asec, 'annexeId': annexe.id, 'regime': regime }) }}">{{ 'Cliquez ici pour voir les conduites/problèmes enregistrés'|trans }}</a>
   <div class="ui raised very padded text container segment">
     <center>
       <h3>{{ 'Entrez le matricule d\'un élève'|trans }}</h3>

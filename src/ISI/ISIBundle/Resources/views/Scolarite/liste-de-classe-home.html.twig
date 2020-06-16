@@ -3,13 +3,11 @@
 {% extends 'ISIBundle:Scolarite:index.html.twig' %}
 
 {% block title %}
-  {% block pageTitle %}
-    Liste des classes
-  {% endblock %}
+  Liste des classes
 {% endblock %}
 
 
-{% block content %}
+{% block body %}
   {% set grp = '' %}
   {% if regime is same as('A') %}
     {% set grp = 'Académie' %}
@@ -66,19 +64,19 @@
                   <h4 class="ui image header">{{ genre }}</h4>
                 </td>
                 <td>
-                  <a href="{{path('isi_tirer_liste_de_la_classe_edition_sans_impression', {'as': asec, 'regime': regime, 'classeId': classe.id})}}">
+                  <a href="{{path('isi_tirer_liste_de_la_classe_edition_sans_impression', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}">
                     <i class="list icon"></i>
                   </a>
                   &nbsp;&nbsp;&nbsp;&nbsp;
-                  <a href="{{path('isi_mise_a_jour_informations_des_eleves_d_une_classe', {'as': asec, 'regime': regime, 'classeId': classe.id})}}" title="Mettre à jour les informations des élèves">
+                  <a href="{{path('isi_mise_a_jour_informations_des_eleves_d_une_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}" title="Mettre à jour les informations des élèves">
                     <i class="edit icon"></i>
                   </a>
                   &nbsp;&nbsp;&nbsp;&nbsp;
-                  <a href="{{path('isi_cartes_scolaires_d_une_classe', {'as': asec, 'regime': regime, 'classeId': classe.id})}}" title="Cartes scolaire">
+                  <a href="{{path('isi_cartes_scolaires_d_une_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}" title="Cartes scolaire">
                     <i class="ticket icon"></i>
                   </a>
                   &nbsp;&nbsp;&nbsp;&nbsp;
-                  <a href="{{path('isi_tirer_liste_de_la_classe', {'as': asec, 'regime': regime, 'classeId': classe.id})}}">
+                  <a href="{{path('isi_tirer_liste_de_la_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}">
                     <i class="print icon"></i>
                   </a>
                 </td>
@@ -90,7 +88,7 @@
       <hr width="75%">
       <script data-config>
         var filtersConfig = {
-          base_path: '/markaz/web/TableFilter/dist/tablefilter/',
+          base_path: 'TableFilter/dist/tablefilter/',
           col_0: "none",
           col_1: 'select',
           col_3: 'select',

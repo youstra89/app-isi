@@ -118,7 +118,7 @@ class AbsencesEtRetardsController extends Controller
             }
             if($cpt != 0)
             {
-                $request->getSession()->getFlashBag()->add('info', 'Les retards du '.$date->format('d-m-Y').' '.$periode.' ont été enregistrés avec succés.');
+                $request->getSession()->getFlashBag()->add('info', 'Les retards du <strong>'.$date->format('d-m-Y').' '.$periode.'</strong> ont été enregistrés avec succés.');
                 $em->flush();
                 return $this->redirectToRoute('ens_retards_home', ['as' => $as]);
             }
@@ -287,7 +287,7 @@ class AbsencesEtRetardsController extends Controller
             $em->persist($absence);
             $em->flush();
 
-            $request->getSession()->getFlashBag()->add('info', 'L\'absence de '.$contrat->getEnseignant()->getNomFr().' '.$contrat->getEnseignant()->getPnomFr().' a été enregistrée avec succès.');
+            $request->getSession()->getFlashBag()->add('info', 'L\'absence de <strong>'.$contrat->getEnseignant()->getNomFr().' '.$contrat->getEnseignant()->getPnomFr().'</strong> a été enregistrée avec succès.');
 
             return $this->redirect($this->generateUrl('ens_absences_home', ['as'=> $as]));
         }
