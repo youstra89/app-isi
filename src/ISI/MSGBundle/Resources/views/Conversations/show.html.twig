@@ -22,7 +22,7 @@
                         <div class="navigation">
                             {{ knp_pagination_render(messages) }}
                         </div>
-                        <form method="post" action="">
+                        <form method="post" action="{{ path('msg_show_conversations', {'id': sendTo.id, 'as': annee.id, 'annexeId': annexe.id}) }}">
                             <div class="md-form">
                                 <i class="fa fa-pencil prefix"></i>
                                 <textarea type="text" id="form10" class="md-textarea form-control" rows="3" name="content" required></textarea>

@@ -22,12 +22,14 @@
 			{% set grp = 'Formation' %}
 	{% endif %}
 	<h3>{{ 'Gestion des niveaux'|trans }} - {{ grp }} </h3>
-  <a href="{{ path('etude_nouveau_niveau', {'as': asec, 'annexeId': annexe.id,  'regime': regime}) }}">
-    <button class="positive ui button">
-      <i class="plus icon"></i>
-      {{ 'Ajouter un niveau'|trans }}
-    </button>
-  </a>
+	{% if is_granted('ROLE_DIRECTION_ETUDE') %}
+		<a href="{{ path('etude_nouveau_niveau', {'as': asec, 'annexeId': annexe.id,  'regime': regime}) }}">
+			<button class="positive ui button">
+			<i class="plus icon"></i>
+			{{ 'Ajouter un niveau'|trans }}
+			</button>
+		</a>
+	{% endif %}
 	{% if niveaux is empty %}
 		<p>{{ 'Aucun niveau n\'a encore été enregistré'|trans }}</p>
 	{% else %}
@@ -52,13 +54,11 @@
 								<h4 class="ui image header">{{ niveau.libelleAr }}</h4>
 							</td>
 							<td>
-								
+								{% if is_granted('ROLE_DIRECTION_ETUDE') %}
 									<a href="{{ path('etude_edit_niveau', {'as': asec, 'annexeId': annexe.id, 'niveauId': niveau.id, 'regime': regime}) }}">
 										<i class="edit icon"></i>
 									</a>
-									<a>
-										<i class="delete icon"></i>
-									</a>
+            					{% endif %}
 							</td>
 						</tr>
 					{% endfor %}

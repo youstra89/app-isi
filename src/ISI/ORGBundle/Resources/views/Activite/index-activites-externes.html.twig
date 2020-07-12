@@ -9,40 +9,10 @@
   {% if is_granted('ROLE_SUPER_ADMIN') %}
       {{ include("ISIBundle::contextual-menu-panel-admin.html.twig") }}
   {% elseif is_granted('ROLE_ADMIN_ANNEXE') %}
-      <div class="ui vertical menu">
-        <div class="item">
-          <div class="header">{{ 'Autres modules'|trans }}</div>
-          <div class="menu">
-            {# Cette partie permet de voir la liste de tous les élèves de la l'institut #}
-            <a class="item" href="{{path('isi_home_scolarite')}}">{{ 'Scolarité'|trans }}</a>
-            <a class="item" href="{{path('etude_home', {'as': asec})}}">{{ 'Programmes d\'étude'|trans }}</a>
-          </div>
-        </div>
-      </div>
-  {% else %}
-    {{ include("ISIBundle::contextual-menu-user.html.twig") }}
+    <div class="header">{{ 'Autres modules'|trans }}</div>
+    <a class="item" href="{{path('isi_home_scolarite', {'as': asec, 'annexeId': annexe.id})}}">{{ 'Scolarité'|trans }}</a>
+    <a class="item" href="{{path('etude_home', {'as': asec, 'annexeId': annexe.id})}}">{{ 'Programmes d\'étude'|trans }}</a>
   {% endif %}
-{% endblock %}
-
-
-
-{% block notification %}
-  {% for message in app.session.flashbag.get('error') %}
-  <div class="ui red message">
-    <div class="header">{{ 'Attention'|trans }} !!! </div>
-    <ul class="list">
-      <li>{{ message|raw }}.</li>
-    </ul>
-  </div>
-  {% endfor %}
-  {% for message in app.session.flashbag.get('info') %}
-  <div class="ui green message">
-    <div class="header">{{ 'Notification'|trans }}: </div>
-    <ul class="list">
-      <li>{{ message|raw }}.</li>
-    </ul>
-  </div>
-  {% endfor %}
 {% endblock %}
 
 
@@ -54,11 +24,11 @@
 
 
 {% block body %}
-    <a href="{{ path('activite.nationale.add', {as: asec}) }}" class="positive ui button">
+    <a href="{{ path('activite.nationale.add', {as: asec, 'annexeId': annexe.id}) }}" class="positive ui button">
       <i class="plus icon"></i>
       {{ 'Enregistrer une tournée nationale'|trans }}
     </a>&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="{{ path('activite.internationale.add', {as: asec}) }}" class="positive ui button">
+    <a href="{{ path('activite.internationale.add', {as: asec, 'annexeId': annexe.id}) }}" class="positive ui button">
       <i class="plus icon"></i>
       {{ 'Enregistrer une tournée internationale'|trans }}
     </a><br><br>
@@ -79,10 +49,10 @@
             {{ activite.commune.nom }} - {{ activite.lieu }}
             <span class="right floated"></span><br>
             <span>
-              <a href="{{ path('activite.externe.edit', {as: asec, id: activite.id}) }}" class="ui teal circular label" data-tooltip="Plus de détails">
+              <a href="{{ path('activite.externe.edit', {as: asec, 'annexeId': annexe.id, id: activite.id}) }}" class="ui teal circular label" data-tooltip="Plus de détails">
                 <i class="plus icon" ></i>
               </a>
-              <a href="{{ path('activite.externe.info', {as: asec, id: activite.id}) }}" class="ui blue circular label" data-tooltip="Plus de détails">
+              <a href="{{ path('activite.externe.info', {as: asec, 'annexeId': annexe.id, id: activite.id}) }}" class="ui blue circular label" data-tooltip="Plus de détails">
                 <i class="list icon" ></i>
               </a>
             </span>

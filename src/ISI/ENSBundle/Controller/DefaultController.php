@@ -4,10 +4,18 @@ namespace ISI\ENSBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+
 
 class DefaultController extends Controller
 {
-    public function indexAction(Request $request)
+    /**
+     * @Route("", name="")
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function index(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         $repoAnnexe = $em->getRepository('ISIBundle:Annexe');

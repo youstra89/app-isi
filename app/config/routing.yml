@@ -7,14 +7,16 @@ msg:
     prefix:   /{_locale}/messenger
 
 ens:
-    resource: "@ENSBundle/Resources/config/routing.yml"
+    resource: "@ENSBundle/Controller"
+    type: annotation
     prefix:   /{_locale}/ens
     defaults: { _locale: fr}
     requirements:
         _locale: fr|ar|
 
 isi:
-    resource: "@ISIBundle/Resources/config/routing.yml"
+    resource: "@ISIBundle/Controller"
+    type: annotation
     prefix:   /{_locale}
     defaults: { _locale: fr}
     requirements:

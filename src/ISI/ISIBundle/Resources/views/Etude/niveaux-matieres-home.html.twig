@@ -36,13 +36,15 @@
                 </div>
               </div>
             </div>
-            <div class="extra content">
-              <div class="ui buttons">
-                <a href="{{path('etude_lier_niveaux_matieres', {'as': asec, 'annexeId': annexe.id, 'niveauId': niveau.id, 'regime': regime})}}">
-                  <div class="ui basic green button">{{ 'Ajouter des matières'|trans }}</div>
-                </a>
+            {% if is_granted('ROLE_DIRECTION_ETUDE') %}
+              <div class="extra content">
+                <div class="ui buttons">
+                  <a href="{{path('etude_lier_niveaux_matieres', {'as': asec, 'annexeId': annexe.id, 'niveauId': niveau.id, 'regime': regime})}}">
+                    <div class="ui basic green button">{{ 'Ajouter des matières'|trans }}</div>
+                  </a>
+                </div>
               </div>
-            </div>
+            {% endif %}
           </div>
         {% endif %}
       {% endfor %}

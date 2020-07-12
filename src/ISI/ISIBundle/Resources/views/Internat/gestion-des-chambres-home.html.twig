@@ -46,7 +46,7 @@
           <td>{{ chambre.nombreDePlaces }}</td>
           <td>{{ chambre.placesDisponibles }}</td>
           <td>
-            <a href="{{ path('internat_edit_chambre', {'as': asec, 'chambreId':chambre.getId}) }}"><i class="edit circle icon"></i></a>
+            <a href="{{ path('internat_edit_chambre', {'as': asec, 'annexeId': annexe.id, 'chambreId':chambre.getId}) }}"><i class="edit circle icon"></i></a>
           </td>
         </tr>
       {% endfor %}

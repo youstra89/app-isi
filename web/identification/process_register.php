@@ -19,11 +19,11 @@ if (isset($_POST['RegTemp']) && !empty($_POST['RegTemp'])) {
 			
 			$sql1 		= "SELECT MAX(finger_id) as fid FROM demo_finger WHERE user_id=".$user_id;
 			$result1 	= mysqli_query($conn, $sql1);
-			// if(!$result1){
-			// 	printf("Error: %s\n", mysqli_error($conn));
-			// 	exit();
-			// }
-			//$result1    = mysqli_result($result1);
+			if(!$result1){
+				printf("Error: %s\n", mysqli_error($conn));
+				exit();
+			}
+			// $result1    = mysqli_result($result1);
 			// error_log("Contenu de result ".$result1, 0);
 			$data 		= mysqli_fetch_row($result1);
 			$fid 		= $data['fid'];

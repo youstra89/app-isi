@@ -5,11 +5,14 @@ namespace ISI\ISIBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+
 
 class CoranController extends Controller
 {
     /**
      * @Security("has_role('ROLE_SCOLARITE')")
+     * @Route("/espace-coran/home-{as}-{regime}", name="isi_espace_coran_home")
      */
     public function indexAction(Request $request, $as, $regime)
     {
@@ -26,7 +29,7 @@ class CoranController extends Controller
         }
 
         $eleves = $repoEleve->findBy(['regime' => $regime]);
-        $elevesInternes = $repoEleve->elevesInternes($as);
+        $elevesInternes = $repoEleve->elevesInternes($as, $annexeId);
         $annee = $repoAnnee->find($request->get('as'));
 
         return $this->render('ISIBundle:Coran:index.html.twig', [

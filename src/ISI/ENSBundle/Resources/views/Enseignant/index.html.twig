@@ -22,16 +22,13 @@
 
 
 {% block body %}
-    {% if is_granted('ROLE_SUPER_ADMIN') %}
-      <a href="{{ path('ens_add', {'as': asec}) }}" class="ui positive button"><i class="plus icon"></i> {{ 'Ajouter un agent'|trans }}</a>
-    {% endif %}
     {% if cours is not defined %}
       <p>{{ 'Aucun enseignant n\'a encore été inscrit'|trans }}</p>
     {% else %}
       <table id="table-cours" cellspacing="0" class="mytable filterable ui very basic table">
         <thead>
           <tr>
-            <th>{{ 'N°'|trans }}</th>
+            <th style="width: 5%; text-align: center">{{ 'N°'|trans }}</th>
             <th>{{ 'Matière'|trans }}</th>
             <th>{{ 'Classe'|trans }}</th>
             <th>{{ 'Numéro'|trans }}</th>
@@ -49,7 +46,7 @@
                 {% set color = "WhiteSmoke" %}
             {% endif %}
             <tr bgcolor="{{ color }}">
-              <td>{{ n }}</td>
+              <td style="width: 5%; text-align: center">{{ n }}</td>
               <td>{{ item.matiere.libelle }}</td>
               <td>
               {% if item.classe %}
@@ -59,12 +56,28 @@
               {% endif %}
               </td>
               <td>{{ item.numero }}</td>
-              <td>{{ item.jourdecours }}</td>
-              <td>{{ item.heure }}</td>
               <td>
-                {# <a href="{{ path('ens_info', {'as': asec, 'enseignantId':item.getId}) }}" data-tooltip="Voir les informations de l'enseignant">
-                  <i class="info circle icon"></i>
-                </a> #}
+                {% if item.jour is not empty %}
+                  {{ item.jourdecours }}
+                {% endif %}
+              </td>
+              <td>
+                {% if item.heure is not empty %}
+                  {{ item.heure }}
+                {% else %}
+                  Indéfinie
+                {% endif %}
+              </td>
+              <td>
+                {% if item.classe is not empty %}
+                  <a href="{{ path('faire_appel_cours', {as: asec, annexeId: annexe.id, coursId:item.id}) }}" data-tooltip="Procéder à l'appel pour ce cours">
+                    <i class="newspaper icon"></i>
+                  </a>
+                {% else %}
+                  <a href="{{ path('faire_appel_halaqa', {as: asec, annexeId: annexe.id, coursId:item.id}) }}" data-tooltip="Procéder à l'appel pour ce cours de coran">
+                    <i class="newspaper icon"></i>
+                  </a>
+                {% endif %}
               </td>
             </tr>
           {% endfor %}

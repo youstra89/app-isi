@@ -46,6 +46,7 @@ class ActiviteExterneController extends Controller
     return $this->render('ORGBundle:Tournee:index.html.twig', [
       'asec'     => $as,
       'annee'    => $annee,
+      'annexe'    => $annexe,
       'tournees' => $tournees,
     ]);
   }
@@ -91,7 +92,7 @@ class ActiviteExterneController extends Controller
     $pays        = $repoPays->findAll();
     if($nationale != 0 && $nationale != 1){
       $this->addFlash('error', 'La valeur saisie est incorrecte.');
-      return $this->redirectToRoute('activites_externes', ['as' => $as]);
+      return $this->redirectToRoute('activites_externes', ['as' => $as, 'annexeId' => $annexeId]);
     }
     if ($request->isMethod('post')) {
       if($this->isCsrfTokenValid('add', $request->get('_token'))){
@@ -104,13 +105,13 @@ class ActiviteExterneController extends Controller
         $dispo = $this->disponibilite($debut, $fin);
         if($debut > $fin){
           $this->addFlash('error', 'La date de fin ne doit pas être antérieure à la date de départ.');
-          return $this->redirectToRoute('tournee.add', ['as' => $as, 'nationale' => $nationale]);
+          return $this->redirectToRoute('tournee.add', ['as' => $as, 'annexeId' => $annexeId, 'nationale' => $nationale]);
         }
 
         // Cette condition va nous permettre de vérifier la disponibilité de la durée choisie
         if($dispo == false){
           $this->addFlash('error', 'La durée saisie est inclue dans la durée de l\'une des tournée déjà enregistrée.');
-          return $this->redirectToRoute('tournee.add', ['as' => $as, 'nationale' => $nationale]);
+          return $this->redirectToRoute('tournee.add', ['as' => $as, 'annexeId' => $annexeId, 'nationale' => $nationale]);
         }
         $tournee = new Tournee();
         if($nationale == 1)
@@ -122,7 +123,7 @@ class ActiviteExterneController extends Controller
         $tournee->setCreatedAt(new \DateTime());
         $em->persist($tournee);
         if($nationale == 1){
-          $url = $this->redirectToRoute('destination.tournee.add.activite', ['as' => $as, 'id' => $tournee->getId()]);
+          $url = $this->redirectToRoute('destination.tournee.add.activite', ['as' => $as, 'annexeId' => $annexeId, 'id' => $tournee->getId()]);
           foreach ($destinations as $key => $value) {
             $commune = $repoCommune->find($value);
             $tourneeCommune = new TourneeCommune();
@@ -133,7 +134,7 @@ class ActiviteExterneController extends Controller
           }
         }
         elseif($nationale == 0){
-          $url = $this->redirectToRoute('destination.tournee.internationale.add.activite', ['as' => $as, 'id' => $tournee->getId()]);
+          $url = $this->redirectToRoute('destination.tournee.internationale.add.activite', ['as' => $as, 'annexeId' => $annexeId, 'id' => $tournee->getId()]);
           foreach ($destinations as $key => $value) {
             $pays = $repoPays->find($value);
             $tourneePays = new TourneePays();
@@ -153,6 +154,7 @@ class ActiviteExterneController extends Controller
       return $this->render('ORGBundle:Tournee:tournee-nationale-add.html.twig', [
         'asec'      => $as,
         'annee'     => $annee,
+        'annexe'    => $annexe,
         'communes'  => $communes,
         'nationale' => $nationale,
       ]);
@@ -161,6 +163,7 @@ class ActiviteExterneController extends Controller
       return $this->render('ORGBundle:Tournee:tournee-internationale-add.html.twig', [
         'asec'      => $as,
         'annee'     => $annee,
+        'annexe'    => $annexe,
         'pays'      => $pays,
         'nationale' => $nationale,
       ]);
@@ -204,7 +207,7 @@ class ActiviteExterneController extends Controller
         $fin = new \DateTime($data['fin']);
         if($debut > $fin){
           $this->addFlash('error', 'La date de fin ne doit pas être antérieure à la date de départ.');
-          return $this->redirectToRoute('activite.nationale.add', ['as' => $as]);
+          return $this->redirectToRoute('activite.nationale.add', ['as' => $as, 'annexeId' => $annexeId]);
         }
         $tournee->setCommentaire($commentaire);
         $tournee->setDebut($debut);
@@ -224,7 +227,7 @@ class ActiviteExterneController extends Controller
         }
         $em->flush();
         $this->addFlash('info', 'La tournée du <strong>'.$debut->format('d-m-Y').'</strong> au <strong>'.$fin->format('d-m-Y').'</strong> a été mise à jour avec succès.');
-        return $this->redirectToRoute('activites_externes', ['as' => $as]);
+        return $this->redirectToRoute('activites_externes', ['as' => $as, 'annexeId' => $annexeId]);
       }
     }
 
@@ -232,6 +235,7 @@ class ActiviteExterneController extends Controller
     return $this->render('ORGBundle:Tournee:tournee-nationale-edit.html.twig', [
       'asec'     => $as,
       'annee'    => $annee,
+      'annexe'   => $annexe,
       'tournee'  => $tournee,
       'communes' => $communes,
     ]);
@@ -259,6 +263,7 @@ class ActiviteExterneController extends Controller
     return $this->render('ORGBundle:Tournee:tournee-nationale-communes.html.twig', [
       'asec'    => $as,
       'annee'   => $annee,
+      'annexe'  => $annexe,
       'tournee' => $tournee,
     ]);
   }
@@ -285,6 +290,7 @@ class ActiviteExterneController extends Controller
     return $this->render('ORGBundle:Tournee:tournee-internationale-pays.html.twig', [
       'asec'    => $as,
       'annee'   => $annee,
+      'annexe'  => $annexe,
       'tournee' => $tournee,
     ]);
   }
@@ -310,6 +316,7 @@ class ActiviteExterneController extends Controller
 
     return $this->render('ORGBundle:Tournee:tournee-nationale-suppression-communes.html.twig', [
       'asec'    => $as,
+      'annexe'  => $annexe,
       'annee'   => $annee,
       'tournee' => $tournee,
     ]);
@@ -337,7 +344,7 @@ class ActiviteExterneController extends Controller
       $em->flush();
       $this->addFlash('info', 'La commune a été supprimée avec succès');
     }
-    return $this->redirectToRoute('destination.tournee.remove.activite', ['as' => $as, 'id' => $tourneeId]);
+    return $this->redirectToRoute('destination.tournee.remove.activite', ['as' => $as, 'annexeId' => $annexeId, 'id' => $tourneeId]);
 
   }
 
@@ -372,7 +379,7 @@ class ActiviteExterneController extends Controller
       if ($date < $tournee->getDebut() || $date > $tournee->getFin()) {
         return new Response('Date incorrecte');
         $this->addFlash('error', 'La date saisie n\'est pas inclue dans la durée de la tournée.');
-        return $this->redirectToRoute('activite.tournee.add', ['as' => $as, 'id' => $id, 'communeId' => $communeId]);
+        return $this->redirectToRoute('activite.tournee.add', ['as' => $as, 'annexeId' => $annexeId, 'id' => $id, 'communeId' => $communeId]);
       }
       $activite->setCreatedBy($this->getUser());
       $activite->setCreatedAt(new \DateTime());
@@ -389,12 +396,13 @@ class ActiviteExterneController extends Controller
       $em->persist($activiteCommune);
       $em->flush();
       $this->addFlash('info', 'Le <strong>'.$activite->getTypeType().'</strong> du <strong>'.$activite->getDate()->format('d-m-Y').'</strong> pour la tournée du <strong>'.$tournee->getDebut()->format('d-m-Y').'</strong> au <strong>'.$tournee->getFin()->format('d-m-Y').'</strong> à <strong>'.$commune->getNom().'</strong> a été enregistré avec succès.');
-      return $this->redirectToRoute('destination.tournee.add.activite', ['as' => $as, 'id' => $id]);
+      return $this->redirectToRoute('destination.tournee.add.activite', ['as' => $as, 'annexeId' => $annexeId, 'id' => $id]);
 
     }
 
     return $this->render('ORGBundle:Tournee:tournee-nationale-activite-add.html.twig', [
       'asec'    => $as,
+      'annexe'    => $annexe,
       'annee'   => $annee,
       'tournee' => $tournee,
       'commune' => $commune,
@@ -435,7 +443,7 @@ class ActiviteExterneController extends Controller
         $this->addFlash('error', 'La date sa    /**
         * @Route("/", name="homepage")
         */isie n\'est pas inclue dans la durée de la tournée.');
-        return $this->redirectToRoute('activite.tournee.add', ['as' => $as, 'id' => $id, 'communeId' => $communeId]);
+        return $this->redirectToRoute('activite.tournee.add', ['as' => $as, 'annexeId' => $annexeId, 'id' => $id, 'communeId' => $communeId]);
       }
       $activite->setCreatedBy($this->getUser());
       $activite->setCreatedAt(new \DateTime());
@@ -452,13 +460,14 @@ class ActiviteExterneController extends Controller
       $em->persist($activitePays);
       $em->flush();
       $this->addFlash('info', 'Le <strong>'.$activite->getTypeType().'</strong> du <strong>'.$activite->getDate()->format('d-m-Y').'</strong> pour la tournée internationale du <strong>'.$tournee->getDebut()->format('d-m-Y').'</strong> au <strong>'.$tournee->getFin()->format('d-m-Y').'</strong> à <strong>'.$pays->getNom().'</strong> a été enregistré avec succès.');
-      return $this->redirectToRoute('destination.tournee.internationale.add.activite', ['as' => $as, 'id' => $id]);
+      return $this->redirectToRoute('destination.tournee.internationale.add.activite', ['as' => $as, 'annexeId' => $annexeId, 'id' => $id]);
 
     }
 
     return $this->render('ORGBundle:Tournee:tournee-internationale-activite-add.html.twig', [
       'asec'    => $as,
       'annee'   => $annee,
+      'annexe'    => $annexe,
       'pays'    => $pays,
       'tournee' => $tournee,
       'form'    => $form->createView()
@@ -485,6 +494,7 @@ class ActiviteExterneController extends Controller
 
     return $this->render('ORGBundle:Tournee:index-activites-externes.html.twig', [
       'asec'  => $as,
+      'annexe'    => $annexe,
       'annee' => $annee,
     ]);
   }
@@ -543,6 +553,7 @@ class ActiviteExterneController extends Controller
     return $this->render('ORGBundle:Tournee:tournee-nationale-info.html.twig', [
       'asec'    => $as,
       'annee'   => $annee,
+      'annexe'    => $annexe,
       'tournee' => $tournee,
       'activites' => $activites,
     ]);
@@ -602,6 +613,7 @@ class ActiviteExterneController extends Controller
     return $this->render('ORGBundle:Tournee:tournee-internationale-info.html.twig', [
       'asec'    => $as,
       'annee'   => $annee,
+      'annexe'    => $annexe,
       'tournee' => $tournee,
       'activites' => $activites,
     ]);

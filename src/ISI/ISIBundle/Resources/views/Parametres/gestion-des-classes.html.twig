@@ -8,7 +8,7 @@
 
 {% block body %}
   <h3>{{ 'Gestion des classes'|trans }}</h3>
-  <a href="{{ path('isi_nouvelle_classe', {'as': asec, 'regime': regime}) }}">
+  <a href="{{ path('isi_nouvelle_classe', {'as': asec, 'regime': regime, 'annexeId': annexe.id}) }}">
     <button class="positive ui button">
       <i class="plus icon"></i>
       {{ 'Ajouter une classe'|trans }}
@@ -27,6 +27,7 @@
             <th>Classses</th>
             <th>المستويات</th>
             <th>الفصول</th>
+            <th>Genre</th>
             <th class="two wide">{{ 'Actions'|trans }}</th>
           </tr>
         </thead>
@@ -52,7 +53,10 @@
                   <h4 class="ui image header">{{ classe.libelleAr }}</h4>
                 </td>
                 <td>
-                  <a href="{{ path('isi_edit_classe', {'as': classe.annee.id, 'classeId': classe.id, 'regime': regime}) }}">
+                  <h4 class="ui image header">{{ classe.genre }}</h4>
+                </td>
+                <td>
+                  <a href="{{ path('isi_edit_classe', {'as': classe.annee.id, 'classeId': classe.id, 'regime': regime, 'annexeId': annexe.id}) }}">
                     <i class="edit icon"></i>
                   </a>
                   <a>
@@ -65,34 +69,38 @@
         </tbody>
       </table>
       <hr width="75%">
-      <script data-config>
-        var filtersConfig = {
-          base_path: 'TableFilter/dist/tablefilter/',
-          col_0: "none",
-          col_1: 'select',
-          col_3: 'select',
-          col_5: 'none',
-          alternate_rows: true,
-          rows_counter: true,
-          btn_reset: true,
-          loader: true,
-          status_bar: true,
-          mark_active_columns: true,
-          highlight_keywords: true,
-          no_results_message: true,
-          col_types: [
-            'number', 'string', 'string', 'string'
-          ],
-          col_widths: [
-              '20px', , , '200px'
-          ],
-          extensions: [{ name: 'sort' }]
-        };
-
-        var tf = new TableFilter('classes', filtersConfig);
-        tf.init();
-      </script>
     </div><br><br>
   {% endif %}
+{% endblock %}
 
+{% block javascripts %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: 'TableFilter/dist/tablefilter/',
+      col_0: "none",
+      col_1: 'select',
+      col_3: 'select',
+      col_5: 'select',
+      col_6: 'none',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string', 'string'
+      ],
+      col_widths: [
+          '20px', , , '200px'
+      ],
+      extensions: [{ name: 'sort' }]
+    };
+
+    var tf = new TableFilter('classes', filtersConfig);
+    tf.init();
+  </script>
 {% endblock %}

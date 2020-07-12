@@ -1,0 +1,53 @@
+{% extends "ENSBundle:Agents:index.html.twig" %}
+
+
+{% block title %}
+  Prise de fonction | {{ enseignant.getNomFr }} {{ enseignant.getPnomFr }}
+{% endblock %}
+
+{% block contextual_menu %}
+  {{ include("ENSBundle::contextual-menu-fonction.html.twig") }}
+{% endblock %}
+
+{% block section %}
+  <i class="student icon"></i>{{ 'Fonctions'|trans }}
+{% endblock %}
+
+{% block body %}
+
+<div class="">
+  <h2>{{ 'Prise de fonction pour l\'enseignant(e) '|trans }} <font  class="ui massive green tag label">{{ enseignant.getNomFr }} {{ enseignant.getPnomFr }}</font></h2>
+  <div class="form-group">
+		{{ form_start(form, {'attr': {'class': 'ui form'}}) }}
+		<div class="three fields">
+			<div class="field">
+				<label for="">
+					 {{ form_label(form.anneeDebut, "Année de début", {'label_attr': {'class': ''}}) }}
+					 {{ form_errors(form.anneeDebut) }}
+				</label> {{ form_widget(form.anneeDebut, {'attr': {'class': 'nomAr'}}) }}
+			</div>
+			<div class="field">
+				<label for="">
+					 {{ form_label(form.debut, "Date de début", {'label_attr': {'class': ''}}) }}
+					 {{ form_errors(form.debut) }}
+				</label> {{ form_widget(form.debut, {'attr': {'class': 'nomFr'}}) }}
+			</div>
+			<div class="field">
+				<label for="">
+					 {{ form_label(form.duree, "Durée (en année)", {'label_attr': {'class': ''}}) }}
+					 {{ form_errors(form.duree) }}
+				</label> {{ form_widget(form.duree, {'attr': {'class': 'nomAr'}}) }}
+			</div>
+		</div>
+      <div class="field">
+				<label for="">
+					 {{ form_label(form.commentaire, "Commentaire", {'label_attr': {'class': ''}}) }}
+					 {{ form_errors(form.commentaire) }}
+				</label> {{ form_widget(form.commentaire, {'attr': {'class': 'nomAr'}}) }}
+			</div>
+    {{ form_widget(form.save, {'attr': {'class': 'ui primary button'}}) }}
+    {{ form_end(form) }}
+	</div>
+</div>
+
+{% endblock %}

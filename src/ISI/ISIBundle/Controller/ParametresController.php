@@ -9,23 +9,21 @@ use Symfony\Component\HttpFoundation\Request;
 // use Symfony\Component\Form\Extention\Core\Type\TextType;
 
 use ISI\ISIBundle\Entity\Classe;
-use ISI\ISIBundle\Entity\Examen;
 use ISI\ISIBundle\Entity\Halaqa;
 use ISI\ISIBundle\Entity\Annee;
-
-use ISI\ISIBundle\Form\ExamenType;
 use ISI\ISIBundle\Form\ClasseType;
 use ISI\ISIBundle\Form\HalaqaType;
 use ISI\ISIBundle\Form\AnneeType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-
 
 class ParametresController extends Controller
 {
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/parametres-scolarite/{as}", name="isi_parametres")
    */
-  public function indexAction(Request $request, $as)
+  public function indexAction(Request $request, int $as)
   {
     // // On vérifie que l'utilisateur dispose bien du rôle ROLE_AUTEUR
     // if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
@@ -40,31 +38,30 @@ class ParametresController extends Controller
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
       return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
     }
-    if ($as == null or $as == 0) {
-      throw $this->createNotFoundException("Sélectionnez une année scolaire valide.");
-    }
-    else {
-      $em = $this->getDoctrine()->getManager();
-      $repoAnnee  = $em->getRepository('ISIBundle:Annee');
 
-      $annee = $repoAnnee->find($as);
+    $em = $this->getDoctrine()->getManager();
+    $repoAnnee  = $em->getRepository('ISIBundle:Annee');
+    dump($as);
+    $annee = $repoAnnee->find($as);
 
-      return $this->render('ISIBundle:Parametres:index.html.twig', [
-        'asec'  => $as,
-        'annee' => $annee, 'annexe'   => $annexe,
-      ]);
-    }
+    return $this->render('ISIBundle:Parametres:index.html.twig', [
+      'asec'  => $as,
+      'annee' => $annee, 
+      'annexe' => $annexe,
+    ]);
 
   }
 
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/nouvelle-annnee-scolaire-{as}", name="isi_nouvelle_annee")
    */
   public function nouvelleAnneeAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
     $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
@@ -97,7 +94,7 @@ class ParametresController extends Controller
           // return new Response(var_dump($frequentation));
           $request->getSession()->getFlashBag()->add("error", "L'année scolaire en cours(<strong>".$annee->getLibelle()."</strong>) n'est pas encore terminée.");
           return $this->redirect($this->generateUrl('isi_parametres',
-              array('as' => $annee->getId())
+              array('as' => $annee->getId(), 'annexeId' => $annexeId)
             ));
         }
       }
@@ -125,7 +122,7 @@ class ParametresController extends Controller
 
       // On redirige l'utilisateur vers index paramèTraversable
       return $this->redirect($this->generateUrl('isi_parametres',
-          array('as' => $nouvelleAnnee->getId())
+          array('as' => $nouvelleAnnee->getId(), 'annexeId' => $annexeId)
         ));
   	}
 
@@ -139,6 +136,7 @@ class ParametresController extends Controller
   // Pour voir les années précédentes d'activité
   /**
    * @Security("has_role('ROLE_USER')")
+   * @Route("/les-annnees-scolaires-precedentes-{as}", name="isi_annees_precedentes")
    */
   public function anneesPrecedentesAction(Request $request, $as)
   {
@@ -188,6 +186,7 @@ class ParametresController extends Controller
   //Edition de Classe
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/edition-de-classe-{as}-{classeId}-{regime}", name="isi_edit_classe")
    */
   public function editClasseAction(Request $request, $as, $classeId, $regime)
   {
@@ -214,7 +213,7 @@ class ParametresController extends Controller
     if($annee->getAchevee() == TRUE)
     {
        $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des classes car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
-       return $this->redirect($this->generateUrl('isi_gestion_classes', ['as' => $as, 'regime' => $regime]));
+       return $this->redirect($this->generateUrl('isi_gestion_classes', ['as' => $as, 'regime' => $regime, 'annexeId' => $annexeId]));
     }
 
 
@@ -233,9 +232,10 @@ class ParametresController extends Controller
         # code...
         $request->getSession()->getFlashBag()->add('error', 'Vous ne pouvez pas modifier le genre de la classe <strong>'.$classe->getLibelleFr().'</strong>. Des élèves y sont déjà inscrits.');
         return $this->redirect($this->generateUrl('isi_gestion_classes', [
-        'as' => $as,
-        'regime' => $regime
-      ]));
+          'as' => $as,
+          'regime' => $regime, 
+          'annexeId' => $annexeId
+        ]));
       }
       $classe->setUpdatedBy($this->getUser());
       $classe->setUpdatedAt(new \Datetime());
@@ -244,7 +244,8 @@ class ParametresController extends Controller
 
       return $this->redirect($this->generateUrl('isi_gestion_classes', [
         'as' => $as,
-        'regime' => $regime
+        'regime' => $regime, 
+        'annexeId' => $annexeId
       ]));
     }
 
@@ -258,6 +259,7 @@ class ParametresController extends Controller
   //Edition de Halaqa
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/edition-de-halaqa-{as}-{halaqaId}-{regime}", name="isi_edit_halaqa")
    */
   public function editHalaqaAction(Request $request, $as, $halaqaId, $regime)
   {
@@ -291,25 +293,28 @@ class ParametresController extends Controller
       $halaqa->setUpdatedBy($this->getUser());
       $halaqa->setUpdatedAt(new \Datetime());
       $em->flush();
-      $request->getSession()->getFlashBag()->add('info', 'Halaqa mise à jour avec sussès.');
+      $request->getSession()->getFlashBag()->add('info', 'Halaqa <strong>'.$halaqa->getLibelle().'</strong> mise à jour avec sussès.');
 
       return $this->redirect($this->generateUrl('isi_gestion_halaqas', [
-        'as'     => $as,
-        'regime' => $regime
-        ]
-      ));
-    }
-
-    return $this->render('ISIBundle:Parametres:editHalaqa.html.twig', [
-      'form'  => $form->createView(),
-      'annee' => $annee, 'annexe'   => $annexe,
-      'asec'  => $as
-    ]);
+          'as'     => $as,
+          'regime' => $regime,
+          'annexeId' => $annexeId,
+        ]));
+      }
+      
+      return $this->render('ISIBundle:Parametres:editHalaqa.html.twig', [
+        'form'  => $form->createView(),
+        'halaqa' => $halaqa,
+        'regime' => $regime,
+        'annee' => $annee, 'annexe'   => $annexe,
+        'asec'  => $as
+      ]);
   }
 
   //Action pour l'affichage des classes
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/gestion-des-classes-{as}-{regime}", name="isi_gestion_classes")
    */
   public function lesClassesAction(Request $request, int $as, $regime)
   {
@@ -320,6 +325,7 @@ class ParametresController extends Controller
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
     $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
+
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
       return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
@@ -327,12 +333,13 @@ class ParametresController extends Controller
 
     $annee   = $repoAnnee->find($as);
     $niveaux = $repoNiveau->niveauxDuGroupe($regime);
-    $classes = $repoClasse->findBy(['annee' => $as]);
+    $classes = $repoClasse->findBy(['annee' => $as, 'annexe' => $annexeId]);
 
     return $this->render('ISIBundle:Parametres:gestion-des-classes.html.twig', array(
       'asec'    => $as,
       'regime'  => $regime,
-      'annee' => $annee, 'annexe'   => $annexe,
+      'annee' => $annee, 
+      'annexe'   => $annexe,
       'niveaux' => $niveaux,
       'classes' => $classes,
     ));
@@ -342,17 +349,25 @@ class ParametresController extends Controller
   //Action pour l'affichage des classes
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/gestion-des-halaqas-{as}-{regime}", name="isi_gestion_halaqas")
    */
   public function lesHalaqasAction(Request $request, int $as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoHalaqa = $em->getRepository('ISIBundle:Halaqa');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee  = $repoAnnee->find($as);
     $regimeMiniscule = strtolower($regime);
 
-    $listHalaqas = $repoHalaqa->findBy(['annee' => $as, 'regime' => $regime]);
+    $listHalaqas = $repoHalaqa->findBy(['annee' => $as, 'regime' => $regime, 'annexe' => $annexeId]);
 
     return $this->render('ISIBundle:Parametres:gestionDesHalaqas.html.twig', array(
       'asec'    => $as,
@@ -365,6 +380,7 @@ class ParametresController extends Controller
   //Action d'ajout d'une nouvelle classe
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/ajout-de-classe-{as}-{regime}", name="isi_nouvelle_classe")
    */
   public function addClasseAction(Request $request, $as, $regime)
   {
@@ -388,7 +404,7 @@ class ParametresController extends Controller
     if($annee->getAchevee() == TRUE)
     {
       $request->getSession()->getFlashBag()->add('error', 'Impossible d\'ajouter des classes car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
-      return $this->redirect($this->generateUrl('isi_gestion_classes', ['as' => $as, 'regime' => $regime]));
+      return $this->redirect($this->generateUrl('isi_gestion_classes', ['as' => $as, 'regime' => $regime, 'annexeId' => $annexeId]));
     } 
 
     $classe = new Classe;
@@ -412,7 +428,7 @@ class ParametresController extends Controller
 
       return $this->redirect($this->generateUrl('isi_gestion_classes', array(
         'as'     => $as,
-        'regime' => $regime
+        'regime' => $regime, 'annexeId' => $annexeId
       )));
     }
 
@@ -427,6 +443,7 @@ class ParametresController extends Controller
   //Action d'ajout d'une nouvelle halaqa
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/ajout-de-halaqa-{as}-{regime}", name="isi_nouvelle_halaqa")
    */
   public function addHalaqaAction(Request $request, $as, $regime)
   {
@@ -449,7 +466,7 @@ class ParametresController extends Controller
     if($annee->getAchevee() == TRUE)
     {
       $request->getSession()->getFlashBag()->add('error', 'Impossible d\'ajouter des halaqass car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
-      return $this->redirect($this->generateUrl('isi_gestion_halaqas', ['as' => $as, 'regime' => $regime]));
+      return $this->redirect($this->generateUrl('isi_gestion_halaqas', ['as' => $as, 'regime' => $regime, 'annexeId' => $annexeId]));
     } 
 
     $halaqa = new Halaqa;
@@ -469,7 +486,7 @@ class ParametresController extends Controller
 
       return $this->redirect($this->generateUrl('isi_gestion_halaqas', array(
         'as'     => $as,
-        'regime' => $regime
+        'regime' => $regime, 'annexeId' => $annexeId
         )));
     }
 
@@ -483,6 +500,7 @@ class ParametresController extends Controller
   //Page d'accueil pour la liaison entre les classes et les matières pour une année scolaire donnée
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/niveaux-matieres-{as}-{regime}", name="isi_niveaux_matieres")
    */
   public function niveauxMatieresAction(Request $request, int $as, $regime)
   {
@@ -512,6 +530,7 @@ class ParametresController extends Controller
   // Pour voir la liste des matières d'un niveau de formation donné
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/voir-liste-des-matieres-du-niveaux-{as}-{niveauId}-{regime}", name="isi_liste_niveaux_matieres")
    */
   public function listeMatieresNiveauxAction(Request $request, $as, $regime, $niveauId)
   {
@@ -540,73 +559,6 @@ class ParametresController extends Controller
       'annee' => $annee, 'annexe'   => $annexe,
       'niveau'   => $niveau,
       'ens'      => $ens,
-    ]);
-  }
-
-  // Pour tous ce qui concernent les examens
-  /**
-   * @Security("has_role('ROLE_SCOLARITE')")
-   */
-  public function examenAction(Request $request, int $as)
-  {
-    $em = $this->getDoctrine()->getManager();
-    $repoAnnee  = $em->getRepository('ISIBundle:Annee');
-    $repoExamen = $em->getRepository('ISIBundle:Examen');
-    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
-    $annexe = $repoAnnexe->find($annexeId);
-    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
-      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
-      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
-    }
-
-    $examens = $repoExamen->examensAnneeEnCours($as);
-    $annee   = $repoAnnee->find($as);
-
-    return $this->render('ISIBundle:Parametres:accueil-examen.html.twig', [
-      'asec'    => $as,
-      'annee' => $annee, 'annexe'   => $annexe,
-      'examens' => $examens
-    ]);
-  }
-
-  // Ajout examen
-  /**
-   * @Security("has_role('ROLE_SCOLARITE')")
-   */
-  public function addExamenAction(Request $request, $as)
-  {
-    $em = $this->getDoctrine()->getManager();
-    $repoAnnee  = $em->getRepository('ISIBundle:Annee');
-    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
-    $annexe = $repoAnnexe->find($annexeId);
-    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
-      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
-      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
-    }
-
-    $examen = new Examen();
-    $annee = $repoAnnee->find($as);
-    $examen->setAnnee($annee);
-    $examen->setCreatedBy($this->getUser());
-    $examen->setCreatedAt(new \Datetime());
-
-    $form = $this->createForm(ExamenType::class, $examen);
-    if($form->handleRequest($request)->isValid())
-    {
-      $em = $this->getDoctrine()->getManager();
-      $em->persist($examen);
-      $em->flush();
-      $request->getSession()->getFlashBag()->add('info', 'Examen enregistré.');
-
-      return $this->redirect($this->generateUrl('isi_examen', ['as' => $as]));
-    }
-
-    return $this->render('ISIBundle:Parametres:add-examen.html.twig', [
-      'asec'  => $as,
-      'annee' => $annee, 'annexe'   => $annexe,
-      'form'  => $form->createView()
     ]);
   }
 }

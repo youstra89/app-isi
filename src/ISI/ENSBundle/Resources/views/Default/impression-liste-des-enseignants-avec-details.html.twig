@@ -1,10 +1,9 @@
 {# ISIBundle/Ressources/views/Scolarite #}
-{% extends "ENSBundle::pdf.html.twig" %}
+{% extends "ISIBundle::pdf.html.twig" %}
 {% block title %}
-    {% block title %}
-        Liste des enseignants | {{ annee.libelle }}
-    {% endblock %}
+    Liste des enseignants | {{ annee.libelle }}
 {% endblock %}
+
 
 {% block body %}
 
@@ -73,7 +72,7 @@
                         <td align="right" class="sexe">{{ contrat.nombreHeuresCoran }}&nbsp;</td>
                         <td align="right" class="sexe">{{ contrat.nombreHeuresCours }}&nbsp;</td>
                         <td align="right" class="sexe">{{ sexe }}&nbsp;</td>
-                        <td align="right" class="nomEleveFr">{{ contrat.getContrat.getEnseignant.nomFr }} {{ contrat.getContrat.getEnseignant.pnomFr }}&nbsp;</td>
+                        <td align="right" class="nomEleveFr">{{ contrat.getContrat.getEnseignant.nom }}&nbsp;</td>
                         <td align="right" class="nomEleveAr">{{ contrat.getContrat.getEnseignant.pnomAr }} {{ contrat.getContrat.getEnseignant.nomAr }}&nbsp;</td>
                         <td align="right" class="matricule">{{ contrat.getContrat.getEnseignant.matricule }}&nbsp;</td>
                         <td align="center" class="numero">{{ numero }}</td>
@@ -124,7 +123,7 @@
                                     <td align="right" class="sexe">{{ contrat.nombreHeuresCoran }}&nbsp;</td>
                                     <td align="right" class="sexe">{{ contrat.nombreHeuresCours }}&nbsp;</td>
                                     <td align="right" class="sexe">{{ sexe }}&nbsp;</td>
-                                    <td align="right" class="nomEleveFr">{{ contrat.getContrat.getEnseignant.nomFr }} {{ contrat.getContrat.getEnseignant.pnomFr }}&nbsp;</td>
+                                    <td align="right" class="nomEleveFr">{{ contrat.getContrat.getEnseignant.nom }}&nbsp;</td>
                                     <td align="right" class="nomEleveAr">{{ contrat.getContrat.getEnseignant.pnomAr }} {{ contrat.getContrat.getEnseignant.nomAr }}&nbsp;</td>
                                     <td align="right" class="matricule">{{ contrat.getContrat.getEnseignant.matricule }}&nbsp;</td>
                                     <td align="center" class="numero">{{ numero - 1 }}</td>

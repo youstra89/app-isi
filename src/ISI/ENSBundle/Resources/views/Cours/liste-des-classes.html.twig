@@ -25,6 +25,7 @@
 
 {% block body %}
   <h3>{{ 'Affectation des enseignants pour les cours '|trans }} : {{grp}}</h3>
+  <a href="{{ path('tous_les_cours', {as: asec, annexeId: annexe.id, regime: regime}) }}" class="ui positive button">Voir tous les cours</a>
 {% if classes is empty %}
   <p>{{ 'Pas de classes pour le moment'|trans }}</p>
 {% else %}
@@ -32,7 +33,7 @@
       <table class="ui selectable very basic table" id="classes">
         <thead>
           <tr>
-            <th width="10%">N°</th>
+            <th style="width: 5%; text-align: center">N°</th>
             <th>Niveaux</th>
             <th>Classses</th>
             <th>المستويات</th>
@@ -55,7 +56,7 @@
                 {% set genre = 'Mixte' %}
               {% endif %}
               <tr>
-                <td>
+                <td style="width: 5%; text-align: center">
                   <h4 class="ui image header">{{ numero }}</h4>
                 </td>
                 <td>
@@ -81,6 +82,10 @@
                     &nbsp;&nbsp;&nbsp;
                     <a href="{{path('ens_editer_cours_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}"  data-tooltip="Editer les cours de la classe">
                       <i class="edit positive icon"></i>
+                    </a>
+                    &nbsp;&nbsp;&nbsp;
+                    <a href="{{path('ens_enregistrer_cours_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}"  data-tooltip="Enregistrer les cours de la classe">
+                      <i class="plus icon"></i>
                     </a>
                   {% else %}
                     <a href="{{path('ens_enregistrer_cours_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}"  data-tooltip="Enregistrer les cours de la classe">

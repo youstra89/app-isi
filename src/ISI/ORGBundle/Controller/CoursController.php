@@ -2,18 +2,19 @@
 
 namespace ISI\ORGBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
-
+use ISI\ISIBundle\Entity\Annee;
 use ISI\ORGBundle\Entity\Cours;
+
+use ISI\ORGBundle\Entity\Mosquee;
 use ISI\ORGBundle\Form\CoursType;
 use ISI\ORGBundle\Repository\CoursRepository;
-use ISI\ISIBundle\Entity\Annee;
-use ISI\ISIBundle\Repository\AnneeContratRepository;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
+use ISI\ISIBundle\Repository\AnneeContratRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class CoursController extends Controller
 {
@@ -23,6 +24,13 @@ class CoursController extends Controller
   public function indexAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+        $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+        return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $jours = [
       1 => 'Lundi',
       2 => 'Mardi',
@@ -42,7 +50,7 @@ class CoursController extends Controller
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoCours   = $em->getRepository('ORGBundle:Cours');
     $annee       = $repoAnnee->find($as);
-    $requete_des_cours = "SELECT c.id, c.discipline, c.livre, c.heure, c.jour, c.annee_debut, cm.nom, m.nom, m.quartier FROM cours c JOIN mosquee m ON c.mosquee = m.id JOIN commune cm ON m.commune_id = cm.id";
+    $requete_des_cours = "SELECT c.id, c.discipline, c.livre, c.heure, c.jour, c.annee_debut, cm.nom, m.nom, m.quartier FROM cours c JOIN mosquee m ON c.mosquee_id = m.id JOIN commune cm ON m.commune_id = cm.id";
     $statement = $em->getConnection()->prepare($requete_des_cours);
     $statement->execute();
     $cours = $statement->fetchAll();
@@ -51,6 +59,7 @@ class CoursController extends Controller
     return $this->render('ORGBundle:Cours:index.html.twig', [
       'asec'  => $as,
       'annee' => $annee,
+      'annexe'    => $annexe,
       'cours' => $cours,
       'jours' => $jours,
       'heures' => $heures,
@@ -65,6 +74,13 @@ class CoursController extends Controller
     {
       $em = $this->getDoctrine()->getManager();
       $repoAnnee      = $em->getRepository('ISIBundle:Annee');
+      $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+      $annexeId = $request->get('annexeId');
+      $annexe = $repoAnnexe->find($annexeId);
+      if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+          $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+          return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+      }
       $annee       = $repoAnnee->find($as);
       $cours = new Cours();
       $form = $this->createForm(CoursType::class, $cours);
@@ -74,12 +90,13 @@ class CoursController extends Controller
         $em->persist($cours);
         $em->flush();
         $this->addFlash('info', 'Le cours de <strong>'.$cours->getDiscipline().'</strong> à la mosquée <strong>'.$cours->getMosquee()->getNom().'</strong> a été enregistré avec succès.');
-        return $this->redirectToRoute('cours_home', ['as' => $as]);
+        return $this->redirectToRoute('cours_home', ['as' => $as, 'annexeId' => $annexeId]);
       }
       //>>
       return $this->render('ORGBundle:Cours:cours-add.html.twig', [
         'asec'  => $as,
         'annee' => $annee,
+        'annexe' => $annexe,
         'form' => $form->createView()
       ]);
     }
@@ -92,21 +109,29 @@ class CoursController extends Controller
     {
       $em = $this->getDoctrine()->getManager();
       $repoAnnee   = $em->getRepository('ISIBundle:Annee');
+      $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+      $annexeId = $request->get('annexeId');
+      $annexe = $repoAnnexe->find($annexeId);
+      if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+          $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+          return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+      }
       $annee       = $repoAnnee->find($as);
       $form = $this->createForm(CoursType::class, $cours);
       $form->handleRequest($request);
       if($form->isSubmitted() && $form->isValid())
       {
-        $mosquee->setUpdatedBy($this->getUser());
-        $mosquee->setUpdatedAt(new \DateTime());
+        $cours->setUpdatedBy($this->getUser());
+        $cours->setUpdatedAt(new \DateTime());
         $em->flush();
         $this->addFlash('info', 'Les informations sur l\'cours '.$cours->getNom().' '.$cours->getPnom().' ont été mises à jour avec succès.');
-        return $this->redirectToRoute('mosquees');
+        return $this->redirectToRoute('mosquees', ['as' => $as, 'annexeId' => $annexeId]);
       }
       //>>
       return $this->render('ORGBundle:Cours:cours-edit.html.twig', [
         'asec'  => $as,
         'annee' => $annee,
+        'annexe' => $annexe,
         'cours' => $cours,
         'form' => $form->createView(),
       ]);
@@ -115,13 +140,24 @@ class CoursController extends Controller
 
     /**
      * @Security("has_role('ROLE_ORGANISATION')")
-     * @param Mosquee $mosquee
+     * @param Cours $cours
      */
-    public function informationsAction(Request $request, Mosquee $mosquee): Response
+    public function informationsAction(Request $request, Cours $cours, int $as): Response
     {
       $em = $this->getDoctrine()->getManager();
-      return $this->render('ORGBundle:Mosquee:mosquee-info.html.twig', [
-        'mosquee'  => $mosquee,
+      $repoAnnee = $em->getRepository('ISIBundle:Annee');
+      $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+      $annexeId = $request->get('annexeId');
+      $annee = $repoAnnee->find($as);
+      $annexe = $repoAnnexe->find($annexeId);
+      if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+          $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+          return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+      }
+      return $this->render('ORGBundle:Cours:cours-info.html.twig', [
+        'cours'  => $cours,
+        'annee' => $annee,
+        'annexe' => $annexe,
       ]);
     }
 }

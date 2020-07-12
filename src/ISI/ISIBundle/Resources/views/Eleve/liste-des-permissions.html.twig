@@ -95,34 +95,35 @@
 
 
 {% block javascripts %}
-    <script data-config>
-      var filtersConfig = {
-        base_path: 'TableFilter/dist/tablefilter/',
-        col_0: 'none',
-        col_4: 'select',
-        col_5: 'select',
-        col_6: 'select',
-        col_8: 'none',
-        alternate_rows: true,
-        rows_counter: true,
-        btn_reset: true,
-        loader: true,
-        status_bar: true,
-        mark_active_columns: true,
-        highlight_keywords: true,
-        no_results_message: true,
-        col_types: [
-          'number', 'string', 'string',
-          'string', 'string', 'string',
-          'string'
-        ],
-        col_widths: [
-          '5px', '130px', '300px', , , '100px', ,
-        ],
-        extensions: [{ name: 'sort' }]
-      };
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: 'TableFilter/dist/tablefilter/',
+      col_0: 'none',
+      col_4: 'select',
+      col_5: 'select',
+      col_6: 'select',
+      col_8: 'none',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string',
+        'string', 'string', 'string',
+        'string'
+      ],
+      col_widths: [
+        '5px', '130px', '300px', , , '100px', ,
+      ],
+      extensions: [{ name: 'sort' }]
+    };
 
-      var tf = new TableFilter('liste_des_permissions', filtersConfig);
-      tf.init();
-    </script>
+    var tf = new TableFilter('liste_des_permissions', filtersConfig);
+    tf.init();
+  </script>
 {% endblock %}

@@ -6,27 +6,6 @@
 {% endblock %}
 
 
-
-{% block notification %}
-  {% for message in app.session.flashbag.get('error') %}
-  <div class="ui red message">
-    <div class="header">{{ 'Attention'|trans }} !!! </div>
-    <ul class="list">
-      <li>{{ message|raw }}.</li>
-    </ul>
-  </div>
-  {% endfor %}
-  {% for message in app.session.flashbag.get('info') %}
-  <div class="ui green message">
-    <div class="header">{{ 'Notification'|trans }}: </div>
-    <ul class="list">
-      <li>{{ message|raw }}.</li>
-    </ul>
-  </div>
-  {% endfor %}
-{% endblock %}
-
-
 {% block section %}
   <i class="plane icon"></i>{{ 'Tournées'|trans }}
 {% endblock %}
@@ -48,12 +27,12 @@
         </div>
         <div class="extra content">
           <span>
-            <a href="{{ path('activite.tournee.add', {as: asec, id: tournee.id, communeId: item.commune.id}) }}" class="ui teal button" data-tooltip="Ajouter une activité">
+            <a href="{{ path('activite.tournee.add', {as: asec, 'annexeId': annexe.id, id: tournee.id, communeId: item.commune.id}) }}" class="ui teal button" data-tooltip="Ajouter une activité">
               <i class="plus icon"></i> activité
             </a>
           </span>
           <span>
-            <a href="{{ path('converti.add', {as: asec, tourneeId: tournee.id, communeId: item.commune.id}) }}" class="ui orange button" data-tooltip="Ajouter un(e) converti(e)">
+            <a href="{{ path('converti.add', {as: asec, 'annexeId': annexe.id, tourneeId: tournee.id, communeId: item.commune.id}) }}" class="ui orange button" data-tooltip="Ajouter un(e) converti(e)">
               <i class="plus icon"></i> converti(e)
             </a>
           </span>

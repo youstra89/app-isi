@@ -13,6 +13,7 @@ use ISI\ISIBundle\Entity\Moyenneclasse;
 use ISI\ISIBundle\Entity\FrequenterMatiere;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class ExamenController extends Controller
 {
@@ -20,7 +21,8 @@ class ExamenController extends Controller
 
   // Cette fonction servira à afficher les classes pour pouvoir ensuite tirer (imprimer) les fiches de notes
   /**
-   * @Security("has_role('ROLE_ETUDE')")
+   * @Security("has_role('ROLE_DIRECTION_ETUDE')")
+   * @Route("/examen/tirer-fiches-de-notes-{as}-{regime}", name="isi_afficher_fiches_de_notes")
    */
   public function afficherLesClassesPourTirerLesFichesDeNotesAction(Request $request, int $as, $regime)
   {
@@ -53,6 +55,7 @@ class ExamenController extends Controller
   // pouvoir tirer la fiche de note pour la matière qu'on désire
   /**
    * @Security("has_role('ROLE_NOTE' or 'ROLE_ETUDE')")
+   * @Route("/examen/les-fiches-de-notes-de-la-classe-{as}-{regime}-{classeId}", name="isi_tirer_fiches_de_notes")
    */
   public function lesFichesDeNotesDeLaClasseAction(Request $request, int $as, $regime, int $classeId)
   {
@@ -95,6 +98,7 @@ class ExamenController extends Controller
   // Affichage de la vue pdf
   /**
    * @Security("has_role('ROLE_NOTE' or 'ROLE_ETUDE')")
+   * @Route("/examen/la-fiche-de-notes-de-la-classe-pour-une-matiere-{as}-{regime}-{classeId}-{matiereId}", name="isi_fiche_de_notes_d_une_matiere")
    */
   public function laFichesDeNotesDeLaClassePourUneMatiereAction(Request $request, int $as, $regime, int $classeId, int $matiereId)
   {
@@ -154,6 +158,7 @@ class ExamenController extends Controller
   // Page d'accueil pour la saisie des notes
   /**
    * @Security("has_role('ROLE_NOTE' or 'ROLE_ETUDE')")
+   * @Route("/accueil-saisie-de-notes-{as}-{regime}", name="isi_saisie_de_notes")
    */
   public function accueilSaisieDeNoteAction(Request $request, $as, $regime)
   {
@@ -179,7 +184,7 @@ class ExamenController extends Controller
     if(empty($examen))
     {
       $request->getSession()->getFlashBag()->add('error', 'Vous ne pouvez pas saisir de notes car il n\'a aucun examen en cours. Demandez au bureau des études et des examens d\'enregistrer un examen.');
-      return $this->redirect($this->generateUrl('isi_affaires_scolaires', ['as' => $as, 'regime' => $regime]));
+      return $this->redirect($this->generateUrl('isi_affaires_scolaires', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
     }
 
     //
@@ -197,6 +202,7 @@ class ExamenController extends Controller
 
   /**
    * @Security("has_role('ROLE_ETUDE')")
+   * @Route("/examen/liste-des-matieres-pour-la-saisie-des-notes-de-la-classe-{as}-{regime}-{classeId}-{examenId}", name="isi_saisie_de_notes_de_la_classe")
    */
   public function saisieDesNotesDeLaClasseAction(Request $request, int $as, $regime, int $classeId, int $examenId)
   {
@@ -363,11 +369,10 @@ class ExamenController extends Controller
     $repoNote       = $em->getRepository('ISIBundle:Note');
     $repoMoyenne    = $em->getRepository('ISIBundle:Moyenne');
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
-    $repoFM = $em->getRepository('ISIBundle:FrequenterMatiere');
-    $anneeId  = $examen->getAnnee()->getId();
-    $examenId = $examen->getId();
-    $admis   = 0;
-    $recales = 0;
+    $anneeId        = $examen->getAnnee()->getId();
+    $examenId       = $examen->getId();
+    $admis          = 0;
+    $recales        = 0;
     foreach($eleves as $key => $value)
     {
       $eleveId = $value instanceof Eleve ? $value->getId() : $value["id"];
@@ -378,24 +383,10 @@ class ExamenController extends Controller
         foreach ($notesDUnEleve1 as $note1) {
           if($note1->getMatiere()->getId() == $note2->getMatiere()->getId())
           {
-            $matiere   = $note1->getMatiere();
             $moyenneDeLaMatiere = $note1->getNote() + $note2->getNote();
             $moyennesDeTousLesEleves[$eleveId] = $moyenneDeLaMatiere;
-            $validation = ($moyenneDeLaMatiere >= 11) ? true : false ;
             $moyenne = $repoMoyenne->findOneBy(["examen" => $examenId, "eleve" => $eleveId]);
             $frequenter = $repoFrequenter->findOneBy(["annee" => $anneeId, "eleve" => $eleveId]);
-            $fm = $repoFM->findOneBy(["matiere" => $matiere->getId(), "frequenter" => $frequenter->getId()]);
-            if(empty($fm))
-            {
-              $fm = new FrequenterMatiere();
-              $fm->setFrequenter($frequenter);
-              $fm->setMatiere($matiere);
-              $fm->setMoyenne($moyenneDeLaMatiere);
-              $fm->setValidation($validation);
-              $fm->setCreatedBy($this->getUser());
-              $fm->setCreatedAt(new \Datetime());
-              $em->persist($fm);
-            }
             $moyAnnuelle = $this->calculMoyenneAnnuelleDUnEleve($frequenter, $enseignements); 
             $moyenne->setMoyenneAnnuelle($moyAnnuelle["moyenne"]);
             $admission = $moyAnnuelle["admission"];
@@ -572,6 +563,7 @@ class ExamenController extends Controller
   }
   /**
    * @Security("has_role('ROLE_ETUDE')")
+   * @Route("/examen/saisie-des-notes-sauvegarde-en-db-{as}-{regime}-{classeId}-{examenId}-{matiereId}", name="isi_saisie_de_notes_de_la_classe_pour_une_matiere")
    */
   public function enregistrerNotesAction(Request $request, $as, $regime, $classeId, $examenId, $matiereId)
   {
@@ -662,6 +654,7 @@ class ExamenController extends Controller
       return $this->redirect($this->generateUrl('isi_saisie_de_notes_de_la_classe', [
         'as'       => $as,
         'regime'   => $regime,
+        'annexeId' => $annexeId,
         'classeId' => $classeId,
         'examenId' => $examenId
       ]));
@@ -670,7 +663,7 @@ class ExamenController extends Controller
     return $this->render('ISIBundle:Examen:formulaire-de-saisie-de-notes.html.twig', [
       'asec'      => $as,
       'regime'    => $regime,
-      'annee'   => $annee, 'annexe'   => $annexe,
+      'annee'     => $annee, 'annexe'   => $annexe,
       'classe'    => $classe,
       'eleves'    => $eleves,
       'matiere'   => $matiere,
@@ -681,6 +674,7 @@ class ExamenController extends Controller
 
   /**
    * @Security("has_role('ROLE_ETUDE')")
+   * @Route("/examen/edition-des-notes-sauvegarde-en-db-{as}-{regime}-{classeId}-{examenId}-{matiereId}", name="isi_edition_des_notes")
    */
   public function editerNotesAction(Request $request, $as, $regime, $classeId, $examenId, $matiereId)
   {
@@ -692,8 +686,6 @@ class ExamenController extends Controller
     $repoClasse        = $em->getRepository('ISIBundle:Classe');
     $repoMatiere       = $em->getRepository('ISIBundle:Matiere');
     $repoNote          = $em->getRepository('ISIBundle:Note');
-    $repoFM            = $em->getRepository('ISIBundle:FrequenterMatiere');
-    $repoFrequenter    = $em->getRepository('ISIBundle:Frequenter');
     $repoEnseignement  = $em->getRepository('ISIBundle:Enseignement');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
     $annexeId = $request->get('annexeId');
@@ -718,7 +710,7 @@ class ExamenController extends Controller
     if($annee->getAchevee() == TRUE)
     {
       $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des notes car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
-      return $this->redirect($this->generateUrl('isi_saisie_de_notes', ['as' => $as, 'regime' => $regime]));
+      return $this->redirect($this->generateUrl('isi_saisie_de_notes', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
     }
 
 
@@ -814,25 +806,6 @@ class ExamenController extends Controller
               }
               $note->setUpdatedBy($this->getUser());
               $note->setUpdatedAt(new \Datetime());
-
-              // Si la session de l'examen en cours vaut 2, alors il faudra calculer la moyenne annuelle pour la matière
-              if($examen->getSession() == 2)
-              {
-                $matiereId = $note->getMatiere()->getId();
-                $fq = $repoFrequenter->findOneBy(["eleve" => $eleveId, "annee" => $as]);
-                $fm = $repoFM->findOneBy(["frequenter" => $fq->getId(), "matiere" => $matiereId]);
-                $nt = $repoNote->findOneBy(["eleve" => $eleveId, "examen" => $examenId - 1, "matiere" => $matiereId]);
-                $moyenneDeLaMatiere = $note->getNote() + $nt->getNote();
-                $validation = ($moyenneDeLaMatiere >= 11) ? TRUE : FALSE ;
-                if(!empty($fm))
-                {
-                  $fm->setMoyenne($moyenneDeLaMatiere);
-                  $fm->setValidation($validation);
-                  $fm->setUpdatedBy($this->getUser());
-                  $fm->setUpdatedAt(new \Datetime());
-                }
-                // return new Response("C'est OK");
-              }
             } // Fin de if ($note->getNote() != $noteEleve)
           }
         }
@@ -861,7 +834,7 @@ class ExamenController extends Controller
 
       return $this->redirect($this->generateUrl('isi_saisie_de_notes_de_la_classe', [
         'as'       => $as,
-        'regime'   => $regime,
+        'regime'   => $regime, 'annexeId' => $annexeId,
         'notes'    => $notes,
         'classeId' => $classeId,
         'examenId' => $examenId
@@ -872,7 +845,7 @@ class ExamenController extends Controller
     return $this->render('ISIBundle:Examen:formulaire-d-edition-de-notes.html.twig', [
       'asec'      => $as,
       'regime'    => $regime,
-      'annee'   => $annee, 'annexe'   => $annexe,
+      'annee'     => $annee, 'annexe'   => $annexe,
       'classe'    => $classe,
       'eleves'    => $eleves,
       'matiere'   => $matiere,
@@ -916,6 +889,7 @@ class ExamenController extends Controller
   // On va se permettre d'afficher quelques données statistiques d'examen
   /**
    * @Security("has_role('ROLE_ETUDE')")
+   * @Route("/examen/donnees-statistiques-examen-{as}-{regime}", name="isi_statiqtiques")
    */
   public function statistiquesAction(Request $request, $as, $regime)
   {
@@ -923,6 +897,13 @@ class ExamenController extends Controller
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoNiveau = $em->getRepository('ISIBundle:Niveau');
     $repoExamen = $em->getRepository('ISIBundle:Examen');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $niveaux = $repoNiveau->niveauxDuGroupe($regime);
 
@@ -934,7 +915,7 @@ class ExamenController extends Controller
       // return new Response(var_dump($data));
       return $this->redirect($this->generateUrl('isi_generation_donnees_statiqtiques', [
         'as'       => $as,
-        'regime'   => $regime,
+        'regime'   => $regime, 'annexeId' => $annexeId,
         'examenId' => $data['examen']
       ]));
     }
@@ -953,6 +934,7 @@ class ExamenController extends Controller
   // On va se permettre d'afficher quelques données statistiques d'examen
   /**
    * @Security("has_role('ROLE_ETUDE' or 'ROLE_SCOLARITE')")
+   * @Route("/examen/resultats-annuels/{as}-{regime}", name="isi_resultats_annuels")
    */
   public function resultatsAnnuelsAction(Request $request, $as, $regime)
   {
@@ -974,7 +956,7 @@ class ExamenController extends Controller
     $examens = $repoExamen->lesExamensDeLAnnee($as);
     if (count($examens) < 2) {
       $request->getSession()->getFlashBag()->add('error', 'Vous ne pouvez pas voir les résultats annuels pour le moment.');
-      return $this->redirect($this->generateUrl('isi_affaires_scolaires', ['as' => $as, 'regime' => $regime]));
+      return $this->redirect($this->generateUrl('isi_affaires_scolaires', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
     }
     $annee   = $repoAnnee->find($as);
     $classes = $repoClasse->classeGrpFormation($as, $annexeId, $regime);
@@ -1048,6 +1030,7 @@ class ExamenController extends Controller
   // Page d'accueil des résultats annuels d'une seule classe
   /**
    * @Security("has_role('ROLE_ETUDE' or 'ROLE_SCOLARITE')")
+   * @Route("/examen/resultats-annuels-de-la-classe-{as}-{regime}-{classeId}", name="isi_resultats_annuels_d_une_classe")
    */
   public function resultatsAnnuelsDUneClasseAction(Request $request, $as, $regime, $classeId)
   {
@@ -1105,7 +1088,7 @@ class ExamenController extends Controller
     {
       $request->getSession()->getFlashBag()->add('error', 'Toutes les notes n\'ont pas encore été saisies.');
       // return new Response(var_dump($tableNote, reset($eleves)['id'], $eleves[0]->getNomFr()));
-      return $this->redirect($this->generateUrl('isi_resultats_d_examens', ['as' => $as, 'regime' => $regime]));
+      return $this->redirect($this->generateUrl('isi_resultats_d_examens', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
     }
 
     // return new Response(var_dump($ens));
@@ -1117,6 +1100,7 @@ class ExamenController extends Controller
 
       return $this->redirect($this->generateUrl('isi_resultats_annuels', [
         'as'       => $as,
+        'annexeId' => $annexeId,
         'regime'   => $regime,
       ]));
     }
@@ -1127,7 +1111,7 @@ class ExamenController extends Controller
 
       return $this->redirect($this->generateUrl('isi_resultats_annuels', [
         'as'       => $as,
-        'regime'   => $regime,
+        'regime'   => $regime, 'annexeId' => $annexeId,
       ]));
     }
 
@@ -1136,7 +1120,7 @@ class ExamenController extends Controller
     $this->calculMoyennesAnnuelles($eleves, $examen, $classe, $ens);
     return $this->redirect($this->generateUrl('isi_classement_annuel', [
       'as'        => $as,
-      'regime'    => $regime,
+      'regime'    => $regime, 'annexeId' => $annexeId,
       'classeId'  => $classeId,
       'direction' => $routeParameters,
     ]));
@@ -1145,6 +1129,7 @@ class ExamenController extends Controller
   // Voir les résultats annuels avec un template php
   /**
    * @Security("has_role('ROLE_ETUDE')")
+   * @Route("/moyennes-annuelles-de-la-classe", name="moyenne_annuelle")
    */
   public function resultYearAction()
   {
@@ -1154,6 +1139,7 @@ class ExamenController extends Controller
   // Calcul des moyennes annuelles et classement annuels
   /**
    * @Security("has_role('ROLE_ETUDE' or 'ROLE_SCOLARITE')")
+   * @Route("/examen/calcul-moyennes-annuelles-et-classement-annuel-{as}-{regime}-{classeId}", name="isi_classement_annuel")
    */
   public function moyennesClassementAnnuelAction(Request $request, int $as, $regime, int $classeId)
   {
@@ -1467,6 +1453,7 @@ class ExamenController extends Controller
   // On pourra afficher toutes les notes des élèves de la classe au cours d'une année
   /**
    * @Security("has_role('ROLE_ETUDE')")
+   * @Route("/examen/notes-de-tous-les-examens/{as}-{regime}-{classeId}", name="isi_notes_des_deux_examens")
    */
   public function notesTousLesExamensAction(Request $request, int $as, $regime, int $classeId)
   {
@@ -1499,7 +1486,7 @@ class ExamenController extends Controller
     if (empty($notes1[0]) || empty($notes2[0])) {
       $request->getSession()->getFlashBag()->add('error', 'Il n\'est pas possible de calculer les moyennes annuelles pour l\'heure.');
       return $this->redirect($this->generateUrl('isi_resultats_annuels', [
-        'as'     => $as,
+        'as'     => $as, 'annexeId' => $annexeId,
         'regime' => $regime,
       ]));
     }
@@ -1555,6 +1542,7 @@ class ExamenController extends Controller
   // Les données  stiques obtenues pour toute l'année
   /**
    * @Security("has_role('ROLE_ETUDE' or 'ROLE_SCOLARITE')")
+   * @Route("/examen/statistiques-annuelles-de-la-classe-{as}-{regime}-{classeId}", name="isi_statistiques_annuelles")
    */
   public function statistiquesAnnuellesDUneClasseAction(Request $request, int $as, $regime, int $classeId)
   {
@@ -1626,6 +1614,7 @@ class ExamenController extends Controller
   // Bulletin affichant les résultats annuels
   /**
    * @Security("has_role('ROLE_ETUDE')")
+   * @Route("/examen/bulletins-moyennes-annuelles/{as}-{regime}-{classeId}", name="isi_bulletins_moyennes_annuelles")
    */
   public function bulletinsMoyennesAnnuellesAction(Request $request, $as, $regime, $classeId)
   {
@@ -1668,7 +1657,7 @@ class ExamenController extends Controller
     if (empty($notes1[0]) || empty($notes2[0])) {
       $request->getSession()->getFlashBag()->add('error', 'Il n\'est pas possible de calculer les moyennes annuelles pour l\'heure.');
       return $this->redirect($this->generateUrl('isi_resultats_annuels', [
-        'as'     => $as,
+        'as'     => $as, 'annexeId' => $annexeId,
         'regime' => $regime,
       ]));
     }
@@ -1754,6 +1743,7 @@ class ExamenController extends Controller
   // Bulletin affichant les résultats annuels
   /**
    * @Security("has_role('ROLE_ETUDE')")
+   * @Route("/examen/resultats-annuels-d-un-eleve-{as}-{regime}-{classeId}-{eleveId}", name="isi_bulletin_annuel_individuel")
    */
   public function bulletinAnnuelIndividuelAction(Request $request, int $as, $regime, int $classeId, int $eleveId)
   {
@@ -1837,6 +1827,7 @@ class ExamenController extends Controller
    */
   /**
    * @Security("has_role('ROLE_ETUDE')")
+   * @Route("/examen/donnees-statistiques-examen-{as}-{regime}-{examenId}", name="isi_generation_donnees_statiqtiques")
    */
   public function generationDonneesStatistiquesAction(Request $request, $as, $regime, $examenId)
   {
@@ -1879,6 +1870,7 @@ class ExamenController extends Controller
 
   /**
    * @Security("has_role('ROLE_ETUDE' or 'ROLE_NOTE')")
+   * @Route("/examen/resultats-de-la-classe-{as}-{regime}-{classeId}-{examenId}", name="isi_resultats_de_la_classe")
    */
   public function resultatsDeLaClasseAction(Request $request, $as, $regime, $classeId, $examenId)
   {
@@ -1967,6 +1959,7 @@ class ExamenController extends Controller
   // On imprime (ou si vous voulez on affiche) le bulletin d'un seul élève de la classe
   /**
    * @Security("has_role('ROLE_ETUDE')")
+   * @Route("/examen/bulletin-d-un-eleve-{as}-{regime}-{classeId}-{examenId}-{eleveId}", name="isi_bulletin_unique")
    */
   public function bulletinUniqueAction(Request $request, $as, $regime, $classeId, $examenId, $eleveId)
   {
@@ -2041,6 +2034,7 @@ class ExamenController extends Controller
   // Page qui va afficher les bulletins (Mais ici la génération se fait individuellement)
   /**
    * @Security("has_role('ROLE_ETUDE')")
+   * @Route("/examen/impression-des-bulletins-{as}-{regime}-{classeId}-{examenId}", name="isi_bulletin_individuel")
    */
   public function bulletinIndividuelAction(Request $request, $as, $regime, $classeId, $examenId)
   {
@@ -2127,6 +2121,7 @@ class ExamenController extends Controller
   // Les bulletins des élèves la de classe
   /**
    * @Security("has_role('ROLE_ETUDE')")
+   * @Route("/examen/impression-des-bulletins-d-une-classe-donnee-{as}-{regime}-{classeId}-{examenId}", name="isi_bulletin")
    */
   public function bulletinsAction(Request $request, $as, $regime, $classeId, $examenId)
   {
@@ -2246,6 +2241,7 @@ class ExamenController extends Controller
   // Cette page affichera les résultas de façon générale
   /**
    * @Security("has_role('ROLE_ETUDE')")
+   * @Route("/examen/resultats-generaux-des-eleves-de-la-classe/{as}/{regime}/{classeId}/{examenId}", name="isi_resultats_generaux_une_classe")
    */
   public function resultatsgenerauxDUneClasseAction(Request $request, int $as, $regime, $classeId, $examenId)
   {
@@ -2302,6 +2298,7 @@ class ExamenController extends Controller
 
   /**
    * @Security("has_role('ROLE_ETUDE')")
+   * @Route("/examen/classement/{as}/{regime}/{classeId}/{examenId}", name="isi_classement")
    */
   public function classementAction(Request $request, int $as, $regime, $classeId, $examenId)
   {
@@ -2383,6 +2380,7 @@ class ExamenController extends Controller
   // Bilan annuel
   /**
    * @Security("has_role('ROLE_ETUDE')")
+   * @Route("/examen/bilan-annuel-{as}", name="isi_bilan_annuel_home")
    */
   public function bilanAnnuelAction(Request $request, $as)
   {
@@ -2415,6 +2413,7 @@ class ExamenController extends Controller
   // Bilan annuel
   /**
    * @Security("has_role('ROLE_ETUDE')")
+   * @Route("/examen/bilan-annuel-de-regime-{as}-{regime}", name="isi_bilan_annuel_regime")
    */
   public function bilanAnnuelDUnRegimeAction(Request $request, $as, $regime)
   {
@@ -2441,7 +2440,7 @@ class ExamenController extends Controller
     $annee      = $repoAnnee->find($as);
     $niveaux    = $repoNiveau->niveauxDuGroupe($regime);
     $classes    = $repoClasse->classeGrpFormation($as, $annexeId, $regime);
-    $frequenter = $repoFrequenter->elevesDuRegime($as, $regime);
+    $frequenter = $repoFrequenter->elevesDuRegime($as, $annexeId, $regime);
     // dump($frequenter);
 
     /**
@@ -2599,6 +2598,7 @@ class ExamenController extends Controller
   // Cette page affichera les notes des élèves d'une classe donnée après les examens
   /**
    * @Security("has_role('ROLE_ETUDE')")
+   * @Route("/examen/notes-des-eleves-d-une-classe-donnee-{as}-{regime}-{classeId}-{examenId}", name="isi_notes_eleves_une_classe")
    */
   public function notesDesElevesDUneClasseAction(Request $request, $as, $regime, $classeId, $examenId)
   {

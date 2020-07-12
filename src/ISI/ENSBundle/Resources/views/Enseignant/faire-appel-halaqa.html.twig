@@ -1,0 +1,107 @@
+{% extends "ENSBundle:Enseignant:index.html.twig" %}
+
+
+
+{% block stylesheets %}
+<style>
+ul {
+  list-style-type: none;
+  padding-left: 0px;
+}
+
+li {
+  line-height: 10px;
+}
+
+ul li span[class=un] {
+  float: left;
+  width: 150px;
+}
+
+ul li span[class=deux] {
+  float: left;
+  width: 250px;
+}
+</style>
+{% endblock %}
+
+
+
+{% block title %}
+  Appel
+{% endblock %}
+
+
+{% block body %}
+  {% set nieme = '' %}
+  {% set heure = cours.heure %}
+  {% if heure == 1 %}
+    <!-- Dans ce cas, c'est une femme. Il faudra donc dire: La première -->
+    {% set nieme = 'ère' %}
+  {% else %}
+    <!-- Pour le reste il n'a pas de différence -->
+    {% set nieme = 'ème' %}
+  {% endif %}
+  <div class="ui info message" style="width:75%">
+		<center>
+      {{ cours.halaqa.libelle }} <br>
+      Cours de {{ cours.matiere.libelle }}
+      <div class="sub header">{{ cours.jourdecours }} à la {{ cours.heure }}<sup>{{nieme}}</sup> heure</div>
+		</center>
+	</div>
+  <div class="well" style="width:75%">
+			<form action="" method="post" class="ui form">
+        <div>
+          <label for="date"></label>
+          <input type="date" name="date" value="{{ 'now'|date('Y-m-d') }}">
+        </div>
+				<div class="ui middle aligned divided list">
+          <div class="item">
+            <div class="right floated content">
+              <div class="">
+                <h3>{{ 'Appel'|trans }}</h3>
+              </div>
+            </div>
+            <div class="content">
+              <h4>
+                {{ 'Matricule'|trans }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                {{ 'Nom & prénoms des élèves'|trans }}
+              </h4>
+            </div>
+          </div>
+          {% set i = 0 %}
+          {% for eleve in memoriser %}
+            {% set i = i + 1 %}
+            {% set image = "" %}
+            {% if eleve.eleve.sexe == 1 %}
+              {% set image = "images/mark.png" %}
+            {% else %}
+              {% set image = "images/molly.png" %}
+            {% endif %}
+              <div class="item ui teal selectable ui middle aligned selection list">
+                <div class="right floated content">
+                  <div class="ui toggle checkbox">
+                    <input name="elevesId[{{ eleve.eleve.id }}]" type="checkbox" {% if appels[eleve.eleve.id] is defined and appels[eleve.eleve.id].heure(heure) == 1 %}checked{% endif %}
+                    >
+                    <label></label>
+                  </div>
+                </div>
+                <img class="ui avatar image" src="{{ asset(image) }}">
+                <div class="content">
+                  <ul>
+                    <li>
+                    <span class="un"><i class="right chevron icon"></i> {{ eleve.eleve.matricule }} </span>
+                    <span class="deux"><i class="right chevron icon"></i> <strong>{{ eleve.eleve.nomFr }} {{ eleve.eleve.pnomFr }}</strong></span>
+                    <span class=""><i class="right chevron icon"></i> <strong>{{ eleve.eleve.nomAr }} {{ eleve.eleve.pnomAr }}</strong></span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+          {% endfor %}
+				</div><br>
+				<div>
+					<input type="submit" class="ui primary button" value="   Enregistrer   ">
+				</div>
+			</form><br><br>
+		</div>
+{% endblock %}

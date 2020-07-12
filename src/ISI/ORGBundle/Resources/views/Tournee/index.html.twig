@@ -13,27 +13,6 @@
 
 
 
-{% block notification %}
-  {% for message in app.session.flashbag.get('error') %}
-  <div class="ui red message">
-    <div class="header">{{ 'Attention'|trans }} !!! </div>
-    <ul class="list">
-      <li>{{ message|raw }}.</li>
-    </ul>
-  </div>
-  {% endfor %}
-  {% for message in app.session.flashbag.get('info') %}
-  <div class="ui green message">
-    <div class="header">{{ 'Notification'|trans }}: </div>
-    <ul class="list">
-      <li>{{ message|raw }}.</li>
-    </ul>
-  </div>
-  {% endfor %}
-{% endblock %}
-
-
-
 {% block section %}
   <i class="plane icon"></i>{{ 'Tournées'|trans }}
 {% endblock %}
@@ -41,11 +20,11 @@
 
 
 {% block body %}
-    <a href="{{ path('tournee.add', {as: asec, nationale: 1}) }}" class="positive ui button">
+    <a href="{{ path('tournee.add', {as: asec, 'annexeId': annexe.id, nationale: 1}) }}" class="positive ui button">
       <i class="plus icon"></i>
       {{ 'Enregistrer une tournée nationale'|trans }}
     </a>&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="{{ path('tournee.add', {as: asec, nationale: 0}) }}" class="teal ui button">
+    <a href="{{ path('tournee.add', {as: asec, 'annexeId': annexe.id, nationale: 0}) }}" class="teal ui button">
       <i class="plus icon"></i>
       {{ 'Enregistrer une tournée internationale'|trans }}
     </a><br><br>
@@ -83,14 +62,14 @@
               {% endif %}
             </td>
             <td>
-              <a href="{{ path('tournee.edit', {as: asec, id: tournee.id}) }}" data-tooltip="Editer tournée"><i class="edit icon"></i></a>
+              <a href="{{ path('tournee.edit', {as: asec, 'annexeId': annexe.id, id: tournee.id}) }}" data-tooltip="Editer tournée"><i class="edit icon"></i></a>
               {% if tournee.nationale == true %}
-                <a href="{{ path('tournee.info', {as: asec, id: tournee.id}) }}" data-tooltip="Informations tournée"><i class="info icon"></i></a>
-                <a href="{{ path('destination.tournee.add.activite', {as: asec, id: tournee.id}) }}" data-tooltip="Ajouter une activité"><i class="plus icon"></i></a>
-                <a href="{{ path('destination.tournee.remove.activite', {as: asec, id: tournee.id}) }}" data-tooltip="Retirer une commune"><i class="minus red icon"></i></a>
+                <a href="{{ path('tournee.info', {as: asec, 'annexeId': annexe.id, id: tournee.id}) }}" data-tooltip="Informations tournée"><i class="info icon"></i></a>
+                <a href="{{ path('destination.tournee.add.activite', {as: asec, 'annexeId': annexe.id, id: tournee.id}) }}" data-tooltip="Ajouter une activité"><i class="plus icon"></i></a>
+                <a href="{{ path('destination.tournee.remove.activite', {as: asec, 'annexeId': annexe.id, id: tournee.id}) }}" data-tooltip="Retirer une commune"><i class="minus red icon"></i></a>
               {% else %}
-                <a href="{{ path('tournee.internationale.info', {as: asec, id: tournee.id}) }}" data-tooltip="Informations tournée"><i class="info icon"></i></a>
-                <a href="{{ path('destination.tournee.internationale.add.activite', {as: asec, id: tournee.id}) }}" data-tooltip="Ajouter une activité"><i class="plus icon"></i></a>
+                <a href="{{ path('tournee.internationale.info', {as: asec, 'annexeId': annexe.id, id: tournee.id}) }}" data-tooltip="Informations tournée"><i class="info icon"></i></a>
+                <a href="{{ path('destination.tournee.internationale.add.activite', {as: asec, 'annexeId': annexe.id, id: tournee.id}) }}" data-tooltip="Ajouter une activité"><i class="plus icon"></i></a>
               {% endif %}
             </td>
           </tr>

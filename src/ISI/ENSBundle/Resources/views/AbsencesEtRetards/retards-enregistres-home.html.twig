@@ -14,24 +14,6 @@
 
 {% block body %}
   <h3>{{ 'Retards enregistrés'|trans }}</h3>
-  {# Cas de fiches de notes déjà éditées #}
-    {% for message in app.session.flashbag.get('error') %}
-      <div class="ui red message">
-        <div class="header">{{ 'Attention'|trans }} !!! </div>
-        <ul class="list">
-          <li>{{ message|raw }}</li>
-        </ul>
-      </div>
-    {% endfor %}
-    {% for message in app.session.flashbag.get('info') %}
-      <div class="ui green message">
-        <div class="header">{{ 'Notification'|trans }}: </div>
-        <ul class="list">
-          <li>{{ message|raw }}.</li>
-        </ul>
-      </div>
-    {% endfor %}
-  {# Fin des notifications #}
   <br />
   {# {{ dump(moisR) }} #}
   <div class="ui six cards">
@@ -40,7 +22,7 @@
         {% if mr.mois == m.id %}
           <div class="card">
             <div class="content">
-              <a href="{{ path('ens_voir_retards_mois', {'as': asec, 'moisId': m.id}) }}">
+              <a href="{{ path('ens_voir_retards_mois', {'as': asec, 'annexeId': annexe.id, 'moisId': m.id}) }}">
                 <div class="content">
                   <img class="right floated mini ui image" src="{{ asset('images/logoISI-x.png') }}">
                   <div class="header"><h4>{{ m.mois }}</h4> </div>

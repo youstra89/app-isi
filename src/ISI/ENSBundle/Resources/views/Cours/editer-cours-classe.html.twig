@@ -58,9 +58,9 @@
                     <option value="">Sélectionner un enseignant</option>
                     {% for item in anneeContrats if item.contrat.enseignant.enseignant == 1 %}
                       {% if item.contrat.enseignant.arabe == 1 and cours.matiere.referenceLangue.reference == "ar" %}
-                        <option value="{{ item.id }}" {% if infoCours[cours.matiere.id] is defined and infoCours[cours.matiere.id].anneeContrat.id == item.id %}selected{% endif %}>{{ item.contrat.enseignant.nomFr }} {{ item.contrat.enseignant.pnomFr }}</option>
+                        <option value="{{ item.id }}" {% if infoCours[cours.matiere.id] is defined and infoCours[cours.matiere.id].anneeContrat.id == item.id %}selected{% endif %}>{{ item.contrat.enseignant.nom }}</option>
                       {% elseif item.contrat.enseignant.francais == 1 and cours.matiere.referenceLangue.reference == "fr" %}
-                        <option value="{{ item.id }}" {% if infoCours[cours.matiere.id] is defined and infoCours[cours.matiere.id].anneeContrat.id == item.id %}selected{% endif %}>{{ item.contrat.enseignant.nomFr }} {{ item.contrat.enseignant.pnomFr }}</option>
+                        <option value="{{ item.id }}" {% if infoCours[cours.matiere.id] is defined and infoCours[cours.matiere.id].anneeContrat.id == item.id %}selected{% endif %}>{{ item.contrat.enseignant.nom }}</option>
                       {% endif %}
                     {% endfor %}
                   </select>
@@ -106,7 +106,7 @@
 
 {% endblock %}
 
-{% block scripts %}
+{% block javascripts %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
     <script src="{{ asset('js/jquery-3.3.1.js') }}"></script>
     <script src="{{ asset('js/select2.min.js') }}"></script>

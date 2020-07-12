@@ -1,9 +1,9 @@
 <div class="header">{{ 'Mosquées'|trans }}</div>
-<a class="item" href="{{ path('home_mosquees', {'as': asec}) }}">Liste</a>
-<a class="item" href="{{ path('mosquee.add', {'as': asec}) }}">Ajouter</a>
+<a class="item" href="{{ path('home_mosquees', {'as': asec, 'annexeId': annexe.id}) }}">Liste</a>
+<a class="item" href="{{ path('mosquee.add', {'as': asec, 'annexeId': annexe.id}) }}">Ajouter</a>
 <div class="header">{{ 'Imams'|trans }}</div>
-<a class="item" href="{{ path('home_imams', {'as': asec}) }}">Liste</a>
-<a class="item" href="{{ path('imam.add', {'as': asec}) }}">Ajouter</a>
+<a class="item" href="{{ path('home_imams', {'as': asec, 'annexeId': annexe.id}) }}">Liste</a>
+<a class="item" href="{{ path('imam.add', {'as': asec, 'annexeId': annexe.id}) }}">Ajouter</a>
 <div class="header">{{ 'Vendredis'|trans }}</div>
-<a class="item" href="{{ path('vendredi.add', {'as': asec}) }}">Programmer une prière</a>
-<a class="item" href="{{ path('home_vendredis', {'as': asec}) }}">Vendredis enregistrés</a>
+<a class="item" href="{{ path('vendredi.add', {'as': asec, 'annexeId': annexe.id}) }}">Programmer une prière</a>
+<a class="item" href="{{ path('home_vendredis', {'as': asec, 'annexeId': annexe.id}) }}">Vendredis enregistrés</a>

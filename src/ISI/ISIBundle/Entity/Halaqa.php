@@ -93,7 +93,7 @@ class Halaqa
      *
      * @ORM\ManyToOne(targetEntity="Annexe")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="annexe_id", referencedColumnName="id", nullable=true)
+     *   @ORM\JoinColumn(name="annexe_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $annexe;

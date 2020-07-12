@@ -100,7 +100,7 @@ class Enseignement
     /**
      * @var \Niveau
      *
-     * @ORM\ManyToOne(targetEntity="Niveau")
+     * @ORM\ManyToOne(targetEntity="Niveau", inversedBy="enseignements")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="niveau_id", referencedColumnName="id")
      * })

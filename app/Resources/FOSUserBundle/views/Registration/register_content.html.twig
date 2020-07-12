@@ -18,7 +18,7 @@
 
 {% block body %}
     <div class="ui form">
-        {{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register', {'as': asec}), 'attr': {'class': 'fos_user_registration_register'}}) }}
+        {{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register', {'as': asec, 'annexeId': annexe.id}), 'attr': {'class': 'fos_user_registration_register'}}) }}
             <div class="three fields">
                 <div class="field">
                     <label for="">
@@ -74,7 +74,7 @@
                     {% for item in annexes %}
                         {% set cpt = cpt + 1 %}
                         <div class="ui toggle checkbox">
-                            <input type="checkbox" name="annexes[]" id="annexe{{item.id}}" value="{{ item.libelle }}" {% if item.id == annexe.id %}checked{% endif %}>
+                            <input type="checkbox" name="annexes[{{item.id}}]" id="annexe{{item.id}}" value="{{ item.libelle }}" {% if item.id == annexe.id %}checked{% endif %}>
                             <label for="annexe{{item.id}}">{{ item.libelle }}</label>
                         </div><br /><br />
                     {% endfor %}

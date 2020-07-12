@@ -59,33 +59,37 @@
         </tbody>
       </table>
       <hr width="75%">
-      <script data-config>
-        var filtersConfig = {
-          base_path: 'TableFilter/dist/tablefilter/',
-          col_0: "none",
-          col_2: 'select',
-          col_3: 'select',
-          alternate_rows: true,
-          rows_counter: true,
-          btn_reset: true,
-          loader: true,
-          status_bar: true,
-          mark_active_columns: true,
-          highlight_keywords: true,
-          no_results_message: true,
-          col_types: [
-            'number', 'string', 'string'
-          ],
-          col_widths: [
-              '20px'
-          ],
-          extensions: [{ name: 'sort' }]
-        };
-
-        var tf = new TableFilter('halaqas', filtersConfig);
-        tf.init();
-      </script>
     </div><br><br>
   {% endif %}
 
+{% endblock %}
+
+{% block javascripts %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: 'TableFilter/dist/tablefilter/',
+      col_0: "none",
+      col_2: 'select',
+      col_3: 'select',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string'
+      ],
+      col_widths: [
+          '20px'
+      ],
+      extensions: [{ name: 'sort' }]
+    };
+
+    var tf = new TableFilter('halaqas', filtersConfig);
+    tf.init();
+  </script>
 {% endblock %}

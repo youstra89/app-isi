@@ -3,14 +3,14 @@
 {% extends "ISIBundle:Parametres:index.html.twig" %}
 
 {% block title %}
-	Editer classe
+	Editer le halaqa {{ halaqa.libelle }}
 {% endblock %}
 
 {% block body %}
 	<h3>{{ 'Edition d\'une halaqa'|trans }}</h3>
 
 	<div class="form-group">
-		{{ form_start(form, {'attr': {'class': 'ui form'}}) }}
+		{{ form_start(form, {'attr': {'class': 'ui form'}, 'action': path('isi_edit_halaqa', {'as': asec, 'halaqaId': halaqa.id, 'regime': regime, 'annexeId': annexe.id})}) }}
 
 		<div class="two fields">
 			<div class="field">

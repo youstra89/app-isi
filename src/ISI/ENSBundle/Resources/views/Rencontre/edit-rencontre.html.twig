@@ -1,4 +1,4 @@
-{% extends "ENSBundle:Enseignant:layout.html.twig" %}
+{% extends "ENSBundle:Rencontre:index.html.twig" %}
 
 {% block title %}
   Mise à jour de rencontre
@@ -15,13 +15,13 @@
 {% block body %}
   <h2>{{ 'Mise à jours des informations de la rencontre'|trans }}</h2>
   <div class="form-group">
-    {{ form_start(form, { 'attr': { 'class': 'ui form' }})}}
+    {{ form_start(form, {'attr': {'class': 'ui form'}, 'action': path('ens_edit_rencontre', {'as': asec, 'annexeId': annexe.id, 'rencontreId': rencontre.id})})}}
       <div class="four fields">
         <div class="field">
           <label for="">
             Date de la rencontre
           </label>
-          <input type="date" name="date" />
+          <input type="date" name="date" value="{{rencontre.date|date('Y-m-d')}}"/>
         </div>
         <div class="field">
           <label for="">

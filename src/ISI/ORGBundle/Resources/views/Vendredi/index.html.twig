@@ -10,25 +10,6 @@
 {% endblock %}
 
 
-{% block notification %}
-  {% for message in app.session.flashbag.get('error') %}
-  <div class="ui red message">
-    <div class="header">{{ 'Attention'|trans }} !!! </div>
-    <ul class="list">
-      <li>{{ message|raw }}.</li>
-    </ul>
-  </div>
-  {% endfor %}
-  {% for message in app.session.flashbag.get('info') %}
-  <div class="ui green message">
-    <div class="header">{{ 'Notification'|trans }}: </div>
-    <ul class="list">
-      <li>{{ message|raw }}.</li>
-    </ul>
-  </div>
-  {% endfor %}
-{% endblock %}
-
 
 {% block section %}
   <i class="users icon"></i>{{ 'Proères du vendredi'|trans }}
@@ -59,7 +40,7 @@
           <td>{{ vendredi.mosquee_nom }}</td>
           <td>{{ vendredi.commune_nom }}</td>
           <td>
-            <a href="{{ path('vendredi.edit', {as: asec, id: vendredi.id}) }}" data-tooltip="Editer les informations"><i class="edit icon"></i></a>
+            <a href="{{ path('vendredi.edit', {as: asec, 'annexeId': annexe.id, id: vendredi.id}) }}" data-tooltip="Editer les informations"><i class="edit icon"></i></a>
           </td>
         </tr>
       {% endfor %}

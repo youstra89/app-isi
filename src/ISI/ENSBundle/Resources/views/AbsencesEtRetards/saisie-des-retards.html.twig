@@ -42,9 +42,9 @@
               {% for contrat in contrats %}
                 {% set image = "" %}
                 {% if contrat.getContrat.getEnseignant.getSexe == 1 %}
-                  {% set image = "{{ asset('images/mark.png') }}" %}
+                  {% set image = "images/mark.png" %}
                 {% else %}
-                  {% set image = "{{ asset('images/molly.png') }}" %}
+                  {% set image = "images/molly.png" %}
                 {% endif %}
                 {% set num = num + 1 %}
                 <div class="item ui selectable">
@@ -56,7 +56,7 @@
                       </div>
                     </div>
                   </div>
-                  <img class="ui avatar image" src="{{ image }}">
+                  <img class="ui avatar image" src="{{ asset(image) }}">
                   <div class="content">
                     {{ contrat.getContrat.getEnseignant.getMatricule }} 
                     <i class="right chevron icon"></i> 

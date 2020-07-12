@@ -18,10 +18,10 @@
 {% endblock %}
 
 {% block contextual_menu %}
-  {% if is_granted('ROLE_PREINSCRIPTION') %}
-  
-  {% else %}
+  {% if is_granted('ROLE_SCOLARITE') %}
     {% include "ISIBundle::contextual-menu-scolarite.html.twig" %}
+  {% else %}
+    {% include "ISIBundle::contextual-menu-role-preinscription.html.twig" %}
   {% endif %}
 {% endblock %}
 

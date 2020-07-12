@@ -8,14 +8,19 @@ use ISI\ISIBundle\Entity\Commettre;
 use ISI\ISIBundle\Entity\Memoriser;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
+
+/**
+ * @Route("/affaires-scolaires")
+ */
 class AffairesScolairesController extends Controller
 {
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/home-{as}-{regime}", name="isi_affaires_scolaires")
    */
   public function indexAction(Request $request, int $as, string $regime)
   {
@@ -42,6 +47,7 @@ class AffairesScolairesController extends Controller
 
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/index.html", name="isi_home_scolarite")
    */
   public function homeScolariteAction(Request $request)
   {
@@ -71,6 +77,7 @@ class AffairesScolairesController extends Controller
   // On va se permettre de savoir un peu plus sur les données statistques (pourcentage des filles, des garçons, redoublants et autres)
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/statistiques-{as}-{regime}", name="isi_statistiques_regime")
    */
   public function statistiquesAction(Request $request, int $as, string $regime)
   {
@@ -134,6 +141,7 @@ class AffairesScolairesController extends Controller
   // Affichage des classe pour l'impression des liste de classe
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/liste-de-classe-home-{as}-{regime}", name="isi_liste_de_classe_home")
    */
   public function listeDeClasseHomeAction(Request $request, int $as, $regime)
   {
@@ -169,6 +177,7 @@ class AffairesScolairesController extends Controller
 
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/liste-des-classes-conduite-{as}-{regime}", name="isi_liste_des_classes_conduite")
    */
   public function listeDesClassesConduiteHomeAction(Request $request, int $as, $regime)
   {
@@ -204,6 +213,7 @@ class AffairesScolairesController extends Controller
 
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/conduites-des-eleves-d-une-classe-{as}-{regime}-{classeId}", name="isi_conduites_des_eleves_d_une_classe")
    */
   public function conduitesDesElevesDUneClasseAction(Request $request, int $as, $regime, int $classeId)
   {
@@ -243,9 +253,11 @@ class AffairesScolairesController extends Controller
   // La function de sélection les élèves d'une classe donnée
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/liste-de-classe-{as}-{regime}-{classeId}", name="liste_de_classe")
    */
   public function listeDeClasseAction(Request $request, int $as, $regime, $classeId)
   {
+    $em = $this->getDoctrine()->getManager();
     $repoEleve  = $this->getDoctrine()->getManager()->getRepository('ISIBundle:Eleve');
     $repoClasse = $this->getDoctrine()->getManager()->getRepository('ISIBundle:Classe');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
@@ -268,6 +280,7 @@ class AffairesScolairesController extends Controller
   // Pour afficher simplement la liste de la classe sans l'imprimer
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/liste-de-la-classe-edition-sans-impression-{as}-{regime}-{classeId}", name="isi_tirer_liste_de_la_classe_edition_sans_impression")
    */
   public function listeDeClasseEtatSansImpressionAction(Request $request, int $as, $regime, $classeId)
   {
@@ -303,6 +316,7 @@ class AffairesScolairesController extends Controller
    * Cette fonction (ou methode si vous voulez) devait se trouver dans EleveController
    * 
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/mise-a-jour-des-informations-des-eleves-d-une-classe-{as}-{regime}-{classeId}", name="isi_mise_a_jour_informations_des_eleves_d_une_classe")
    */
   public function miseAJourInformationsDesElevesAction(Request $request, int $as, string $regime, int $classeId)
   {
@@ -325,30 +339,80 @@ class AffairesScolairesController extends Controller
     $eleves = $repoEleve->elevesDeLaClasse($as, $annexeId, $classeId);
 
     if($request->isMethod('post')){
-      $em        = $this->getDoctrine()->getManager();
-      $data      = $request->request->all();
-      $dates     = $data["dates"];
-      $lieux     = $data["lieux"];
-      $communes  = $data["communes"];
-      $contacts  = $data["contact"];
-      $contactsP = $data["contactP"];
-      $contactsM = $data["contactM"];
+      $em         = $this->getDoctrine()->getManager();
+      $data       = $request->request->all();
+      $nomsAr     = $data["nomsAr"];
+      $pnomsAr    = $data["pnomsAr"];
+      $nomsFr     = $data["nomsFr"];
+      $pnomsFr    = $data["pnomsFr"];
+      $dates      = $data["dates"];
+      $lieux      = $data["lieux"];
+      $residences = $data["residences"];
+      $communes   = $data["communes"];
+      $contacts   = $data["contact"];
+      $contactsP  = $data["contactP"];
+      $contactsM  = $data["contactM"];
+      $contactsT  = $data["contactT"];
       $mise_a_jour = false;
       foreach ($eleves as $eleve) {
         $eleveId       = $eleve->getId();
+        $nomAr         = $eleve->getNomAr();
+        $pnomAr        = $eleve->getPnomAr();
+        $nomFr         = $eleve->getNomFr();
+        $pnomFr        = $eleve->getPnomFr();
         $dateNaissance = $eleve->getDateNaissance()->format("Y-m-d");
+        $lieuNaissance = $eleve->getLieuNaissance();
         $residence     = $eleve->getResidence();
         $commune       = $eleve->getCommune();
         $contact       = $eleve->getContact();
         $contactP      = $eleve->getContactPere();
         $contactM      = $eleve->getContactMere();
+        $contactT      = $eleve->getContactTuteur();
+
+        $new_nomAr     = $nomsAr[$eleveId];
+        $new_pnomAr    = $pnomsAr[$eleveId];
+        $new_nomFr     = $nomsFr[$eleveId];
+        $new_pnomFr    = $pnomsFr[$eleveId];
         $new_date      = $dates[$eleveId];
-        $new_residence = $lieux[$eleveId];
+        $new_lieu      = $lieux[$eleveId];
+        $new_residence = $residences[$eleveId];
         $new_commune   = $communes[$eleveId];
         $new_contact   = $contacts[$eleveId];
         $new_contactP  = $contactsP[$eleveId];
         $new_contactM  = $contactsM[$eleveId];
+        $new_contactT  = $contactsT[$eleveId];
         $mise_a_jour_eleve = false;
+
+        if ($nomAr != $new_nomAr) {
+          $mise_a_jour = true;
+          $mise_a_jour_eleve = true;
+          $eleve->setNomAr($new_nomAr);
+        }
+
+        if ($pnomAr != $new_pnomAr) {
+          $mise_a_jour = true;
+          $mise_a_jour_eleve = true;
+          $eleve->setPnomAr($new_pnomAr);
+        }
+
+        if ($nomFr != $new_nomFr) {
+          $mise_a_jour = true;
+          $mise_a_jour_eleve = true;
+          $eleve->setNomFr($new_nomFr);
+        }
+
+        if ($pnomFr != $new_pnomFr) {
+          $mise_a_jour = true;
+          $mise_a_jour_eleve = true;
+          $eleve->setPnomFr($new_pnomFr);
+        }
+
+        if ($lieuNaissance != $new_lieu) {
+          $mise_a_jour = true;
+          $mise_a_jour_eleve = true;
+          $eleve->setLieuNaissance($new_lieu);
+        }
+
         if ($dateNaissance != $new_date) {
           $new_date_naissance = new \DateTime($new_date);
           $mise_a_jour_eleve = true;
@@ -383,6 +447,12 @@ class AffairesScolairesController extends Controller
           $mise_a_jour = true;
           $mise_a_jour_eleve = true;
           $eleve->setContactMere($new_contactM);
+        }
+
+        if ($contactT != $new_contactT) {
+          $mise_a_jour = true;
+          $mise_a_jour_eleve = true;
+          $eleve->setContactTuteur($new_contactT);
         }
         
         if($mise_a_jour_eleve === true)
@@ -426,6 +496,10 @@ class AffairesScolairesController extends Controller
     ]);
   }
 
+  /**
+   * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/cartes-scolaires-des-eleves-d-une-classe-{as}-{regime}-{classeId}", name="isi_cartes_scolaires_d_une_classe")
+   */
   public function cartesScolaireDesElevesAction(Request $request, int $as, string $regime, int $classeId)
   {
     $em               = $this->getDoctrine()->getManager();
@@ -485,8 +559,9 @@ class AffairesScolairesController extends Controller
   // Pour tirer la liste de classe d'une classe bien donnée [La function pour la génération du fichier pdf]
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/liste-de-la-classe-{as}-{regime}-{classeId}", name="isi_tirer_liste_de_la_classe")
    */
-  public function tirerListeDeLaClasseAction(Request $request, int $as, $regime, int $classeId)
+  public function tirerListeDeLaClasseAction(Request $request, int $as, int $classeId)
   {
     $em               = $this->getDoctrine()->getManager();
     $repoEleve        = $em->getRepository('ISIBundle:Eleve');
@@ -510,15 +585,28 @@ class AffairesScolairesController extends Controller
     $snappy->setOption("encoding", "UTF-8");
     $filename = "liste-de-classe-de-".$classe->getLibelleFr();
 
+    // dump($_SERVER["DOCUMENT_ROOT"]);
+    // die();
+
+    // return $this->render('ISIBundle:Scolarite:liste-de-la-classe.html.twig', [
+    //   // "title" => "Titre de mon document",
+    //   "annee"        => $annee,
+    //   "classe"       => $classe,
+    //   "eleves"       => $eleves,
+    //   'annexe'       => $annexe,
+    //   "informations" => $informations,
+    //   'server'       => $_SERVER["DOCUMENT_ROOT"],   
+    // ]);
+
 
     $html = $this->renderView('ISIBundle:Scolarite:liste-de-la-classe.html.twig', [
       // "title" => "Titre de mon document",
-      "annee" => $annee,
-      "classe" => $classe,
-      "eleves" => $eleves,
-      'annexe'      => $annexe,
+      "annee"        => $annee,
+      "classe"       => $classe,
+      "eleves"       => $eleves,
+      'annexe'       => $annexe,
       "informations" => $informations,
-      'server'   => $_SERVER["DOCUMENT_ROOT"],   
+      'server'       => $_SERVER["DOCUMENT_ROOT"],   
     ]);
 
     $header = $this->renderView( '::header.html.twig' );
@@ -542,42 +630,10 @@ class AffairesScolairesController extends Controller
     );
   }
 
-  // Affichage des classes pour l'impression des listes d'appel
-  /**
-   * @Security("has_role('ROLE_SCOLARITE')")
-   */
-  public function listeDAppelHomeAction(Request $request, int $as, $regime)
-  {
-    $em = $this->getdoctrine()->getManager();
-    $repoAnnee  = $em->getRepository('ISIBundle:Annee');
-    $repoClasse = $this->getDoctrine()->getManager()->getRepository('ISIBundle:Classe');
-    $repoExamen  = $em->getRepository('ISIBundle:Examen');
-    $examens = $repoExamen->lesExamensDeLAnnee($as);
-    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
-    $annexe = $repoAnnexe->find($annexeId);
-    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
-      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
-      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
-    }
-
-    // Sélection de l'année scolaire
-    $annee  = $repoAnnee->find($as);
-
-    $classes = $repoClasse->classeGrpFormation($as, $annexeId, $regime);
-    return $this->render('ISIBundle:Scolarite:liste-d-appel-home.html.twig', [
-      'asec'    => $as,
-      'regime'  => $regime,
-      'annee'   => $annee,
-      'annexe'      => $annexe,
-      'classes' => $classes,
-      'examens' => $examens
-    ]);
-  }
-
   // Pour tirer la liste d'appel d'une classe bien donnée [La function pour la génération du fichier pdf] Academie
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/liste-d-appel-academie-{as}-{regime}-{classeId}", name="isi_tirer_liste_d_appel_de_la_classe_academie")
    */
   public function tirerListeDAppelDeLaClasseAcademieAction(Request $request, int $as, $regime, int $classeId)
   {
@@ -649,6 +705,7 @@ class AffairesScolairesController extends Controller
   // Pour tirer la liste d'appel d'une classe bien donnée [La function pour la génération du fichier pdf] Formation
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/liste-d-appel-centre-de-formation-{as}-{regime}-{classeId}", name="isi_tirer_liste_d_appel_de_la_classe_formation")
    */
   public function tirerListeDAppelDeLaClasseFormationAction(Request $request, int $as, $regime, int $classeId)
   {
@@ -711,6 +768,7 @@ class AffairesScolairesController extends Controller
 
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/liste-de-halaqa-{as}-{regime}", name="isi_liste_des_halaqas")
    */
   public function listeDesHalaqasAction(Request $request, int $as, $regime)
   {
@@ -740,6 +798,7 @@ class AffairesScolairesController extends Controller
   // Edition de la liste des élèves d'une halaqa
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/liste-de-halaqa-{as}-{regime}-{halaqaId}", name="isi_liste_d_une_halaqa")
    */
   public function listeDesElevesDUneHalaqaAction(Request $request, int $as, string $regime, int $halaqaId)
   {
@@ -828,6 +887,7 @@ class AffairesScolairesController extends Controller
   // Page d'accueil de la gestion des absences
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/accueil-gestion-des-absences-{as}-{regime}", name="isi_accueil_gestion_absences")
    */
   public function absenceHomeAction(Request $request, int $as, $regime)
   {
@@ -863,6 +923,7 @@ class AffairesScolairesController extends Controller
   // Page d'accueil de la gestion des heures d'absence de cours (les cours en classe) de la classe passée en paramètre
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/heures-d-absences-cours-de-la-classe-{as}-{regime}-{classeId}-{absence}", name="isi_heures_absences_d_une_classe_home")
    */
   public function heuresAbsenceCoursHomeAction(Request $request, int $as, $regime, int $classeId, $absence)
   {
@@ -901,6 +962,7 @@ class AffairesScolairesController extends Controller
   // On affiche un formulaire pour permettre à l'utilisateur de saisir les heures d'absence des élèves d'une classe donnée
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/saisie-des-heures-d-absence-{as}-{regime}-{classeId}-{absence}-{moisId}", name="isi_saisie_des_heures_d_absence")
    */
   public function saisieDesHeuresDAbsenceAction(Request $request, int $as, $regime, int $classeId, int $moisId, $absence)
   {
@@ -1042,6 +1104,7 @@ class AffairesScolairesController extends Controller
 
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/modification-des-heures-d-absence-{as}-{regime}-{classeId}-{absence}-{moisId}", name="isi_modification_des_heures_d_absence")
    */
   public function modificationDesHeuresDAbsenceAction(Request $request, int $as, $regime, int $classeId, int $moisId, $absence)
   {
@@ -1071,7 +1134,7 @@ class AffairesScolairesController extends Controller
     if($annee->getAchevee() == TRUE)
     {
       $request->getSession()->getFlashBag()->add('error', 'Impossible de modifier des heures d\'absence car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
-      return $this->redirect($this->generateUrl('isi_accueil_gestion_absences', ['as' => $as, 'regime' => $regime]));
+      return $this->redirect($this->generateUrl('isi_accueil_gestion_absences', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
     }
 
     $eleves = $repoEleve->lesElevesDeLaClasse($as, $annexeId, $classeId);
@@ -1102,6 +1165,7 @@ class AffairesScolairesController extends Controller
           return $this->redirect($this->generateUrl('isi_modification_des_heures_d_absence',[
             'as'       => $as,
             'regime'   => $regime,
+            'annexeId' => $annexeId,
             'classeId' => $classeId,
             'absence'  => $absence,
             'moisId'   => $moisId
@@ -1149,7 +1213,7 @@ class AffairesScolairesController extends Controller
 
       return $this->redirect($this->generateUrl('isi_heures_absences_enregistrees',[
         'as'       => $as,
-        'regime'   => $regime,
+        'regime'   => $regime, 'annexeId' => $annexeId,
         'classeId' => $classeId,
         'absence'  => $absence
       ]));
@@ -1172,6 +1236,7 @@ class AffairesScolairesController extends Controller
   // Page d'accueil des heures d'absences enregistrées
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/accueil-heures-d-absences-enregistrees-{as}-{regime}", name="isi_accueil_heures_enregistrees")
    */
   public function absenceEnregistreeHomeAction(Request $request, int $as, $regime)
   {
@@ -1207,6 +1272,7 @@ class AffairesScolairesController extends Controller
   // Cette page affichera les heures d'absences enregistrées d'une classe
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/heures-d-absences-enregistrees-de-la-classe-{as}-{regime}-{classeId}-{absence}", name="isi_heures_absences_enregistrees")
    */
   public function heuresAbsenceEnregistreesAction(Request $request, int $as, $regime, int $classeId, $absence)
   {
@@ -1260,6 +1326,7 @@ class AffairesScolairesController extends Controller
   // Accueil pour le réaménagement des classes
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/reamenager-les-classes-home-{as}-{regime}", name="isi_reamenager_classes_home")
    */
   public function reamenagerClassesHomeAction(Request $request, int $as, $regime)
   {
@@ -1295,6 +1362,7 @@ class AffairesScolairesController extends Controller
 
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/reamenager-la-classe-{as}-{regime}-{classeId}", name="isi_reamenager_une_classe")
    */
   public function reamenagerUneClasseAction(Request $request, int $as, $regime, int $classeId)
   {
@@ -1347,6 +1415,7 @@ class AffairesScolairesController extends Controller
 
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/application-des-reamenagements-de-la-classe-{as}-{regime}-{classeId}", name="isi_appliquer_reamenagement")
    */
   public function appliquerReamenagementAction(Request $request, int $as, string $regime, int $classeId)
   {
@@ -1390,7 +1459,7 @@ class AffairesScolairesController extends Controller
       if($annee->getAchevee() == TRUE)
       {
         $request->getSession()->getFlashBag()->add('error', 'Impossible de faire le réaménagement car l\'année scolaire <strong>'.$annee->getLibelleAnnee().'</strong> est achevée.');
-        return $this->redirect($this->generateUrl('isi_reamenager_classes_home', ['as' => $as, 'regime' => $regime]));
+        return $this->redirect($this->generateUrl('isi_reamenager_classes_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
       }
       $user = $this->getUser();
 
@@ -1458,7 +1527,7 @@ class AffairesScolairesController extends Controller
       if ($check_recording == false && $classe_recording == false && $halaqa_recording == false) {
         # On entre dans cette condition s'il n'y a pas eu d'enregistrement
         $request->getSession()->getFlashBag()->add('error', 'Aucun changement constaté. Veuillez essayer à nouveau.');
-        return $this->redirect($this->generateUrl('isi_reamenager_classes_home', ['as' => $as, 'regime' => $regime]));
+        return $this->redirect($this->generateUrl('isi_reamenager_classes_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
       } 
       else {
         # Beuh, sinon on flush les entités nouvellement créées
@@ -1484,12 +1553,20 @@ class AffairesScolairesController extends Controller
       }
 
       return $this->redirect($this->generateUrl('isi_reamenager_classes_home', [
-        'as'     => $as,
+        'as'     => $as, 'annexeId' => $annexeId,
         'regime' => $regime
       ]));
     }
   }
 
+  /**
+   * @Route("/disposition-des-salles-de-cours-des-classes-{as}-{regime}", name="isi_disposition")
+   *
+   * @param Request $request
+   * @param integer $as
+   * @param string $regime
+   * @return void
+   */
   public function dispositionDesSallesDeCoursAction(Request $request, int $as, string $regime)
   {
     $em = $this->getDoctrine()->getManager();
@@ -1548,4 +1625,4 @@ class AffairesScolairesController extends Controller
   /************** - elle finie ici */
 }
 
-?>
+

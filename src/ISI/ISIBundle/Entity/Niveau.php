@@ -87,7 +87,15 @@ class Niveau
      */
     private $groupeFormation;
 
+    /**
+     * @ORM\OneToMany(targetEntity="ISI\ISIBundle\Entity\Enseignement", mappedBy="niveau")
+     */
+    private $enseignements;
 
+    public function __construct()
+    {
+        $this->enseignements = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -97,6 +105,40 @@ class Niveau
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Add enseignement
+     *
+     * @param \ISI\ISIBundle\Entity\Enseignement $enseignement
+     *
+     * @return Matiere
+     */
+    public function addEnseignement(\ISI\ISIBundle\Entity\Enseignement $enseignement)
+    {
+        $this->enseignements[] = $enseignement;
+
+        return $this;
+    }
+
+    /**
+     * Remove enseignement
+     *
+     * @param \ISI\ISIBundle\Entity\Enseignement $enseignement
+     */
+    public function removeEnseignement(\ISI\ISIBundle\Entity\Enseignement $enseignement)
+    {
+        $this->enseignements->removeElement($enseignement);
+    }
+
+    /**
+     * Get enseignements
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getEnseignements()
+    {
+        return $this->enseignements;
     }
 
     /**

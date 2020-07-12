@@ -39,7 +39,7 @@
               {% for convoque in convoques %}
                 {% if convoque.getConvocation.getId == convocation.id %}
                   {% if convoque.getVerdict == NULL %}
-                    <a href="{{ path('ens_audition_et_verdict', { 'as': asec, 'ensConvocationId': convoque.getId }) }}" title="Cliquer pour enregistrer le verdict"><i class="check red icon"></i></a>
+                    <a href="{{ path('ens_audition_et_verdict', { 'as': asec, 'annexeId': annexe.id, 'ensConvocationId': convoque.getId }) }}" title="Cliquer pour enregistrer le verdict"><i class="check red icon"></i></a>
                   {% else %}
                     {# <i class="caret right icon"></i> #}
                     <i class="check icon"></i>

@@ -2,7 +2,7 @@
 
 
 {% block title %}
-  Audition et verdict | {{ convocation.contrat.getEnseignant.getNomFr }} {{ convocation.contrat.getEnseignant.getPnomFr }}
+  Audition et verdict | {{ convocation.contrat.getEnseignant.getNom }}
 {% endblock %}
 
 {% block contextual_menu %}
@@ -15,7 +15,7 @@
 
 {% block body %}
 <div class="">
-  <h2>{{ 'Audition et Verdict '|trans }} <font class="ui massive green tag label">{{ convocation.contrat.getEnseignant.getNomFr }} {{ convocation.contrat.getEnseignant.getPnomFr }}</font></h2>
+  <h2>{{ 'Audition et Verdict '|trans }} <font class="ui massive green tag label">{{ convocation.contrat.getEnseignant.getNom }}</font></h2>
   <form class="ui form" method="post">
 		<div class="two fields">
 			<div class="field">

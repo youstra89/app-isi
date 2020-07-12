@@ -24,16 +24,19 @@
     <p>{{ 'Aucune halaqa n\'a encore été enregistrée'|trans }}</p>
     {% else %}
         <div class="column" style="width:75%">
-            <table class="ui selectable very basic table">
+            <table class="ui selectable very basic table" id="halaqas">
                 <thead>
                     <tr>
+                        <th>#</th>
                         <th>الحلقات</th>
                         <th>الجنس</th>
                         <th class="two wide">{{ 'Actions'|trans }}</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {% set i = 0 %}
                     {% for halaqa in halaqas %}
+                         {% set i = i + 1 %}
                          {% set genre = '' %}
                          {% if halaqa.genre == 'H' %}
                             {% set genre = 'رجال' %}
@@ -43,6 +46,7 @@
                              {% set genre = 'مزدوج' %}
                          {% endif %}
                         <tr>
+                            <td>{{ i }}</td>
                             <td>
                                 <h4 class="ui image header">{{ halaqa.libelle }} </h4>
                             </td>
@@ -63,4 +67,34 @@
             </table>
         </div>
     {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: 'TableFilter/dist/tablefilter/',
+      col_0: "none",
+      col_2: 'select',
+      col_3: 'none',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string', 'string'
+      ],
+      col_widths: [
+          '20px', , , '200px'
+      ],
+      extensions: [{ name: 'sort' }]
+    };
+
+    var tf = new TableFilter('halaqas', filtersConfig);
+    tf.init();
+  </script>
 {% endblock %}

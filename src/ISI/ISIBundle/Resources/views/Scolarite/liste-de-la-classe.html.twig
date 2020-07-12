@@ -5,25 +5,23 @@
 {% endblock %}
 
 {% block body %}
-
     {% if eleves is empty %}
         <p>{{ 'Inscrivez d\'abord des élèves dans cette classe.'|trans }}</p>
     {% else %}
         <div class="titre-document">
             <center>
                 <h1>قائمة الطلاب</h1>
-                {{ informations.ville }}
             </center>
         </div>
         <br />
-        <div class="id-fiche">
+        <div class="id-fiche"> 
             <center>
                 <div class="classe">
                     <span>الفصل : <span class="libelleClasse">{{ classe.libelleAr }}</span></span>
                 </div>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                {{ annexe.libelle }}
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <div class="annee">
@@ -115,5 +113,4 @@
         <br />
         <center><span class="effectif">Effectif :  {{ numero }}</span> </center>
     {% endif %}
-
 {% endblock %}

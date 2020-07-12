@@ -7,6 +7,7 @@ use ISI\ISIBundle\Repository\AnneeRepository;
 use Symfony\Component\HttpFoundation\Request;
 
 use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -15,6 +16,7 @@ class AdminController extends Controller
 {
     /**
      * @Security("has_role('ROLE_SUPER_ADMIN' or 'ROLE_ADMIN_ANNEXE')")
+     * @Route("/admin-{as}", name="admin_home")
      */
     public function indexAction(Request $request, int $as)
     {
@@ -36,8 +38,10 @@ class AdminController extends Controller
         ]);
     }
 
+
     /**
      * @Security("has_role('ROLE_SUPER_ADMIN')")
+     * @Route("/admin/user/index-management/{as}", name="isi_user")
      */
     public function indexUsersAction(Request $request, $as)
     {
@@ -74,6 +78,7 @@ class AdminController extends Controller
 
     /**
      * @Security("has_role('ROLE_SUPER_ADMIN')")
+     * @Route("/admin/user/{as}/{userId}/add-roles-user", name="add_roles_user")
      */
     public function addRolesUserAction(Request $request, $as, $userId)
     {
@@ -86,7 +91,7 @@ class AdminController extends Controller
         $annexeId = $request->get('annexeId');
         $annexe = $repoAnnexe->find($annexeId);
 
-        $roles = ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN_SCOLARITE', 'ROLE_SCOLARITE', 'ROLE_INTERNAT', 'ROLE_DIRECTION_ENSEIGNANT', 'ROLE_ORGANISATION', 'ROLE_ENSEIGNANT', 'ROLE_ADMIN_ANNEXE', 'ROLE_ETUDE'];
+        $roles = ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN_SCOLARITE', 'ROLE_SCOLARITE', 'ROLE_PREINSCRIPTION', 'ROLE_INTERNAT', 'ROLE_DIRECTION_ENSEIGNANT', 'ROLE_ORGANISATION', 'ROLE_ENSEIGNANT', 'ROLE_ADMIN_ANNEXE', 'ROLE_ETUDE', 'ROLE_DIRECTION_ETUDE', 'ROLE_NOTE'];
 
         $userManager = $this->get('fos_user.user_manager');
 

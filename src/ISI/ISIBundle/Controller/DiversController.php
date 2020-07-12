@@ -5,17 +5,21 @@ namespace ISI\ISIBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-
-use ISI\ISIBundle\Entity\Annee;
-use ISI\ISIBundle\Repository\AnneeRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class DiversController extends Controller
 {
+  /**
+   * @Route("/saisie-des-notes-{as}", name="isi_home_note")
+   *
+   * @param Request $request
+   * @param [type] $as
+   * @return void
+   */
   public function indexAction(Request $request, $as)
   {
-
     $repoAnnee = $this->getDoctrine()->getManager()->getRepository('ISIBundle:Annee');
     $em = $this->getDoctrine()->getManager();
     $annee = $repoAnnee->find($as);

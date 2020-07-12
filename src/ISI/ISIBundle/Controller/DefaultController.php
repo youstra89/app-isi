@@ -2,20 +2,25 @@
 
 namespace ISI\ISIBundle\Controller;
 
+use ISI\ISIBundle\Entity\Annee;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class DefaultController extends Controller
 {
+    /**
+     * @Route("/choix-annexe", name="annexes_homepage")
+     */
     public function choixAnnexeAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         $repoAnnee = $em->getRepository('ISIBundle:Annee');
         $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-        $annee = $repoAnnee->anneeEnCours();
+        $annee   = $repoAnnee->anneeEnCours();
         $annexes = $repoAnnexe->findAll();
-        if(null !== $request->get('as')){
+        if(!empty($request->get('as'))){
             $annee = $repoAnnee->find($request->get('as'));
         }
         $as = $annee->getId();
@@ -28,6 +33,9 @@ class DefaultController extends Controller
         ]);
     }
 
+    /**
+     * @Route("/accueil/{annexeId}", name="isi_homepage")
+     */
     public function indexAction(Request $request, int $annexeId)
     {
         $em = $this->getDoctrine()->getManager();

@@ -18,7 +18,7 @@
 {% if classes is empty %}
   <p>{{ 'Pas de classes pour le moment'|trans }}</p>
 {% else %}
-  <div class="column" style="width:80%">
+  <div class="column" style="width:85%">
       <table class="ui selectable very basic table" id="classes">
         <thead>
           <tr>
@@ -63,20 +63,30 @@
                 <td>
                   <h4 class="ui image header">{{ genre }}</h4>
                 </td>
-                <td>
-                  <a href="{{path('isi_tirer_liste_de_la_classe_edition_sans_impression', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}">
+                <td style="width: 15%; text-align: center">
+                  {% set lien = '' %}
+                  {% if regime == 'A' %}
+                    {% set lien = path('isi_tirer_liste_d_appel_de_la_classe_academie', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id}) %}
+                  {% else %}
+                    {% set lien = path('isi_tirer_liste_d_appel_de_la_classe_formation', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id}) %}
+                  {% endif %}
+                  <a href="{{ lien }}" data-tooltip="Liste d'appel">
+                    <i class="print icon"></i>
+                  </a>
+                  &nbsp;&nbsp;&nbsp;&nbsp;
+                  <a href="{{path('isi_tirer_liste_de_la_classe_edition_sans_impression', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}" data-tooltip="Liste simple">
                     <i class="list icon"></i>
                   </a>
                   &nbsp;&nbsp;&nbsp;&nbsp;
-                  <a href="{{path('isi_mise_a_jour_informations_des_eleves_d_une_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}" title="Mettre à jour les informations des élèves">
+                  <a href="{{path('isi_mise_a_jour_informations_des_eleves_d_une_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}" data-tooltip="Mettre à jour les informations des élèves">
                     <i class="edit icon"></i>
                   </a>
                   &nbsp;&nbsp;&nbsp;&nbsp;
-                  <a href="{{path('isi_cartes_scolaires_d_une_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}" title="Cartes scolaire">
+                  <a href="{{path('isi_cartes_scolaires_d_une_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}" data-tooltip="Cartes scolaire">
                     <i class="ticket icon"></i>
                   </a>
                   &nbsp;&nbsp;&nbsp;&nbsp;
-                  <a href="{{path('isi_tirer_liste_de_la_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}">
+                  <a href="{{path('isi_tirer_liste_de_la_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}" data-tooltip="Liste de classe">
                     <i class="print icon"></i>
                   </a>
                 </td>
@@ -86,33 +96,38 @@
         </tbody>
       </table>
       <hr width="75%">
-      <script data-config>
-        var filtersConfig = {
-          base_path: 'TableFilter/dist/tablefilter/',
-          col_0: "none",
-          col_1: 'select',
-          col_3: 'select',
-          col_5: 'select',
-          alternate_rows: true,
-          rows_counter: true,
-          btn_reset: true,
-          loader: true,
-          status_bar: true,
-          mark_active_columns: true,
-          highlight_keywords: true,
-          no_results_message: true,
-          col_types: [
-            'number', 'string', 'string', 'string'
-          ],
-          col_widths: [
-              '20px', , , '200px'
-          ],
-          extensions: [{ name: 'sort' }]
-        };
-
-        var tf = new TableFilter('classes', filtersConfig);
-        tf.init();
-      </script>
     </div><br><br>
 {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: 'TableFilter/dist/tablefilter/',
+      col_0: "none",
+      col_1: 'select',
+      col_3: 'select',
+      col_5: 'select',
+      col_6: 'none',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string', 'string'
+      ],
+      col_widths: [
+          // '20px', , , '200px', , , '300px'
+      ],
+      extensions: [{ name: 'sort' }]
+    };
+
+    var tf = new TableFilter('classes', filtersConfig);
+    tf.init();
+  </script>
 {% endblock %}

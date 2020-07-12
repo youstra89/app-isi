@@ -26,10 +26,7 @@ class MatiereType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-          ->add('libelle',  TextType::class)
-          // ->add('dateSave')
-          // ->add('dateUpdate')
-          ;
+          ->add('libelle',  TextType::class);
 
           $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event)
           {

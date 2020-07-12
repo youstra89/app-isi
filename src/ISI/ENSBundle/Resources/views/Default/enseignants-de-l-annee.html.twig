@@ -17,12 +17,12 @@
     {% if contrats is not defined %}
         <p>{{ 'Il n y a auccun enseignant enregistré pour le moment'|trans }}</p>
     {% else %}
-        <a href="{{ path('ens_impression_liste_des_enseignants', {'as': asec}) }}"><button class="ui positive button"><i class="print icon"></i>Imprimer la liste des enseignants</button></a> &nbsp;&nbsp;&nbsp;
-        <a href="{{ path('ens_impression_liste_des_enseignants_plus_de_details', {'as': asec}) }}"><button class="ui primary button"><i class="print icon"></i>Imprimer la liste des enseignants (plus de détails)</button></a><br />
+        <a href="{{ path('ens_impression_liste_des_enseignants', {'as': asec, 'annexeId': annexe.id}) }}"><button class="ui positive button"><i class="print icon"></i>Imprimer la liste des enseignants</button></a> &nbsp;&nbsp;&nbsp;
+        <a href="{{ path('ens_impression_liste_des_enseignants_plus_de_details', {'as': asec, 'annexeId': annexe.id}) }}"><button class="ui primary button"><i class="print icon"></i>Imprimer la liste des enseignants (plus de détails)</button></a><br />
         <table id="table-ens" cellspacing="0" class="mytable filterable ui very basic table">
           <thead>
             <tr>
-              <th>{{ 'N°'|trans }}</th>
+              <th style="width: 5%; text-align: center">{{ 'N°'|trans }}</th>
               <th>{{ 'Matricule'|trans }}</th>
               <th>Nom & Prénom</th>
               <th>الإسم و اللقب</th>
@@ -44,9 +44,9 @@
                   {% set color = "WhiteSmoke" %}
               {% endif %}
               <tr bgcolor="{{ color }}">
-                <td>{{ n }}</td>
+                <td style="width: 5%; text-align: center">{{ n }}</td>
                 <td>{{ contrat.getContrat.getEnseignant.getMatricule }}</td>
-                <td>{{ contrat.getContrat.getEnseignant.getNomFr }} {{ contrat.getContrat.getEnseignant.getPnomFr }}</td>
+                <td>{{ contrat.getContrat.getEnseignant.getNom}}</td>
                 <td>{{ contrat.getContrat.getEnseignant.getNomAr }} {{ contrat.getContrat.getEnseignant.getPnomAr }}</td>
                 <td>
                   {% if contrat.getContrat.getEnseignant.getSexe == 1 %}
@@ -74,3 +74,46 @@
         </table>
     {% endif %}
 {% endblock %}
+
+
+{% block javascripts %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+    <script data-config>
+      var filtersConfig = {
+        base_path: 'TableFilter/dist/tablefilter/',
+        col_0: 'none',
+        col_4: 'select',
+        col_5: 'select',
+        col_6: 'select',
+        col_7: 'select',
+        col_8: 'select',
+        col_9: 'none',
+        alternate_rows: true,
+        rows_counter: true,
+        btn_reset: true,
+        loader: true,
+        status_bar: true,
+        mark_active_columns: true,
+        highlight_keywords: true,
+        no_results_message: true,
+        col_types: [
+          'number', 'string', 'string',
+          'string', 'string', 'string',
+        ],
+        col_widths: [
+          '15px', '130px', '270px', , , '100px'
+        ],
+        extensions: [{ name: 'sort' }]
+      };
+
+      var tf = new TableFilter('table-ens', filtersConfig);
+      tf.init();
+    </script>
+    <script src="{{ asset('js/jquery-3.3.1.js') }}"></script>
+    <script src="{{ asset('semantic/ui/dist/semantic.min.js') }}"></script>
+    <script>
+      $('.ui.accordion')
+        .accordion()
+      ;
+    </script>
+  {% endblock %}

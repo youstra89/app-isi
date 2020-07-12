@@ -27,8 +27,8 @@ class ClasseType extends AbstractType
     {
       $regime = $options['regime'];
       $builder
-        ->add('libellefr', TextType::class)
-        ->add('libellear', TextType::class)
+        ->add('libellefr', TextType::class, ['required' => false])
+        ->add('libellear', TextType::class, ['required' => false])
         ->add('genre', ChoiceType::class, array(
           'choices' => array(
             'Choisir le genre de la classe' => '',

@@ -32,10 +32,18 @@ class LocaliteController extends Controller
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+        $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+        return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $annee       = $repoAnnee->find($as);
     return $this->render('ORGBundle:Localite:index.html.twig', [
       'asec'  => $as,
       'annee' => $annee,
+      'annexe' => $annexe,
     ]);
   }
 
@@ -47,6 +55,13 @@ class LocaliteController extends Controller
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+        $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+        return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $annee       = $repoAnnee->find($as);
     $repoRegion = $em->getRepository(Region::class);
     $regions = $repoRegion->findAll();
@@ -54,6 +69,7 @@ class LocaliteController extends Controller
     return $this->render('ORGBundle:Localite:regions.html.twig', [
       'regions' => $regions,
       'asec'  => $as,
+      'annexe' => $annexe,
       'annee' => $annee,
     ]);
   }
@@ -66,6 +82,13 @@ class LocaliteController extends Controller
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+        $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+        return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $annee       = $repoAnnee->find($as);
     $region = new Region();
     $form = $this->createForm(RegionType::class, $region);
@@ -76,11 +99,12 @@ class LocaliteController extends Controller
       $em->persist($region);
       $em->flush();
       $this->addFlash('info', 'La région a bien été enregistrée.');
-      return $this->redirectToRoute('region.add', ['as' => $as]);
+      return $this->redirectToRoute('region.add', ['as' => $as, 'annexeId' => $annexeId]);
     }
     return $this->render('ORGBundle:Localite:region-add.html.twig', [
       'form' => $form->createView(),
       'asec'  => $as,
+      'annexe' => $annexe,
       'annee' => $annee,
     ]);
   }
@@ -94,6 +118,13 @@ class LocaliteController extends Controller
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+        $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+        return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $annee       = $repoAnnee->find($as);
     $form = $this->createForm(RegionType::class, $region);
     $form->handleRequest($request);
@@ -104,11 +135,12 @@ class LocaliteController extends Controller
       $region->setUpdatedAt(new \DateTime());
       $em->flush();
       $this->addFlash('info', 'Mise à jour de la region réussie.');
-      return $this->redirectToRoute('regions', ['as' => $as]);
+      return $this->redirectToRoute('regions', ['as' => $as, 'annexeId' => $annexeId]);
     }
     return $this->render('ORGBundle:Localite:region-edit.html.twig', [
       'form' => $form->createView(),
       'asec'  => $as,
+      'annexe' => $annexe,
       'annee' => $annee,
     ]);
   }
@@ -121,6 +153,13 @@ class LocaliteController extends Controller
     {
       $em = $this->getDoctrine()->getManager();
       $repoAnnee   = $em->getRepository('ISIBundle:Annee');
+      $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+      $annexeId = $request->get('annexeId');
+      $annexe = $repoAnnexe->find($annexeId);
+      if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+          $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+          return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+      }
       $annee       = $repoAnnee->find($as);
       $repoVille = $em->getRepository(Ville::class);
       $villes = $repoVille->findAll();
@@ -128,6 +167,7 @@ class LocaliteController extends Controller
       return $this->render('ORGBundle:Localite:villes.html.twig', [
         'villes' => $villes,
         'asec'  => $as,
+        'annexe' => $annexe,
         'annee' => $annee,
       ]);
     }
@@ -140,6 +180,13 @@ class LocaliteController extends Controller
     {
       $em = $this->getDoctrine()->getManager();
       $repoAnnee   = $em->getRepository('ISIBundle:Annee');
+      $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+      $annexeId = $request->get('annexeId');
+      $annexe = $repoAnnexe->find($annexeId);
+      if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+          $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+          return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+      }
       $annee       = $repoAnnee->find($as);
       $ville = new Ville();
       $form = $this->createForm(VilleType::class, $ville);
@@ -150,11 +197,12 @@ class LocaliteController extends Controller
         $em->persist($ville);
         $em->flush();
         $this->addFlash('info', 'La ville a bien été enregistrée.');
-        return $this->redirectToRoute('ville.add', ['as' => $as]);
+        return $this->redirectToRoute('ville.add', ['as' => $as, 'annexeId' => $annexeId]);
       }
       return $this->render('ORGBundle:Localite:ville-add.html.twig', [
         'form' => $form->createView(),
         'asec'  => $as,
+        'annexe' => $annexe,
         'annee' => $annee,
       ]);
     }
@@ -169,6 +217,13 @@ class LocaliteController extends Controller
     {
       $em = $this->getDoctrine()->getManager();
       $repoAnnee   = $em->getRepository('ISIBundle:Annee');
+      $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+      $annexeId = $request->get('annexeId');
+      $annexe = $repoAnnexe->find($annexeId);
+      if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+          $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+          return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+      }
       $annee       = $repoAnnee->find($as);
       $form = $this->createForm(VilleType::class, $ville);
       $form->handleRequest($request);
@@ -179,11 +234,12 @@ class LocaliteController extends Controller
         $ville->setUpdatedAt(new \DateTime());
         $em->flush();
         $this->addFlash('info', 'Mise à jour de la ville réussie.');
-        return $this->redirectToRoute('villes', ['as' => $as]);
+        return $this->redirectToRoute('villes', ['as' => $as, 'annexeId' => $annexeId]);
       }
       return $this->render('ORGBundle:Localite:ville-edit.html.twig', [
         'form' => $form->createView(),
         'asec'  => $as,
+        'annexe' => $annexe,
         'annee' => $annee,
       ]);
     }
@@ -198,6 +254,13 @@ class LocaliteController extends Controller
     {
       $em = $this->getDoctrine()->getManager();
       $repoAnnee   = $em->getRepository('ISIBundle:Annee');
+      $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+      $annexeId = $request->get('annexeId');
+      $annexe = $repoAnnexe->find($annexeId);
+      if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+          $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+          return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+      }
       $annee       = $repoAnnee->find($as);
       $repoCommune = $em->getRepository(Commune::class);
       $communes = $repoCommune->findAll();
@@ -205,6 +268,7 @@ class LocaliteController extends Controller
       return $this->render('ORGBundle:Localite:communes.html.twig', [
         'communes' => $communes,
         'asec'  => $as,
+        'annexe' => $annexe,
         'annee' => $annee,
       ]);
     }
@@ -217,6 +281,13 @@ class LocaliteController extends Controller
     {
       $em = $this->getDoctrine()->getManager();
       $repoAnnee   = $em->getRepository('ISIBundle:Annee');
+      $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+      $annexeId = $request->get('annexeId');
+      $annexe = $repoAnnexe->find($annexeId);
+      if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+          $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+          return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+      }
       $annee       = $repoAnnee->find($as);
       $repoVille = $em->getRepository(Ville::class);
       $ville = $repoVille->find($villeId);
@@ -231,11 +302,12 @@ class LocaliteController extends Controller
         $em->persist($commune);
         $em->flush();
         $this->addFlash('info', 'La commune a bien été enregistrée.');
-        return $this->redirectToRoute('villes', ['as' => $as]);
+        return $this->redirectToRoute('villes', ['as' => $as, 'annexeId' => $annexeId]);
       }
       return $this->render('Localite/commune-add.html.twig', [
         'form' => $form->createView(),
         'asec'  => $as,
+        'annexe' => $annexe,
         'annee' => $annee,
       ]);
     }
@@ -250,6 +322,13 @@ class LocaliteController extends Controller
     {
       $em = $this->getDoctrine()->getManager();
       $repoAnnee   = $em->getRepository('ISIBundle:Annee');
+      $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+      $annexeId = $request->get('annexeId');
+      $annexe = $repoAnnexe->find($annexeId);
+      if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+          $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+          return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+      }
       $annee       = $repoAnnee->find($as);
       $form = $this->createForm(CommuneType::class, $commune);
       $form->handleRequest($request);
@@ -260,11 +339,12 @@ class LocaliteController extends Controller
         $commune->setUpdatedAt(new \DateTime());
         $em->flush();
         $this->addFlash('info', 'Mise à jour de la commune réussie.');
-        return $this->redirectToRoute('communes', ['as' => $as]);
+        return $this->redirectToRoute('communes', ['as' => $as, 'annexeId' => $annexeId]);
       }
       return $this->render('ORGBundle:Localite:commune-edit.html.twig', [
         'form' => $form->createView(),
         'asec'  => $as,
+        'annexe' => $annexe,
         'annee' => $annee,
       ]);
     }

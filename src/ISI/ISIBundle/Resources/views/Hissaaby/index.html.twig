@@ -1,20 +1,17 @@
-{# ISIBundle/Resources/views/Hissaby #}
-{# Pour gérer son profil #}
-
 {% set template = '' %}
-{% if userType == 'admin' or is_granted('ROLE_SUPER_ADMIN') %}
+{% if userType == 'admin' or is_granted('ROLE_SUPER_ADMIN') or is_granted('ROLE_ADMIN_ANNEXE') %}
     {% set template = "ISIBundle:Admin:index.html.twig" %}
 {% else %}
     {% if is_granted('ROLE_INTERNAT') %}
-        {% set template = "ISIBundle:Internat:layout.html.twig" %}
+        {% set template = "ISIBundle:Internat:index.html.twig" %}
     {% elseif is_granted('ROLE_DIRECTION_ENSEIGNANT') %}
-        {% set template = "ISIBundle:Enseignant:layout.html.twig" %}
+        {% set template = "ISIBundle:Enseignant:index.html.twig" %}
     {% elseif is_granted('ROLE_ETUDE') %}
-        {% set template = "ISIBundle:Etude:layout.html.twig" %}
-    {% elseif is_granted('ROLE_SCOLARITE') %}
-        {% set template = "ISIBundle::layout.html.twig" %}
+        {% set template = "ISIBundle:Etude:index.html.twig" %}
+    {% elseif is_granted('ROLE_SCOLARITE') or is_granted('ROLE_PREINSCRIPTION') %}
+        {% set template = "ISIBundle:Default:index.html.twig" %}
     {% elseif is_granted('ROLE_ORGANISATION') %}
-        {% set template = "ORGBundle::layout.html.twig" %}
+        {% set template = "ORGBundle:Default:index.html.twig" %}
     {% elseif is_granted('ROLE_ENSEIGNANT') %}
         {% set template = "ENSBundle:Enseignant:index.html.twig" %}
     {% endif %}

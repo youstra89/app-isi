@@ -13,13 +13,15 @@ use ISI\ISIBundle\Entity\Probleme;
 use ISI\ISIBundle\Entity\Commettre;
 use ISI\ISIBundle\Entity\Paiementinternat;
 use ISI\ISIBundle\Entity\Moisdepaiementinternat;
-
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+
 
 class InternatController extends Controller
 {
   /**
    * @Security("has_role('ROLE_INTERNAT')")
+   * @Route("/internat-home-{as}", name="internat_home")
    */
   public function indexAction(Request $request, $as)
   {
@@ -35,7 +37,7 @@ class InternatController extends Controller
       return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
     }
     $annee    = $repoAnnee->find($as);
-    $internes = $repoInterner->litseDesInternes($as);
+    $internes = $repoInterner->litseDesInternes($as, $annexeId);
     $ids = [];
     if(!empty($internes))
     {
@@ -46,7 +48,7 @@ class InternatController extends Controller
       }
       array_multisort($nom, SORT_ASC, $pnom, SORT_ASC, $internes);
     }
-    $frequenter = $repoFrequenter->classesDeCertainEleves($as, $ids);
+    $frequenter = $repoFrequenter->classesDeCertainEleves($as, $annexeId, $ids);
     $tabFrequenter = [];
     foreach ($frequenter as $key => $fq) {
       $tabFrequenter[$fq->getEleve()->getId()] = $fq;
@@ -67,6 +69,7 @@ class InternatController extends Controller
   // Accueil de la gestion des chambres
   /**
    * @Security("has_role('ROLE_INTERNAT')")
+   * @Route("/gestion-des-chambres-{as}", name="internat_gestion_chambres")
    */
   public function gestionDesChambresAction(Request $request, $as)
   {
@@ -92,6 +95,7 @@ class InternatController extends Controller
   // Accueil de la gestion des chambres
   /**
    * @Security("has_role('ROLE_INTERNAT')")
+   * @Route("/ajouter-des-chambres-{as}", name="internat_add_chambre")
    */
   public function addChambresAction(Request $request, int $as)
   {
@@ -118,7 +122,7 @@ class InternatController extends Controller
       $em->flush();
 
       $request->getSession()->getFlashBag()->add('info', 'La chambre a été bien enregistrée');
-      return $this->redirectToRoute('internat_gestion_chambres', array('as' => $as));
+      return $this->redirectToRoute('internat_gestion_chambres', array('as' => $as, 'annexeId' => $annexeId));
     }
 
     // return new Response('Que se passe-t-il ?');
@@ -131,6 +135,7 @@ class InternatController extends Controller
 
   /**
    * @Security("has_role('ROLE_INTERNAT')")
+   * @Route("/editer-des-chambres/{chambreId}/{as}", name="internat_edit_chambre")
    */
   public function editChambresAction(Request $request, int $as, int $chambreId)
   {
@@ -159,7 +164,7 @@ class InternatController extends Controller
       $em->flush();
 
       $request->getSession()->getFlashBag()->add('info', 'La chambre <strong>'.$chambre->getBatiment()->getNom().' - '.$chambre->getLibelle().'</strong> a été bien modifiée');
-      return $this->redirectToRoute('internat_gestion_chambres', array('as' => $as));
+      return $this->redirectToRoute('internat_gestion_chambres', array('as' => $as, 'annexeId' => $annexeId));
     }
 
     // return new Response('Que se passe-t-il ?');
@@ -174,6 +179,7 @@ class InternatController extends Controller
   // Ajout d'un élève à l'internat
   /**
    * @Security("has_role('ROLE_INTERNAT')")
+   * @Route("/ajouter-un-interne-home-{as}", name="internat_add")
    */
   public function addInterneAction(Request $request, $as)
   {
@@ -196,28 +202,28 @@ class InternatController extends Controller
       if(empty($matricule))
       {
         $request->getSession()->getFlashBag()->add('error', 'Vous n\'avez pas saisie de matricule.');
-        return $this->redirectToRoute('internat_add', array('as' => $as));
+        return $this->redirectToRoute('internat_add', array('as' => $as, 'annexeId' => $annexeId));
       }
-      $eleve = $repoEleve->findOneBy(['matricule' => $matricule]);
+      $eleve = $repoEleve->findOneBy(['matricule' => $matricule, 'annexe' => $annexeId]);
       if(empty($eleve))
       {
         $request->getSession()->getFlashBag()->add('error', 'Le matricule saisi ne correspond à aucun élève');
-        return $this->redirectToRoute('internat_add', array('as' => $as));
+        return $this->redirectToRoute('internat_add', array('as' => $as, 'annexeId' => $annexeId));
       }
       // $lettreMatricule = substr($matricule, -4, 1);
       if($eleve->getRegime() != 'A')
       {
         $request->getSession()->getFlashBag()->add('error', 'Cette élève n\'est pas inscrit à l\'académie, il ne peut donc pas être inscrit à l\'internat');
-        return $this->redirectToRoute('internat_add', array('as' => $as));
+        return $this->redirectToRoute('internat_add', array('as' => $as, 'annexeId' => $annexeId));
       }
 
       if($eleve->getRenvoye() == TRUE)
       {
         $request->getSession()->getFlashBag()->add('error', 'Cet élève ne peut pas être inscrit à l\'internat car il a été renvoyé');
-        return $this->redirectToRoute('internat_add', array('as' => $as));
+        return $this->redirectToRoute('internat_add', array('as' => $as, 'annexeId' => $annexeId));
       }
 
-      return $this->redirectToRoute('internat_add_eleve', array('as' => $as, 'eleveId' => $eleve->getId()));
+      return $this->redirectToRoute('internat_add_eleve', array('as' => $as, 'annexeId' => $annexeId, 'eleveId' => $eleve->getId()));
     }
 
     return $this->render('ISIBundle:Internat:add-interne.html.twig', [
@@ -228,6 +234,7 @@ class InternatController extends Controller
 
   /**
    * @Security("has_role('ROLE_INTERNAT')")
+   * @Route("/ajouter-un-eleve-a-l-internat-{as}-{eleveId}", name="internat_add_eleve")
    */
   public function addEleveInternatAction(Request $request, $as, $eleveId)
   {
@@ -255,7 +262,7 @@ class InternatController extends Controller
 
     if(empty($reinscription) and count($fqs) != 0) {
       $request->getSession()->getFlashBag()->add('error', 'Cet élève ne s\'est pas réinscrit pour l\'année scolaire en cours');
-      return $this->redirectToRoute('internat_add', array('as' => $as));
+      return $this->redirectToRoute('internat_add', array('as' => $as, 'annexeId' => $annexeId));
     }
 
     if($request->isMethod('post')) {
@@ -266,7 +273,7 @@ class InternatController extends Controller
       if(empty($chambreId))
       {
         $request->getSession()->getFlashBag()->add('error', 'Vous avez oublié de sélectionner la chambre de l\'élève');
-        return $this->redirectToRoute('internat_add_eleve', array('as' => $as, 'eleveId' => $eleveId));
+        return $this->redirectToRoute('internat_add_eleve', array('as' => $as, 'annexeId' => $annexeId, 'eleveId' => $eleveId));
       }
 
       $annee   = $repoAnnee->find($as);
@@ -279,7 +286,7 @@ class InternatController extends Controller
       if($annee->getAchevee() == TRUE)
       {
         $request->getSession()->getFlashBag()->add('error', 'Impossible d\'inscrire un élève à l\'internat car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
-        return $this->redirect($this->generateUrl('internat_add', ['as' => $as]));
+        return $this->redirect($this->generateUrl('internat_add', ['as' => $as, 'annexeId' => $annexeId]));
       }
 
       // On va faire un test ici pour savoir s'il y a toujours de la place libre dans
@@ -315,7 +322,7 @@ class InternatController extends Controller
       $em->persist($interner);
       $em->flush();
       $request->getSession()->getFlashBag()->add('info', '<strong>'.$eleve->getNom().'</strong> a bien été interné dans la chambre "<strong>'.$chambre->getLibelle().'</strong>"');
-      return $this->redirectToRoute('internat_add', array('as' => $as));
+      return $this->redirectToRoute('internat_add', array('as' => $as, 'annexeId' => $annexeId));
     }
 
     return $this->render('ISIBundle:Internat:infos-eleve-a-interner.html.twig', [
@@ -330,6 +337,7 @@ class InternatController extends Controller
   // Retrait d'un élève à l'internat
   /**
    * @Security("has_role('ROLE_INTERNAT')")
+   * @Route("/retirer-un-interne-home-{as}", name="internat_delete")
    */
   public function deleteInterneAction(Request $request, $as)
   {
@@ -354,13 +362,13 @@ class InternatController extends Controller
       if(empty($matricule))
       {
         $request->getSession()->getFlashBag()->add('error', 'Vous n\'avez pas saisie de matricule.');
-        return $this->redirectToRoute('internat_delete', array('as' => $as));
+        return $this->redirectToRoute('internat_delete', array('as' => $as, 'annexeId' => $annexeId));
       }
-      $eleve = $repoEleve->findOneBy(['matricule' => $matricule]);
+      $eleve = $repoEleve->findOneBy(['matricule' => $matricule, 'annexe' => $annexeId]);
       if(empty($eleve))
       {
         $request->getSession()->getFlashBag()->add('error', 'Le matricule saisi ne correspond à aucun élève');
-        return $this->redirectToRoute('internat_delete', array('as' => $as));
+        return $this->redirectToRoute('internat_delete', array('as' => $as, 'annexeId' => $annexeId));
       }
       // $lettreMatricule = substr($matricule, -4, 1);
       if($eleve->getRegime() != 'A')
@@ -375,7 +383,7 @@ class InternatController extends Controller
         $request->getSession()->getFlashBag()->add('error', 'L\'élève n\'est pas inscrit à l\'internat');
         return $this->redirectToRoute('internat_delete', array('as' => $as));
       }
-      return $this->redirectToRoute('internat_delete_eleve', array('as' => $as, 'eleveId' => $eleve->getId()));
+      return $this->redirectToRoute('internat_delete_eleve', array('as' => $as, 'annexeId' => $annexeId, 'eleveId' => $eleve->getId()));
     }
 
     return $this->render('ISIBundle:Internat:delete-interne.html.twig', [
@@ -386,6 +394,7 @@ class InternatController extends Controller
 
   /**
    * @Security("has_role('ROLE_INTERNAT')")
+   * @Route("/retirer-un-eleve-de-l-internat-{as}-{eleveId}", name="internat_delete_eleve")
    */
   public function deleteEleveInternatAction(Request $request, $as, $eleveId)
   {
@@ -417,13 +426,13 @@ class InternatController extends Controller
       if($annee->getAchevee() == TRUE)
       {
         $request->getSession()->getFlashBag()->add('error', 'Impossible d\'inscrire un élève à l\'internat car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
-        return $this->redirect($this->generateUrl('internat_add', ['as' => $as]));
+        return $this->redirect($this->generateUrl('internat_add', ['as' => $as, 'annexeId' => $annexeId]));
       }
 
       if(empty($description))
       {
         $request->getSession()->getFlashBag()->add('error', 'Le motif du renvoi ne doit pas être vide');
-        return $this->redirectToRoute('internat_delete_eleve', array('as' => $as, 'eleveId' => $eleveId));
+        return $this->redirectToRoute('internat_delete_eleve', array('as' => $as, 'annexeId' => $annexeId, 'eleveId' => $eleveId));
       }
 
       $interner = $repoInterner->findOneBy(['eleve' => $eleveId, 'annee' => $as]);
@@ -450,7 +459,7 @@ class InternatController extends Controller
       $em->persist($commettre);
       $em->flush();
       $request->getSession()->getFlashBag()->add('info', '<strong>'.$eleve->getNom().'</strong> a été renvoyé(e) de l\'internat');
-      return $this->redirectToRoute('internat_home', array('as' => $as));
+      return $this->redirectToRoute('internat_home', array('as' => $as, 'annexeId' => $annexeId));
     }
 
     return $this->render('ISIBundle:Internat:infos-eleve-a-retirer-de-l-internat.html.twig', [
@@ -464,6 +473,7 @@ class InternatController extends Controller
   //
   /**
    * @Security("has_role('ROLE_INTERNAT')")
+   * @Route("/info-eleve-{as}-{id}", name="internat_info_eleve")
    */
   public function infoEleveAction(Request $request, $as, $id)
   {
@@ -506,6 +516,7 @@ class InternatController extends Controller
   // Voir la liste des élèves qui ont été retiré de l'internat
   /**
    * @Security("has_role('ROLE_INTERNAT')")
+   * @Route("/liste-des-eleves-retires-de-l-internat-{as}", name="internat_deleted")
    */
   public function deletedElevesAction(Request $request, $as)
   {
@@ -521,7 +532,7 @@ class InternatController extends Controller
     }
 
     $annee    = $repoAnnee->find($as);
-    $internes = $repoInterner->elevesInternesRenvoyes($as);
+    $internes = $repoInterner->elevesInternesRenvoyes($as, $annexeId);
 
     return $this->render('ISIBundle:Internat:liste-des-eleves-retires-de-l-interant.html.twig', [
       'asec'     => $as,
@@ -533,6 +544,7 @@ class InternatController extends Controller
   // Pour ajouter les mois qui seront pris en compte pour le paiement des frais de l'internat
   /**
    * @Security("has_role('ROLE_INTERNAT')")
+   * @Route("/ajouter-les-mois-de-paiement-de-l-internat-{as}", name="internat_add_mois_de_paiement")
    */
   public function addMoisDePaiementAction(Request $request, $as)
   {
@@ -564,6 +576,7 @@ class InternatController extends Controller
   // Les mois de paiement seront ajoutés l'un après l'autre
   /**
    * @Security("has_role('ROLE_INTERNAT')")
+   * @Route("/ajouter-un-mois-de-paiement-{as}-{moisId}", name="internat_add_mois_de_paie")
    */
   public function addLeMoisDePaieAction(Request $request, $as, $moisId)
   {
@@ -586,7 +599,7 @@ class InternatController extends Controller
     if(count($mdp) >= 10)
     {
       $request->getSession()->getFlashBag()->add('error', 'Vous ne pouvez pas ajouter plus de 10 mois de paiement');
-      return $this->redirectToRoute('internat_add_mois_de_paiement', ['as' => $as]);
+      return $this->redirectToRoute('internat_add_mois_de_paiement', ['as' => $as, 'annexeId' => $annexeId]);
     }
 
     // Ici on va se permettre de faire en sorte que les mois soient successifs pour une année scolaire donnée
@@ -597,12 +610,12 @@ class InternatController extends Controller
       if($moisId <= $dernierMois[0]->getMois()->getId() && $moisId != 1)
       {
         $request->getSession()->getFlashBag()->add('error', 'Vous ne pouvez pas ajouer un mois antérieur au mois de <strong>'.$mois->getMois().'</strong>');
-        return $this->redirectToRoute('internat_add_mois_de_paiement', ['as' => $as]);
+        return $this->redirectToRoute('internat_add_mois_de_paiement', ['as' => $as, 'annexeId' => $annexeId]);
       }
       elseif($moisId != ($dernierMois[0]->getMois()->getId() + 1) && $moisId != 1)
       {
         $request->getSession()->getFlashBag()->add('error', 'Les mois doivent être ajoutés successivement');
-        return $this->redirectToRoute('internat_add_mois_de_paiement', ['as' => $as]);
+        return $this->redirectToRoute('internat_add_mois_de_paiement', ['as' => $as, 'annexeId' => $annexeId]);
       }
     }
 
@@ -615,12 +628,13 @@ class InternatController extends Controller
     $em->flush();
 
     $request->getSession()->getFlashBag()->add('info', 'Le mois de <strong>'.$mois->getMois().'</strong> a été ajouté avec succès');
-    return $this->redirectToRoute('internat_add_mois_de_paiement', ['as' => $as]);
+    return $this->redirectToRoute('internat_add_mois_de_paiement', ['as' => $as, 'annexeId' => $annexeId]);
   }
 
   // Pour le règlement des droits/frais de l'internat
   /**
    * @Security("has_role('ROLE_INTERNAT')")
+   * @Route("/paiement-des-frais-internat-{as}", name="internat_pay")
    */
   public function payInterneRightAction(Request $request, $as)
   {
@@ -663,6 +677,7 @@ class InternatController extends Controller
   // Paiement des frais de l'internat pour un élève donné et pour un mois donné
   /**
    * @Security("has_role('ROLE_INTERNAT')")
+   * @Route("/paiement-des-frais-internat-d-un-eleve-pour-un-mois-{as}-{eleveId}-{moisId}", name="internat_pay_mois")
    */
   public function paiementDesFraisPourUnMoisAction(Request $request, $as, $eleveId, $moisId)
   {
@@ -672,6 +687,13 @@ class InternatController extends Controller
     $repoInterner   = $em->getRepository('ISIBundle:Interner');
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoEleve      = $em->getRepository('ISIBundle:Eleve');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee = $repoAnnee->find($as);
     $eleve = $repoEleve->find($eleveId);
@@ -685,12 +707,12 @@ class InternatController extends Controller
       if(empty($montant))
       {
         $request->getSession()->getFlashBag()->add('error', 'Vous n\'avez saisi aucun montant');
-        return $this->redirectToRoute('internat_pay_mois', ['as' => $as, 'eleveId' => $eleveId, 'moisId' => $moisId]);
+        return $this->redirectToRoute('internat_pay_mois', ['as' => $as, 'annexeId' => $annexeId, 'eleveId' => $eleveId, 'moisId' => $moisId]);
       }
       elseif(!is_numeric($montant))
       {
         $request->getSession()->getFlashBag()->add('error', 'Le montant saisi n\'est pas un nombre juste');
-        return $this->redirectToRoute('internat_pay_mois', ['as' => $as, 'eleveId' => $eleveId, 'moisId' => $moisId]);
+        return $this->redirectToRoute('internat_pay_mois', ['as' => $as, 'annexeId' => $annexeId, 'eleveId' => $eleveId, 'moisId' => $moisId]);
       }
       else {
         $interner  = $repoInterner->findBy(['annee' => $as, 'eleve' => $eleveId]);
@@ -715,7 +737,7 @@ class InternatController extends Controller
             $em->persist($paiement);
             $em->flush();
             $request->getSession()->getFlashBag()->add('info', 'Le paiement de '.$eleve->getNom().' pour le mois de '.$mois->getMois()->getMois().' s\'est bien effectué');
-            return $this->redirectToRoute('internat_pay', ['as' => $as]);
+            return $this->redirectToRoute('internat_pay', ['as' => $as, 'annexeId' => $annexeId]);
           }
         }
         // Ici, des paiements ont été effectués pour l'élève. On va donc s'assurer que les paiements restent successifs
@@ -725,11 +747,11 @@ class InternatController extends Controller
           if($idMoisDernierPaiement > $moisId && $moidId != 1)
           {
             $request->getSession()->getFlashBag()->add('error', 'Vous ne pouvez pas payez ce mois sans avoir payé les mois précédents');
-            return $this->redirectToRoute('internat_pay', ['as' => $as]);
+            return $this->redirectToRoute('internat_pay', ['as' => $as, 'annexeId' => $annexeId]);
           }
           elseif($moisId != ($idMoisDernierPaiement + 1) && $moisId != 1){
             $request->getSession()->getFlashBag()->add('error', 'Les paiements doivent se faire de façon successives');
-            return $this->redirectToRoute('internat_pay', ['as' => $as]);
+            return $this->redirectToRoute('internat_pay', ['as' => $as, 'annexeId' => $annexeId]);
           }
         }
         $paiement = new Paiementinternat();
@@ -754,15 +776,22 @@ class InternatController extends Controller
 
   /**
    * @Security("has_role('ROLE_INTERNAT')")
+   * @Route("/recu-de-paiement-{as}-{eleveId}-{moisId}-{paiementId}", name="internat_recu_de_paiement")
    */
   public function recuDePaiementAction(Request $request, $as, $eleveId, $moisId, $paiementId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoMoisDePaie = $em->getRepository('ISIBundle:Moisdepaiementinternat');
     $repoPaiement   = $em->getRepository('ISIBundle:Paiementinternat');
-    $repoInterner   = $em->getRepository('ISIBundle:Interner');
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoEleve      = $em->getRepository('ISIBundle:Eleve');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee = $repoAnnee->find($as);
     $eleve = $repoEleve->find($eleveId);

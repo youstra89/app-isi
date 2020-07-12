@@ -7,9 +7,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 use ISI\ORGBundle\Entity\Activite;
 use ISI\ORGBundle\Form\ActiviteType;
-use ISI\ISIBundle\Entity\Annee;
-use Doctrine\ORM\Tools\Pagination\Paginator;
-use ISI\ISIBundle\Repository\AnneeContratRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -104,7 +101,7 @@ class ActiviteLocaleController extends Controller
       $em->persist($activite);
       $em->flush();
       $this->addFlash('info', 'Le <strong>'.$activite->getTypeType().'</strong> du <strong>'.$activite->getDate()->format('d-m-Y').'</strong> a été enregistré avec succès.');
-      return $this->redirectToRoute('activites_locales', ['as' => $as]);
+      return $this->redirectToRoute('activites_locales', ['as' => $as, 'annexeId' => $annexeId]);
 
     }
 
@@ -131,9 +128,9 @@ class ActiviteLocaleController extends Controller
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
       return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
     }
-    $annee       = $repoAnnee->find($as);
-    $activite     = $repoActivite->find($id);
-    $form = $this->createForm(ActiviteType::class, $activite);
+    $annee    = $repoAnnee->find($as);
+    $activite = $repoActivite->find($id);
+    $form     = $this->createForm(ActiviteType::class, $activite);
     $form->handleRequest($request);
     if($form->isSubmitted() && $form->isValid())
     {
@@ -144,7 +141,7 @@ class ActiviteLocaleController extends Controller
       $em->persist($activite);
       $em->flush();
       $this->addFlash('info', 'Le <strong>'.$activite->getTypeType().'</strong> du <strong>'.$activite->getDate()->format('d-m-Y').'</strong> a été mise à jour avec succès.');
-      return $this->redirectToRoute('activites_locales', ['as' => $as]);
+      return $this->redirectToRoute('activites_locales', ['as' => $as, 'annexeId' => $annexeId]);
 
     }
 
@@ -161,14 +158,14 @@ class ActiviteLocaleController extends Controller
    */
   public function infoActivitesLocalesAction(Request $request, int $as, int $id)
   {
-    $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
+    $em           = $this->getDoctrine()->getManager();
+    $repoAnnee    = $em->getRepository('ISIBundle:Annee');
     $repoActivite = $em->getRepository('ORGBundle:Activite');
-    $annee       = $repoAnnee->find($as);
+    $annee        = $repoAnnee->find($as);
     $activite     = $repoActivite->find($id);
-    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
-    $annexe = $repoAnnexe->find($annexeId);
+    $repoAnnexe   = $em->getRepository('ISIBundle:Annexe');
+    $annexeId     = $request->get('annexeId');
+    $annexe       = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
       return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));

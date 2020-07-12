@@ -5,33 +5,15 @@ namespace ISI\ISIBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-
-use ISI\ISIBundle\Entity\Note;
-use ISI\ISIBundle\Entity\Annee;
-use ISI\ISIBundle\Entity\Niveau;
-use ISI\ISIBundle\Entity\Classe;
-use ISI\ISIBundle\Entity\Examen;
-use ISI\ISIBundle\Entity\Matiere;
-use ISI\ISIBundle\Entity\Moyenne;
-use ISI\ISIBundle\Entity\Enseignement;
-use ISI\ISIBundle\Entity\Appreciation;
-use ISI\ISIBundle\Entity\Moyenneclasse;
-use ISI\ISIBundle\Entity\FrequenterMatiere;
-use ISI\ISIBundle\Repository\NoteRepository;
-use ISI\ISIBundle\Repository\ExamenRepository;
-use ISI\ISIBundle\Repository\NiveauRepository;
-use ISI\ISIBundle\Repository\MoyenneRepository;
-use ISI\ISIBundle\Repository\MatiereRepository;
-use ISI\ISIBundle\Repository\AnneeRepository;
-
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
-use Doctrine\ORM\EntityRepository;
 
 class ImportExportController extends Controller
 {
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/envoi-des-notes-et-moyennes-sur-le-net/{as}/{regime}/{classeId}/{examenId}", name="envoi_des_notes_et_moyennes_sur_le_net")
    */
   public function envoi_des_notes_et_moyennes_sur_le_netAction(Request $request, $as, $regime, $classeId, $examenId)
   {

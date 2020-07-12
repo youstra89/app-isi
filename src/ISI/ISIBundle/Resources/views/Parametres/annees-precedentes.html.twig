@@ -1,6 +1,24 @@
 {# Page d'ajout d'une nouvelle année scolaire #}
 
-{% extends "ISIBundle:Parametres:index.html.twig" %}
+{% set template = '' %}
+    {% if is_granted('ROLE_SUPER_ADMIN') %}
+        {% set template = "ISIBundle:Admin:index.html.twig" %}
+    {% elseif is_granted('ROLE_INTERNAT') %}
+        {% set template = "ISIBundle:Internat:index.html.twig" %}
+    {% elseif is_granted('ROLE_DIRECTION_ENSEIGNANT') %}
+        {% set template = "ENSBundle:Enseignant:index.html.twig" %}
+    {% elseif is_granted('ROLE_ETUDE') %}
+        {% set template = "ISIBundle:Etude:index.html.twig" %}
+    {% elseif is_granted('ROLE_SCOLARITE') %}
+        {% set template = "ISIBundle:Default:index.html.twig" %}
+    {% elseif is_granted('ROLE_ORGANISATION') %}
+        {% set template = "ORGBundle:Default:index.html.twig" %}
+    {% elseif is_granted('ROLE_ENSEIGNANT') %}
+        {% set template = "ENSBundle:Enseignant:index.html.twig" %}
+	{% elseif is_granted('ROLE_ADMIN_ANNEXE') %}
+		{% set template = "ENSBundle::index.html.twig" %}
+    {% endif %}
+{% extends template %}
 
 {% block title %}
 	Années précédentes

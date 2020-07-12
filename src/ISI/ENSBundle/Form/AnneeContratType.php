@@ -32,20 +32,9 @@ class AnneeContratType extends AbstractType
             ->add('nombreHeuresSamedi', IntegerType::class, ['required' => TRUE])
             // ->add('dateSave')
             // ->add('dateUpdate')
+            ->add('save', SubmitType::class, array('label' => 'Valider'))
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event)
-        {
-            $anneeContrat = $event->getData();
-            $form = $event->getForm();
-    
-            if (!$anneeContrat || null === $anneeContrat->getId()) {
-                $form->add('save', SubmitType::class, array('label' => 'Enregistrer'));
-            }
-            else{
-                $form->add('update', SubmitType::class, array('label' => 'Modifier'));
-            }
-        });
     }/**
      * {@inheritdoc}
      */

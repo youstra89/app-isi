@@ -1,0 +1,166 @@
+{% extends "ISIBundle::index.html.twig" %}
+
+{% block title %}
+  Index Enseignant
+{% endblock %}
+
+
+{% block contextual_menu %}
+  {% if is_granted('ROLE_SUPER_ADMIN') %}
+      {{ include("ISIBundle::contextual-menu-panel-admin.html.twig") }}
+  {% elseif is_granted('ROLE_ADMIN_ANNEXE') %}
+    <div class="header">{{ 'Autres modules'|trans }}</div>
+    <a class="item" href="{{path('isi_home_scolarite', {'as': asec, 'annexeId': annexe.id})}}">{{ 'Scolarité'|trans }}</a>
+    <a class="item" href="{{path('etude_home', {'as': asec, 'annexeId': annexe.id})}}">{{ 'Programmes d\'étude'|trans }}</a>
+  {% endif %}
+{% endblock %}
+
+
+{% block menu %}
+  <a class="item" href="{{ path('agents', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header"><i class="home icon"></i> {{ 'Accueil'|trans }}</h4></a>
+  <a class="item" href="{{ path('agents_fonctions_en_cours', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header"><i class="tasks icon"></i> {{ 'Fonctions en cours'|trans }}</h4></a>
+  <a class="item" href="{{ path('ens_initialisation_prise_de_fonction', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header"><i class="play icon"></i>{{ 'Prise de fonction'|trans }}</h4></a>
+  <a class="item" href="{{ path('ens_initialisation_l_arret_de_fonction', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header"><i class="stop icon"></i>{{ 'Arrêt des fonctions'|trans }}</h4></a>
+  <a class="item" href="{{ path('heures_de_travail', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header"><i class="time icon"></i>{{ 'Heures de travail'|trans }}</h4></a>
+
+{% endblock %}
+
+
+{% block mobile_menu %}
+  <a class="item" href="{{ path('agents', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header">{{ 'Accueil'|trans }}</h4></a>
+  <a class="item" href="{{ path('agents_fonctions_en_cours', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header">{{ 'Fonctions'|trans }}</h4></a>
+  <a class="item" href="{{ path('ens_initialisation_prise_de_fonction', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Prise de fonction'|trans }}</a>
+  <a class="item" href="{{ path('ens_initialisation_l_arret_de_fonction', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Arrêt des fonctions'|trans }}</a>
+  <a class="item" href="{{ path('heures_de_travail', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Heures de travail'|trans }}</a>
+{% endblock %}
+
+
+
+{% block section %}
+  <i class="student icon"></i>{{ 'Gestion des enseignants'|trans }}
+{% endblock %}
+
+
+
+{% block body %}
+    {% if is_granted('ROLE_SUPER_ADMIN') %}
+      <a href="{{ path('ens_add', {'as': asec}) }}" class="ui positive button"><i class="plus icon"></i> {{ 'Ajouter un agent'|trans }}</a>
+    {% endif %}
+    {% if enseignants is not defined %}
+        <p>{{ 'Aucun enseignant n\'a encore été inscrit'|trans }}</p>
+    {% else %}
+        <table id="table-ens" cellspacing="0" class="mytable filterable ui very basic table">
+          <thead>
+            <tr>
+              <th>{{ 'N°'|trans }}</th>
+              <th>{{ 'Matricule'|trans }}</th>
+              <th>Nom & Prénom</th>
+              <th>الإسم و اللقب</th>
+              <th>{{ 'Sexe'|trans }}</th>
+              <th>{{ 'Date de naissance'|trans }}</th>
+              <th>{{ 'Arabe'|trans }}</th>
+              <th>{{ 'Français'|trans }}</th>
+              <th>{{ 'Actions'|trans }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% set n = 0 %}
+            {% for ens in enseignants %}
+              {% set n = n + 1 %}
+              {% set color = "" %}
+              {% if (n % 2) == 0 %}
+                  {% set color = "WhiteSmoke" %}
+              {% endif %}
+              <tr bgcolor="{{ color }}">
+                <td>{{ n }}</td>
+                <td>{{ ens.matricule }}</td>
+                <td>{{ ens.getNomFr }} {{ ens.getPnomFr }}</td>
+                <td>{{ ens.getNomAr }} {{ ens.getPnomAr }}</td>
+                <td>
+                  {% if ens.sexe == 1 %}
+                    {{ 'ذكر' }}
+                  {% else %}
+                    {{ 'أنثى' }}
+                  {% endif %}
+                </td>
+                {# <!-- <td>{{ ens.dateNaissance|localizeddate('full', 'none', 'locale') }}</td> --> #}
+                <td>{{ ens.dateNaissance|date("d-m-Y") }}</td>
+                <td>{{ ens.arabe }}</td>
+                <td>{{ ens.francais }}</td>
+                <td>
+                  <a href="{{ path('ens_info', {'as': asec, 'enseignantId':ens.getId, 'annexeId': annexe.id}) }}" data-tooltip="Voir les informations de l'enseignant">
+                    <i class="info circle icon"></i>
+                  </a>
+                  {% if is_granted('ROLE_SUPER_ADMIN') %}
+                    <a href="{{ path('ens_edit', {'as': asec, 'enseignantId':ens.getId, 'annexeId': annexe.id}) }}" data-tooltip="Mettre à jour les informations de l'enseignant">
+                      <i class="edit icon"></i>
+                    </a>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+    {% endif %}
+{% endblock %}
+
+
+{% block javascripts %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+    <script data-config>
+      var filtersConfig = {
+        base_path: 'TableFilter/dist/tablefilter/',
+        col_0: 'none',
+        col_4: 'select',
+        col_6: 'select',
+        col_7: 'select',
+        col_8: 'none',
+        alternate_rows: true,
+        rows_counter: true,
+        btn_reset: true,
+        loader: true,
+        status_bar: true,
+        mark_active_columns: true,
+        highlight_keywords: true,
+        no_results_message: true,
+        col_types: [
+          'number', 'string', 'string',
+          'string', 'string', 'string',
+        ],
+        col_widths: [
+          '15px', '130px', '270px', , , '100px'
+        ],
+        extensions: [{ name: 'sort' }]
+      };
+
+      var tf = new TableFilter('table-ens', filtersConfig);
+      tf.init();
+    </script>
+    <script src="{{ asset('js/jquery-3.3.1.js') }}"></script>
+    <script src="{{ asset('semantic/ui/dist/semantic.min.js') }}"></script>
+    <script>
+      $('.ui.accordion')
+        .accordion()
+      ;
+    </script>
+  {% endblock %}
+
+{# 
+ALTER TABLE matiere ADD matiere_mere INT DEFAULT NULL;
+ALTER TABLE matiere ADD CONSTRAINT FK_9014574AF517F1F4 FOREIGN KEY (matiere_mere) REFERENCES matiere (id);
+CREATE INDEX IDX_9014574AF517F1F4 ON matiere (matiere_mere);
+ALTER TABLE languematiere CHANGE reference reference VARCHAR(255) NOT NULL;
+ALTER TABLE interner RENAME INDEX chambre_id TO IDX_9590E5649B177F54;
+ALTER TABLE reinscription CHANGE eleve_id eleve_id INT DEFAULT NULL, CHANGE annee_id annee_id INT DEFAULT NULL;
+ALTER TABLE reinscription ADD CONSTRAINT FK_503AD36FA6CC7B2 FOREIGN KEY (eleve_id) REFERENCES eleve (id);
+ALTER TABLE reinscription ADD CONSTRAINT FK_503AD36F543EC5F0 FOREIGN KEY (annee_id) REFERENCES annee (id);
+ALTER TABLE annee_contrat_classe ADD halaqa_id INT DEFAULT NULL;
+ALTER TABLE annee_contrat_classe ADD CONSTRAINT FK_762229A44C652862 FOREIGN KEY (halaqa_id) REFERENCES halaqa (id);
+CREATE INDEX IDX_762229A44C652862 ON annee_contrat_classe (halaqa_id);
+ALTER TABLE enseignant ADD enseignant TINYINT(1) NOT NULL, ADD arabe TINYINT(1) NOT NULL, ADD francais TINYINT(1) NOT NULL, ADD administrateur TINYINT(1) NOT NULL, ADD autre TINYINT(1) NOT NULL;
+ALTER TABLE languematiere CHANGE reference reference VARCHAR(255) NOT NULL;
+ALTER TABLE user CHANGE nom nom VARCHAR(255) DEFAULT NULL, CHANGE pnom pnom VARCHAR(255) DEFAULT NULL;
+ALTER TABLE enseignant ADD user INT DEFAULT NULL;
+ALTER TABLE enseignant ADD CONSTRAINT FK_81A72FA18D93D649 FOREIGN KEY (user) REFERENCES user (id);
+CREATE INDEX IDX_81A72FA18D93D649 ON enseignant (user);
+#}

@@ -24,7 +24,7 @@
   {% if contrats is not defined %}
     <p>{{ 'Aucun enseignant n\'a encore été inscrit'|trans }}</p>
   {% else %}
-    <form class="ui form" method="post">
+    <form class="ui form" method="post" action="{{ path('ens_convoquer_enseignant', {as: asec, annexeId: annexe.id}) }}">
       <table class="ui selectable very basic table">
       <thead>
         <tr>

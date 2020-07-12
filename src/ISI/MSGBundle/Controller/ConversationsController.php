@@ -13,10 +13,20 @@ use ISI\MSGBundle\Repository\RepositoryMessage;
 
 class ConversationsController extends Controller
 {
-    public function conversationsAction()
+    public function conversationsAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         $repoMessage = $em->getRepository('MSGBundle:Message');
+        $repoAnnee    = $em->getRepository('ISIBundle:Annee');
+        $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+        $as = $request->get('as');
+        $annexeId = $request->get('annexeId');
+        $annee    = $repoAnnee->find($as);
+        $annexe = $repoAnnexe->find($annexeId);
+        if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+            $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+            return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+        }
         $userManager = $this->get('fos_user.user_manager');
         $users = $userManager->findUsers();
 
@@ -27,8 +37,10 @@ class ConversationsController extends Controller
         }
 
         return $this->render('MSGBundle:Conversations:index.html.twig', [
-            'users' => $users,
-            'unread' => $unread
+            'annee'  => $annee,
+            'annexe' => $annexe,
+            'users'  => $users,
+            'unread' => $unread,
         ]);
     }
 
@@ -37,6 +49,16 @@ class ConversationsController extends Controller
         $em = $this->getDoctrine()->getManager();
         $repoMessage = $em->getRepository('MSGBundle:Message');
         $userManager = $this->get('fos_user.user_manager');
+        $repoAnnee    = $em->getRepository('ISIBundle:Annee');
+        $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+        $as = $request->get('as');
+        $annexeId = $request->get('annexeId');
+        $annee    = $repoAnnee->find($as);
+        $annexe = $repoAnnexe->find($annexeId);
+        if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+            $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+            return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+        }
         /**
          * @var $paginator \Knp\Component\Pager\Paginator
          */ 
@@ -100,11 +122,13 @@ class ConversationsController extends Controller
             $em->persist($message);
             $em->flush();
 
-            return $this->redirectToRoute('msg_show_conversations', ['id' => $id]);
+            return $this->redirectToRoute('msg_show_conversations', ['id' => $id, 'as' => $as, 'annexeId' => $annexeId]);
         }
         return $this->render('MSGBundle:Conversations:show.html.twig', [
             'users'  => $users,
             'sendTo' => $receiver,
+            'annexe' => $annexe,
+            'annee' => $annee,
             'unread' => $unread,
             'messages' => $messages
         ]);

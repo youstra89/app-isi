@@ -5,14 +5,13 @@ namespace ISI\ISIBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-
-use ISI\ISIBundle\Entity\Annee;
-use ISI\ISIBundle\Repository\AnneeRepository;
-
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class AccountController extends Controller
 {
+  /**
+   * @Route("/account/{as}/profile", name="isi_account")
+   */
   public function indexAction(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
@@ -35,17 +34,18 @@ class AccountController extends Controller
     ));
   }
 
+  /**
+   * @Route("/changer-de-langue-{as}", name="isi_change_langue")
+   */
   public function changerLangueAction(Request $request, $as)
   {
 
     $locale = $request->getLocale();
     $langue = ($locale == 'fr') ? 'ar' : 'fr' ;
     $request->setLocale($langue);
-    $route        = $request->query->get('route');
-    $route_params = $request->query->get('route_params');
+    $route                   = $request->query->get('route');
+    $route_params            = $request->query->get('route_params');
     $route_params['_locale'] = $langue;
-    // return new Response(var_dump($route, $route_params));
-    // return new Response($this->generateUrl($route, $route_params));
     return $this->redirect($this->generateUrl($route, $route_params));
   }
 }

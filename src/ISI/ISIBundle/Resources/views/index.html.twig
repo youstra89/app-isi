@@ -115,14 +115,16 @@
         <div class="ui container">
           {% block menu %}
             <a class="item" href="{{ path('isi_home_scolarite', {'as': annee.id, 'annexeId': annexe.id}) }}"><h4 class="ui header"><i class="home icon"></i>{{ 'Accueil'|trans }}</h4></a>
-            <span class="ui simple dropdown item">
-              <a><h4 class="ui header"><span class="style-main-menu">{{ 'Espace élèves'|trans }}</span></h4></a>
-              <i class="dropdown icon"></i>
-              <div class="menu">
-                <a class="item" href="{{ path('isi_espace_eleve', {'as': asec, 'regime': 'A', 'annexeId': annexe.id}) }}">{{ 'Académie'|trans }}</a>
-                <a class="item" href="{{ path('isi_espace_eleve', {'as': asec, 'regime': 'F', 'annexeId': annexe.id}) }}">{{ 'Centre de formation'|trans }}</a>
-              </div>
-            </span>
+            {% if is_granted('ROLE_PREINSCRIPTION') %}
+              <span class="ui simple dropdown item">
+                <a><h4 class="ui header"><span class="style-main-menu">{{ 'Espace élèves'|trans }}</span></h4></a>
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                  <a class="item" href="{{ path('isi_espace_eleve', {'as': asec, 'regime': 'A', 'annexeId': annexe.id}) }}">{{ 'Académie'|trans }}</a>
+                  <a class="item" href="{{ path('isi_espace_eleve', {'as': asec, 'regime': 'F', 'annexeId': annexe.id}) }}">{{ 'Centre de formation'|trans }}</a>
+                </div>
+              </span>
+            {% endif %}
             <span class="ui simple dropdown item">
               <a><h4 class="ui header"><span class="style-main-menu">{{ 'Affaires scolaires'|trans }}</span></h4></a>
               <i class="dropdown icon"></i>
@@ -142,8 +144,8 @@
               <div class="menu">
                 {% if choixAnnexe is not defined %}
                   <a class="item" href="{{ path('isi_account', {'as': asec, 'userType': 'other', 'annexeId': annexe.id}) }}"><i class="edit icon"></i> {{ 'Modifier mon profil'|trans }}</a>
+                  <a class="item" href="{{ path('msg_homepage', {'as': asec, 'annexeId': annexe.id}) }}"><i class="envelope outline icon"></i> {{ 'Messages'|trans }}</a>
                 {% endif %}
-                <a class="item" href="{{ path('msg_homepage') }}"><i class="envelope outline icon"></i> {{ 'Messages'|trans }}</a>
                 <a class="item" href="{{ path('isi_change_langue', {'as': asec, 'route': app.request.get('_route'), 'route_params': app.request.get('_route_params')}) }}"><i class="globe icon"></i> {{ 'Changer la langue'|trans }}</a>
                 <a class="item" href="{{ path('fos_user_security_logout') }}"><i class="sign out icon"></i> {{ 'Déconnexion'|trans }}</a>
               </div>
@@ -194,8 +196,8 @@
             <div class="menu">
               {% if choixAnnexe is not defined %}
                 <a class="item" href="{{ path('isi_account', {'as': asec, 'userType': 'other', 'annexeId': annexe.id}) }}"><i class="edit icon"></i> {{ 'Modifier mon profil'|trans }}</a>
+                <a class="item" href="{{ path('msg_homepage', {'as': asec, 'annexeId': annexe.id}) }}"><i class="envelope outline icon"></i> {{ 'Messages'|trans }}</a>
               {% endif %}
-              <a class="item" href="{{ path('msg_homepage') }}"><i class="envelope outline icon"></i> {{ 'Messages'|trans }}</a>
               <a class="item" href="{{ path('isi_change_langue', {'as': asec, 'route': app.request.get('_route'), 'route_params': app.request.get('_route_params')}) }}"><i class="globe icon"></i> {{ 'Changer la langue'|trans }}</a>
               <a class="item" href="{{ path('fos_user_security_logout') }}"><i class="sign out icon"></i> {{ 'Déconnexion'|trans }}</a>
             </div>
@@ -220,6 +222,9 @@
               {% if choixAnnexe is not defined %}
                 <div class="header">Années scolaires</div>
                 <a class="item" href="{{ path('isi_annees_precedentes', {'as': asec, 'annexeId': annexe.id})}}">{{ 'Années précédentes'|trans }}</a>
+                {% if app.user.annexes|length > 1 %}
+                  <a class="item" href="{{ path('annexes_homepage', {'as': asec, 'annexeId': annexe.id})}}">{{ 'Autres annexes'|trans }}</a>
+                {% endif %}
               {% endif %}
               {% block contextual_menu %}{% endblock %} 
             </div>

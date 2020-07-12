@@ -26,7 +26,7 @@
                         {% endif %}
                     {% endfor %}
                     {% if ajout == true %}
-                        <a href="{{ path('internat_add_mois_de_paie', {'as': asec, 'moisId': m.id}) }}">
+                        <a href="{{ path('internat_add_mois_de_paie', {'as': asec, 'annexeId': annexe.id, 'moisId': m.id}) }}">
                           <div class="ui positive bottom attached button"><i class="plus icon"></i>{{ 'Ajouter'|trans }}</div>
                         </a>
                     {% endif %}

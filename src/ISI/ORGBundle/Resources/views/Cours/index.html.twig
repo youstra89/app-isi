@@ -5,28 +5,6 @@
   Gestion des cours
 {% endblock %}
 
-{% block contextual_menu %}
-{% endblock %}
-
-
-{% block notification %}
-  {% for message in app.session.flashbag.get('error') %}
-  <div class="ui red message">
-    <div class="header">{{ 'Attention'|trans }} !!! </div>
-    <ul class="list">
-      <li>{{ message|raw }}.</li>
-    </ul>
-  </div>
-  {% endfor %}
-  {% for message in app.session.flashbag.get('info') %}
-  <div class="ui green message">
-    <div class="header">{{ 'Notification'|trans }}: </div>
-    <ul class="list">
-      <li>{{ message|raw }}.</li>
-    </ul>
-  </div>
-  {% endfor %}
-{% endblock %}
 
 
 {% block section %}
@@ -36,7 +14,7 @@
 
 {% block body %}
   <h2>Cours enregistrés</h2>
-  <a href="{{ path('cours.add', {as: asec}) }}" class="ui small teal button">Ajouter un cours</a>
+  <a href="{{ path('cours.add', {as: asec, 'annexeId': annexe.id}) }}" class="ui small teal button">Ajouter un cours</a>
   <table class="ui very basic compact table" id="cours">
     <thead>
       <tr>
@@ -67,7 +45,7 @@
           <td>{{ item.discipline }}</td>
           <td>{{ item.livre }}</td>
           <td>
-            <a href="{{ path('cours.edit', {as: asec, id: item.id}) }}" data-tooltip="Editer les informations de le cours"><i class="edit icon"></i></a>
+            <a href="{{ path('cours.edit', {as: asec, 'annexeId': annexe.id, id: item.id}) }}" data-tooltip="Editer les informations de le cours"><i class="edit icon"></i></a>
           </td>
         </tr>
       {% endfor %}

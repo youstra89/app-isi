@@ -10,17 +10,27 @@ use ISI\ENSBundle\Entity\AnneeContratRencontre;
 
 use ISI\ENSBundle\Form\RencontreType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+
 
 class RencontreController extends Controller
 {
   /**
    * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+   * @Route("/index-des-rencontres-{as}", name="ens_rencontre_home")
    */
-  public function indexAction(Request $request, $as)
+  public function index(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee     = $em->getRepository('ISIBundle:Annee');
     $repoRencontre = $em->getRepository('ENSBundle:Rencontre');
+    $annexeId = $request->get('annexeId');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee      = $repoAnnee->find($as);
     $rencontres = $repoRencontre->findBy(['annee' => $as]);
@@ -28,18 +38,27 @@ class RencontreController extends Controller
     return $this->render('ENSBundle:Rencontre:index.html.twig', [
       'asec'       => $as,
       'annee'      => $annee,
+      'annexe' => $annexe,
       'rencontres' => $rencontres,
     ]);
   }
 
   /**
    * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
-   * */
-  public function addRencontreAction(Request $request, $as)
+   * @Route("/enregistrement-de-rencontres-{as}", name="ens_add_rencontre")
+   */
+  public function addRencontre(Request $request, $as)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee     = $em->getRepository('ISIBundle:Annee');
     // $repoRencontre = $em->getRepository('ENSBundle:Rencontre');
+    $annexeId = $request->get('annexeId');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee     = $repoAnnee->find($as);
     $rencontre = new Rencontre();
@@ -50,7 +69,7 @@ class RencontreController extends Controller
     if($annee->getAchevee() == TRUE)
     {
        $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des classes car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
-       return $this->redirect($this->generateUrl('ens_rencontre_home', ['as' => $as]));
+       return $this->redirect($this->generateUrl('ens_rencontre_home', ['as' => $as, 'annexeId' => $annexeId]));
     }
 
     $form = $this->createForm(RencontreType::class, $rencontre);
@@ -66,24 +85,33 @@ class RencontreController extends Controller
       $em->persist($rencontre);
       $em->flush();
       $request->getSession()->getFlashBag()->add('info', 'La rencontre à été bien enregistrée');
-      return $this->redirectToRoute('ens_rencontre_home', ['as' => $as]);
+      return $this->redirectToRoute('ens_rencontre_home', ['as' => $as, 'annexeId' => $annexeId]);
     }
 
     return $this->render('ENSBundle:Rencontre:add-rencontre.html.twig', [
       'asec'  => $as,
       'annee' => $annee,
+      'annexe' => $annexe,
       'form'  => $form->createView(),
     ]);
   }
 
   /**
    * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
-   * */
-  public function editRencontreAction(Request $request, $as, $rencontreId)
+   * @Route("/mise-a-jour-des-informations-d-une-rencontre-{as}-{rencontreId}", name="ens_edit_rencontre")
+   */
+  public function editRencontre(Request $request, $as, $rencontreId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee     = $em->getRepository('ISIBundle:Annee');
     $repoRencontre = $em->getRepository('ENSBundle:Rencontre');
+    $annexeId = $request->get('annexeId');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee     = $repoAnnee->find($as);
     $rencontre = $repoRencontre->find($rencontreId);
@@ -91,7 +119,7 @@ class RencontreController extends Controller
     if($annee->getAchevee() == TRUE)
     {
       $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des classes car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
-      return $this->redirect($this->generateUrl('ens_rencontre_home', ['as' => $as]));
+      return $this->redirect($this->generateUrl('ens_rencontre_home', ['as' => $as, 'annexeId' => $annexeId]));
     }
 
     $form = $this->createForm(RencontreType::class, $rencontre);
@@ -102,20 +130,23 @@ class RencontreController extends Controller
       $date = new \Datetime($date);
       $em->flush();
       $request->getSession()->getFlashBag()->add('info', 'Les informations de la rencontre ont été mise à jour avec sussès.');
-      return $this->redirectToRoute('ens_rencontre_home', ['as' => $as]);
+      return $this->redirectToRoute('ens_rencontre_home', ['as' => $as, 'annexeId' => $annexeId]);
     }
 
     return $this->render('ENSBundle:Rencontre:edit-rencontre.html.twig', [
       'asec'  => $as,
       'annee' => $annee,
+      'annexe' => $annexe,
+      'rencontre' => $rencontre,
       'form'  => $form->createView(),
     ]);
   }
 
   /**
    * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
-   * */
-  public function participantsRencontreAction(Request $request, $as, $rencontreId)
+   * @Route("/ajouter-des-participants-a-la-rencontre-{as}-{rencontreId}", name="ens_participants_rencontre")
+   */
+  public function participantsRencontre(Request $request, $as, $rencontreId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee     = $em->getRepository('ISIBundle:Annee');
@@ -123,6 +154,13 @@ class RencontreController extends Controller
     $repoRencontre = $em->getRepository('ENSBundle:Rencontre');
     $repoAnneeContrat   = $em->getRepository('ENSBundle:AnneeContrat');
     $repoAnneeContratRencontre = $em->getRepository('ENSBundle:AnneeContratRencontre');
+    $annexeId = $request->get('annexeId');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee    = $repoAnnee->find($as);
     $rencontre    = $repoRencontre->find($rencontreId);
@@ -162,7 +200,7 @@ class RencontreController extends Controller
         }
         $em->flush();
         $request->getSession()->getFlashBag()->add('info', $nbr.' participants ont été ajouté(s) à la liste de présence de la : <strong>'.$rencontre->getType().'</strong> du <strong>'.$rencontre->getDate()->format('d-m-Y').'</strong>.');
-        return $this->redirectToRoute('ens_rencontre_home', ['as' => $as]);
+        return $this->redirectToRoute('ens_rencontre_home', ['as' => $as, 'annexeId' => $annexeId]);
         return new Response(var_dump($contratsId));
       }
       else{
@@ -174,6 +212,7 @@ class RencontreController extends Controller
     return $this->render('ENSBundle:Rencontre:enseignants-participants-rencontre.html.twig', [
       'asec'  => $as,
       'annee' => $annee,
+      'annexe' => $annexe,
       'rencontre' => $rencontre,
       'contrats'  => $anneeContrats,
       'participantsId' => $participantsId
@@ -182,13 +221,21 @@ class RencontreController extends Controller
 
   /**
    * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
-   * */
-  public function listeDesParticipantsRencontreAction(Request $request, $as, $rencontreId)
+   * @Route("/liste-des-participants-a-la-rencontre-{as}-{rencontreId}", name="ens_liste_des_participants")
+   */
+  public function listeDesParticipantsRencontre(Request $request, $as, $rencontreId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee     = $em->getRepository('ISIBundle:Annee');
     $repoRencontre = $em->getRepository('ENSBundle:Rencontre');
     $repoAnneeContratRencontre = $em->getRepository('ENSBundle:AnneeContratRencontre');
+    $annexeId = $request->get('annexeId');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
 
     $annee    = $repoAnnee->find($as);
     $rencontre    = $repoRencontre->find($rencontreId);
@@ -203,6 +250,7 @@ class RencontreController extends Controller
     return $this->render('ENSBundle:Rencontre:liste-des-enseignants-participants-rencontre.html.twig', [
       'asec'  => $as,
       'annee' => $annee,
+      'annexe' => $annexe,
       'rencontre' => $rencontre,
       'enseignantsRencontre'  => $enseignantsRencontre,
     ]);

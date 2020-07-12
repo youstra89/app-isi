@@ -12,7 +12,6 @@
   <div class="header">{{ 'Edition'|trans }}</div>
   <a class="item" href="{{path('isi_statistiques_regime', {'as': asec, 'annexeId': annexe.id, 'regime': regime})}}">{{ 'Statistiques'|trans }}</a>
   <a class="item" href="{{path('isi_liste_de_classe_home', {'as': asec, 'annexeId': annexe.id, 'regime': regime})}}">{{ 'Une liste de classe'|trans }}</a>
-  <a class="item" href="{{path('isi_liste_d_appel_home', {'as': asec, 'annexeId': annexe.id, 'regime': regime})}}">{{ 'Une liste d\'appel'|trans }}</a>
   {% if regime == 'A' %}
     <a class="item" href="{{path('isi_liste_des_halaqas', {'as': asec, 'annexeId': annexe.id, 'regime': regime})}}">{{ 'Une liste de halaqa'|trans }}</a>
   {% endif %}

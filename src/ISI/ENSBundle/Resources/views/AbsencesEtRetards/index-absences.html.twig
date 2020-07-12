@@ -50,7 +50,7 @@
                 </td>
                 {# <!-- <td>{{ contrat.getContrat.getEnseignant.getdateNaissance|localizeddate('full', 'none', 'locale') }}</td> --> #}
                 <td>
-                  <a href="{{ path('ens_enregistrer_absence', {'as': asec, 'contratId': contrat.getContrat.getId}) }}" data-tooltip="Enregistrer une absence">
+                  <a href="{{ path('ens_enregistrer_absence', {'as': asec, 'annexeId': annexe.id, 'contratId': contrat.getContrat.getId}) }}" data-tooltip="Enregistrer une absence">
                     <i class="info circle icon"></i>
                   </a>
                 </td>

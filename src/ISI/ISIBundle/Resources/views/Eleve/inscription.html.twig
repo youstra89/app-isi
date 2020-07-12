@@ -131,14 +131,15 @@
     </div>
   </div>
   <input type="hidden" id="anneeId" value="{{ asec }}">
+  <input type="hidden" id="annexeId" value="{{ annexe.id }}">
   {{ form_widget(form.save, {'attr': {'class': 'ui primary button'}}) }}
 
   {{ form_end(form) }}
 {% endblock %}
 
 {% block javascripts %}
-  <script src="{{ asset('js/main.js') }}"></script>
-  <script src="{{ asset('js/ajax.js') }}"></script>
   <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
   <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+  <script src="{{ asset('js/main.js') }}"></script>
+  <script src="{{ asset('js/ajax.js') }}"></script>
 {% endblock %}

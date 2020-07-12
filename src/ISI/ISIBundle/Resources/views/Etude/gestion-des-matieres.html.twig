@@ -16,12 +16,15 @@
 
 {% block body %}
 	<h3>{{ 'Gestion des matieres'|trans }}</h3>
-	<a href="{{ path('etude_nouvelle_matiere', {'as': asec, 'annexeId': annexe.id}) }}">
-		<button class="positive ui button">
-			<i class="plus icon"></i>
-			{{ 'Ajouter une matière'|trans }}
-		</button>
-	</a><br /><br />
+	{% if is_granted('ROLE_DIRECTION_ETUDE') %}
+		<a href="{{ path('etude_nouvelle_matiere', {'as': asec, 'annexeId': annexe.id}) }}">
+			<button class="positive ui button">
+				<i class="plus icon"></i>
+				{{ 'Ajouter une matière'|trans }}
+			</button>
+		</a>
+	{% endif %}
+	<br /><br />
 
 	{% if matieres is null %}
 		<p>{{ 'Aucune matière n\'a encore été enregistrée'|trans }}</p>
@@ -41,16 +44,18 @@
 						{% endif %}
 					</div>
 				</div>
-				<div class="extra content">
-					<div class="ui two buttons">
-						<a href="{{ path('etude_edit_matiere', {'as': asec, 'annexeId': annexe.id, 'matiereId': matiere.getId}) }}">
-							<div class="ui basic green button">{{ 'Modifier'|trans }}</div>
-						</a>
-						<a href="">
-							<div class="ui basic red button">{{ 'Supprimer'|trans }}</div>
-						</a>
+				{% if is_granted('ROLE_DIRECTION_ETUDE') %}
+					<div class="extra content">
+						<div class="ui two buttons">
+							<a href="{{ path('etude_edit_matiere', {'as': asec, 'annexeId': annexe.id, 'matiereId': matiere.getId}) }}">
+								<div class="ui basic green button">{{ 'Modifier'|trans }}</div>
+							</a>
+							<a href="">
+								<div class="ui basic red button">{{ 'Supprimer'|trans }}</div>
+							</a>
+						</div>
 					</div>
-				</div>
+            	{% endif %}
 			</div>
 		{% endfor %}
 		</div>

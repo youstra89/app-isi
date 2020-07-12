@@ -120,3 +120,48 @@ Rencontres: __Rencontres
 Date: __Date
 Thème: __Thème
 'Liste des enseignants aynat participé à la rencontre:': '__Liste des enseignants aynat participé à la rencontre:'
+'Sanctions enregistrées au compte de': '__Sanctions enregistrées au compte de'
+'Aucune sanction n''a encore été enregistrée pour cet enseignant': '__Aucune sanction n''a encore été enregistrée pour cet enseignant'
+Type: __Type
+Description: __Description
+'Ajouter un agent': '__Ajouter un agent'
+Matière: __Matière
+Classe: __Classe
+Numéro: __Numéro
+Jour: __Jour
+Heure: __Heure
+Académie: __Académie
+'Centre de formation': '__Centre de formation'
+Messages: __Messages
+'Gestion des enseignants': '__Gestion des enseignants'
+'Affectation des enseignants': '__Affectation des enseignants'
+'Pour les cours de français': '__Pour les cours de français'
+'Pour les cours de Qur''an': '__Pour les cours de Qur''an'
+'Volume horaire': '__Volume horaire'
+'Nombre heures cours': '__Nombre heures cours'
+'Espace enseignant': '__Espace enseignant'
+'Mise à jour du programme d''enseignement de': '__Mise à jour du programme d''enseignement de'
+'Enregistrement d''un nouvel agent': '__Enregistrement d''un nouvel agent'
+Arabe: __Arabe
+Français: __Français
+Total: __Total
+'Gestion des cours': '__Gestion des cours'
+'Cours enregistrés au': '__Cours enregistrés au'
+'Il n y a aucun cours pour cette classe': '__Il n y a aucun cours pour cette classe'
+Enseignant: __Enseignant
+Coefficient: __Coefficient
+Jours: __Jours
+Heures: __Heures
+'Enregistrement des cours de la classe': '__Enregistrement des cours de la classe'
+'Il n y a aucune matière pour ce niveau': '__Il n y a aucune matière pour ce niveau'
+'Enregistrement des cours de français de la classe': '__Enregistrement des cours de français de la classe'
+'Affectation des enseignants pour les cours': '__Affectation des enseignants pour les cours'
+'Pas de classes pour le moment': '__Pas de classes pour le moment'
+'Affectation des enseignants pour les cours de français': '__Affectation des enseignants pour les cours de français'
+'Nombre heure de cours des enseignants': '__Nombre heure de cours des enseignants'
+'Pas de données disponibles pour l''heure': '__Pas de données disponibles pour l''heure'
+'Nombre heure de cours de l''enseignant': '__Nombre heure de cours de l''enseignant'
+'Affectation des enseignants dans les halaqas': '__Affectation des enseignants dans les halaqas'
+'Aucune classe n''a encore été enregistrée': '__Aucune classe n''a encore été enregistrée'
+'Appliquer les changements': '__Appliquer les changements'
+'Edition des cours de la classe': '__Edition des cours de la classe'

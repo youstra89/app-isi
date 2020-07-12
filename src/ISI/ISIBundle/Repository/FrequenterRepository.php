@@ -11,7 +11,7 @@ namespace ISI\ISIBundle\Repository;
 class FrequenterRepository extends \Doctrine\ORM\EntityRepository
 {
 
-    public function frequenterValidee($as)
+    public function frequenterValidee(int $as)
     {
         $qb = $this->createQueryBuilder('f');
         // $admission = NULL;
@@ -25,7 +25,7 @@ class FrequenterRepository extends \Doctrine\ORM\EntityRepository
                   ->getResult();
     }
 
-    public function elevesDuRegime($as, $regime)
+    public function elevesDuRegime(int $as, int $annexeId, $regime)
     {
         $qb = $this->createQueryBuilder('f');
         $grp = ($regime == 'A') ? 1 : 2 ;
@@ -80,17 +80,18 @@ class FrequenterRepository extends \Doctrine\ORM\EntityRepository
                   ->getResult();
     }
    
-    public function eleveDUneClasseActuelle($as, $ids)
+    public function eleveDUneClasseActuelle(int $as, int $annexeId, $ids)
     {
       $renvoi = false;
       $qb = $this->createQueryBuilder('f');
       $qb->select('f')
          ->join('f.eleve', 'e')
          ->addSelect('e')
-         ->where('f.eleve IN (:ids) AND f.annee = :an AND e.renvoye = :renvoi')
+         ->where('f.eleve IN (:ids) AND f.annee = :an AND e.renvoye = :renvoi AND e.annexe = :annexeId')
          ->setParameter('renvoi', $renvoi)
          ->setParameter('ids', $ids)
          ->setParameter('an', $as)
+         ->setParameter('annexeId', $annexeId)
       ;
       return $qb
         ->getQuery()
@@ -98,17 +99,18 @@ class FrequenterRepository extends \Doctrine\ORM\EntityRepository
       ;
     }
 
-    public function classesDeCertainEleves($as, $ids)
+    public function classesDeCertainEleves(int $as, int $annexeId, $ids)
     {
       $renvoi = false;
       $qb = $this->createQueryBuilder('f');
       $qb->select('f')
          ->join('f.eleve', 'e')
          ->addSelect('e')
-         ->where('e.id IN (:ids) AND f.annee = :an AND e.renvoye = :renvoi')
+         ->where('e.id IN (:ids) AND f.annee = :an AND e.renvoye = :renvoi AND e.annexe = :annexeId')
          ->setParameter('renvoi', $renvoi)
          ->setParameter('ids', $ids)
          ->setParameter('an', $as)
+         ->setParameter('annexeId', $annexeId)
       ;
       return $qb
         ->getQuery()

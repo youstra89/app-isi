@@ -77,7 +77,7 @@
 
 	function getUser($conn, $regime) {
 
-		$sql 	= "SELECT * FROM eleve WHERE regime = '".$regime."' AND renvoye = false ORDER BY nom_fr, pnom_fr ASC";
+		$sql 	= "SELECT * FROM eleve WHERE regime = '".$regime."' AND renvoye = false AND annexe_id = 1 ORDER BY nom_fr, pnom_fr ASC";
 		$result	= mysqli_query($conn, $sql);
 		$arr 	= array();
 		$i 	= 0;
@@ -118,7 +118,7 @@
 
 	function checkUserName($user_name, $conn) {
 
-		$sql	= "SELECT matricule FROM eleve WHERE matricule = '".$user_name."'";
+		$sql	= "SELECT matricule FROM eleve WHERE annexe_id = 1 AND matricule = '".$user_name."'";
 		$result	= mysqli_query($conn, $sql);
 		$row	= mysqli_num_rows($result);
 

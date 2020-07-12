@@ -1,0 +1,117 @@
+{% set template = "ENSBundle:Default:index.html.twig" %}
+
+{% if is_granted('ROLE_SUPER_ADMIN') %}
+  {% set template = "ENSBundle:Agents:index.html.twig" %}
+{% endif %}
+
+{% extends template %}
+
+
+{% block title %}
+  Fonctions en cours
+{% endblock %}
+
+
+{% block section %}
+  <i class="student icon"></i>{{ 'Agents en fonction'|trans }}
+{% endblock %}
+
+{% block body %}
+    <h2>{{ 'Agents en fonction'|trans }}</h2>
+    {% if contrats is not defined %}
+        <p>{{ 'Aucune fonction en cours pour le moment'|trans }}</p>
+    {% else %}
+      <div class="column" style="width:90%">
+        <table id="fonctions" cellspacing="0" class="mytable filterable ui very basic table" width="90%">
+          <thead>
+            <tr>
+              <th style="width: 5%; text-align: center">{{ 'N°'|trans }}</th>
+              <th>{{ 'Matricule'|trans }}</th>
+              <th>Nom</th>
+              <th>Prénom</th>
+              <th>اللقب</th>
+              <th>الإسم</th>
+              <th>{{ 'Sexe'|trans }}</th>
+              <th>{{ 'Date de naissance'|trans }}</th>
+              <th>{{ 'Actions'|trans }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% set n = 0 %}
+            {% for contrat in contrats %}
+              {% set n = n + 1 %}
+              {% set color = "" %}
+              {% if (n % 2) == 0 %}
+                  {% set color = "WhiteSmoke" %}
+              {% endif %}
+              <tr bgcolor="{{ color }}">
+                <td style="width: 5%; text-align: center">{{ n }}</td>
+                <td>{{ contrat.getEnseignant.getMatricule }}</td>
+                <td>{{ contrat.getEnseignant.getNomFr }}</td>
+                <td>{{ contrat.getEnseignant.getPnomFr }}</td>
+                <td>{{ contrat.getEnseignant.getNomAr }}</td>
+                <td>{{ contrat.getEnseignant.getPnomAr }}</td>
+                <td>
+                  {% if contrat.getEnseignant.getSexe == 1 %}
+                    {{ 'ذكر' }}
+                  {% else %}
+                    {{ 'أنثى' }}
+                  {% endif %}
+                </td>
+                {# <!-- <td>{{ contrat.getEnseignant.getdateNaissance|localizeddate('full', 'none', 'locale') }}</td> --> #}
+                <td>{{ contrat.getEnseignant.getDateNaissance|date("d-m-Y") }}</td>
+                <td>
+                  {% if anneeContrats[contrat.id] is defined %}
+                    <a href="{{ path('definir_le_temps_de_travail', {'as': asec, 'annexeId': annexe.id, 'contratId': contrat.getid}) }}" data-tooltip="Mettre à jour les heures de travail au bureau de l'agent">
+                      <i class="edit icon"></i>
+                    </a>
+                  {% else %}
+                    <a href="{{ path('definir_le_temps_de_travail', {'as': asec, 'annexeId': annexe.id, 'contratId': contrat.getid}) }}" data-tooltip="Définir les heures de travail au bureau de l'agent">
+                      <i class="plus icon"></i>
+                    </a>
+                  {% endif %}
+                  <a href="{{ path('ens_info', {'as': asec, 'annexeId': annexe.id, 'enseignantId': contrat.getEnseignant.getid}) }}" data-tooltip="Voir les informations de l'enseignant">
+                    <i class="info circle icon"></i>
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+{% endblock %}
+
+
+{% block javascripts %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+    <script data-config>
+      var filtersConfig = {
+        base_path: 'TableFilter/dist/tablefilter/',
+        col_0: 'none',
+        // col_4: 'select',
+        col_6: 'select',
+        // col_7: 'select',
+        col_8: 'none',
+        alternate_rows: true,
+        rows_counter: true,
+        btn_reset: true,
+        loader: true,
+        status_bar: true,
+        mark_active_columns: true,
+        highlight_keywords: true,
+        no_results_message: true,
+        col_types: [
+          'number', 'string', 'string',
+          'string', 'string', 'string',
+        ],
+        col_widths: [
+          // '15px', '130px', '270px', , , '100px'
+        ],
+        extensions: [{ name: 'sort' }]
+      };
+
+      var tf = new TableFilter('fonctions', filtersConfig);
+      tf.init();
+    </script>
+  {% endblock %}

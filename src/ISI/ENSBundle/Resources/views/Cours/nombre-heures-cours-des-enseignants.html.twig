@@ -24,7 +24,8 @@
       <table class="ui selectable very basic table" id="enseignants">
         <thead>
           <tr>
-            <th width="10%">N°</th>
+            <th style="width: 5%; text-align: center">N°</th>
+            <th>Matricule</th>
             <th>Nom</th>
             <th>Prénoms</th>
             <th>Heures Académie</th>
@@ -38,7 +39,8 @@
           {% for item in anneeContrats %} 
               {% set numero = numero + 1 %}
               <tr>
-                <td>{{ numero }}</td>
+                <td style="width: 5%; text-align: center">{{ numero }}</td>
+                <td>{{ item.contrat.enseignant.matricule }}</td>
                 <td>{{ item.contrat.enseignant.nomFr }}</td>
                 <td>{{ item.contrat.enseignant.pnomFr }}</td>
                 {% if heuresCours[item.id] is defined %}
@@ -64,34 +66,34 @@
 {% endif %}
 {% endblock %}
 
-{% block scripts %}
-    <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
-<script data-config>
-        var filtersConfig = {
-          base_path: 'TableFilter/dist/tablefilter/',
-          col_0: "none",
-          col_3: 'select',
-          col_4: 'select',
-          col_5: 'select',
-          col_6: 'none',
-          alternate_rows: true,
-          rows_counter: true,
-          btn_reset: true,
-          loader: true,
-          status_bar: true,
-          mark_active_columns: true,
-          highlight_keywords: true,
-          no_results_message: true,
-          col_types: [
-            'number', 'string', 'string', 'string'
-          ],
-          col_widths: [
-              '20px', , , '200px'
-          ],
-          extensions: [{ name: 'sort' }]
-        };
+{% block javascripts %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: 'TableFilter/dist/tablefilter/',
+      col_0: "none",
+      col_4: 'select',
+      col_5: 'select',
+      col_6: 'select',
+      col_7: 'none',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string', 'string'
+      ],
+      col_widths: [
+          '20px', , , '200px'
+      ],
+      extensions: [{ name: 'sort' }]
+    };
 
-        var tf = new TableFilter('enseignants', filtersConfig);
-        tf.init();
-      </script>
+    var tf = new TableFilter('enseignants', filtersConfig);
+    tf.init();
+  </script>
 {% endblock %}

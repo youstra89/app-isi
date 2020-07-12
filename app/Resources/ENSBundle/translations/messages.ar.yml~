@@ -67,3 +67,101 @@ Utilisateur: __Utilisateur
 'GESTION DES ENSEIGNANTS': '__GESTION DES ENSEIGNANTS'
 'Enregistrement pour le programme d''enseignement': '__Enregistrement pour le programme d''enseignement'
 'Prise de fonction pour l''enseignant(e)': '__Prise de fonction pour l''enseignant(e)'
+'Voir les absences': '__Voir les absences'
+'Enregistrement d''absence pour l''enseignant:': '__Enregistrement d''absence pour l''enseignant:'
+'Enregistrement des retards des enseignants': '__Enregistrement des retards des enseignants'
+'Retards enregistrés pour le mois de': '__Retards enregistrés pour le mois de'
+Durée: __Durée
+'Discipline - Conduites': '__Discipline - Conduites'
+'Audition et Verdict': '__Audition et Verdict'
+Audition: __Audition
+Verdict: __Verdict
+'Gestion des convocations': '__Gestion des convocations'
+'Accueil des convocation': '__Accueil des convocation'
+'Convoquer des enseignants': '__Convoquer des enseignants'
+'Discipline - Convocation': '__Discipline - Convocation'
+'Sélection d''enseignants pour enregistrement de convocation': '__Sélection d''enseignants pour enregistrement de convocation'
+'Enregistrement de conduite pour l''enseignant(e)': '__Enregistrement de conduite pour l''enseignant(e)'
+'Discipline - Sanction': '__Discipline - Sanction'
+'Enregistrement de sanction': '__Enregistrement de sanction'
+'Enregistrement de conduite pour un enseignant': '__Enregistrement de conduite pour un enseignant'
+Voir: __Voir
+Ajouter: __Ajouter
+'Liste des convocations de l''année': '__Liste des convocations de l''année'
+Enseignants: __Enseignants
+'Date de convocation': '__Date de convocation'
+Instance: __Instance
+'Motif de la convocation': '__Motif de la convocation'
+'Aucun contrat n''a encore été enregistrée': '__Aucun contrat n''a encore été enregistrée'
+'Nombre de sanctions': '__Nombre de sanctions'
+Action: __Action
+'Enregistrement d''une nouvelle convocation': '__Enregistrement d''une nouvelle convocation'
+'Les conduites de': '__Les conduites de'
+'Référence de la CNI': '__Référence de la CNI'
+'Rien à signaler': '__Rien à signaler'
+'Arrêt de fonction pour l''enseignant(e)': '__Arrêt de fonction pour l''enseignant(e)'
+'Arrêter les fonctions de': '__Arrêter les fonctions de'
+'Date de fin': '__Date de fin'
+'Motif de fin de contrat': '__Motif de fin de contrat'
+'Inscrivez d''abord des enseignants.': '__Inscrivez d''abord des enseignants.'
+'Autres modules': '__Autres modules'
+'Programmes d''étude': '__Programmes d''étude'
+Programme: __Programme
+'Arrêt de fonction': '__Arrêt de fonction'
+Rencontres: __Rencontres
+'Enregistrement d''une nouvelle rencontre': '__Enregistrement d''une nouvelle rencontre'
+'Gestion des rencontres': '__Gestion des rencontres'
+'Ajouter une rencontre': '__Ajouter une rencontre'
+'Mise à jours des informations de la rencontre': '__Mise à jours des informations de la rencontre'
+'Sélection d''enseignants aynat participé à la rencontre:': '__Sélection d''enseignants aynat participé à la rencontre:'
+'Rencontres de l''année': '__Rencontres de l''année'
+'Aucune rencontre n''a encore été enregistrée': '__Aucune rencontre n''a encore été enregistrée'
+'Type de la rencontre': '__Type de la rencontre'
+Date: __Date
+Thème: __Thème
+'Liste des enseignants aynat participé à la rencontre:': '__Liste des enseignants aynat participé à la rencontre:'
+'Sanctions enregistrées au compte de': '__Sanctions enregistrées au compte de'
+'Aucune sanction n''a encore été enregistrée pour cet enseignant': '__Aucune sanction n''a encore été enregistrée pour cet enseignant'
+Type: __Type
+Description: __Description
+'Ajouter un agent': '__Ajouter un agent'
+Matière: __Matière
+Classe: __Classe
+Numéro: __Numéro
+Jour: __Jour
+Heure: __Heure
+Académie: __Académie
+'Centre de formation': '__Centre de formation'
+Messages: __Messages
+'Gestion des enseignants': '__Gestion des enseignants'
+'Affectation des enseignants': '__Affectation des enseignants'
+'Pour les cours de français': '__Pour les cours de français'
+'Pour les cours de Qur''an': '__Pour les cours de Qur''an'
+'Volume horaire': '__Volume horaire'
+'Nombre heures cours': '__Nombre heures cours'
+'Espace enseignant': '__Espace enseignant'
+'Mise à jour du programme d''enseignement de': '__Mise à jour du programme d''enseignement de'
+'Enregistrement d''un nouvel agent': '__Enregistrement d''un nouvel agent'
+Arabe: __Arabe
+Français: __Français
+Total: __Total
+'Gestion des cours': '__Gestion des cours'
+'Cours enregistrés au': '__Cours enregistrés au'
+'Il n y a aucun cours pour cette classe': '__Il n y a aucun cours pour cette classe'
+Enseignant: __Enseignant
+Coefficient: __Coefficient
+Jours: __Jours
+Heures: __Heures
+'Enregistrement des cours de la classe': '__Enregistrement des cours de la classe'
+'Il n y a aucune matière pour ce niveau': '__Il n y a aucune matière pour ce niveau'
+'Enregistrement des cours de français de la classe': '__Enregistrement des cours de français de la classe'
+'Affectation des enseignants pour les cours': '__Affectation des enseignants pour les cours'
+'Pas de classes pour le moment': '__Pas de classes pour le moment'
+'Affectation des enseignants pour les cours de français': '__Affectation des enseignants pour les cours de français'
+'Nombre heure de cours des enseignants': '__Nombre heure de cours des enseignants'
+'Pas de données disponibles pour l''heure': '__Pas de données disponibles pour l''heure'
+'Nombre heure de cours de l''enseignant': '__Nombre heure de cours de l''enseignant'
+'Affectation des enseignants dans les halaqas': '__Affectation des enseignants dans les halaqas'
+'Aucune classe n''a encore été enregistrée': '__Aucune classe n''a encore été enregistrée'
+'Appliquer les changements': '__Appliquer les changements'
+'Edition des cours de la classe': '__Edition des cours de la classe'

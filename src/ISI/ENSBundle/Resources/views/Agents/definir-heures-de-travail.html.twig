@@ -1,0 +1,40 @@
+{% set template = "ENSBundle:Default:index.html.twig" %}
+
+{% if is_granted('ROLE_SUPER_ADMIN') %}
+  {% set template = "ENSBundle:Agents:index.html.twig" %}
+{% endif %}
+
+{% extends template %}
+
+
+{% block title %}
+  Définition du temps de travail de {{ contrat.getEnseignant.getNom }}
+{% endblock %}
+
+{% block contextual_menu %}
+  {{ include("ENSBundle::contextual-menu-fonction.html.twig") }}
+{% endblock %}
+
+{% block section %}
+  <i class="student icon"></i>{{ 'Fonctions'|trans }}
+{% endblock %}
+
+{% block body %}
+<div class="">
+	<h2>{{ 'Enregistrement des heures de travail au bureau '|trans }} <font class="ui massive blue tag label">{{ contrat.getEnseignant.getNomFr }} {{ contrat.getEnseignant.getPnomFr }}</font></h2>
+	<div class="form-group">
+		<form action="" method="post" class="ui form">
+			<div class="three fields">
+				<div class="field">
+					<label for="">Nombre d'heures de travail au bureau</label>
+					<div class="ui right labeled input">
+						<input type="number" name="heures" value="{% if anneeContrat is not empty %}{{ anneeContrat.nombreHeuresBureau }}{% endif %}">
+						<div class="ui basic label">{{ 'heures'|trans }}</div>
+					</div>
+				</div>
+			</div>
+			<button class="ui primary button">Enregistrer</button>
+		</form>
+	</div>
+</div>
+{% endblock %}

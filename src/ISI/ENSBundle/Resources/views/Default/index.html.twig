@@ -12,15 +12,24 @@
     <div class="header">{{ 'Autres modules'|trans }}</div>
     <a class="item" href="{{path('isi_home_scolarite', {'as': asec, 'annexeId': annexe.id})}}">{{ 'Scolarité'|trans }}</a>
     <a class="item" href="{{path('etude_home', {'as': asec, 'annexeId': annexe.id})}}">{{ 'Programmes d\'étude'|trans }}</a>
-  {% else %}
-    {{ include("ISIBundle::contextual-menu-user.html.twig") }}
   {% endif %}
 {% endblock %}
 
 
 {% block menu %}
   <a class="item" href="{{ path('ens_home', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header"><i class="home icon"></i> {{ 'Accueil'|trans }}</h4></a>
-  <a class="item" href="{{ path('ens_fonctions_en_cours', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header"><i class="tasks icon"></i> {{ 'Fonctions'|trans }}</h4></a>
+  <div class="ui input">
+    <div class="ui simple dropdown item">
+      <a><h4 class="ui header"><i class="users icon"></i>{{ 'Enseignants'|trans }}</h4></a>
+      <i class="dropdown icon"></i>
+      <div class="menu">
+        <span class="sub-menu">
+          <a class="item" href="{{ path('ens_enseignant_de_l_annee', {'as': asec, 'annexeId': annexe.id,}) }}">{{ 'Enseignants de l\'année'|trans }}</a>
+          <a class="item" href="{{ path('ens_fonctions_en_cours', {'as': asec, 'annexeId': annexe.id,}) }}">{{ 'Utiliser enseignant'|trans }}</a>
+        </span>
+      </div>
+    </div>
+  </div>
   <div class="ui input">
     <div class="ui simple dropdown item">
       <a><h4 class="ui header"><i class="users icon"></i>{{ 'Cours'|trans }}</h4></a>
@@ -64,7 +73,13 @@
 
 {% block mobile_menu %}
   <a class="item" href="{{ path('ens_home', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header">{{ 'Accueil'|trans }}</h4></a>
-  <a class="item" href="{{ path('ens_fonctions_en_cours', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header">{{ 'Fonctions'|trans }}</h4></a>
+  <span class="ui simple dropdown item">
+    <a><h4 class="ui header">{{ 'Enseignants'|trans }}<i class="dropdown icon"></i></h4></a>
+    <div class="menu">
+        <a class="item" href="{{ path('ens_enseignant_de_l_annee', {'as': asec, 'annexeId': annexe.id,}) }}">{{ 'Enseignants de l\'année'|trans }}</a>
+        <a class="item" href="{{ path('ens_fonctions_en_cours', {'as': asec, 'annexeId': annexe.id,}) }}">{{ 'Utiliser enseignant'|trans }}</a>
+    </div>
+  </span>
   <span class="ui simple dropdown item">
     <a><h4 class="ui header">{{ 'Cours'|trans }}<i class="dropdown icon"></i></h4></a>
     <div class="menu">
@@ -89,6 +104,7 @@
   </span>
   <a class="item" href="{{ path('ens_rencontre_home', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header">{{ 'Rencontres'|trans }}</h4></a>
 {% endblock %}
+
 
 
 {% block section %}

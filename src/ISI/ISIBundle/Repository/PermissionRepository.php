@@ -10,4 +10,15 @@ namespace ISI\ISIBundle\Repository;
  */
 class PermissionRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function listeDesPermissions(int $anneeId, int $annexeId)
+    {
+        $qb = $this->createQueryBuilder('p');
+        $qb->join('p.eleve', 'e')
+           ->where('p.annee = :anneeId AND e.annexe = :annexeId')
+           ->setParameter('anneeId', $anneeId)
+           ->setParameter('annexeId', $annexeId)
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
 }

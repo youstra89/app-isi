@@ -36,7 +36,7 @@ class AnneeContrat
      *
      * @ORM\ManyToOne(targetEntity="Contrat")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="contrat", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="contrat_id", referencedColumnName="id")
      * })
      */
     private $contrat;
@@ -44,23 +44,30 @@ class AnneeContrat
     /**
      * @var int
      *
-     * @ORM\Column(name="nombre_heures_cours", type="integer")
+     * @ORM\Column(name="nombre_heures_cours", type="integer", nullable=true)
      */
     private $nombreHeuresCours;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="nombre_heures_coran", type="integer")
+     * @ORM\Column(name="nombre_heures_coran", type="integer", nullable=true)
      */
     private $nombreHeuresCoran;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="nombre_heures_samedi", type="integer")
+     * @ORM\Column(name="nombre_heures_samedi", type="integer", nullable=true)
      */
     private $nombreHeuresSamedi;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="nombre_heures_bureau", type="integer", nullable=true)
+     */
+    private $nombreHeuresBureau;
 
     /**
      * @var \User
@@ -321,5 +328,29 @@ class AnneeContrat
     public function getUpdatedBy()
     {
         return $this->updatedBy;
+    }
+
+    /**
+     * Set nombreHeuresBureau
+     *
+     * @param integer $nombreHeuresBureau
+     *
+     * @return AnneeContrat
+     */
+    public function setNombreHeuresBureau($nombreHeuresBureau)
+    {
+        $this->nombreHeuresBureau = $nombreHeuresBureau;
+
+        return $this;
+    }
+
+    /**
+     * Get nombreHeuresBureau
+     *
+     * @return integer
+     */
+    public function getNombreHeuresBureau()
+    {
+        return $this->nombreHeuresBureau;
     }
 }

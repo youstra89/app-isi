@@ -25,7 +25,7 @@ class Eleve
     /**
      * @var string
      *
-     * @ORM\Column(name="matricule", type="string", length=255, nullable=false, unique=true)
+     * @ORM\Column(name="matricule", type="string", length=255, nullable=false)
      */
     private $matricule;
 
@@ -293,7 +293,7 @@ class Eleve
     /**
      * @ORM\OneToMany(targetEntity="ISI\ISIBundle\Entity\Memoriser", mappedBy="eleve")
      */
-    private $memosier;
+    private $memoriser;
 
     /**
      * @ORM\OneToMany(targetEntity="ISI\ISIBundle\Entity\Interner", mappedBy="eleve")
@@ -310,7 +310,7 @@ class Eleve
      *
      * @ORM\ManyToOne(targetEntity="Annexe")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="annexe_id", referencedColumnName="id", nullable=true)
+     *   @ORM\JoinColumn(name="annexe_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $annexe;
@@ -1129,10 +1129,10 @@ class Eleve
        return $this->frequenter;
     }
 
-    public function getMemoriser()
-    {
-       return $this->memoriser;
-    }
+    // public function getMemoriser()
+    // {
+    //    return $this->memoriser;
+    // }
 
     public function getInterner()
     {
@@ -1274,37 +1274,37 @@ class Eleve
     }
 
     /**
-     * Add memosier
+     * Add memoriser
      *
-     * @param \ISI\ISIBundle\Entity\Memoriser $memosier
+     * @param \ISI\ISIBundle\Entity\Memoriser $memoriser
      *
      * @return Eleve
      */
-    public function addMemosier(\ISI\ISIBundle\Entity\Memoriser $memosier)
+    public function addmemoriser(\ISI\ISIBundle\Entity\Memoriser $memoriser)
     {
-        $this->memosier[] = $memosier;
+        $this->memoriser[] = $memoriser;
 
         return $this;
     }
 
     /**
-     * Remove memosier
+     * Remove memoriser
      *
-     * @param \ISI\ISIBundle\Entity\Memoriser $memosier
+     * @param \ISI\ISIBundle\Entity\Memoriser $memoriser
      */
-    public function removeMemosier(\ISI\ISIBundle\Entity\Memoriser $memosier)
+    public function removememoriser(\ISI\ISIBundle\Entity\Memoriser $memoriser)
     {
-        $this->memosier->removeElement($memosier);
+        $this->memoriser->removeElement($memoriser);
     }
 
     /**
-     * Get memosier
+     * Get memoriser
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getMemosier()
+    public function getMemoriser()
     {
-        return $this->memosier;
+        return $this->memoriser;
     }
 
     /**

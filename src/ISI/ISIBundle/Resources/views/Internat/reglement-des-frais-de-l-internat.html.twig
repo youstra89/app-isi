@@ -52,19 +52,19 @@
                             {% for paiement in paiements %}
                               {% if paiement.interner.id == interne.id and m.id == paiement.moisdepaiement.id %}
                                 {% set pay = FALSE %}
-                                <a href="{{ path('internat_recu_de_paiement', {'as': asec, 'eleveId':interne.eleve.id , 'moisId':m.id , 'paiementId': paiement.id}) }}" class="item">
+                                <a href="{{ path('internat_recu_de_paiement', {'as': asec, 'annexeId': annexe.id, 'eleveId':interne.eleve.id , 'moisId':m.id , 'paiementId': paiement.id}) }}" class="item">
                                     {{ m.mois.mois[:3] }}
                                    <div class="floating ui green label"><i class="check icon"></i></div>
                                 </a>
                               {% elseif paiement.interner.id == interne.id and m.id == paiement.moisdepaiement.id and pay == TRUE %}
-                                <a href="{{ path('internat_pay_mois', {'as': asec, 'eleveId': interne.eleve.id, 'moisId': m.id}) }}" class="item">
+                                <a href="{{ path('internat_pay_mois', {'as': asec, 'annexeId': annexe.id, 'eleveId': interne.eleve.id, 'moisId': m.id}) }}" class="item">
                                     {{ m.mois.mois[:3] }}
                                    {#<div class="floating ui positive label"><i class="check icon"></i></div>#}
                                 </a>
                               {% endif %}
                             {% endfor %}
                             {% if pay == TRUE %}
-                              <a href="{{ path('internat_pay_mois', {'as': asec, 'eleveId': interne.eleve.id, 'moisId': m.id}) }}" class="item">
+                              <a href="{{ path('internat_pay_mois', {'as': asec, 'annexeId': annexe.id, 'eleveId': interne.eleve.id, 'moisId': m.id}) }}" class="item">
                                   {{ m.mois.mois[:3] }}
                                  {#<div class="floating ui positive label"><i class="check icon"></i></div>#}
                               </a>

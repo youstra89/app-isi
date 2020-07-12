@@ -20,7 +20,7 @@
 				}
 			}
 			
-			function user_register(user_id, user_name) {
+			function user_register(user_id, user_name, regime) {
 				
 				$('body').ajaxMask();
 			
@@ -57,7 +57,7 @@
 							$("#user_finger_"+user_id).html(regCt);
 							alert("'"+user_name+"' registration success!");
 							$('body').ajaxMask({ stop: true });
-							load('user.php?action=index');
+							load('user.php?action=index&regime=' + regime);
 						}
 					}
 					ct++;
@@ -130,8 +130,8 @@
 
 				if (count($finger) <= 4) {
 
-					$register     = "<a href='finspot:FingerspotReg;$url_register' title='Enregistrer l empreinte' class='btn btn-xs btn-primary' onclick=\"user_register('".$row['user_id']."','".$row['user_name']."')\">E</a>";
-					$verification = "<a href='finspot:FingerspotVer;$url_verification' title='Vérifier l empreinte' class='btn btn-xs btn-success'>V</a>";
+					$register     = "<a href='finspot:FingerspotReg;$url_register' title='Enregistrer l empreinte' class='btn btn-xs btn-primary' onclick=\"user_register('".$row['user_id']."','".$row['user_name']."','".$regime.")\">Sauver</a>";
+					$verification = "<a href='finspot:FingerspotVer;$url_verification' title='Vérifier l empreinte' class='btn btn-xs btn-success'>Vérifier</a>";
 				} 
 				elseif (count($finger) == 5) {
 					$verification = "<a href='finspot:FingerspotVer;$url_verification' class='btn btn-xs btn-success'>Login</a>";

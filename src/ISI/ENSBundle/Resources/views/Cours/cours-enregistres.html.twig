@@ -27,7 +27,7 @@
         <table class="ui selectable very basic table" align="center" width="75%" id="cours">
           <thead>
             <tr>
-              <th class="one wide">{{ 'N°'|trans }}</th>
+              <th style="width: 5%; text-align: center" class="one wide">{{ 'N°'|trans }}</th>
               <th>{{ 'Matière'|trans }}</th>
               <th>{{ 'Enseignant'|trans }}</th>
               <th>{{ 'Coefficient'|trans }}</th>
@@ -42,12 +42,24 @@
               {% for en in ens if en.matiere.id == item.matiere.id %}
                 {% set numero = numero + 1 %}
                 <tr>
-                  <td>{{ numero }}</td>
+                  <td style="width: 5%; text-align: center">{{ numero }}</td>
                   <td>{{ item.matiere.libelle }}</td>
                   <td>{{ item.anneeContrat.contrat.enseignant.nomFr }} {{ item.anneeContrat.contrat.enseignant.pnomFr }}</td>
                   <td>{{ en.coefficient }}</td>
-                  <td>{{ item.jourdecours }}</td>
-                  <td>{{ item.heure }}</td>
+                  <td>
+                    {% if item.jour is not empty %}
+                      {{ item.jourdecours }}
+                    {% else %}
+                      Indéfini
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if item.heure is not empty %}
+                      {{ item.heure }}
+                    {% else %}
+                      Indéfinie
+                    {% endif %}
+                  </td>
                   <td>
                     <a href="{{path('ens_editer_un_cours', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'coursId': item.id})}}"  data-tooltip="Mettre à jour ce cours">
                       <i class="edit icon"></i>

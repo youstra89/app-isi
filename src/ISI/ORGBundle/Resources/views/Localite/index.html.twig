@@ -5,28 +5,14 @@
 
 
 {% block contextual_menu %}
-  <div class="ui vertical menu">
-    <div class="item">
-      <div class="header">{{ 'Régions'|trans }}</div>
-      <div class="menu">
-        <a class="item" href="{{ path('regions', {'as': asec}) }}">Liste</a>
-        <a class="item" href="{{ path('region.add', {'as': asec}) }}">Ajouter</a>
-      </div>
-    </div>
-    <div class="item">
-      <div class="header">{{ 'Villes'|trans }}</div>
-      <div class="menu">
-        <a class="item" href="{{ path('villes', {'as': asec}) }}">Liste</a>
-        <a class="item" href="{{ path('ville.add', {'as': asec}) }}">Ajouter</a>
-      </div>
-    </div>
-    <div class="item">
-      <div class="header">{{ 'Communes'|trans }}</div>
-      <div class="menu">
-        <a class="item" href="{{ path('communes', {'as': asec}) }}">Liste</a>
-      </div>
-    </div>
-  </div>
+  <div class="header">{{ 'Régions'|trans }}</div>
+  <a class="item" href="{{ path('regions', {'as': asec, 'annexeId': annexe.id}) }}">Liste</a>
+  <a class="item" href="{{ path('region.add', {'as': asec, 'annexeId': annexe.id}) }}">Ajouter</a>
+  <div class="header">{{ 'Villes'|trans }}</div>
+  <a class="item" href="{{ path('villes', {'as': asec, 'annexeId': annexe.id}) }}">Liste</a>
+  <a class="item" href="{{ path('ville.add', {'as': asec, 'annexeId': annexe.id}) }}">Ajouter</a>
+  <div class="header">{{ 'Communes'|trans }}</div>
+  <a class="item" href="{{ path('communes', {'as': asec, 'annexeId': annexe.id}) }}">Liste</a>
 {% endblock %}
 
 

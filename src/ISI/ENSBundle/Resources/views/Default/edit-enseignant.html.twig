@@ -2,14 +2,14 @@
 
 
 {% block title %}
-	Mise à jour info. {{ enseignant.pnomAr }} {{ enseignant.nomAr }}
+	Mise à jour info. {{ enseignant.nom }}
 {% endblock %}
 
 {% block body %}
-	<h2>{{ 'Mise à jour des informations'|trans }}  <font  class="ui massive blue tag label">{{ enseignant.nomFr }} {{ enseignant.pnomFr }}</font></h2>
+	<h2>{{ 'Mise à jour des informations'|trans }}  <font  class="ui massive blue tag label">{{ enseignant.nom }}</font></h2>
 	<center><h2>{{ enseignant.matricule }}</h2></center><br><br>
 	<div class="form-group">
-		{{ form_start(form, {'attr': {'class': 'ui form'}}) }}
+		{{ form_start(form, {'attr': {'class': 'ui form'}, 'action': path('ens_edit', {'as': asec, 'annexeId': annexe.id, 'enseignantId': enseignant.id})}) }}
 			<div class="five fields">
 				<div class="field">
 					<div class="ui slider checkbox">

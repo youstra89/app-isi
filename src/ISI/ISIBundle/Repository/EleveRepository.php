@@ -2,12 +2,6 @@
 
 namespace ISI\ISIBundle\Repository;
 
-use ISI\ISIBundle\Repository;
-use ISI\ISIBundle\Entity\Eleve;
-
-use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\EntityManagerInterface;
 
 class EleveRepository extends \Doctrine\ORM\EntityRepository
 {
@@ -22,7 +16,7 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
        ->addSelect('an')
        ->join('f.classe', 'cl')
        ->addSelect('cl')
-       ->where('an.id = :as AND e.regime = :regime AND e.renvoye = 0')
+       ->where('an.id = :as AND e.regime = :regime AND e.renvoye = 0 AND e.annexe = :annexeId')
        ->setParameter('regime', $regime)
        ->setParameter('as', $as)
        ->setParameter('annexeId', $annexeId)
@@ -43,7 +37,7 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
        ->addSelect('an')
        ->join('f.classe', 'cl')
        ->addSelect('cl')
-       ->where('an.id = :as AND e.renvoye = 0')
+       ->where('an.id = :as AND e.renvoye = 0 AND e.annexe = :annexeId')
        ->setParameter('annexeId', $annexeId)
        ->setParameter('as', $as)
        ->orderBy('e.nomFr', 'ASC')
@@ -65,7 +59,7 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
        ->addSelect('cl')
        ->join('cl.niveau', 'n')
        ->addSelect('n')
-       ->where('an.id = :as AND n.id = :niveauId AND e.renvoye = 0')
+       ->where('an.id = :as AND n.id = :niveauId AND e.renvoye = 0 AND e.annexe = :annexeId')
        ->setParameter('as', $as)
        ->setParameter('annexeId', $annexeId)
        ->setParameter('niveauId', $niveauId)
@@ -82,7 +76,7 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
   {
     // $elevesAcademie = $this->_em->createQuery('SELECT * FROM ISIBundle:Eleve e WHERE e.matricule LIKE '*A*'');
     $qb = $this->createQueryBuilder('e');
-    $qb->where('e.regime = :regime')
+    $qb->where('e.regime = :regime AND e.annexe = :annexeId')
        ->setParameter('annexeId', $annexeId)
        ->setParameter('regime', $regime)
        ->orderBy('e.nomFr', 'ASC')
@@ -93,7 +87,7 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
   }
 
   // Récupération du dernier matricule enregistré
-  public function dernierMatricule()
+  public function dernierMatricule(int $annexeId)
   {
 	  //REPLACE(SUBSTRING(SUBSTRING(e.matricule, 5), 1, LENGTH(SUBSTRING(e.matricule, 5)) - 4), 'F', '')
     // $dernierMatricule = $this->_em->createQuery(
@@ -103,21 +97,21 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
 	$dernierMatricule = $this->_em->createQuery(
       'SELECT
       DISTINCT(SUBSTRING(SUBSTRING(e.matricule, 5), 1, LENGTH(SUBSTRING(e.matricule, 5)) - 4)) AS mat
-      FROM ISIBundle:Eleve e');
+      FROM ISIBundle:Eleve e WHERE e.annexe = :annexeId')->setParameter('annexeId', $annexeId);
 
       return $dernierMatricule->getResult();
       //return $dernierMatricule->getScalarResult();
   }
 
   // Récupération des matricules des élèves d'un regime
-  public function getMatricules($regime)
+  public function getMatricules($annexeId, $regime)
   {
     $matricules = $this->_em->createQuery(
       'SELECT
       e.matricule
       FROM ISIBundle:Eleve e
-      WHERE e.regime = :regime');
-    $matricules->setParameter('regime', $regime);
+      WHERE e.regime = :regime AND e.annexe = :annexeId');
+    $matricules->setParameter('regime', $regime)->setParameter('annexeId', $annexeId);
 
     return $matricules->getArrayResult();
       //return $dernierMatricule->getScalarResult();
@@ -202,14 +196,14 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
                     ->getResult();
     }
 
-  public function elevesDuNiveau($niveauId, int $as, int $annexeId)
+  public function elevesDuNiveau(int $niveauId, int $as, int $annexeId)
   {
     $qb = $this->createQueryBuilder('e');
     $qb->join('e.frequenter', 'f')
        ->join('f.classe', 'c')
        ->join('c.annee', 'an')
        ->join('c.niveau', 'n')
-       ->where('an.id = :as AND n.id = :niveauId AND e.renvoye = 0')
+       ->where('an.id = :as AND n.id = :niveauId AND e.renvoye = 0 AND e.annexe = :annexeId')
        ->orderBy('e.nomFr', 'ASC')
        ->addOrderBy('e.pnomFr', 'ASC')
        ->setParameter('as', $as)
@@ -221,11 +215,11 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
   }
 
   // Récuperation des élèves d'un regime qui ont été renvoyés
-  public function elevesRenvoyes(int $annexeId, s$regime)
+  public function elevesRenvoyes(int $annexeId, $regime)
   {
     // $elevesAcademie = $this->_em->createQuery('SELECT * FROM ISIBundle:Eleve e WHERE e.matricule LIKE '*A*'');
     $qb = $this->createQueryBuilder('e');
-    $qb->where('e.regime = :regime AND e.renvoye = 1')
+    $qb->where('e.regime = :regime AND e.renvoye = 1 AND e.annexe = :annexeId')
        ->setParameter('annexeId', $annexeId)
        ->setParameter('regime', $regime)
        ->orderBy('e.nomFr', 'ASC')
@@ -245,7 +239,7 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
        ->addSelect('an')
        ->join('i.chambre', 'ch')
        ->addSelect('ch')
-       ->where('an.id = :as AND e.renvoye = 0 AND i.renvoye = 0')
+       ->where('an.id = :as AND e.renvoye = 0 AND i.renvoye = 0 AND e.annexe = :annexeId')
        ->setParameter('annexeId', $annexeId)
        ->setParameter('as', $as)
        ->orderBy('e.nomFr', 'ASC')
@@ -265,7 +259,7 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
        ->addSelect('an')
        ->join('i.chambre', 'ch')
        ->addSelect('ch')
-       ->where('an.id = :as AND e.renvoye = 0 AND i.renvoye = 1')
+       ->where('an.id = :as AND e.renvoye = 0 AND i.renvoye = 1 AND e.annexe = :annexeId')
        ->setParameter('annexeId', $annexeId)
        ->setParameter('as', $as)
        ->orderBy('e.nomFr', 'ASC')

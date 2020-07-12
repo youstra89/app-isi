@@ -20,37 +20,35 @@
 		{{ form_start(form, {'attr': {'class': 'ui form'}}) }}
 			<center>
 				<div class="field">
-					<label for="">
+					{{ form_errors(form.autorisation) }}
+            		{# <div class="ui toggle checkbox"> #}
 						{{ form_label(form.autorisation, "Avez-vous autorisé cette absence ?", {'label_attr': {'class': ''}}) }}
-						{{ form_errors(form.autorisation) }}
-					</label> {{ form_widget(form.autorisation, {'attr': {'class': 'autorisation'}}) }}
+						{# <input type="checkbox" name="annexes[{{item.id}}]" id="annexe{{item.id}}" value="{{ item.libelle }}" {% if item.id in user.idsAnnexes and user.findAnnexe(item.id).disabled == 0 %}checked{% endif %}> #}
+						{{ form_widget(form.autorisation) }}
+					{# </div> #}
 				</div>
 			</center>
 			<div class="three fields">
 				<div class="field">
-					<label for="">
-						{{ form_label(form.dateDemande, "Date de demande", {'label_attr': {'class': ''}}) }}
-						{{ form_errors(form.dateDemande) }}
-					</label> {{ form_widget(form.dateDemande, {'attr': {'class': 'date-demande'}}) }}
+					{{ form_label(form.dateDemande, "Date de demande", {'label_attr': {'class': ''}}) }}
+					{{ form_errors(form.dateDemande) }}
+					{{ form_widget(form.dateDemande) }}
 				</div>
 				<div class="field">
-					<label for="">
-						{{ form_label(form.dateDepart, "Début de l'absence", {'label_attr': {'class': ''}}) }}
-						{{ form_errors(form.dateDepart) }}
-					</label> {{ form_widget(form.dateDepart, {'attr': {'class': 'date-depart'}}) }}
+					{{ form_label(form.dateDepart, "Début de l'absence", {'label_attr': {'class': ''}}) }}
+					{{ form_errors(form.dateDepart) }}
+					{{ form_widget(form.dateDepart) }}
 				</div>
 				<div class="field">
-					<label for="">
-						{{ form_label(form.dateRetour, "Fin de l'absence", {'label_attr': {'class': ''}}) }}
-						{{ form_errors(form.dateRetour) }}
-					</label> {{ form_widget(form.dateRetour, {'attr': {'class': 'date-fin'}}) }}
+					{{ form_label(form.dateRetour, "Fin de l'absence", {'label_attr': {'class': ''}}) }}
+					{{ form_errors(form.dateRetour) }}
+					{{ form_widget(form.dateRetour) }}
 				</div>
 			</div>
 			<div class="field">
-				<label for="">
-					{{ form_label(form.motif, "Motif de l'absence", {'label_attr': {'class': ''}}) }}
-					{{ form_errors(form.motif) }}
-				</label> {{ form_widget(form.motif, {'attr': {'class': 'motif'}}) }}
+				{{ form_label(form.motif, "Motif de l'absence", {'label_attr': {'class': ''}}) }}
+				{{ form_errors(form.motif) }}
+				{{ form_widget(form.motif) }}
 			</div>
 			{{ form_widget(form.save, {'attr': {'class': 'ui primary button'}}) }}
 		{{ form_end(form) }}

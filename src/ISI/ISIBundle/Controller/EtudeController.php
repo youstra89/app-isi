@@ -19,13 +19,14 @@ use ISI\ISIBundle\Form\NiveauType;
 use ISI\ISIBundle\Form\ExamenType;
 use ISI\ISIBundle\Form\LivreType;
 use ISI\ISIBundle\Form\LivreEditionType;
-
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class EtudeController extends Controller
 {
     /**
      * @Security("has_role('ROLE_ETUDE')")
+     * @Route("/etude-{as}", name="etude_home")
      */
     public function indexAction(Request $request, $as)
     {
@@ -51,6 +52,7 @@ class EtudeController extends Controller
     // Page d'accueil des progressions de l'année
     /**
      * @Security("has_role('ROLE_ETUDE')")
+     * @Route("/accueil-des-progressions-de-l-annee-{as}-{regime}", name="etude_progression_home")
      */
     public function progressionAccueilAction(Request $request, $as, $regime)
     {
@@ -80,6 +82,7 @@ class EtudeController extends Controller
     //Page d'accueil pour la liaison entre les classes et les matières pour une année scolaire donnée
     /**
      * @Security("has_role('ROLE_ETUDE')")
+     * @Route("/les-matieres-des-differents-niveaux-{as}-{regime}", name="etude_niveaux_matieres")
      */
     public function niveauxMatieresAction(Request $request, $as, $regime)
     {
@@ -109,7 +112,8 @@ class EtudeController extends Controller
 
     //Pour lier effectivement les matières aux nineaux, ou disons au niveau sélectionné
     /**
-     * @Security("has_role('ROLE_ETUDE')")
+     * @Security("has_role('ROLE_DIRECTION_ETUDE')")
+     * @Route("/lier-les-matieres-aux-niveaux-de-formation-{as}-{regime}-{niveauId}", name="etude_lier_niveaux_matieres")
      */
     public function lierNiveauxMatieresAction(Request $request, $as, $niveauId, $regime)
     {
@@ -191,7 +195,8 @@ class EtudeController extends Controller
 
 
     /**
-     * @Security("has_role('ROLE_ETUDE')")
+     * @Security("has_role('ROLE_DIRECTION_ETUDE')")
+     * @Route("/editer-liaison-des-matieres-aux-niveaux-de-formation/{as}/{regime}/{enseignementId}", name="editer_liaison_niveaux_matieres")
      */
     public function editerLiaisonNiveauxMatieresAction(Request $request, $as, $regime, $enseignementId)
     {
@@ -258,7 +263,7 @@ class EtudeController extends Controller
             'niveau'       => $niveau,
             'regime'       => $regime,
             'annee'        => $annee,
-            'annexe'  => $annexe,
+            'annexe'       => $annexe,
             'enseignement' => $enseignement,
             'form'         => $form->createView()
         ]);
@@ -267,6 +272,7 @@ class EtudeController extends Controller
     // Pour voir la liste des matières d'un niveau de formation donné
     /**
      * @Security("has_role('ROLE_ETUDE')")
+     * @Route("/voir-liste-des-matieres-du-niveaux-{as}-{niveauId}-{regime}", name="etude_liste_niveaux_matieres")
      */
     public function listeMatieresNiveauxAction(Request $request, $as, $regime, $niveauId)
     {
@@ -304,6 +310,7 @@ class EtudeController extends Controller
     // Accueil des paramètres
     /**
      * @Security("has_role('ROLE_ETUDE')")
+     * @Route("/parametres-{as}", name="etude_parametres")
      */
     public function parametresAction(Request $request, $as)
     {
@@ -328,6 +335,7 @@ class EtudeController extends Controller
     // Page de gestion des matières
     /**
      * @Security("has_role('ROLE_ETUDE')")
+     * @Route("/gestion-des-matieres/{as}", name="etude_gestion_matieres")
      */
     public function lesMatieresAction(Request $request, int $as)
     {
@@ -355,7 +363,8 @@ class EtudeController extends Controller
 
     // Ajout de nouvelle matières
     /**
-     * @Security("has_role('ROLE_ETUDE')")
+     * @Security("has_role('ROLE_DIRECTION_ETUDE')")
+     * @Route("/ajout-de-matiere/{as}", name="etude_nouvelle_matiere")
      */
     public function addMatiereAction(Request $request, $as)
     {
@@ -390,14 +399,15 @@ class EtudeController extends Controller
       return $this->render('ISIBundle:Etude:add-matiere.html.twig', array(
         'form'  => $form->createView(),
         'asec'  => $as,
-            'annexe'  => $annexe,
-            'annee' => $annee,
+        'annexe'  => $annexe,
+        'annee' => $annee,
       ));
     }
 
     //Edition de matière
     /**
-     * @Security("has_role('ROLE_ETUDE')")
+     * @Security("has_role('ROLE_DIRECTION_ETUDE')")
+     * @Route("/edition-de-matiere-{as}-{matiereId}", name="etude_edit_matiere")
      */
     public function editMatiereAction(Request $request, $as, $matiereId)
     {
@@ -434,6 +444,7 @@ class EtudeController extends Controller
     //Gestion des niveaux de formation
     /**
      * @Security("has_role('ROLE_ETUDE')")
+     * @Route("/gestion-des-niveaux-de-formation-{as}-{regime}", name="etude_gestion_niveaux")
      */
     public function lesNiveauxAction(Request $request, int $as, $regime)
     {
@@ -461,7 +472,8 @@ class EtudeController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_ETUDE')")
+     * @Security("has_role('ROLE_DIRECTION_ETUDE')")
+     * @Route("/ajout-de-niveau-{as}-{regime}", name="etude_nouveau_niveau")
      */
     public function addNiveauAction(Request $request, $as, $regime)
     {
@@ -507,8 +519,8 @@ class EtudeController extends Controller
         'asec'    => $as,
         'regime'  => $regime,
         'annee'   => $annee,
-            'annexe'  => $annexe,
-            'form'    => $form->createView()
+        'annexe'  => $annexe,
+        'form'    => $form->createView()
       ]);
       // return $this->render('ISIBundle:Default:index.html.twig', [
       //   'grpFormation' => $grpFormation,
@@ -519,7 +531,8 @@ class EtudeController extends Controller
 
     //Edition de niveau
     /**
-     * @Security("has_role('ROLE_ETUDE')")
+     * @Security("has_role('ROLE_DIRECTION_ETUDE')")
+     * @Route("/edition-de-niveau-{as}-{niveauId}-{regime}", name="etude_edit_niveau")
      */
     public function editNiveauAction(Request $request, $as, $regime, $niveauId)
     {
@@ -560,9 +573,9 @@ class EtudeController extends Controller
       ]);
     }
 
-    // index des livres étudiés
     /**
-     * @Security("has_role('ROLE_ETUDE')")
+     * @Security("has_role('ROLE_DIRECTION_ETUDE')")
+     * @Route("/les-livres-etudies-{as}", name="etude_livres_etudies")
      */
     public function indexLivresAction(Request $request, $as)
     {
@@ -641,6 +654,7 @@ class EtudeController extends Controller
   
     /**
      * @Security("has_role('ROLE_ETUDE')")
+     * @Route("/ajout-d-un-nouveau-livre-a-etudier-{as}", name="etude_nouveau_livre")
      */
     public function addLivreAction(Request $request, $as)
     {
@@ -715,13 +729,21 @@ class EtudeController extends Controller
 
     //Edition de niveau
     /**
-     * @Security("has_role('ROLE_ETUDE')")
+     * @Security("has_role('ROLE_DIRECTION_ETUDE')")
+     * @Route("/edition-d-un-livre-{as}-{livreId}", name="etude_editer_livre")
      */
     public function editLivreAction(Request $request, $as, $livreId)
     {
       $em = $this->getDoctrine()->getManager();
       $repoAnnee  = $em->getRepository('ISIBundle:Annee');
       $repoLivre = $em->getRepository('ISIBundle:Livre');
+      $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+      $annexeId = $request->get('annexeId');
+      $annexe = $repoAnnexe->find($annexeId);
+      if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+        $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+        return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+      }
 
       $annee  = $repoAnnee->find($as);
       $livre = $repoLivre->find($livreId);
@@ -749,6 +771,7 @@ class EtudeController extends Controller
 
     /**
      * @Security("has_role('ROLE_ETUDE')")
+     * @Route("/examen-{as}", name="etude_examen")
      */
     public function examenAction(Request $request, int $as)
     {
@@ -776,6 +799,7 @@ class EtudeController extends Controller
 
     /**
      * @Security("has_role('ROLE_NOTE' or 'ROLE_ETUDE')")
+     * @Route("/gestion-des-notes-{as}-{regime}", name="etude_notes")
      */
     public function notesAction(Request $request, int $as, $regime)
     {
@@ -805,6 +829,7 @@ class EtudeController extends Controller
     // Ajout examen
     /**
      * @Security("has_role('ROLE_ETUDE')")
+     * @Route("/parametres/add-new-examen-{as}", name="etude_add_examen")
      */
     public function addExamenAction(Request $request, $as)
     {
@@ -910,8 +935,9 @@ class EtudeController extends Controller
 
     /**
      * @Security("has_role('ROLE_ETUDE')")
+     * @Route("/les-livres-de-la-matiere-{matiereId}", name="livres_de_la_matiere", options={"expose"=true})
      */
-    public function lesLivresDeLaMatiereAction(Request $requestn, $matiereId)
+    public function lesLivresDeLaMatiereAction(Request $request, $matiereId, $as)
     {
       $em = $this->getDoctrine()->getManager();
       // $matiereId = $request->query->get('matiereId');

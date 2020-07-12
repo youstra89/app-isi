@@ -48,8 +48,8 @@
               </div>
               <div class="extra content">
                 <div class="ui two buttons">
-                  <a class="ui basic green button" href="{{ path('ens_voir_conduite',{'as': asec, 'contratId': contrat.getContrat.getId} ) }}">{{ 'Voir'|trans }}</a>
-                  <a class="ui basic red button" href="{{ path('ens_enregistrement_conduite',{'as': asec, 'contratId': contrat.getContrat.getId} ) }}">{{ 'Ajouter'|trans }}</a>
+                  <a class="ui basic green button" href="{{ path('ens_voir_conduite',{'as': asec, annexeId: annexe.id, 'contratId': contrat.getContrat.getId} ) }}">{{ 'Voir'|trans }}</a>
+                  <a class="ui basic red button" href="{{ path('ens_enregistrement_conduite',{'as': asec, annexeId: annexe.id, 'contratId': contrat.getContrat.getId} ) }}">{{ 'Ajouter'|trans }}</a>
                 </div>
               </div>
             </div>

@@ -1,4 +1,4 @@
-{% extends "ENSBundle:Enseignant:layout.html.twig" %}
+{% extends "ENSBundle:Rencontre:index.html.twig" %}
 
 {% block title %}
   Enregistrement de rencontre
@@ -15,7 +15,7 @@
 {% block body %}
   <h2>{{ 'Enregistrement d\'une nouvelle rencontre'|trans }}</h2>
   <div class="form-group">
-    {{ form_start(form, { 'attr': { 'class': 'ui form' }})}}
+    {{ form_start(form, { 'attr': {'class': 'ui form'}, 'action': path('ens_add_rencontre', {'as': asec, 'annexeId': annexe.id})})}}
       <div class="four fields">
         <div class="field">
           <label for="">

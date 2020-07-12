@@ -33,7 +33,7 @@
   <h2>Régions enrégistrées</h2>
   <div class="uk-hidden@s">
     <p uk-margin>
-      <a class="uk-button uk-button-default" href="{{ path('region.add', {'as': asec}) }}">Ajouter</a>
+      <a class="uk-button uk-button-default" href="{{ path('region.add', {'as': asec, 'annexeId': annexe.id}) }}">Ajouter</a>
     </p>
   </div>
   <table id="regions">
@@ -53,7 +53,7 @@
           <td>{{ i }}</td>
           <td>{{ region.nom }}</td>
           <td>{{ region.localisationType }}</td>
-          <td><a href="{{ path('region.edit', {as: asec, id: region.id}) }}"><i class="edit outline icon"></i></a></td>
+          <td><a href="{{ path('region.edit', {as: asec, 'annexeId': annexe.id, id: region.id}) }}"><i class="edit outline icon"></i></a></td>
         </tr>
       {% endfor %}
     </tbody>

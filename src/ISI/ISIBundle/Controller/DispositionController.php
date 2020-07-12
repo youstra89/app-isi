@@ -12,11 +12,13 @@ use ISI\ISIBundle\Entity\Batiment;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class DispositionController extends Controller
 {
     /**
      * @Security("has_role('ROLE_SCOLARITE')")
+     * @Route("/index-{as}", name="disposition_home")
      */
     public function indexAction(Request $request, int $as)
     {
@@ -40,6 +42,7 @@ class DispositionController extends Controller
 
     /**
      * @Security("has_role('ROLE_SCOLARITE')")
+     * @Route("/gestions-des-batiments-{as}", name="batiment_home")
      */
     public function gestionDesBatimentsAction(Request $request, int $as)
     {
@@ -67,6 +70,7 @@ class DispositionController extends Controller
 
     /**
      * @Security("has_role('ROLE_SCOLARITE')")
+     * @Route("/ajouter-un-batiment-{as}", name="batiment_add")
      */
     public function addBatimentAction(Request $request, int $as): Response
     {
@@ -86,7 +90,7 @@ class DispositionController extends Controller
         $nom = $data['nom'];
         if(empty($nom)){
           $this->addFlash('error', 'Le nom d\'un bâtiment ne doit pas être vide.');
-          return $this->redirectToRoute('batiment_add', ['as' => $as]);
+          return $this->redirectToRoute('batiment_add', ['as' => $as, 'annexeId' => $annexeId]);
         }
         $batiment = new Batiment();
         $batiment->setNom($nom);
@@ -96,7 +100,7 @@ class DispositionController extends Controller
         $em->persist($batiment);
         $em->flush();
         $this->addFlash('info', 'Le batiment '.$batiment->getNom().' a été enregistré avec succès.');
-        return $this->redirectToRoute('batiment_home', ['as' => $as]);
+        return $this->redirectToRoute('batiment_home', ['as' => $as, 'annexeId' => $annexeId]);
       }
       //>>
       return $this->render('ISIBundle:Disposition:batiment-add.html.twig', [
@@ -109,6 +113,7 @@ class DispositionController extends Controller
     /**
      * @Security("has_role('ROLE_SCOLARITE')")
      * @param Batiment $batiment
+     * @Route("/editer-informations-batiment-{as}-{id}", name="batiment_edit")
      */
     public function editBatimentAction(Request $request, Batiment $batiment, int $as): Response
     {
@@ -128,13 +133,13 @@ class DispositionController extends Controller
         $nom = $data['nom'];
         if(empty($nom)){
           $this->addFlash('error', 'Le nom d\'un bâtiment ne doit pas être vide.');
-          return $this->redirectToRoute('batiment_edit', ['as' => $as, 'id' => $batiment->getId()]);
+          return $this->redirectToRoute('batiment_edit', ['as' => $as, 'annexeId' => $annexeId, 'id' => $batiment->getId()]);
         }
         $batiment->setUpdatedBy($this->getUser());
         $batiment->setUpdatedAt(new \DateTime());
         $em->flush();
         $this->addFlash('info', 'Les informations sur le batiment '.$batiment->getNom().' ont été mises à jour avec succès.');
-        return $this->redirectToRoute('batiment_home', ['as' => $as]);
+        return $this->redirectToRoute('batiment_home', ['as' => $as, 'annexeId' => $annexeId]);
       }
       //>>
       return $this->render('ISIBundle:Disposition:batiment-edit.html.twig', [
@@ -147,6 +152,7 @@ class DispositionController extends Controller
 
     /**
      * @Security("has_role('ROLE_SCOLARITE')")
+     * @Route("/gestions-des-salles-{as}", name="salle_home")
      */
     public function gestionDesSallesAction(Request $request, int $as)
     {
@@ -173,6 +179,7 @@ class DispositionController extends Controller
 
     /**
      * @Security("has_role('ROLE_SCOLARITE')")
+     * @Route("/ajouter-un-salle-{as}", name="salle_add")
      */
     public function addSalleAction(Request $request, int $as): Response
     {
@@ -197,7 +204,7 @@ class DispositionController extends Controller
         $em->persist($salle);
         $em->flush();
         $this->addFlash('info', 'La salle '.$salle->getNom().' a été enregistré avec succès.');
-        return $this->redirectToRoute('salle_home', ['as' => $as]);
+        return $this->redirectToRoute('salle_home', ['as' => $as, 'annexeId' => $annexeId]);
       }
       return $this->render('ISIBundle:Disposition:salle-add.html.twig', [
         'asec'  => $as,
@@ -210,6 +217,7 @@ class DispositionController extends Controller
     /**
      * @Security("has_role('ROLE_SCOLARITE')")
      * @param Salle $salle
+     * @Route("/editer-informations-salle-{as}-{id}", name="salle_edit")
      */
     public function editSalleAction(Request $request, int $as, Salle $salle): Response
     {
@@ -232,7 +240,7 @@ class DispositionController extends Controller
         $em->persist($salle);
         $em->flush();
         $this->addFlash('info', 'La salle '.$salle->getNom().' a été mise à jour avec succès.');
-        return $this->redirectToRoute('salle_home', ['as' => $as]);
+        return $this->redirectToRoute('salle_home', ['as' => $as, 'annexeId' => $annexeId]);
       }
       return $this->render('ISIBundle:Disposition:salle-edit.html.twig', [
         'asec'  => $as,
@@ -245,6 +253,7 @@ class DispositionController extends Controller
 
     /**
      * @Security("has_role('ROLE_SCOLARITE')")
+     * @Route("/disposition-des-classes-par-salles-{as}", name="disposition")
      */
     public function dispositionAction(Request $request, int $as)
     {
@@ -291,6 +300,7 @@ class DispositionController extends Controller
     /**
      * @Security("has_role('ROLE_SCOLARITE')")
      * @param Salle $salle
+     * @Route("/disposition-de-classes-en-salle-{as}-{id}", name="disposition_add")
      */
     public function dispositionDeClasseEnSalleAction(Request $request, int $as, Salle $salle): Response
     {
@@ -368,7 +378,7 @@ class DispositionController extends Controller
           try{
             $em->flush();
             $this->addFlash('info', 'Disposition de classe enregistrée avec succès.');
-            return $this->redirectToRoute('disposition', ['as' => $as]);
+            return $this->redirectToRoute('disposition', ['as' => $as, 'annexeId' => $annexeId]);
           } 
           catch(\Doctrine\ORM\ORMException $e){
             $this->addFlash('error', $e->getMessage());
@@ -377,7 +387,7 @@ class DispositionController extends Controller
           catch(\Exception $e){
             $this->addFlash('error', $e->getMessage());
           }
-          return $this->redirectToRoute('disposition_add', ['as' => $as, 'id' => $salle->getId()]);
+          return $this->redirectToRoute('disposition_add', ['as' => $as, 'annexeId' => $annexeId, 'id' => $salle->getId()]);
         }
       }
 
@@ -394,6 +404,7 @@ class DispositionController extends Controller
     /**
      * @Security("has_role('ROLE_SCOLARITE')")
      * @param Salle $salle
+     * @Route("/editer-disposition-de-classes-en-salle-{as}-{id}", name="disposition_edit")
      */
     public function editerDispositionDeClasseEnSalleAction(Request $request, int $as, Salle $salle): Response
     {
@@ -507,7 +518,7 @@ class DispositionController extends Controller
           try{
             $em->flush();
             $this->addFlash('info', 'Disposition de classe mise à jour avec succès.');
-            return $this->redirectToRoute('disposition', ['as' => $as]);
+            return $this->redirectToRoute('disposition', ['as' => $as, 'annexeId' => $annexeId]);
           } 
           catch(\Doctrine\ORM\ORMException $e){
             $this->addFlash('error', $e->getMessage());
@@ -516,7 +527,7 @@ class DispositionController extends Controller
           catch(\Exception $e){
             $this->addFlash('error', $e->getMessage());
           }
-          return $this->redirectToRoute('disposition_add', ['as' => $as, 'id' => $salle->getId()]);
+          return $this->redirectToRoute('disposition_add', ['as' => $as, 'annexeId' => $annexeId, 'id' => $salle->getId()]);
         }
       }
       //>>

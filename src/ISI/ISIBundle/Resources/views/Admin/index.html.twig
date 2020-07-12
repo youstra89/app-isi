@@ -18,29 +18,29 @@
 
   {% block menu %}
     <a class = "item" href = "{{ path('admin_home', {'as'        : annee.id, 'annexeId': annexe.id}) }}"><h4 class = "ui header">Home Panel Admin</h4></a>
+    <a class = "item" href = "{{ path('isi_home_scolarite', {'as': annee.id, 'annexeId': annexe.id}) }}"><h4 class = "ui header">Scolarité</h4></a>
+    <a class = "item" href = "{{ path('ens_home', {'as'          : asec, 'annexeId': annexe.id}) }}"><h4 class     = "ui header">Enseignants</h4></a>
     {% if is_granted("ROLE_SUPER_ADMIN") %}
-      <a class = "item" href = "{{ path('isi_user', {'as'          : asec, 'annexeId': annexe.id}) }}"><h4 class     = "ui header">Utilisateurs</h4></a>
-      <a class = "item" href = "{{ path('agents', {'as'            : asec, 'annexeId': annexe.id}) }}"><h4 class     = "ui header">Agents de l'Institut</h4></a>
       <a class = "item" href = "{{ path('etude_home', {'as'        : asec, 'annexeId': annexe.id}) }}"><h4 class       = "ui header">Etude</h4></a>
       <a class = "item" href = "{{ path('internat_home', {'as'     : asec, 'annexeId': annexe.id}) }}"><h4 class     = "ui header">Internat</h4></a>
       <a class = "item" href = "{{ path('org_homepage', {'as'      : asec, 'annexeId': annexe.id}) }}"><h4 class     = "ui header">Organisation</h4></a>
+      <a class = "item" href = "{{ path('isi_user', {'as'          : asec, 'annexeId': annexe.id}) }}"><h4 class     = "ui header">Utilisateurs</h4></a>
+      <a class = "item" href = "{{ path('agents', {'as'            : asec, 'annexeId': annexe.id}) }}"><h4 class     = "ui header">Agents de l'Institut</h4></a>
     {% endif %}
-    <a class = "item" href = "{{ path('isi_home_scolarite', {'as': annee.id, 'annexeId': annexe.id}) }}"><h4 class = "ui header">Scolarité</h4></a>
-    <a class = "item" href = "{{ path('ens_home', {'as'          : asec, 'annexeId': annexe.id}) }}"><h4 class     = "ui header">Enseignants</h4></a>
   {% endblock %}
 
 
   {% block mobile_menu %}
     <a class = "item" href = "{{ path('admin_home', {'as'        : annee.id, 'annexeId': annexe.id}) }}"><h4 class = "ui header">Home Panel Admin</h4></a>
+    <a class = "item" href = "{{ path('isi_home_scolarite', {'as': annee.id, 'annexeId': annexe.id}) }}"><h4 class = "ui header">Scolarité</h4></a>
+    <a class = "item" href = "{{ path('ens_home', {'as'          : asec, 'annexeId': annexe.id}) }}"><h4 class     = "ui header">Enseignants</h4></a>
     {% if is_granted("ROLE_SUPER_ADMIN") %}
-      <a class = "item" href = "{{ path('isi_user', {'as'          : asec, 'annexeId': annexe.id}) }}"><h4 class     = "ui header">Utilisateurs</h4></a>
-      <a class = "item" href = "{{ path('agents', {'as'            : asec, 'annexeId': annexe.id}) }}"><h4 class     = "ui header">Agents de l'Institut</h4></a>
       <a class = "item" href = "{{ path('etude_home', {'as'        : asec, 'annexeId': annexe.id}) }}"><h4 class       = "ui header">Etude</h4></a>
       <a class = "item" href = "{{ path('internat_home', {'as'     : asec, 'annexeId': annexe.id}) }}"><h4 class     = "ui header">Internat</h4></a>
       <a class = "item" href = "{{ path('org_homepage', {'as'      : asec, 'annexeId': annexe.id}) }}"><h4 class     = "ui header">Organisation</h4></a>
+      <a class = "item" href = "{{ path('isi_user', {'as'          : asec, 'annexeId': annexe.id}) }}"><h4 class     = "ui header">Utilisateurs</h4></a>
+      <a class = "item" href = "{{ path('agents', {'as'            : asec, 'annexeId': annexe.id}) }}"><h4 class     = "ui header">Agents de l'Institut</h4></a>
     {% endif %}
-    <a class = "item" href = "{{ path('isi_home_scolarite', {'as': annee.id, 'annexeId': annexe.id}) }}"><h4 class = "ui header">Scolarité</h4></a>
-    <a class = "item" href = "{{ path('ens_home', {'as'          : asec, 'annexeId': annexe.id}) }}"><h4 class     = "ui header">Enseignants</h4></a>
   {% endblock %}
 
 

@@ -44,9 +44,9 @@
 					{% set i = i + 1 %}
 					{% set image = "" %}
 					{% if eleve.sexe == 1 %}
-						{% set image = "{{ asset('images/mark.png') }}" %}
+						{% set image = "images/mark.png" %}
 					{% else %}
-						{% set image = "{{ asset('images/molly.png') }}" %}
+						{% set image = "images/molly.png" %}
 					{% endif %}
 					{# Pour chaque note #}
 					{% if notes[eleve.id] %}
@@ -59,7 +59,7 @@
 									</div>
 								</div>
 							</div>
-							<img class="ui avatar image" src="{{ image }}">
+							<img class="ui avatar image" src="{{ asset(image) }}">
 							<div class="content"><span class="ui violet circular label">{{ i }}</span><i class="right chevron icon"></i> {{ eleve.matricule }} <i class="right chevron icon"></i> <strong>{{ eleve.nomFr }} {{ eleve.pnomFr }}</strong></div>
 						</div>
 					{% else %}
@@ -72,7 +72,7 @@
 									</div>
 								</div>
 							</div>
-							<img class="ui avatar image" src="{{ image }}">
+							<img class="ui avatar image" src="{{ asset(image) }}">
 							<div class="content"><span class="ui violet circular label">{{ i }}</span><i class="right chevron icon"></i> {{ eleve.matricule }} <i class="right chevron icon"></i> <strong>{{ eleve.nomFr }} {{ eleve.pnomFr }}</strong></div>
 						</div>
 					{% endif %}

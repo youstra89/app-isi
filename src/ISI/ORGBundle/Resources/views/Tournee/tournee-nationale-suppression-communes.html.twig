@@ -7,26 +7,6 @@
 
 
 
-{% block notification %}
-  {% for message in app.session.flashbag.get('error') %}
-  <div class="ui red message">
-    <div class="header">{{ 'Attention'|trans }} !!! </div>
-    <ul class="list">
-      <li>{{ message|raw }}.</li>
-    </ul>
-  </div>
-  {% endfor %}
-  {% for message in app.session.flashbag.get('info') %}
-  <div class="ui green message">
-    <div class="header">{{ 'Notification'|trans }}: </div>
-    <ul class="list">
-      <li>{{ message|raw }}.</li>
-    </ul>
-  </div>
-  {% endfor %}
-{% endblock %}
-
-
 {% block section %}
   <i class="plane icon"></i>{{ 'Tournées'|trans }}
 {% endblock %}
@@ -51,7 +31,7 @@
             <td>{{ i }}</td>
             <td>{{ item.commune.nom }}</td>
             <td>
-              <form method="post" action="{{ path('destination.tournee.remove.action', {as: asec, id: item.id, tourneeId: tournee.id}) }}" style="display: inline-block" onsubmit="return confirm('Etes-vous vraiment sûrs de vouloir supprimer cette commune ?')">
+              <form method="post" action="{{ path('destination.tournee.remove.action', {as: asec, 'annexeId': annexe.id, id: item.id, tourneeId: tournee.id}) }}" style="display: inline-block" onsubmit="return confirm('Etes-vous vraiment sûrs de vouloir supprimer cette commune ?')">
                 <input type="hidden" name="_method" value="DELETE">
                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ item.id) }}">
                 <button class="ui small negative button">Supprimer</button>

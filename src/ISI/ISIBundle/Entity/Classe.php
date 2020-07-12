@@ -3,12 +3,31 @@
 namespace ISI\ISIBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
 
+// ALTER TABLE halaqa CHANGE annexe_id annexe_id INT NOT NULL;
+// ALTER TABLE languematiere CHANGE reference reference VARCHAR(255) NOT NULL;
+// ALTER TABLE classe CHANGE annexe_id annexe_id INT NOT NULL;
+// CREATE UNIQUE INDEX libelle_fr ON classe (annee_id, annexe_id, libelle_fr);
+// CREATE UNIQUE INDEX libelle_ar ON classe (annee_id, annexe_id, libelle_ar);
+// ALTER TABLE eleve CHANGE annexe_id annexe_id INT NOT NULL;
+// ALTER TABLE annee_contrat RENAME INDEX idx_4fb4eb2960349993 TO IDX_4FB4EB291823061F;
+// ALTER TABLE enseignant CHANGE annexe_id annexe_id INT NOT NULL;
 /**
  * Classe
  *
- * @ORM\Table(name="classe", indexes={@ORM\Index(name="annee_scolaire_classe_fk", columns={"annee_id"}), @ORM\Index(name="niveau_id", columns={"niveau_id"})})
+ * @ORM\Table(
+ *      name="classe",
+ *      indexes={
+ *          @ORM\Index(name="annee_scolaire_classe_fk", columns={"annee_id"}), 
+ *          @ORM\Index(name="niveau_id", columns={"niveau_id"})
+ *      },
+ *      uniqueConstraints={
+ *          @ORM\UniqueConstraint(name="libelle_fr", columns={"annee_id", "annexe_id", "libelle_fr"}),
+ *          @ORM\UniqueConstraint(name="libelle_ar", columns={"annee_id", "annexe_id", "libelle_ar"})
+ *      }
+ * )
  * @ORM\Entity(repositoryClass="ISI\ISIBundle\Repository\ClasseRepository")
  * @ORM\HasLifecycleCallbacks()
  */
@@ -108,7 +127,7 @@ class Classe
      *
      * @ORM\ManyToOne(targetEntity="Annexe")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="annexe_id", referencedColumnName="id", nullable=true)
+     *   @ORM\JoinColumn(name="annexe_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $annexe;

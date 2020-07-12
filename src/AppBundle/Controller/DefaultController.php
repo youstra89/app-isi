@@ -13,6 +13,7 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request) 
     {
+        return $this->redirectToRoute('annexes_homepage');
         $em = $this->getDoctrine()->getManager();
         $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
         $as = $request->get('as');

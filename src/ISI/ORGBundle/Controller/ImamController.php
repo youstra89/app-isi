@@ -24,6 +24,13 @@ class ImamController extends Controller
     $em = $this->getDoctrine()->getManager();
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoImam    = $em->getRepository('ORGBundle:Imam');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+        $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+        return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
     $annee       = $repoAnnee->find($as);
     $imams       = $repoImam->findAll();
 
@@ -31,6 +38,7 @@ class ImamController extends Controller
     return $this->render('ORGBundle:Imam:index.html.twig', [
       'asec'  => $as,
       'annee' => $annee,
+      'annexe' => $annexe,
       'imams' => $imams,
     ]);
   }
@@ -43,6 +51,13 @@ class ImamController extends Controller
     {
       $em = $this->getDoctrine()->getManager();
       $repoAnnee      = $em->getRepository('ISIBundle:Annee');
+      $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+      $annexeId = $request->get('annexeId');
+      $annexe = $repoAnnexe->find($annexeId);
+      if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+          $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+          return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+      }
       $annee       = $repoAnnee->find($as);
       $imam = new Imam();
       $form = $this->createForm(ImamType::class, $imam);
@@ -52,12 +67,13 @@ class ImamController extends Controller
         $em->persist($imam);
         $em->flush();
         $this->addFlash('info', 'L\'imam '.$imam->getNom().' '.$imam->getPnom().' a été enregistré avec succès.');
-        return $this->redirectToRoute('home_imams', ['as' => $as]);
+        return $this->redirectToRoute('home_imams', ['as' => $as, 'annexeId' => $annexeId]);
       }
       return $this->render('ORGBundle:Imam:imam-add.html.twig', [
         'asec'  => $as,
         'annee' => $annee,
-        'form' => $form->createView()
+      'annexe' => $annexe,
+      'form' => $form->createView()
       ]);
     }
 
@@ -69,22 +85,30 @@ class ImamController extends Controller
     {
       $em = $this->getDoctrine()->getManager();
       $repoAnnee   = $em->getRepository('ISIBundle:Annee');
+      $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+      $annexeId = $request->get('annexeId');
+      $annexe = $repoAnnexe->find($annexeId);
+      if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+          $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+          return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+      }
       $annee       = $repoAnnee->find($as);
       $form = $this->createForm(ImamType::class, $imam);
       $form->handleRequest($request);
       if($form->isSubmitted() && $form->isValid())
       {
-        $mosquee->setUpdatedBy($this->getUser());
-        $mosquee->setUpdatedAt(new \DateTime());
+        $imam->setUpdatedBy($this->getUser());
+        $imam->setUpdatedAt(new \DateTime());
         $em->flush();
         $this->addFlash('info', 'Les informations sur l\'imam '.$imam->getNom().' '.$imam->getPnom().' ont été mises à jour avec succès.');
-        return $this->redirectToRoute('mosquees');
+        return $this->redirectToRoute('mosquees', ['as' => $as, 'annexeId' => $annexeId]);
       }
       //>>
       return $this->render('ORGBundle:Imam:imam-edit.html.twig', [
         'asec'  => $as,
         'annee' => $annee,
-        'imam' => $imam,
+      'annexe' => $annexe,
+      'imam' => $imam,
         'form' => $form->createView(),
       ]);
     }
@@ -92,13 +116,25 @@ class ImamController extends Controller
 
     /**
      * @Security("has_role('ROLE_ORGANISATION')")
-     * @param Mosquee $mosquee
+     * @param Imam $imam
      */
-    public function informationsAction(Request $request, Mosquee $mosquee): Response
+    public function informationsAction(Request $request, Imam $imam, $as): Response
     {
       $em = $this->getDoctrine()->getManager();
-      return $this->render('ORGBundle:Mosquee:mosquee-info.html.twig', [
-        'mosquee'  => $mosquee,
+      $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+      $annexeId = $request->get('annexeId');
+      $repoAnnee = $em->getRepository('ISIBundle:Annee');
+
+      $annee = $repoAnnee->find($as);
+      $annexe = $repoAnnexe->find($annexeId);
+      if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+          $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+          return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+      }
+      return $this->render('ORGBundle:Imam:imam-info.html.twig', [
+        'imam'  => $imam,
+        'annee' => $annee,
+        'annexe' => $annexe,
       ]);
     }
 }

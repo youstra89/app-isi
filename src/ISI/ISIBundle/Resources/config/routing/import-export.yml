@@ -1,9 +1,1 @@
 # Pour la saisie des notes:
-envoi_des_notes_et_moyennes_sur_le_net:
-    path:     /envoi-des-notes-et-moyennes-sur-le-net/{as}/{regime}/{classeId}/{examenId}
-    defaults: { _controller: ISIBundle:ImportExport:envoi_des_notes_et_moyennes_sur_le_net }
-    requirements:
-        as:        \d+
-        regime:    A|F
-        classeId:  \d+
-        examenId:  \d+

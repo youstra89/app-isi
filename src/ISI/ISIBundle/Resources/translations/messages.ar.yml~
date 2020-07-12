@@ -28,7 +28,7 @@ Attention: تنبيه
 'Pas de classes pour le moment': 'لا توجد الفصول حاليا'
 'Enregistrement des heures d''absence de': 'تسجيل ساعات الغياب'
 'de la classe': 'من الفصل'
-'pour le mois de': 'لشهر'
+'pour le mois de': لشهر
 'Heures d''absence': 'ساعات الغياب'
 'Nom & prénoms des élèves': 'لقب وأسماء الطلاب'
 heures: ساعات
@@ -37,7 +37,7 @@ Cours: الدروس
 'Qur''an': 'القرآن الكريم'
 Editer: تحرير
 'Nom & Prénom': 'الاسم واللقب'
-'Résultats de': 'نتائج'
+'Résultats de': نتائج
 'Le classement n''a pas encore été fait': 'لم يتم الترتيب بعد'
 'Cliquer ici pour le faire': 'انقر هنا للقيام بذلك'
 Classement: ترتيب
@@ -59,7 +59,7 @@ N°: رقم
 'Notes de la classe': 'درجات الفصل'
 'Classement annuel': 'الترتيب السنوي'
 'Ici, les résultats des deux examens sont pris en compte': 'هنا ، تؤخذ نتائج كلا الامتحان في الاعتبار'
-'Les statistiques': 'الإحصائيات'
+'Les statistiques': الإحصائيات
 'Avoir un aperçu des données statistiques': 'الحصول على نظرة عامة على البيانات الإحصائية'
 'Résultats d''examen': 'نتائج الامتحان'
 'Voir les résulats': 'معرفة النتائج'
@@ -69,7 +69,7 @@ N°: رقم
 'Voir / Imprimer les bulletins': 'انظر/ طباعة الكشوفات'
 'Voir le bulletin': 'عرض الكشف'
 avec: مع
-'de moyenne': 'لمعدل'
+'de moyenne': لمعدل
 'Le nombre d''admis est de': 'عدد الناجحين هو'
 élèves: طلاب
 'Le nombre de recalés est de': 'عدد الراسبين هو'
@@ -93,7 +93,7 @@ Recalés: الراسبون
 Actions: __Actions
 'Enregistrement d''un nouvel examen': 'تسجيل امتحان جديد'
 'Impression des fiches de notes des classes': 'طباعة كشوفات الفصول'
-'Fiches de notes': 'الكشوفات'
+'Fiches de notes': الكشوفات
 'Inscrivez d''abord des élèves dans cette classe': 'أولاً قم بتسجيل الطلاب في هذا الفصل'
 'Résultats annuels de': 'النتائج السنوية لـ'
 'Les notes des examens': 'نتائج الامتحانات'
@@ -103,7 +103,7 @@ Actions: __Actions
 Examen: امتحان
 'Sélectionner un examen': 'إختيار الامتحان'
 Nom: لقب
-'Mon compte': 'حسابي'
+'Mon compte': حسابي
 'Si vous me voyez vous avez très bonne vue': 'إذا كنت تراني، تملك نظرة جيدة'
 'Gérer les utilisateurs': 'إدارة المستخدمين'
 'Ajouter un utilisateur': 'إضافة المستخدم'
@@ -292,7 +292,7 @@ Bâtiment: مبنى
 Montant: مبلغ
 'Nom & Prénom :': 'الاسم واللقب'
 'Mois de :': '__Mois de :'
-'Somme :': 'مبلغ'
+'Somme :': مبلغ
 'Les mois à regler': '__Les mois à regler'
 'GESTION DES ETUDES': 'إدارة الدراسة'
 'Les programmes d''étude, les progressions des différents niveaux, découpage de l''année scolaire...': '__Les programmes d''étude, les progressions des différents niveaux, découpage de l''année scolaire...'
@@ -343,7 +343,7 @@ Progression: التقدم
 'Les livres au programme': 'الكتب في البرنامج'
 'Ajouter un livre': 'إضافة كتاب'
 'Pas de livre pour le moment': '__Pas de livre pour le moment'
-'PROGRESSION :': 'التقدم'
+'PROGRESSION :': التقدم
 'Programme général': 'البرنامج العام'
 'Voir le bilan de l''Academie': '__Voir le bilan de l''Academie'
 'Voir le bilan du centre de formation': '__Voir le bilan du centre de formation'
@@ -365,4 +365,10 @@ Statistiques: الإحصائيات
 'Nombre de Filles': 'عدد البنات'
 'Modification dniveau de': '__Modification dniveau de'
 'Modifier le niveau': 'تغيير المستوى'
-Matières: المواد الدرسية
+Matières: 'المواد الدرسية'
+'Autres modules': '__Autres modules'
+'Programmes d''étude': '__Programmes d''étude'
+'Les classes de': '__Les classes de'
+Redoublants: __Redoublants
+Garçons: __Garçons
+Filles: __Filles

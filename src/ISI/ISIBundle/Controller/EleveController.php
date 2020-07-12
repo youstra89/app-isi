@@ -18,17 +18,33 @@ use ISI\ISIBundle\Entity\Eleveautreregime;
 use ISI\ISIBundle\Form\EleveType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
+
+# Pour pouvoir réintégrer un élève qu'on a renvoyé les années antérieures
+// isi_reintegrer_home:
+//     path:     /reintegrer-eleve-renvoye/{as}-{regime}-reintegration-home.html
+//     defaults: { _controller: ISIBundle:Eleve:reintegrerEleve }
+//     requirements:
+//         as:       \d+
+//         regime:   A|F|C
+
+/**
+ * @Route("/espace-eleves")
+ */
 class EleveController extends Controller
 {
+  /**
+   * @Route("/index-{as}-{regime}", name="isi_espace_eleve")
+   */
   public function indexAction(Request $request, int $as, $regime)
   {
-    $em = $this->getDoctrine()->getManager();
-    $repoAnnee      = $em->getRepository('ISIBundle:Annee');
-    $repoEleve      = $em->getRepository('ISIBundle:Eleve');
+    $em         = $this->getDoctrine()->getManager();
+    $repoAnnee  = $em->getRepository('ISIBundle:Annee');
+    $repoEleve  = $em->getRepository('ISIBundle:Eleve');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
-    $annexe = $repoAnnexe->find($annexeId);
+    $annexeId   = $request->get('annexeId');
+    $annexe     = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
       return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
@@ -36,7 +52,7 @@ class EleveController extends Controller
 
     // Sélection de l'année scolaire
     $annee  = $repoAnnee->find($as);
-    $eleves = $repoEleve->elevesDUnRegime($regime);
+    $eleves = $repoEleve->elevesDUnRegime($annexeId, $regime);
     // $eleves = $this->tableauElevesJson($regime);
 
     $infoEleve = [];
@@ -68,7 +84,7 @@ class EleveController extends Controller
     // return new Response(var_dump($eleves));
     if($regime == 'A')
     {
-      $elevesInternes = $repoEleve->elevesInternes($as);
+      $elevesInternes = $repoEleve->elevesInternes($as, $annexeId);
     }
     else {
       $elevesInternes = [];
@@ -87,24 +103,26 @@ class EleveController extends Controller
   }
 
   // public function tableauElevesJson($regime)
-  public function tableauElevesJsonAction($regime)
+  /**
+   */
+  public function tableauElevesJsonAction(int $annexeId, $regime)
   {
     $em = $this->getDoctrine()->getManager();
     $repoEleve      = $em->getRepository('ISIBundle:Eleve');
-    $eleves = $repoEleve->elevesDUnRegime($regime);
+    $eleves = $repoEleve->elevesDUnRegime($annexeId, $regime);
     $infoEleve = [];
     foreach ($eleves as $eleve) {
       # code...
-      $elev = [];
-      $elev['eleveId'] = $eleve->getId();
-      $elev['matricule'] = $eleve->getMatricule();
-      $elev['nomFr'] = $eleve->getNomFr();
-      $elev['pnomFr'] = $eleve->getPnomFr();
-      $elev['nomAr'] = $eleve->getNomAr();
-      $elev['pnomAr'] = $eleve->getPnomAr();
-      $elev['sexe'] = $eleve->getSexe();
+      $elev                  = [];
+      $elev['eleveId']       = $eleve->getId();
+      $elev['matricule']     = $eleve->getMatricule();
+      $elev['nomFr']         = $eleve->getNomFr();
+      $elev['pnomFr']        = $eleve->getPnomFr();
+      $elev['nomAr']         = $eleve->getNomAr();
+      $elev['pnomAr']        = $eleve->getPnomAr();
+      $elev['sexe']          = $eleve->getSexe();
       $elev['dateNaissance'] = $eleve->getDateNaissance();
-      $elev['renvoye'] = $eleve->getRenvoye();
+      $elev['renvoye']       = $eleve->getRenvoye();
 
       $infoEleve[] = $elev;
     }
@@ -112,6 +130,9 @@ class EleveController extends Controller
     return new JsonResponse($data);
   }
 
+  /**
+   * @Route("/get/eleves/{annexeId}/{regime}", name="selection_eleves_regime", options={"expose"=true})
+   */
   public function selectionDesElevesDuRegimeAction($regime)
   {
     $em = $this->getDoctrine()->getManager();
@@ -142,7 +163,7 @@ class EleveController extends Controller
   //
 
   // Function de récupération du dernier matricule (externalisée)
-  public function getNewMatricule($as, $regime)
+  public function getNewMatricule($as, $annexeId, $regime)
   {
     $em = $this->getDoctrine()->getManager();
     $repoEleve = $em->getRepository('ISIBundle:Eleve');
@@ -151,7 +172,7 @@ class EleveController extends Controller
     // Récupération du l'année pour le matricule le fameux /17
     $annee = $repoAnnee->anneeMatricule($as);
     $annee = $annee->getSingleScalarResult();
-    $matricule = $repoEleve->dernierMatricule();
+    $matricule = $repoEleve->dernierMatricule($annexeId);
 
   	$matriculeNumeric = [];
   	foreach($matricule as $mat)
@@ -264,22 +285,31 @@ class EleveController extends Controller
   // Ici finissent mes méthodes personnelles dans le controller
 
   //Function de présincription
+  /**
+   * @Route("/preinscription-{as}-{regime}", name="isi_preinscription")
+   */
   public function preinscriptionAction(Request $request, $as, $regime)
   {
-    die();
-    $em = $this->getDoctrine()->getManager();
+    $em         = $this->getDoctrine()->getManager();
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
-    $annexe = $repoAnnexe->find($annexeId);
+    $annexeId   = $request->get('annexeId');
+    $annexe     = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
       return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
     }
-    $em = $this->getDoctrine()->getManager();
+
+    if($annexeId == 1){
+      die();
+    }
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
 
     // Sélection de l'année scolaire
     $annee  = $repoAnnee->find($as);
+    if($annee->getAchevee() == TRUE){
+      $request->getSession()->getFlashBag()->add('error', 'Impossible d\'inscrire un élève car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
+      return $this->redirect($this->generateUrl('isi_espace_eleve', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
+    }
 
     $professions = $this->findAllProfessions();
     // dump($professions);
@@ -290,7 +320,7 @@ class EleveController extends Controller
 
     $form  = $this->createForm(EleveType::class, $eleve);
 
-    $matriculeNew = $this->getNewMatricule($as, $regime);
+    $matriculeNew = $this->getNewMatricule($as, $annexeId, $regime);
     // return new Response(var_dump($matriculeNew));
 
     if($form->handleRequest($request)->isValid())
@@ -306,7 +336,7 @@ class EleveController extends Controller
        * mieux de regénérer un neauvau matricule juste avant l'enregistrement effectif en BD.
        * Comme ça, on est sûr qu'il n'aura pas de conflit de matricule.
        */
-      $matriculeNew = $this->getNewMatricule($as, $regime);
+      $matriculeNew = $this->getNewMatricule($as, $annexeId, $regime);
       $eleve->setMatricule($matriculeNew);
       $eleve->setDateNaissance($date);
       $eleve->setRegime($regime);
@@ -332,7 +362,7 @@ class EleveController extends Controller
 
       return $this->redirect($this->generateUrl('isi_preinscription', array(
         'as'     => $as, 
-        'annexeId'     => $annexeId, 
+        'annexeId' => $annexeId, 
         'regime' => $regime
       )));
     }
@@ -340,7 +370,7 @@ class EleveController extends Controller
     return $this->render('ISIBundle:Eleve:preinscription.html.twig', array(
       'asec'        => $as,
       'regime'      => $regime,
-      'annexe'  => $annexe,
+      'annexe'      => $annexe,
       'annee'       => $annee,
       'professions' => $professions,
       'form'        => $form->createView(),
@@ -351,6 +381,9 @@ class EleveController extends Controller
   }
 
   //Edition d'un élève
+  /**
+   * @Route("/edit-eleve-{as}-{regime}-{eleveId}", name="isi_edit_eleve")
+   */
   public function editEleveAction(Request $request, $as, $regime, $eleveId)
   {
     $em = $this->getDoctrine()->getManager();
@@ -407,30 +440,33 @@ class EleveController extends Controller
     }
 
     return $this->render('ISIBundle:Eleve:edition-eleve.html.twig', [
-      'asec'   => $as,
-      'regime' => $regime,
-      'annee'  => $annee,
-      'annexe'  => $annexe,
-      'eleve'  => $eleve,
-      'professions'     => $professions,
-      'form'   => $form->createView()
+      'asec'        => $as,
+      'regime'      => $regime,
+      'annee'       => $annee,
+      'annexe'      => $annexe,
+      'eleve'       => $eleve,
+      'professions' => $professions,
+      'form'        => $form->createView()
     ]);
   }
 
   //Affichage de la fiche de renseignement d'un élève
+  /**
+   * @Route("/info-eleve-{as}-{regime}-{eleveId}", name="isi_info_eleve")
+   */
   public function infoEleveAction(Request $request, int $as, $regime, $eleveId)
   {
-    $em = $this->getDoctrine()->getManager();
-    $repoAnnee       = $em->getRepository('ISIBundle:Annee');
-    $repoEleve       = $em->getRepository('ISIBundle:Eleve');
-    $repoProbleme    = $em->getRepository('ISIBundle:Probleme');
-    $repoFrequenter  = $em->getRepository('ISIBundle:Frequenter');
+    $em                   = $this->getDoctrine()->getManager();
+    $repoAnnee            = $em->getRepository('ISIBundle:Annee');
+    $repoEleve            = $em->getRepository('ISIBundle:Eleve');
+    $repoProbleme         = $em->getRepository('ISIBundle:Probleme');
+    $repoFrequenter       = $em->getRepository('ISIBundle:Frequenter');
     $repoEleveRenvoye     = $em->getRepository('ISIBundle:Eleverenvoye');
     $repoEleveReintegre   = $em->getRepository('ISIBundle:Elevereintegre');
     $repoEleveAutreregime = $em->getRepository('ISIBundle:Eleveautreregime');
-    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
-    $annexe = $repoAnnexe->find($annexeId);
+    $repoAnnexe           = $em->getRepository('ISIBundle:Annexe');
+    $annexeId             = $request->get('annexeId');
+    $annexe               = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
       return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
@@ -460,7 +496,7 @@ class EleveController extends Controller
       'annee'      => $annee,
       'eleve'      => $eleve,
       'problemes'  => $problemes,
-      'annexe'  => $annexe,
+      'annexe'     => $annexe,
       'frequenter' => $fq,
       'renvoye'    => $renvoye,
       'reintegre'  => $reintegre,
@@ -469,15 +505,18 @@ class EleveController extends Controller
   }
 
   //Pour voir la liste des élèves inscrits pour une année donnée
+  /**
+   * @Route("/eleves-inscrits-{as}-{regime}", name="isi_eleves_inscrits")
+   */
   public function elevesInscritsAction(Request $request, int $as, $regime)
   {
-    $em = $this->getDoctrine()->getManager();
+    $em             = $this->getDoctrine()->getManager();
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoEleve      = $em->getRepository('ISIBundle:Eleve');
-    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
-    $annexe = $repoAnnexe->find($annexeId);
+    $repoAnnexe     = $em->getRepository('ISIBundle:Annexe');
+    $annexeId       = $request->get('annexeId');
+    $annexe         = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
       return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
@@ -486,10 +525,10 @@ class EleveController extends Controller
     // Sélection de l'année scolaire
     $annee  = $repoAnnee->find($as);
     $repo = get_class($repoEleve);
-    $eleves = $repoEleve->elevesInscrits($as, $regime);
+    $eleves = $repoEleve->elevesInscrits($as, $annexeId, $regime);
     if($regime == 'A')
     {
-      $elevesInternes = $repoEleve->elevesInternes($as);
+      $elevesInternes = $repoEleve->elevesInternes($as, $annexeId);
     }
     else {
       $elevesInternes = [];
@@ -524,7 +563,6 @@ class EleveController extends Controller
      *    - Sinon (c'est-à-dire que admission == TRUE) $niveau ne doit pas != du niveau de frequenter + 1
      * **/
     $em = $this->getDoctrine()->getManager();
-    $repoEleve      = $em->getRepository("ISIBundle:Eleve");
     $repoNiveau     = $em->getRepository("ISIBundle:Niveau");
     $repoFrequenter = $em->getRepository("ISIBundle:Frequenter");
     // $repo->getRepository("ISIBundle:");
@@ -574,6 +612,9 @@ class EleveController extends Controller
   }
 
   //Pour l'inscription d'un élève dans une classe
+  /**
+   * @Route("/inscription-{as}-{regime}", name="isi_inscription")
+   */
   public function inscriptionAction(Request $request, $as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
@@ -603,7 +644,7 @@ class EleveController extends Controller
     $grp = $regime == 'A' ? 1 : 2 ;
     $niveaux   = $repoNiveau->findBy(['groupeFormation' => $grp]);
     $halaqas   = $repoHalaqa->findBy(['annee' => $as, 'annexe' => $annexeId, 'regime' => $regime]);
-    $tousLesMatricules = $repoEleve->getMatricules($regime);
+    $tousLesMatricules = $repoEleve->getMatricules($annexeId, $regime);
     $matricules = [];
     foreach ($tousLesMatricules as $matricule) {
       $matricules[] = $matricule['matricule'];
@@ -635,7 +676,7 @@ class EleveController extends Controller
         $halaqaId = $data['halaqa'];
 
       // Sélection des indentifiants de classe, d'élève, d'année scolaire et de matière
-      $eleve    = $repoEleve->findOneBy(['matricule' => $data['form']['matricule']]);
+      $eleve    = $repoEleve->findOneBy(['matricule' => $data['form']['matricule'], 'annexe' => $annexeId]);
       $eleveId  = $eleve->getId();
 
       if ($regime != 'C') {
@@ -857,18 +898,21 @@ class EleveController extends Controller
 
     } // Fin du bouton submit
     return $this->render('ISIBundle:Eleve:inscription.html.twig', [
-      'asec'    => $as,
-      'regime'  => $regime,
-      'niveaux'  => $niveaux,
-      'annee'   => $annee,
-      'annexe'  => $annexe,
-      'halaqas' => $halaqas,
-      'form'    => $form->createView(),
+      'asec'       => $as,
+      'regime'     => $regime,
+      'niveaux'    => $niveaux,
+      'annee'      => $annee,
+      'annexe'     => $annexe,
+      'halaqas'    => $halaqas,
+      'form'       => $form->createView(),
       'matricules' => $matricules
     ]);
   }
 
   // Pour les inscriptions en masse
+  /**
+   * @Route("/flash-inscription-{as}-{regime}", name="isi_flash_inscription")
+   */
   public function flashInscriptionAction(Request $request, int $as, $regime)
   {
     // return new Response("Ca demarre bien!");
@@ -887,7 +931,7 @@ class EleveController extends Controller
     // Sélection des entités
     $annee = $repoAnnee->find($as);
     $niveaux = $repoNiveau->niveauxDuGroupe($regime);
-    $classes = $repoClasse->classesDeLAnnee($as - 1, $regime);
+    $classes = $repoClasse->classesDeLAnnee($as - 1, $annexeId, $regime);
 
     return $this->render('ISIBundle:Eleve:flash-inscription-home.html.twig', [
       'asec'     => $as,
@@ -899,6 +943,9 @@ class EleveController extends Controller
     ]);
   }
 
+  /**
+   * @Route("/flash-inscription-d-une-classe-{as}-{regime}-{classeId}", name="isi_flash_inscription_d_une_classe")
+   */
   public function flashInscriptionDUneClasseAction(Request $request, int $as, $regime, $classeId)
   {
     $em = $this->getDoctrine()->getManager();
@@ -928,10 +975,10 @@ class EleveController extends Controller
     $classesR      = $repoClasse->lesClassesDuNiveau($as, $annexeId, $niveauId);
     $frequenter    = $repoFrequenter->statistiquesClasse($classeId);
     $reinscription = $this->idsDesElevesReinscrits($classeId, $as -1);
-    $eleves        = $repoEleve->lesElevesDeLaClasse($as - 1, $classeId);
+    $eleves        = $repoEleve->lesElevesDeLaClasse($as - 1, $annexeId, $classeId);
     // dump($eleves);
-    $succession = $classe->getNiveau()->getSuccession() + 1;
-    $classesSup   = $repoClasse->classesSuperieures($as, $regime, $niveauId, $succession);
+    $succession     = $classe->getNiveau()->getSuccession() + 1;
+    $classesSup     = $repoClasse->classesSuperieures($as, $annexeId, $regime, $succession);
     $elevesInscrits = [];
     $ids = $this->recupererLesIdsDesEleves($eleves);
     foreach ($ids as $key => $id) {
@@ -940,10 +987,7 @@ class EleveController extends Controller
         $elevesInscrits[] = $item;
       }
     }
-    // dump($elevesInscrits);
-    // dump($reinscription);
-    // $elevesInscrits   = $repoFrequenter->eleveDUneClasseActuelle($as, $ids);
-    // return new Response(var_dump($ids));
+
     if(count($elevesInscrits) != 0){
       foreach ($frequenter as $fq) {
         foreach ($elevesInscrits as $eleve) {
@@ -983,6 +1027,7 @@ class EleveController extends Controller
     ]);
   }
 
+  
   public function idsDesElevesReinscrits(int $classeId, int $anneeId)
   {
     $ids = [];
@@ -998,6 +1043,9 @@ class EleveController extends Controller
     return $ids;
   }
 
+  /**
+   * @Route("/execution-de-la-flash-inscription-d-une-classe-{as}-{regime}-{classeId}", name="isi_appliquer_flash_inscription")
+   */
   public function executerFlashInscriptionAction(Request $request, int $as, string $regime, int $classeId)
   {
     $em = $this->getDoctrine()->getManager();
@@ -1136,6 +1184,9 @@ class EleveController extends Controller
   }
 
   // Pour signaler un probleme relatif à un élève
+  /**
+   * @Route("/signaler-un-probleme-home-{as}-{regime}", name="isi_problemes_home")
+   */
   public function problemesHomeAction(Request $request, $as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
@@ -1157,7 +1208,7 @@ class EleveController extends Controller
       $em = $this->getDoctrine()->getManager();
       $data = $request->request->all();
       $matricule = $data['matricule'];
-      $eleve = $repoEleve->findOneBy(['matricule' => $matricule]);
+      $eleve = $repoEleve->findOneBy(['matricule' => $matricule, 'annexe' => $annexeId]);
       $fq    = $repoFrequenter->findOneBy(['eleve' => $eleve->getId(), 'annee' => $as]);
       if(empty($eleve)) {
         $request->getSession()->getFlashBag()->add('error', 'Le matricule saisi n\'est pas correct');
@@ -1187,6 +1238,9 @@ class EleveController extends Controller
     ]);
   }
 
+  /**
+   * @Route("/enregistrer-conduite-eleve/{as}-{regime}-{eleveId}-conduite", name="isi_enregistrer_conduite")
+   */
   public function enregistrerConduiteAction(Request $request, $as, $regime, $eleveId)
   {
     $em = $this->getDoctrine()->getManager();
@@ -1283,6 +1337,9 @@ class EleveController extends Controller
   }
 
   // Pour renvoyer un élève
+  /**
+   * @Route("/renvoi-home-{as}-{regime}", name="isi_renvoi_home")
+   */
   public function renvoiHomeAction(Request $request, $as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
@@ -1298,7 +1355,7 @@ class EleveController extends Controller
     }
 
     $annee = $repoAnnee->find($as);
-    $tousLesMatricules = $repoEleve->getMatricules($regime);
+    $tousLesMatricules = $repoEleve->getMatricules($annexeId, $regime);
     $matricules = [];
     foreach ($tousLesMatricules as $matricule) {
       $matricules[] = $matricule['matricule'];
@@ -1309,7 +1366,7 @@ class EleveController extends Controller
       $em = $this->getDoctrine()->getManager();
       $data = $request->request->all();
       $matricule = $data['matricule'];
-      $eleve = $repoEleve->findOneBy(['matricule' => $matricule]);
+      $eleve = $repoEleve->findOneBy(['matricule' => $matricule, 'annexe' => $annexeId]);
       $fq    = $repoFrequenter->findOneBy(['eleve' => $eleve->getId(), 'annee' => $as]);
       if(empty($eleve)) {
         $request->getSession()->getFlashBag()->add('error', 'Le matricule saisi n\'est pas correct');
@@ -1338,6 +1395,9 @@ class EleveController extends Controller
   }
 
   // Exécution du renvoi
+  /**
+   * @Route("/renvoyer-eleve-{as}-{regime}-{eleveId}", name="isi_renvoi")
+   */
   public function renvoyerAction(Request $request, $as, $regime, $eleveId)
   {
     $em = $this->getDoctrine()->getManager();
@@ -1418,6 +1478,9 @@ class EleveController extends Controller
     }
   }
 
+  /**
+   * @Route("/reintegration-eleve-renvoye/{as}-{regime}-{eleveId}", name="isi_reintegration")
+   */
   public function reintegrerAction(Request $request, $as, $regime, $eleveId)
   {
     $em = $this->getDoctrine()->getManager();
@@ -1498,6 +1561,7 @@ class EleveController extends Controller
 
       $em->persist($eleveReintegre);
       try{
+        // die();
         $em->flush();
         $request->getSession()->getFlashBag()->add('info', 'La réintegration de <strong>'.$eleve->getNom().'</strong> s\'est bien effectué');
       } 
@@ -1508,7 +1572,6 @@ class EleveController extends Controller
       catch(\Exception $e){
         $this->addFlash('error', $e->getMessage());
       }
-      // $em->flush();
 
       return $this->redirect($this->generateUrl('isi_eleves_renvoyes', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
     }
@@ -1517,13 +1580,16 @@ class EleveController extends Controller
       'asec'        => $as,
       'regime'      => $regime,
       'annee'       => $annee,
-      'annexe'  => $annexe,
+      'annexe'      => $annexe,
       'eleve'       => $eleve,
       'anneeRenvoi' => $anneeRenvoi,
     ]);
   }
 
   //Pour voir la liste des élèves renvoyés
+  /**
+   * @Route("/eleves-renvoyes-{as}-{regime}", name="isi_eleves_renvoyes")
+   */
   public function elevesRenvoyesAction(Request $request, int $as, $regime)
   {
     $em               = $this->getDoctrine()->getManager();
@@ -1541,7 +1607,7 @@ class EleveController extends Controller
 
     // Sélection de l'année scolaire
     $annee  = $repoAnnee->find($as);
-    $eleves = $repoEleve->elevesRenvoyes($regime);
+    $eleves = $repoEleve->elevesRenvoyes($annexeId, $regime);
 
     $renvoyes  = [];
     foreach ($eleves as $eleve) {
@@ -1589,10 +1655,11 @@ class EleveController extends Controller
       // 'frequentation' => $frequentation
     ));
   }
-
-                                                                                                                                                            
-
+                                                                                                                                                 
   //Pour voir la liste des élèves renvoyés
+  /**
+   * @Route("/informations-eleve-renvoye-{as}-{regime}-{eleveId}", name="isi_info_eleve_renvoye")
+   */
   public function infoEleveRenvoyeAction(Request $request, int $as, $regime, $eleveId)
   {
     $em = $this->getDoctrine()->getManager();
@@ -1643,6 +1710,9 @@ class EleveController extends Controller
     ]);
   }
 
+  /**
+   * @Route("/changement-de-regime-home-{as}-{regime}", name="isi_changer_regime_home")
+   */
   public function changerDeRegimeHomeAction(Request $request, $as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
@@ -1664,7 +1734,7 @@ class EleveController extends Controller
       $em = $this->getDoctrine()->getManager();
       $data = $request->request->all();
       $matricule = $data['matricule'];
-      $eleve = $repoEleve->findOneBy(['matricule' => $matricule]);
+      $eleve = $repoEleve->findOneBy(['matricule' => $matricule, 'annexe' => $annexeId]);
       $fq    = $repoFrequenter->findOneBy(['eleve' => $eleve->getId(), 'annee' => $as]);
       if(empty($eleve)) {
         $request->getSession()->getFlashBag()->add('error', 'Le matricule saisi n\'est pas correct');
@@ -1683,6 +1753,9 @@ class EleveController extends Controller
   }
 
 
+  /**
+   * @Route("/changement-du-regime-de-l-eleve-{as}-{regime}-{eleveId}", name="isi_changer_regime_eleve")
+   */
   public function changerDeRegimeDUnEleveAction(Request $request, $as, $regime, $eleveId)
   {
     $em = $this->getDoctrine()->getManager();
@@ -1775,6 +1848,9 @@ class EleveController extends Controller
   }
 
   // L'action permettra de modifier l'inscription d'un élève dans une classe
+  /**
+   * @Route("/liste-de-classe-pour-modification-inscription-d-un-eleve-{as}-{regime}", name="isi_modifier_inscription")
+   */
   public function editInscriptionAction(Request $request, int $as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
@@ -1804,6 +1880,9 @@ class EleveController extends Controller
   }
 
   // Modification effective de l'inscription d'un élève donnée
+  /**
+   * @Route("/modification-inscription-d-un-eleve-{as}-{regime}-{classeId}", name="isi_modifier_inscription_d_un_eleve")
+   */
   public function modifierInscriptionDUnEleveAction(Request $request, int $as, $regime, $classeId)
   {
     $em = $this->getDoctrine()->getManager();
@@ -1833,6 +1912,9 @@ class EleveController extends Controller
     ]);
   }
 
+  /**
+   * @Route("/modifier-la-classe-de-l-eleve-{as}-{regime}-{classeId}-{eleveId}", name="isi_modifier_classe_eleve")
+   */
   public function modifierClasseDeLEleveAction(Request $request, $as, $regime, $classeId, $eleveId)
   {
     $em = $this->getDoctrine()->getManager();
@@ -1965,7 +2047,7 @@ class EleveController extends Controller
       'classes'        => $classes,
       'regime'         => $regime,
       'annee'          => $annee,
-      'annexe'  => $annexe,
+      'annexe'         => $annexe,
       'niveau'         => $niveau,
       'halaqas'        => $halaqas,
       'eleve'          => $eleve,
@@ -1973,7 +2055,9 @@ class EleveController extends Controller
     ]);
   }
 
-
+  /**
+   * @Route("/modifier-le-niveau-de-l-eleve-{as}-{regime}-{classeId}-{eleveId}", name="isi_modifier_niveau_eleve")
+   */
   public function modifierNiveauDeLEleveAction(Request $request, $as, $regime, $classeId, $eleveId)
   {
     $em = $this->getDoctrine()->getManager();
@@ -2098,13 +2182,15 @@ class EleveController extends Controller
       'regime'         => $regime,
       'annee'          => $annee,
       'halaqas'        => $halaqas,
-      'annexe'  => $annexe,
+      'annexe'         => $annexe,
       'eleve'          => $eleve,
       'classeActuelle' => $classeActuelle
     ]);
   }
 
-
+  /**
+   * @Route("/page-d-accueil-pour-permission-{as}-{regime}", name="permission_home")
+   */
   public function permission_homeAction(Request $request, int $as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
@@ -2150,6 +2236,9 @@ class EleveController extends Controller
   }
 
 
+  /**
+   * @Route("/enregistrement-de-permission-{as}-{regime}-{eleveId}", name="permission")
+   */
   public function permissionAction(Request $request, int $as, int $eleveId, $regime)
   {
     $em = $this->getDoctrine()->getManager();
@@ -2207,7 +2296,7 @@ class EleveController extends Controller
 
     return $this->render('ISIBundle:Eleve:enregistrer-permission.html.twig', [
       'asec'   => $as,
-      'annexe'  => $annexe,
+      'annexe' => $annexe,
       'regime' => $regime,
       'annee'  => $annee,
       'eleve'  => $eleve,
@@ -2216,6 +2305,9 @@ class EleveController extends Controller
   }
 
 
+  /**
+   * @Route("/liste-des-permissions-{as}-{regime}", name="liste_des_permissions")
+   */
   public function liste_des_permissionsAction(Request $request, int $as, $regime)
   {
     $em = $this->getDoctrine()->getManager();
@@ -2228,8 +2320,8 @@ class EleveController extends Controller
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
       return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
     }
-    $permissions = $repoPermission->findByAnnee($as);
-    $annee     = $repoAnnee->find($as);
+    $permissions = $repoPermission->listeDesPermissions($as, $annexeId);
+    $annee       = $repoAnnee->find($as);
 
     return $this->render('ISIBundle:Eleve:liste-des-permissions.html.twig', [
       'asec'   => $as,
@@ -2241,6 +2333,9 @@ class EleveController extends Controller
   }
 
 
+  /**
+   * @Route("/details-d-une-permission-{as}-{regime}-{permissionId}", name="details_permission")
+   */
   public function details_permissionAction(Request $request, int $as, int $permissionId, $regime)
   {
     $em = $this->getDoctrine()->getManager();
@@ -2268,7 +2363,9 @@ class EleveController extends Controller
     ]);
   }
 
-
+  /**
+   * @Route("modifier-une-permission-{as}-{regime}-{permissionId}", name="modifier_permission")
+   */
   public function modifier_permissionAction(Request $request, int $as, int $permissionId, $regime)
   {
     $em = $this->getDoctrine()->getManager();
@@ -2338,8 +2435,10 @@ class EleveController extends Controller
     ]);
   }
 
-
-  public function remplirClasseAction($anneeId, $niveauId)
+  /**
+   * @Route("/get-classes-{anneeId}-{annexeId}-{niveauId}", name="remplir_select_classe", options={"expose"=true})
+   */
+  public function remplirClasseAction($anneeId, $annexeId, $niveauId)
   {
     $em = $this->getDoctrine()->getManager();
 
@@ -2353,7 +2452,7 @@ class EleveController extends Controller
     * à partir de l'id de l'année et du niveau
     * Dans une variables $classes par exemple
     */
-    $classes = $em->getRepository('ISIBundle:Classe')->lesClassesDuNiveau($anneeId, $niveauId);
+    $classes = $em->getRepository('ISIBundle:Classe')->lesClassesDuNiveau($anneeId, $annexeId, $niveauId);
 
       foreach ($classes as $classe) {
         $classList [] = [
@@ -2373,12 +2472,15 @@ class EleveController extends Controller
   }
 
   // La méthode-ci me permet de récupérer tous les matricules des élèves d'un regime de formation
-  public function getMatriculeAction($regime)
+  /**
+   * @Route("/get-matricule-{annexeId}-{regime}", name="get_matricule")
+   */
+  public function getMatriculeAction(int $annexeId, string $regime)
   {
     $em = $this->getDoctrine()->getManager();
     $repoEleve = $em->getRepository('ISIBundle:Eleve');
 
-    $tousLesMatricules = $repoEleve->getMatricules($regime);
+    $tousLesMatricules = $repoEleve->getMatricules($annexeId, $regime);
     $matricules = [];
     foreach ($tousLesMatricules as $matricule) {
       $matricules[] = $matricule['matricule'];
@@ -2388,10 +2490,13 @@ class EleveController extends Controller
     return $response;
   }
 
-  public function eleveAction($matricule)
+  /**
+   * @Route("/eleve/{annexeId}/{matricule}/", name="eleve", options={"expose"=true})
+   */
+  public function eleveAction(int $annexeId, string $matricule)
   {
     $em = $this->getDoctrine()->getManager();
-    $eleveMat = $em->getRepository('ISIBundle:Eleve')->findOneBy(['matricule' => $matricule]);
+    $eleveMat = $em->getRepository('ISIBundle:Eleve')->findOneBy(['matricule' => $matricule, 'annexe' => $annexeId]);
     if($eleveMat)
     {
       $nomFr = $eleveMat->getNomFr();
@@ -2406,9 +2511,9 @@ class EleveController extends Controller
 
     $response = new JsonResponse();
     return $response->setData([
-      'nomFr' => $nomFr,
-      'pnomFr' => $pnomFr,
-      'dateNaissance' => $dateNaissance,
+      'nomFr'         => $nomFr,
+      'pnomFr'        => $pnomFr,
+      'dateNaissance' =>  $dateNaissance,
     ]);
   }
 
@@ -2416,6 +2521,9 @@ class EleveController extends Controller
   // Des inscriptions ont été faites avant qu'on ne ajoute certaines matierès.
   // Alors on va les ajoutées
   // /ajout-de-frequenter-pour-une-matiere-qui-n-a-pas-ete-ajoutee-avant-les-inscriptions/{as}/{regime}/{classeId}/{matiereId}
+  /**
+   * @Route("/ajout-de-frequenter-pour-une-matiere-qui-n-a-pas-ete-ajoutee-avant-les-inscriptions-{as}-{regime}-{classeId}-{matiereId}.php", name="ajout_de_frequenter")
+   */
   public function ajoutMatieresOublieesAvantInscriptionAction(Request $request, int $as, $regime, $classeId, $matiereId)
   {
     $em = $this->getDoctrine()->getManager();
@@ -2455,6 +2563,8 @@ class EleveController extends Controller
   // Cette fonction est en quelque sorte la réciproque de celle qui la
   // précède à savoir ajoutMatieresOublieesAvantInscriptionAction
   // /ajout-de-notes-pour-une-matiere-qui-n-a-pas-ete-ajoutee-après-la-generation-des-fiches-de-notes/{as}/{regime}/{classeId}/{matiereId}/{examenId}
+  /**
+   */
   public function ajoutNotesDesMatieresOublieesAvantInscriptionAction(Request $request, int $as, $regime, $classeId, $matiereId, $examenId)
   {
     $em = $this->getDoctrine()->getManager();
@@ -2495,6 +2605,7 @@ class EleveController extends Controller
    * déjà générer les notes des élèves de la classe où ils ont été inscrits.
    * Il faudra donc générer leurs notes
    * C'est justement ce que cette méthode (function) va nous permettre de faire in chaa Allah
+   * @Route("/ajouter-notes-des-eleve-sans-notes-{classeId}-{examenId}", name="eleves_sans_notes")
    */
   public function AjouterNotesDesElevesSansNotesAction($classeId, $examenId)
   {
@@ -2513,6 +2624,11 @@ class EleveController extends Controller
 
   }
 
+  /**
+   * @Route("/voir-notes-qui-manquent", name="eleves_notes_incompletes")
+   *
+   * @return void
+   */
   public function elevesSansLesNotesAuCompletesAction()
   {
     return $this->render('ISIBundle:Eleve:elevesSansQQNote.html.php');

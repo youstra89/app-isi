@@ -87,7 +87,7 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
               ->getResult();
   }
 
-  public function classesSuperieures(int $as, int $annexeId, $regime, $niveauId, $succession)
+  public function classesSuperieures(int $as, int $annexeId, $regime, $succession)
   {
     $qb = $this->createQueryBuilder('c');
     $qb->join('c.niveau', 'n')
@@ -104,13 +104,14 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
   }
 
   // Sélection de toutes les classes existantes lors d'une année scolaire
-  public function lesClasseDeLAnnee($as)
+  public function lesClasseDeLAnnee(int $as, int $annexeId)
   {
     $qb = $this->createQueryBuilder('c');
     $qb->join('c.niveau', 'n')
        ->join('c.annee', 'an')
-       ->where('an.id = :an')
+       ->where('an.id = :an AND c.annexe = :annexeId')
        ->setParameter('an', $as)
+       ->setParameter('annexeId', $annexeId)
     ;
     return $qb->getQuery()
               ->getResult();
@@ -167,5 +168,25 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
       return $qb->getQuery()
               ->getResult();
   }
+  
+  // public function classesAyantEmploiDuTemps(int $as, int $annexeId, string $regime)
+  // {
+  //     $qb = $this->createQueryBuilder('c');
+  //     $qb ->join('c.cours', 'ac')
+  //         ->join('c.niveau', 'n')
+  //         ->join('n.enseignements', 'e')
+  //         ->join('e.matiere', 'm')
+  //         ->join('m.referenceLangue', 'r')
+  //         ->join('n.groupeFormation', 'grpF')
+  //         ->join('ac.annee', 'an')
+  //         ->where('an.id = :as AND grpF.reference = :regime AND c.annexe = :annexeId AND r.reference = :referenceLangue')
+  //         ->setParameter('as', $as)
+  //         ->setParameter('annexeId', $annexeId)
+  //         ->setParameter('regime', $regime)
+  //         ->setParameter('referenceLangue', "ar");
+
+  //     return $qb->getQuery()
+  //             ->getResult();
+  // }
 }
 ?>

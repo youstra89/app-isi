@@ -15,26 +15,6 @@
 {% endblock %}
 
 
-{% block notification %}
-  {% for message in app.session.flashbag.get('error') %}
-  <div class="ui red message">
-    <div class="header">{{ 'Attention'|trans }} !!! </div>
-    <ul class="list">
-      <li>{{ message|raw }}.</li>
-    </ul>
-  </div>
-  {% endfor %}
-  {% for message in app.session.flashbag.get('info') %}
-  <div class="ui green message">
-    <div class="header">{{ 'Notification'|trans }}: </div>
-    <ul class="list">
-      <li>{{ message|raw }}.</li>
-    </ul>
-  </div>
-  {% endfor %}
-{% endblock %}
-
-
 {% block body %}
   <h2>Mosquées enregistrées</h2>
   <table width="100%" id="mosquees">
@@ -71,8 +51,8 @@
             {% endif %}
           </td>
           <td>
-            <a href="{{ path('mosquee.edit', {as: asec, id: mosquee.id}) }}" data-tooltip="Editer la mosquée"><i class="edit icon"></i></a>
-            <a href="{{ path('mosquee.info', {as: asec, id: mosquee.id}) }}" data-tooltip="Infos de la mosquée"><i class="info icon"></i></a>
+            <a href="{{ path('mosquee.edit', {as: asec, 'annexeId': annexe.id, id: mosquee.id}) }}" data-tooltip="Editer la mosquée"><i class="edit icon"></i></a>
+            <a href="{{ path('mosquee.info', {as: asec, 'annexeId': annexe.id, id: mosquee.id}) }}" data-tooltip="Infos de la mosquée"><i class="info icon"></i></a>
           </td>
         </tr>
       {% endfor %}

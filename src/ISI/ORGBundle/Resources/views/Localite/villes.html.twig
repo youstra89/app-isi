@@ -9,31 +9,11 @@
 {% block title 'Villes enregistrées' %}
 
 
-{% block notification %}
-  {% for message in app.session.flashbag.get('error') %}
-  <div class="ui red message">
-    <div class="header">{{ 'Attention'|trans }} !!! </div>
-    <ul class="list">
-      <li>{{ message|raw }}.</li>
-    </ul>
-  </div>
-  {% endfor %}
-  {% for message in app.session.flashbag.get('info') %}
-  <div class="ui green message">
-    <div class="header">{{ 'Notification'|trans }}: </div>
-    <ul class="list">
-      <li>{{ message|raw }}.</li>
-    </ul>
-  </div>
-  {% endfor %}
-{% endblock %}
-
-
 {% block body %}
   <h2>Villes enregistrées</h2>
   <div class="uk-hidden@s">
     <p uk-margin>
-      <a class="uk-button uk-button-default" href="{{ path('ville.add', {'as': asec}) }}">Ajouter</a>
+      <a class="uk-button uk-button-default" href="{{ path('ville.add', {'as': asec, 'annexeId': annexe.id}) }}">Ajouter</a>
     </p>
   </div>
   <table class="uk-table uk-table-small uk-table-divider" id="villes">
@@ -54,8 +34,8 @@
           <td>{{ ville.nom }}</td>
           <td>{{ ville.region.nom }}</td>
           <td>
-            <a href="{{ path('ville.edit', {as: asec, id: ville.id}) }}" data-tooltip="Editer la ville"><i class="edit icon"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="{{ path('commune.add', {as: asec, villeId: ville.id}) }}"  data-tooltip="Ajouter une commune à cette ville"><i class="plus icon"></i></a>
+            <a href="{{ path('ville.edit', {as: asec, 'annexeId': annexe.id, id: ville.id}) }}" data-tooltip="Editer la ville"><i class="edit icon"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="{{ path('commune.add', {as: asec, 'annexeId': annexe.id, villeId: ville.id}) }}"  data-tooltip="Ajouter une commune à cette ville"><i class="plus icon"></i></a>
           </td>
         </tr>
       {% endfor %}

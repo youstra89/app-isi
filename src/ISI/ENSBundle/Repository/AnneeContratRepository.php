@@ -10,7 +10,7 @@ namespace ISI\ENSBundle\Repository;
  */
 class AnneeContratRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function fonctionDeLAnnee($anneeId)
+    public function fonctionDeLAnnee($anneeId, $annexeId)
     {
         $qb = $this->createQueryBuilder('a');
         $offset = 0;
@@ -22,10 +22,11 @@ class AnneeContratRepository extends \Doctrine\ORM\EntityRepository
            ->addSelect('c')
            ->join('c.enseignant', 'e')
            ->addSelect('e')
-           ->where('an.id = :anneeId AND c.fini = :bool AND e.enseignant = true')
+           ->where('an.id = :anneeId AND c.fini = :bool AND e.enseignant = true AND e.annexe = :annexeId')
            ->orderBy('e.nomFr', 'ASC')
            ->addOrderBy('e.pnomFr', 'ASC')
            ->setParameter('anneeId', $anneeId)
+           ->setParameter('annexeId', $annexeId)
            ->setParameter('bool', false)
         ;
         return $qb

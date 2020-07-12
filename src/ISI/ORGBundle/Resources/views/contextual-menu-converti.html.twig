@@ -1,3 +1,3 @@
 <div class="header">{{ 'Mosquées'|trans }}</div>
-<a class="item" href="{{ path('home_convertis', {'as': asec}) }}">Liste</a>
-<a class="item" href="{{ path('converti.add', {'as': asec}) }}">Ajouter</a>
+<a class="item" href="{{ path('home_convertis', {'as': asec, 'annexeId': annexe.id}) }}">Liste</a>
+<a class="item" href="{{ path('converti.add', {'as': asec, 'annexeId': annexe.id}) }}">Ajouter</a>

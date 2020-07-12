@@ -8,39 +8,14 @@
     </title>
 
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amiri">
     <style>
-        {% if server == '/var/www/html' %}
-            @font-face
-            {
-                font-family: "majalla";
-                src: url("file:///var/www/html/markaz/web/polices/majalla.ttf");
-            }
-
-            @font-face
-            {
-                font-family: "Lato";
-                src: url("file:///var/www/html/markaz/web/polices/Lato-Regular.ttf");
-            }
-        {% else %}
-            @font-face
-            {
-                font-family: "majalla";
-                src: url("file:///C:/xampp/htdocs/markaz/web/polices/majalla.ttf");
-            }
-
-            @font-face
-            {
-                font-family: "Lato";
-                src: url("file:///C:/xampp/htdocs/markaz/web/polices/Lato-Regular.ttf");
-            }
-        {% endif %}
-
         * {
-            font-family: majalla, Lato;
+            font-family: Amiri;
         }
 
         body {
-            font-family: Lato;
+            font-family: Amiri;
 			direction: rtl
         }
 
@@ -69,12 +44,12 @@
             width: 100%;
             margin: auto;
             font-size: 1.5em;
-            font-family: "sakkal majalla", "majalla", "sakkal", "traditional arabic";
+            font-family: "Amiri";
             font-weight: bold;
         }
 
         span {
-            font-family: majalla, 'traditional arabic';
+            font-family: Amiri, 'traditional arabic';
         }
 
         .id-fiche {
@@ -83,18 +58,18 @@
         }
 
         .classe, .annee {
-            font-family: majalla, 'traditional arabic';
+            font-family: Amiri, 'traditional arabic';
             display: inline;
         }
 
         .matiere {
-            font-family: majalla, 'traditional arabic';
+            font-family: Amiri, 'traditional arabic';
             display: inline;
             margin-right: 700px;
         }
 
         .libelleClasse, .libelleMatiere {
-            font-family: majalla, 'traditional arabic';
+            font-family: Amiri, 'traditional arabic';
             font-weight: bold;
         }
 
@@ -115,8 +90,12 @@
         }
 
         .line-table {
-            font-size: 1.6em;
+            /* font-size: 1.6em; */
             line-height: 27px;
+        }
+
+        .line-table td{
+            border: solid 1px black;
         }
 
         .table-header {
@@ -147,25 +126,25 @@
         }
 
         .nomAr, .nomFr {
-            font-family: "sakkal majalla", "majalla", "sakkal", "traditional arabic";
+            font-family: "Amiri", serif";
             font-weight: bold;
         }
 
         .nomEleveAr {
-            font-family: "sakkal majalla", "majalla", "sakkal", "traditional arabic";
+            font-family: "Amiri", serif";
             font-weight: bold;
             font-size: 0.9em
         }
 
         .nomEleveFr {
-            font-family: "sakkal majalla", "majalla", "sakkal", "traditional arabic";
+            font-family: "Amiri", serif";
             white-space: nowrap;
             text-overflow: clip;
 			font-size: 0.85em
         }
 
         .nomDeHalaqa {
-            font-family: "sakkal majalla", "majalla", "sakkal", "traditional arabic";
+            font-family: "Amiri", serif";
             white-space: nowrap;
             text-overflow: clip;
 			font-size: 0.6em
@@ -173,7 +152,7 @@
 
         .effectif {
             font-size: 2.5em;
-            font-family: majalla;
+            font-family: Amiri;
         }
     </style>
 </head>
@@ -181,7 +160,8 @@
 <body style="font-family: Arial">
     <header>
         <center>
-            <img src="{{app.request.schemeAndHttpHost ~ asset('../web/images/en-tete.png')}}" alt="" width="75%">
+            <img src="{{ asset('images/en-tete.png') }}" alt="" width="75%">
+            {# <img src="{{app.request.schemeAndHttpHost ~ asset('../web/images/en-tete.png')}}" alt="" width="75%"> #}
         </center>
     </header>
     {% block body %}
@@ -200,16 +180,14 @@
                     <div class="classe">
                         <span>الفصل : <span class="libelleClasse">{{ classe.libelleAr }}</span></span>
                     </div>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {{ annexe.libelle }}
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <div class="annee">
                         <span>السنة الدراسية : <span class="libelleClasse">{{ annee.libelle }}</span></span>
                     </div>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    {{ informations.ville }}
                 </center> 
             </div>
             <br /> {# {{dump(eleves)}} #}

@@ -10,26 +10,6 @@
 {% endblock %}
 
 
-{% block notification %}
-  {% for message in app.session.flashbag.get('error') %}
-  <div class="ui red message">
-    <div class="header">{{ 'Attention'|trans }} !!! </div>
-    <ul class="list">
-      <li>{{ message|raw }}.</li>
-    </ul>
-  </div>
-  {% endfor %}
-  {% for message in app.session.flashbag.get('info') %}
-  <div class="ui green message">
-    <div class="header">{{ 'Notification'|trans }}: </div>
-    <ul class="list">
-      <li>{{ message|raw }}.</li>
-    </ul>
-  </div>
-  {% endfor %}
-{% endblock %}
-
-
 {% block section %}
   <i class="users icon"></i>{{ 'Convertis'|trans }}
 {% endblock %}
@@ -67,8 +47,8 @@
           <td>{{ converti.residence }}</td>
           <td>{{ converti.ancienneConfession }}</td>
           <td>
-            <a href="{{ path('converti.edit', {as: asec, id: converti.id}) }}" data-tooltip="Editer les informations du converti"><i class="edit icon"></i></a>
-            <a href="{{ path('converti.info', {as: asec, id: converti.id}) }}" data-tooltip="Voir les informations du converti"><i class="info icon"></i></a>
+            <a href="{{ path('converti.edit', {as: asec, 'annexeId': annexe.id, id: converti.id}) }}" data-tooltip="Editer les informations du converti"><i class="edit icon"></i></a>
+            <a href="{{ path('converti.info', {as: asec, 'annexeId': annexe.id, id: converti.id}) }}" data-tooltip="Voir les informations du converti"><i class="info icon"></i></a>
           </td>
         </tr>
       {% endfor %}

@@ -10,7 +10,7 @@ namespace ISI\ISIBundle\Repository;
  */
 class EnseignementRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function enseignementDuNiveau($as, $niveauId, $enfant = false)
+    public function enseignementDuNiveau($anneeId, $niveauId, $enfant = false)
   {
     $qb = $this->createQueryBuilder('e');
     $qb->join('e.niveau', 'n')
@@ -20,12 +20,12 @@ class EnseignementRepository extends \Doctrine\ORM\EntityRepository
        ->join('e.annee', 'an')
        ->addSelect('an')
        ->orderBy('m.id', 'ASC');
-    if($enfant = false)
-        $qb->where('an.id = :annee AND n.id = :niveau AND m.matiere_mere IS NULL');
-    if($enfant = true)
-        $qb->where('an.id = :annee AND n.id = :niveau AND m.matiere_mere IS NOT NULL');
+    if($enfant == false)
+        $qb->where('an.id = :anneeId AND n.id = :niveauId AND m.matiere_mere IS NULL');
+    if($enfant == true)
+        $qb->where('an.id = :anneeId AND n.id = :niveauId AND m.matiere_mere IS NOT NULL');
 
-    $qb->setParameters(['annee' => $as, 'niveau' => $niveauId]);
+    $qb->setParameters(['anneeId' => $anneeId, 'niveauId' => $niveauId]);
     return $qb
       ->getQuery()
       ->getResult()

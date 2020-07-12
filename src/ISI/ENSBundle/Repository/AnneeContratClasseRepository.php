@@ -25,4 +25,23 @@ class AnneeContratClasseRepository extends \Doctrine\ORM\EntityRepository
         return $qb->getQuery()
                 ->getResult();
     }
+    
+    public function tousLesCoursDeLAnnee(int $anneeId, int $annexeId, string $regime)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb ->join('c.anneeContrat', 'ac')
+            ->join('ac.contrat', 'cont')
+            ->join('cont.enseignant', 'e')
+            ->join('ac.annee', 'an')
+            ->join('c.classe', 'cl')
+            ->join('cl.niveau', 'n')
+            ->join('n.groupeFormation', 'grpF')
+            ->where('an.id = :anneeId AND e.annexe = :annexeId AND e.enseignant = true AND grpF.reference = :regime')
+            ->setParameter('annexeId', $annexeId)
+            ->setParameter('anneeId', $anneeId)
+            ->setParameter('regime', $regime);
+
+        return $qb->getQuery()
+                ->getResult();
+    }
 }
