@@ -12,6 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -44,7 +45,7 @@ class EnseignantType extends AbstractType
                 ->add('nationalite',    TextType::class,     ['required' => true])
                 ->add('niveauEtude',    TextType::class,     ['required' => true])
                 ->add('diplomeObtenu',  TextType::class,     ['required' => true])
-                ->add('autresCompetences',      TextareaType::class,     ['required' => true])
+                ->add('autresCompetences',      TextareaType::class,     ['required' => false])
                 ->add('situationMatrimoniale',  ChoiceType::class,   [
                     'choices' => array(
                         'Faites un choix' => '',
@@ -54,14 +55,24 @@ class EnseignantType extends AbstractType
                       )
                     ], ['required' => true])
                 ->add('residence',              TextType::class,     ['required' => true])
-                ->add('expProfessionnelle',     IntegerType::class,  ['required'    => true])
-                ->add('languesParlees',         TextType::class,     ['required' => true])
-                ->add('anneeObtention',         TextType::class,     ['required' => true])
+                ->add('expProfessionnelle',     IntegerType::class,  ['required' => false])
+                ->add('languesParlees',         TextType::class,     ['required' => false])
+                ->add('anneeObtention',         TextType::class,     ['required' => false])
                 ->add('enseignant',             CheckboxType::class, ['required' => false])
                 ->add('arabe',                  CheckboxType::class, ['required' => false])
                 ->add('francais',               CheckboxType::class, ['required' => false])
                 ->add('administrateur',         CheckboxType::class, ['required' => false])
                 ->add('autre',                  CheckboxType::class, ['required' => false])
+                ->add('photo', FileType::class, [
+                    'label' => 'Sélectionner une image',
+
+                    // unmapped means that this field is not associated to any entity property
+                    'mapped' => true,
+
+                    // make it optional so you don't have to re-upload the PDF file
+                    // everytime you edit the Product details
+                    'required' => false,
+                ])
         ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event)

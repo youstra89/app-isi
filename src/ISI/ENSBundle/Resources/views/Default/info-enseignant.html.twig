@@ -13,6 +13,7 @@
     {{ 'Identification personnelle'|trans }}
   </h2>
   <center><h2><font  class="ui massive red tag label">{{ enseignant.getMatricule }}</font></h2></center><br>
+  <img src="{{ asset('photos/enseignants/' ~ enseignant.photo) }}">
   <div class="ui two column doubling stackable grid container">
     <div class="column">
       <table>

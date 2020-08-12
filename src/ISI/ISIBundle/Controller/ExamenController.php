@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\Request;
 use ISI\ISIBundle\Entity\Note;
 use ISI\ISIBundle\Entity\Moyenne;
 use ISI\ISIBundle\Entity\Moyenneclasse;
-use ISI\ISIBundle\Entity\FrequenterMatiere;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -1111,7 +1110,8 @@ class ExamenController extends Controller
 
       return $this->redirect($this->generateUrl('isi_resultats_annuels', [
         'as'       => $as,
-        'regime'   => $regime, 'annexeId' => $annexeId,
+        'regime'   => $regime, 
+        'annexeId' => $annexeId,
       ]));
     }
 
@@ -1149,7 +1149,7 @@ class ExamenController extends Controller
     $repoExamen  = $em->getRepository('ISIBundle:Examen');
     $repoMoyenne = $em->getRepository('ISIBundle:Moyenne');
     $repoEleve   = $em->getRepository('ISIBundle:Eleve');
-    $repoFM      = $em->getRepository('ISIBundle:FrequenterMatiere');
+    $repoNote    = $em->getRepository('ISIBundle:Note');
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
     $annexeId = $request->get('annexeId');
@@ -1186,8 +1186,12 @@ class ExamenController extends Controller
         $moyenne = $repoMoyenne->findOneBy(['examen' => $examenId, 'eleve' => $eleveId]);
         // On va calculer les moyennes annuelles ici
         $frequenter = $repoFrequenter->findOneBy(['annee' => $as, 'eleve' => $eleveId]);
-        $fms = $repoFM->findBy(['frequenter' => $frequenter->getId()]);
-        foreach ($fms as $fq) {
+        // $fms = $repoFM->findBy(['frequenter' => $frequenter->getId()]);
+        // $notesDUnEleve = $repoNote->notesDUnEleveLorsDesDeuxExamens($eleveId, $as);
+        $notesDUnEleve = $repoNote->test($eleveId, $as);
+        dump($notesDUnEleve);
+        die();
+        foreach ($notesDUnEleve as $fq) {
           $totalMoyennesDesDifferentesMatieres = $totalMoyennesDesDifferentesMatieres + $fq->getMoyenne();
         }
         $moyenneAnnuelle = $totalMoyennesDesDifferentesMatieres / count($fms);
@@ -1486,7 +1490,8 @@ class ExamenController extends Controller
     if (empty($notes1[0]) || empty($notes2[0])) {
       $request->getSession()->getFlashBag()->add('error', 'Il n\'est pas possible de calculer les moyennes annuelles pour l\'heure.');
       return $this->redirect($this->generateUrl('isi_resultats_annuels', [
-        'as'     => $as, 'annexeId' => $annexeId,
+        'as'     => $as, 
+        'annexeId' => $annexeId,
         'regime' => $regime,
       ]));
     }
@@ -1657,7 +1662,8 @@ class ExamenController extends Controller
     if (empty($notes1[0]) || empty($notes2[0])) {
       $request->getSession()->getFlashBag()->add('error', 'Il n\'est pas possible de calculer les moyennes annuelles pour l\'heure.');
       return $this->redirect($this->generateUrl('isi_resultats_annuels', [
-        'as'     => $as, 'annexeId' => $annexeId,
+        'as'     => $as, 
+        'annexeId' => $annexeId,
         'regime' => $regime,
       ]));
     }
@@ -1887,7 +1893,7 @@ class ExamenController extends Controller
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
-      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as, 'annexeId' => $annexeId]));
     }
 
     // Sélection de l'année scolaire
@@ -1899,7 +1905,7 @@ class ExamenController extends Controller
     if(empty($eleves))
     {
       $request->getSession()->getFlashBag()->add('error', 'Aucun élèle inscrit dans cette classe');
-      return $this->redirect($this->generateUrl('isi_saisie_de_notes', ['as' => $as, 'regime' => $regime]));
+      return $this->redirect($this->generateUrl('isi_saisie_de_notes', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
     }
 
     // On sélectionne l'id du niveau en fonction de l'id de la classe pour la transmettre en paramètre
@@ -1926,7 +1932,7 @@ class ExamenController extends Controller
     {
       // return new Response("Retour 2");
       $request->getSession()->getFlashBag()->add('error', 'Vous devez calculer les résultats dans la "Résultats annuels".');
-      return $this->redirect($this->generateUrl('isi_resultats_annuels', ['as' => $as, 'regime' => $regime]));
+      return $this->redirect($this->generateUrl('isi_resultats_annuels', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
     }
 
     $elevesIds = $this->recupererLesIdsDesEleves($eleves);
@@ -2022,12 +2028,12 @@ class ExamenController extends Controller
     $filename = "bulletin-des-eleves-".$classe->getNiveau()->getLibelleFr()."-".$classe->getLibelleFr();
 
     return new Response(
-        $snappy->getOutputFromHtml($html),
-        200,
-        [
-            'Content-Type'        => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="'.$filename.'.pdf"'
-        ]
+      $snappy->getOutputFromHtml($html),
+      200,
+      [
+          'Content-Type'        => 'application/pdf',
+          'Content-Disposition' => 'inline; filename="'.$filename.'.pdf"'
+      ]
     );
   }
 

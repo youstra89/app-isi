@@ -71,7 +71,8 @@ class AdminController extends Controller
         // $request->query->get('as')
         return $this->render('ISIBundle:Admin:index-user.html.twig', array(
         'asec'  => $as,
-        'annee' => $annee, 'annexe'   => $annexe,
+        'annee' => $annee, 
+        'annexe' => $annexe,
         'users' => $users
         ));
     }
@@ -88,20 +89,38 @@ class AdminController extends Controller
         $annee      = $repoAnnee->find($as);
         $annexes    = $repoAnnexe->findAll();
         $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+        $repoUserAnnexe = $em->getRepository('ISIBundle:UserAnnexe');
         $annexeId = $request->get('annexeId');
         $annexe = $repoAnnexe->find($annexeId);
 
-        $roles = ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN_SCOLARITE', 'ROLE_SCOLARITE', 'ROLE_PREINSCRIPTION', 'ROLE_INTERNAT', 'ROLE_DIRECTION_ENSEIGNANT', 'ROLE_ORGANISATION', 'ROLE_ENSEIGNANT', 'ROLE_ADMIN_ANNEXE', 'ROLE_ETUDE', 'ROLE_DIRECTION_ETUDE', 'ROLE_NOTE'];
+        $roles = [
+            'ROLE_SUPER_ADMIN', 
+            'ROLE_ADMIN_SCOLARITE', 
+            'ROLE_SCOLARITE', 
+            'ROLE_PREINSCRIPTION', 
+            'ROLE_INTERNAT', 
+            'ROLE_DIRECTION_ENSEIGNANT', 
+            'ROLE_ORGANISATION', 
+            'ROLE_ENSEIGNANT', 
+            'ROLE_ADMIN_ANNEXE', 
+            'ROLE_ETUDE', 
+            'ROLE_DIRECTION_ETUDE', 
+            'ROLE_NOTE', 
+            'ROLE_AGENT_DIRECTION_ENSEIGNANT', 
+            'ROLE_CONTROLE_ENSEIGNANT', 
+            'ROLE_DISCIPLINE_ENSEIGNANT', 
+            'ROLE_ADJOINT_DIRECTION_ENSEIGNANT'
+        ];
 
         $userManager = $this->get('fos_user.user_manager');
 
         $user = $userManager->findUserBy(['id' => $userId]);
 
         if($request->isMethod('post')){
-            $em = $this->getDoctrine()->getManager();
-            $data = $request->request->all();
+            $em       = $this->getDoctrine()->getManager();
+            $data     = $request->request->all();
             $annexeId = $data['annexeId'];
-            $roles = isset($data['roles']) ? $data['roles'] : [];
+            $roles    = isset($data['roles']) ? $data['roles'] : [];
             // return new Response(var_dump($data));
             if(!empty($roles)){
                 $user->setRoles($roles);
@@ -124,6 +143,8 @@ class AdminController extends Controller
                         $userAnnexe->setCreatedAt(new \DateTime());
                         $userAnnexe->setCreatedBy($this->getUser());
                         $em->persist($userAnnexe);
+                        // dump(0);
+                        // die();
                         $tab[] = $userAnnexe;
                     }
                     if(!isset($data['annexes'][$annexeId]) and in_array($annexeId, $user->idsAnnexes())){
@@ -131,6 +152,8 @@ class AdminController extends Controller
                         $userAnnexe->setDisabled(true);
                         $userAnnexe->setUpdatedAt(new \DateTime());
                         $userAnnexe->setUpdatedBy($this->getUser());
+                        // dump(1);
+                        // die();
                         $tab[] = $userAnnexe;
                     }
                     if(isset($data['annexes'][$annexeId]) and in_array($annexeId, $user->idsAnnexes())){
@@ -138,9 +161,25 @@ class AdminController extends Controller
                         $userAnnexe->setDisabled(false);
                         $userAnnexe->setUpdatedAt(new \DateTime());
                         $userAnnexe->setUpdatedBy($this->getUser());
+                        // dump(2);
+                        // die();
                         $tab[] = $userAnnexe;
                     }
+                    // dump(3);
+                    // die();
                 }
+            }
+            else{
+                $userAnnexes = $repoUserAnnexe->findByUser($user->getId());
+                if(count($userAnnexes) != 0){
+                    foreach ($userAnnexes as $value) {
+                        $value->setDisabled(true);
+                        $value->setUpdatedAt(new \DateTime());
+                        $value->setUpdatedBy($this->getUser());
+                    }
+                }
+                // dump(4);
+                // die();
             }
             // dump($data['annexes'], $tab);
             // die();

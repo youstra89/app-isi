@@ -21,8 +21,9 @@
       <table class="ui selectable very basic table" id="halaqas">
         <thead>
           <tr>
-            <th width="10%">N°</th>
+            <th style="text-align: center" width="10%">N°</th>
             <th>Halaqa</th>
+            <th>Enseignant</th>
             <th>Genre</th>
             <th class="two wide">{{ 'Actions'|trans }}</th>
           </tr>
@@ -32,12 +33,19 @@
           {% for halaqa in halaqas %}
             {% set i = i + 1 %}
             <tr>
-              <td>
+              <td style="text-align: center">
                 <h4 class="ui image header">{{ i }}</h4>
               </td>
               <td>
                 <h4 class="ui image header">{{ halaqa.getLibelle }}</h4>
               </td>
+              <td>
+                {% if halaqa.anneeContratClasse[0] %}
+                  {{ halaqa.anneeContratClasse[0].anneeContrat.contrat.enseignant.nom }}
+                {% endif %}
+              </td>
+              {# <td>{{ dump(halaqa.cours) }}</td> #}
+              {# <td></td> #}
               <td>
                 {% set genre = '' %}
                 {% if halaqa.getGenre == 'H' %}
@@ -70,8 +78,8 @@
     var filtersConfig = {
       base_path: 'TableFilter/dist/tablefilter/',
       col_0: "none",
-      col_2: 'select',
       col_3: 'select',
+      col_4: 'none',
       alternate_rows: true,
       rows_counter: true,
       btn_reset: true,

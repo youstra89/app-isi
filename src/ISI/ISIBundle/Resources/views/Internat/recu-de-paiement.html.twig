@@ -7,30 +7,26 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     <style>
       {% if server == '/var/www/html' %}
-            @font-face
-            {
-                font-family: "majalla";
-                src: url("file:///var/www/html/polices/majalla.ttf");
-            }
+          @font-face{
+              font-family: "majalla";
+              src: url("file:///var/www/html/markaz/web/polices/majalla.ttf");
+          }
 
-            @font-face
-            {
-                font-family: "Lato";
-                src: url("file:///var/www/html/polices/Lato-Regular.ttf");
-            }
-        {% else %}
-            @font-face
-            {
-                font-family: "majalla";
-                src: url("file:///C:/xampp/htdocs/polices/majalla.ttf");
-            }
+          @font-face{
+              font-family: "Lato";
+              src: url("file:///var/www/html/markaz/web/polices/Lato-Regular.ttf");
+          }
+      {% else %}
+          @font-face{
+              font-family: "majalla";
+              src: url("file:///home/youstra/www/markaz/web/polices/majalla.ttf");
+          }
 
-            @font-face
-            {
-                font-family: "Lato";
-                src: url("file:///C:/xampp/htdocs/polices/Lato-Regular.ttf");
-            }
-        {% endif %}
+          @font-face{
+              font-family: "Lato";
+              src: url("file:///home/youstra/www/markaz/web/polices/Lato-Regular.ttf");
+          }
+      {% endif %}
 
         * {
             font-family: majalla, Lato;

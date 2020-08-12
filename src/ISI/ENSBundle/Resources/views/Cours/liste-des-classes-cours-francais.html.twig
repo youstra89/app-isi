@@ -84,10 +84,12 @@
                   <a href="{{path('ens_cours_francais_de_la_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}"  data-tooltip="Voir les cours de français de la classe">
                     <i class="list icon"></i>
                   </a>
-                  &nbsp;&nbsp;&nbsp;&nbsp;
-                  <a href="{{path('ens_enregistrer_cours_francais_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}"  data-tooltip="Editer les cours de français de la classe">
-                    <i class="edit icon"></i>
-                  </a>
+                  {% if is_granted('ROLE_DIRECTION_ENSEIGNANT') %}
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="{{path('ens_enregistrer_cours_francais_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}"  data-tooltip="Editer les cours de français de la classe">
+                      <i class="edit icon"></i>
+                    </a>
+                  {% endif %}
                 </td>
               </tr>
             {% endif %} 

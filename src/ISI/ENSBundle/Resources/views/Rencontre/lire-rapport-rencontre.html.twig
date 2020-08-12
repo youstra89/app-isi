@@ -1,0 +1,59 @@
+{% extends "ENSBundle:Rencontre:index.html.twig" %}
+
+{% block title %}
+  Rapport de la rencontre
+{% endblock %}
+
+{% block contextual_menu %}
+  {{ include("ENSBundle:Rencontre:contextual-menu-rencontre.html.twig") }}
+{% endblock %}
+
+{% block section %}
+  <i class="handshake icon"></i>{{ 'Rencontres'|trans }}
+{% endblock %}
+
+{% block body %}
+  <h2>{{ 'Rapport de la rencontre'|trans }}</h2>
+  <div class="form-group">
+    <form class="ui form">
+      <div class="four fields">
+        <div class="field">
+          <strong>Date de la rencontre</strong><br>
+          {{ rencontre.date|date('d-m-Y') }}
+        </div>
+        <div class="field">
+          <strong>Type</strong><br>
+          {{ rencontre.type }}
+        </div>
+        <div class="field">
+          <strong>Lieu</strong><br>
+          {{ rencontre.lieu }}
+        </div>
+        <div class="field">
+          <strong>Durée</strong><br>
+          {{ rencontre.duree }}
+        </div>
+      </div>
+      <div class="field"> 
+        <strong>Thème</strong><br>
+        {{ rencontre.theme }}
+      </div>
+    </form>
+    <br><br>
+    <div class="field">
+      <h3>Rapport de la rencontre</h3><br>
+      {{ rencontre.rapport|raw }}
+    </div>
+  </div>
+{% endblock %}
+
+
+{% block javascripts %}
+  <script src="https://cdn.ckeditor.com/4.11.1/standard/ckeditor.js"></script>
+  <script>
+    CKEDITOR.replace( 'rapport', {
+      language: 'fr',
+      uiColor: '#9AB8F3',
+    });
+  </script>
+{% endblock %}

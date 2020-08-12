@@ -1,0 +1,56 @@
+{% extends "ISIBundle::index.html.twig" %}
+  {% block title %}
+    Données statistiques sur les annexes
+  {% endblock %}
+
+
+  {% block section %}
+    <i class="tasks icon"></i>Données statistiques sur les annexes
+  {% endblock %}
+
+
+  {% block menu %}
+    {% if is_granted('ROLE_SUPER_ADMIN') or is_granted('ROLE_ADMIN_ANNEXE') %}
+      <a class="item" href="{{ path('annexes_homepage', {'as': asec}) }}"><h4 class="ui header"><i class="home icon"></i>{{ 'Choix d\'annexe'|trans }}</h4></a>
+    {% endif %}
+  {% endblock %}
+
+
+  {% block mobile_menu %}
+    {% if is_granted('ROLE_SUPER_ADMIN') or is_granted('ROLE_ADMIN_ANNEXE') %}
+      <a class="item" href="{{ path('annexes_homepage', {'as': asec}) }}"><h4 class="ui header">{{ 'Statistiques'|trans }}</h4></a>
+    {% endif %}
+  {% endblock %}
+
+
+  {% block contextual_menu %}
+  {% endblock %}
+
+
+  {% block body %}
+    <!-- Fin d'affichage des notifications et des message d'erreur  -->
+    <div class="ui six column stackable grid">
+      {% for item in app.user.annexes if item.disabled == 0 %}  
+        <div class="wide column">
+          <a class="item" href="{{ path('isi_homepage', {'as': asec, 'annexeId': item.annexe.id}) }}">
+            <div class="card ui segment">
+              <div class="image" bgcolor="white">
+                <img src="{{ asset('images/logoISI.png') }}" style="width: 50%; height: auto">
+              </div>
+              <div class="content">
+                <div class="header">{{ item.annexe.libelle }}</div>
+                <div class="meta">
+                  Annexe
+                </div>
+              </div>
+              <div class="extra content">
+                <span class="right floated">{{ 'Annexe'|trans }} </span>
+                <span>
+                  <i class="user icon"></i></span>
+              </div>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  {% endblock %}

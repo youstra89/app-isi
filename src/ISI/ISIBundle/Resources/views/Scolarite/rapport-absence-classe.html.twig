@@ -1,0 +1,88 @@
+{# Page d'ajout d'un nouvel examen #}
+
+{% extends "ISIBundle:Scolarite:index.html.twig" %}
+
+{% block title %}
+	Rapport des absences des élèves de {{ classe.getLibelleFr }}
+{% endblock %}
+
+{% block body %}
+	<h3>{{ 'Rapport des absences enregistrées pour la classe'|trans }} {{ classe.getLibelleFr }} </h3>
+	<div>
+		<form action="" method="post" class="ui form">
+			<div class="form-group">
+				<div class="four fields">
+					<div class="field">
+						<label for="debut">Du</label>
+						<input type="date" name="debut" id="debut" value="">
+					</div>
+					<div class="field">
+						<label for="fin">Au</label>
+						<input type="date" name="fin" id="fin" value="">
+					</div>
+					<div class="field">
+						<br>
+						<button class="ui positive button">Rechercher</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<table class="">
+		<thead>
+			<tr style="background-color: #efefef">
+				<th width="25px" align="center" class="table-header">N°</th>
+				<th width="110px" align="center" class="matricule-ar">الرقم التسلسلي</th>
+				<th width="180px" class="">الاسم و اللقب</th>
+				<th width="180px" align="right" class="">{{ 'Nom & Prénom'|trans }}</th>
+				<th width="30px" align="center" class=""><span class="sexe-ar">الجنس</span></th>
+				<th>Cours</th>
+				<th>Coran</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% set numero = 0 %}
+			{% set color = '' %}
+			{% for eleve in eleves %}
+				{# Ce code me permet d'alterner la couleur des lignes du tableau #}
+				{% if (numero % 2) == 0 %}
+					{% set color = 'white' %}
+				{% else %}
+					{% set color = '#efefef' %}
+				{% endif %}
+				{# Pour le sexe #}
+				{% if eleve.sexe == 1 %}
+					{% set sexe = 'ذكر' %}
+				{% else %}
+					{% set sexe = 'أنثى' %}
+				{% endif %}
+				{% set numero = numero + 1 %}
+				<tr class="line-table" bgcolor={{ color }}>
+					<td align="center">{{ numero }}</td>
+					<td align="right" class="matricule">{{ eleve.matricule }}</td>
+					<td align="right" class="nomEleveAr">{{ eleve.pnomAr }} {{ eleve.nomAr  }}</td>
+					<td align="right" class="nomEleveFr">{{ eleve.nomFr  }} {{ eleve.pnomFr }}</td>
+					<td align="center">{{ sexe }}</td>
+					{% set absenceCours = 0 %}
+					{% set absenceCoran = 0 %}
+					{% for appel in appels if appel.eleve.id == eleve.id %}
+						{% if appel.heure1 == true  %}{% set absenceCours = absenceCours + 1 %}{% endif %}
+						{% if appel.heure2 == true  %}{% set absenceCours = absenceCours + 1 %}{% endif %}
+						{% if appel.heure3 == true  %}{% set absenceCours = absenceCours + 1 %}{% endif %}
+						{% if appel.heure4 == true  %}{% set absenceCours = absenceCours + 1 %}{% endif %}
+						{% if appel.heure5 == true  %}{% set absenceCours = absenceCours + 1 %}{% endif %}
+						{% if appel.heure6 == true  %}{% set absenceCoran = absenceCoran + 1 %}{% endif %}
+						{% if appel.heure7 == true  %}{% set absenceCoran = absenceCoran + 1 %}{% endif %}
+						{% if appel.heure8 == true  %}{% set absenceCoran = absenceCoran + 1 %}{% endif %}
+					{% endfor %}
+					<td>
+						{{ absenceCours }}
+					</td>
+					<td>
+						{{ absenceCoran }}
+					</td>
+                </tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}

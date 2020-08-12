@@ -61,9 +61,11 @@
                     {% endif %}
                   </td>
                   <td>
-                    <a href="{{path('ens_editer_un_cours', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'coursId': item.id})}}"  data-tooltip="Mettre à jour ce cours">
-                      <i class="edit icon"></i>
-                    </a>
+                    {% if is_granted('ROLE_DIRECTION_ENSEIGNANT') %}
+                      <a href="{{path('ens_editer_un_cours', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'coursId': item.id})}}"  data-tooltip="Mettre à jour ce cours">
+                        <i class="edit icon"></i>
+                      </a>
+                    {% endif %}
                   </td>
                 </tr>
               {% endfor %}

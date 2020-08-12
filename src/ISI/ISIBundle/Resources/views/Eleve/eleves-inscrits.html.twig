@@ -21,13 +21,18 @@
   <table id="table2" cellspacing="0" class="mytable filterable ui very basic table">
     <thead>
       <tr>
-        <th align="center">{{ 'N°'|trans }}</th>
+        <th style="text-align: center">{{ 'N°'|trans }}</th>
         <th>{{ 'Matricule'|trans }}</th>
         <th>{{ 'Nom & Prénom'|trans }}</th>
         <th>الإسم و اللقب</th>
         <th>{{ 'Sexe'|trans }}</th>
+        <th>{{ 'Sexe Ar'|trans }}</th>
         <th>{{ 'Date de naissance'|trans }}</th>
+        <th>{{ 'Lieu de naissance'|trans }}</th>
+        <th>{{ 'Lieu de naissance Ar'|trans }}</th>
         <th>{{ 'Classe'|trans }}</th>
+        <th>{{ 'Classe Ar'|trans }}</th>
+        <th>{{ 'Contact Tuteur'|trans }}</th>
         <th>{{ 'Actions'|trans }}</th>
       </tr>
     </thead>
@@ -36,10 +41,19 @@
       {% for eleve in eleves %}
       {% set numero = numero + 1 %}
       <tr>
-        <td align="center">{{ numero }}</td>
+        <td style="text-align: center">{{ numero }}</td>
         <td>{{eleve.getEleve.getMatricule}}</td>
         <td>{{eleve.getEleve.getNomFr}} {{eleve.getEleve.getPnomFr}}</td>
         <td><span>{{eleve.getEleve.pnomAr}} {{eleve.getEleve.nomAr}}</span></td>
+        <td>
+          <div data-tooltip="{{eleve.getEleve.getNomFr}} {{eleve.getEleve.getPnomFr}} est de sexe ">
+            {% if eleve.getEleve.getSexe == 1 %} 
+              {{ 'M' }}
+            {% else %}
+              {{ 'F' }} 
+            {% endif %}
+          </div>
+        </td>
         <td>
           <div data-tooltip="{{eleve.getEleve.getNomFr}} {{eleve.getEleve.getPnomFr}} est de sexe ">
             {% if eleve.getEleve.getSexe == 1 %} 
@@ -50,7 +64,11 @@
           </div>
         </td>
         <td>{{ eleve.getEleve.getDateNaissance|date("d-m-Y") }}</td>
+        <td>{{ eleve.getEleve.getLieuNaissance }}</td>
+        <td>{{ eleve.getEleve.getLieuNaissanceAr }}</td>
         <td>{{ eleve.getClasse.getLibelleAr }}</td>
+        <td>{{ eleve.getClasse.getLibelleFr }}</td>
+        <td>{{ eleve.eleve.getContactTuteur }}</td>
         <td>
           <div class="ui grid">
             <div class="wide column" data-tooltip="Modifier les information de l'élève">
@@ -82,8 +100,12 @@
       base_path: 'TableFilter/dist/tablefilter/',
       col_0: 'none',
       col_4: 'select',
-      col_6: 'select',
-      col_7: 'none',
+      col_5: 'select',
+      col_7: 'select',
+      col_8: 'select',
+      col_9: 'select',
+      col_10: 'select',
+      col_12: 'none',
       alternate_rows: true,
       rows_counter: true,
       btn_reset: true,
@@ -98,7 +120,7 @@
         'string'
       ],
       col_widths: [
-        '5px', '130px', '300px', , , '120px', ,
+        // '5px', '130px', '300px', , , '120px', ,
       ],
       extensions: [{ name: 'sort' }]
     };

@@ -1,0 +1,299 @@
+{# ISIBundle/Ressources/views/Scolarite #}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Fiches d'identification | {{classe.libelleFr}} </title>
+        {% block stylesheets %}{% endblock %}
+        {# <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"> #}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <style>
+            {% if server == '/var/www/html' %}
+                @font-face{
+                    font-family: "majalla";
+                    src: url("file:///var/www/html/markaz/web/polices/majalla.ttf");
+                }
+
+                @font-face{
+                    font-family: "Lato";
+                    src: url("file:///var/www/html/markaz/web/polices/Lato-Regular.ttf");
+                }
+            {% else %}
+                @font-face{
+                    font-family: "majalla";
+                    src: url("file:///home/youstra/www/markaz/web/polices/majalla.ttf");
+                }
+
+                @font-face{
+                    font-family: "Lato";
+                    src: url("file:///home/youstra/www/markaz/web/polices/Lato-Regular.ttf");
+                }
+            {% endif %}
+
+            * {
+                font-family: majalla, Lato;
+            }
+
+            h2{
+                background-color: #C0C0C0;
+                font-size: 3em;
+                box-shadow: 5px;
+                font-family: "traditional arabic";
+                line-height: 80px;
+                width: 90%;
+                margin: auto;
+                border: 1px solid black;
+                border-radius: 5px;
+            }
+
+            h3{
+                font-weight: bold;
+            }
+
+            .contenu {
+                font-size: 2em;
+            }
+
+            .en-tete-fr, .en-tete-ar{
+                line-height: 5px;
+                font-weight: bold;
+                font-size: 1.7em;
+            }
+
+            .bulletin{
+                /* border: 1px solid black; */
+                width: 1350px;
+                height: 1939px;
+            }
+
+            table{
+                width: 90%;
+                align: center;
+            }
+
+            .matricule-eleve{
+                border: 1px solid black;
+                line-height: 60px;
+                font-size: 3em;
+                background-color: rgb(DC, DC, DC);
+                box-shadow: 5px;
+            }
+
+            .matricule{
+                color: red;
+                font-weight: bold;
+            }
+
+            .identification-eleve{
+                width: 75%;
+            }
+            .infos-identification-eleve{
+                line-height: 45px;
+                font-size: 2em;
+            }
+
+            .titre-info-eleve, .info-eleve-db{
+                width: 50%;
+            }
+
+
+            .titre-bloc{
+                text-align: center;
+                vertical-align: middle;
+                font-family: katibeth;
+                font-size: 1.7em;
+            }
+            
+            th{
+                text-align: left;
+                font-weight: 1000;
+            }
+        </style>
+    </head>
+    <body>
+        {% for item in frequenter %}
+            {% set eleve = item.eleve %}
+            <div class="bulletin">
+                <table width="100%" align="center">
+                    <tr>
+                        <td align="" width="" class="en-tete-ar">
+                            <center>
+                                <p>جمهورية ساحل العاج</p>
+                                <p>مركز العلوم الإسلامية</p>
+                                <p>أبدجان - حي أنياما</p>
+                                <p>هاتف : 21373048 - 20248312</p>
+                            </center>
+                        </td>
+                        <td align="" width="" class="">
+                            <center>
+                            <img src="{{app.request.schemeAndHttpHost ~ asset('images/logoISI.png')}}" alt="" width="30%" height="auto">
+                            </center>
+                        </td>
+                        <td align="" width="" class="en-tete-fr">
+                            <center>
+                                <p>REPUBLIQUE DE COTE D'IVOIRE</p>
+                                <p>INSTITUT DES SCIENCES ISLAMIQUES</p>
+                                <p>ABIDJAN - ANYAMA</p>
+                                <p>Tél: 21373048 - 20248312</p>
+                            </center>
+                        </td>
+                    </tr>
+                </table>
+                <p style="text-align: center; line-height: 1px; margin: 5px;">----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</p>
+                <p style="text-align: center; line-height: 1px; margin: 5px;">---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</p>
+                <table style="font-size: 3em; text-align: center; font-weight: bold;" border="0px" align="center">
+                    <tr>
+                        <td>FICHE D'INSCRIPTION</td>
+                    </tr>
+                </table>
+                <table class="matricule-eleve" align="center">
+                    <tr>
+                        <td>رقم الطالب</td>
+                        <td><span class="matricule">{{ eleve.matricule }}</span></td>
+                        <td>العام الدراسي</td>
+                        <td>{{ annee.libelle }}</td>
+                        <td style="font-size: 1em">{{ eleve.annexe.libelle }}</td>
+                    </tr>
+                </table>
+                <div style="text-align: center">
+                    <h3 style="font-weight: bold; font-size: 3em">{{ 'Classe'|trans }} <br><strong>{{ item.classe.libelleFr }}</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>{{ item.classe.libelleAr }}</strong></h3>
+                </div>
+                <div class="ui form contenu">
+                    <strong style="font-weight: bold; font-size: 2em">{{ 'Identification de l\'élève'|trans }}</strong>
+                    <table width="100%">
+                        <tbody>
+                            <tr>
+                                <th width="20%" style="align: left">Nom</th>
+                                <td width="20%" style="align: left">{{ eleve.nomFr }}</td>
+                                <th width="20%"><strong>Prénom</strong></th>
+                                <td width="20%">{{ eleve.pnomFr }}</td>
+                                <td rowspan="5" colspan="2">
+                                    {% set image = "" %}
+                                    {% if eleve.sexe == 1 %}
+                                        {% set image = "images/mark.png" %}
+                                    {% else %}
+                                        {% set image = "images/molly.png" %}
+                                    {% endif %}
+                                    {% if eleve.photo is not empty %}
+                                        <img src="{{ app.request.schemeAndHttpHost ~ asset('photos/eleves/' ~ eleve.photo) }}" width="50%" height="auto" alt="Image" />
+                                    {% else %}
+                                        <img src="{{ app.request.schemeAndHttpHost ~ asset('images/eleve.jpeg') }}" width="50%" height="auto" alt="Image" />
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Nom</th>
+                                <td>{{ eleve.nomAr }}</td>
+                                <th>Prénom</th>
+                                <td>{{ eleve.pnomAr }}</td>
+                            </tr>
+                            <tr>
+                                <th>Sexe</th>
+                                <td>
+                                    {% set sexe = "" %}
+                                    {% if eleve.sexe == 1 %}
+                                        {% set sexe = 'ذكر' %}
+                                    {% else %}
+                                        {% set sexe = 'أنثى' %}
+                                    {% endif %}
+                                    {{ sexe }}
+                                </td>
+                                <th>Référence Extrait</th>
+                                <td>{{ eleve.refExtrait }}</td>
+                            </tr>
+                            <tr>
+                                <th>Date de naissance</th>
+                                <td>{{ eleve.getDateNaissance|date('Y-m-d') }}</td>
+                                <th>Lieu de naissance</th>
+                                <td>{{ eleve.lieuNaissance }}</td>
+                            </tr>
+                            <tr>
+                                <th>Groupe sanguin</th>
+                                <td>{{ eleve.grpSanguin }}</td>
+                                <th>Nationalité</th>
+                                <td>{{ eleve.nationalite }}</td>
+                            </tr>
+                            <tr>
+                                <th>Commune</th>
+                                <td>{{ eleve.commune }}</td>
+                                <th>Résidence</th>
+                                <td>{{ eleve.residence }}</td>
+                                <th width="10%">Contact</th>
+                                <td>{{ eleve.contact }}</td>
+                            </tr>
+                            {# <tr>
+                                <th>Profession</th>
+                                <td>{{ eleve.profession }}</td>
+                                <th>Etablissement d'Origine</th>
+                                <td>{{ eleve.etsOrigine }}</td>
+                                <th>Etat de santé</th>
+                                <td>{{ eleve.etatSante }}</td>
+                            </tr> #}
+                        </tbody>
+                    </table>
+                    <br />
+                    <strong style="font-weight: bold; font-size: 2em">{{ 'Identification des parents de l\'élève'|trans }}</strong>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th colspan="2">Père</th>
+                                <th colspan="2">Mère</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th width="15%">Nom</th>
+                                <td>{{ eleve.nomPere }}</td>
+                                <th width="15%">Nom</th>
+                                <td>{{ eleve.nomMere }}</td>
+                            </tr>
+                            <tr>
+                                <th>Contact</th>
+                                <td>{{ eleve.contactPere }}</td>
+                                <th>Contact</th>
+                                <td>{{ eleve.contactMere }}</td>
+                            </tr>
+                            <tr>
+                                <th>Profession</th>
+                                <td>{{ eleve.professionPere }}</td>
+                                <th>Profession</th>
+                                <td>{{ eleve.professionMere }}</td>
+                            </tr>
+                            <tr>
+                                <th>Situation</th>
+                                <td>
+                                    {% if eleve.situationPere == 1 %}
+                                        {{ 'Vivant'|trans }}
+                                    {% else %}
+                                        {{ 'Décédé'|trans }}
+                                    {% endif %}
+                                </td>
+                                <th>Situation</th>
+                                <td>
+                                    {% if eleve.situationMere == 1 %}
+                                        {{ 'Vivante'|trans }}
+                                    {% else %}
+                                        {{ 'Décédée'|trans }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <strong style="font-weight: bold; font-size: 2em">{{ 'Identification du tuteur (s\'il y en a)'|trans }}</strong>
+                    <div class="three fields">
+                        <div class="field"> 
+                            {{ eleve.nomTuteur }}
+                        </div>
+                        <div class="field">
+                            {{ eleve.contactTuteur }}
+                        </div>
+                        <div class="field"> 
+                            {{ eleve.professionTuteur }}
+                        </div>
+                    </div>
+                </div>
+            </div> 
+        {% endfor %}
+    </body>
+</html>

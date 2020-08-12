@@ -22,7 +22,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class DisciplineController extends Controller
 {
   /**
-   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+   * @Security("has_role('ROLE_DISCIPLINE_ENSEIGNANT')")
    * @Route("/conduite-home-{as}", name="ens_conduite_home")
    */
   public function indexConduite(Request $request, $as)
@@ -63,7 +63,7 @@ class DisciplineController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+   * @Security("has_role('ROLE_DISCIPLINE_ENSEIGNANT')")
    * @Route("/enregistrer-une-conduite-pour-un-enseignant-{as}-{contratId}", name="ens_enregistrement_conduite")
    */
   public function enregistrerConduite(Request $request, $as, $contratId)
@@ -123,7 +123,7 @@ class DisciplineController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+   * @Security("has_role('ROLE_DISCIPLINE_ENSEIGNANT')")
    * @Route("/voir-les-conduites-d-un-enseignant-{as}-{contratId}", name="ens_voir_conduite")
    */
   public function voirConduite(Request $request, $as, $contratId)
@@ -154,7 +154,7 @@ class DisciplineController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+   * @Security("has_role('ROLE_DISCIPLINE_ENSEIGNANT')")
    * @Route("/convocation-home-{as}", name="ens_convocation_home")
    */
   public function indexConvocation(Request $request, $as)
@@ -190,7 +190,7 @@ class DisciplineController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+   * @Security("has_role('ROLE_DISCIPLINE_ENSEIGNANT')")
    * @Route("/convoquer-des-enseignants-{as}", name="ens_convoquer_enseignant")
    */
   public function convoquerHome(Request $request, $as)
@@ -235,7 +235,7 @@ class DisciplineController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+   * @Security("has_role('ROLE_DISCIPLINE_ENSEIGNANT')")
    * @Route("/rempli-convocation-des-enseignants-{as}", name="ens_info_convocation")
    */
   public function remplirConvocation(Request $request, $as)
@@ -311,7 +311,7 @@ class DisciplineController extends Controller
 
 
   /**
-   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+   * @Security("has_role('ROLE_DISCIPLINE_ENSEIGNANT')")
    * @Route("/enregistrement-de-l-audition-et-du-verdict-pour-la-convocation-de-l-enseignant-{as}-{ensConvocationId}", name="ens_audition_et_verdict")
    */
   public function auditionEtVerdict(Request $request, $as, $ensConvocationId)
@@ -363,7 +363,7 @@ class DisciplineController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+   * @Security("has_role('ROLE_DISCIPLINE_ENSEIGNANT')")
    * @Route("/sanction-home-{as}", name="ens_sanction_home")
    */
   public function sanctionHome(Request $request, $as)
@@ -398,7 +398,7 @@ class DisciplineController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+   * @Security("has_role('ROLE_DISCIPLINE_ENSEIGNANT')")
    * @Route("/voir-les-sanctions-d-un-enseignant-{as}-{contratId}", name="ens_voir_sanction")
    */
   public function voirSanction(Request $request, $as, $contratId)
@@ -432,7 +432,7 @@ class DisciplineController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+   * @Security("has_role('ROLE_DISCIPLINE_ENSEIGNANT')")
    * @Route("/enregistrement-d-une-sanction-{as}-{contratId}", name="ens_add_sanction")
    */
   public function addSanction(Request $request, $as, $contratId)
@@ -488,7 +488,7 @@ class DisciplineController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+   * @Security("has_role('ROLE_DISCIPLINE_ENSEIGNANT')")
    * @Route("", name="")
    */
   public function ajouterEnseignantAnnee(Request $request, $as, $contratId)

@@ -8,4 +8,5 @@
     <a class="item" href="{{ path('org_homepage', {'as': asec, 'annexeId': annexe.id}) }}">Organisation</a>
     <a class = "item" href = "{{ path('isi_user', {'as'          : asec, 'annexeId': annexe.id}) }}">Utilisateurs</a>
     <a class = "item" href = "{{ path('agents', {'as'            : asec, 'annexeId': annexe.id}) }}">Agents de l'Institut</a>
+    <a class = "item" href = "{{ path('liste_recipiendaires', {'as' : asec, 'annexeId': annexe.id}) }}">Récipiendaires</a>
 {% endif %}

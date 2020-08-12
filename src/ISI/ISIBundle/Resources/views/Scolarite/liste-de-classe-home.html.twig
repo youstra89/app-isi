@@ -19,84 +19,92 @@
   <p>{{ 'Pas de classes pour le moment'|trans }}</p>
 {% else %}
   <div class="column" style="width:85%">
-      <table class="ui selectable very basic table" id="classes">
-        <thead>
-          <tr>
-            <th style="width: 5%; text-align: center">N°</th>
-            <th>Niveaux</th>
-            <th>Classses</th>
-            <th>المستويات</th>
-            <th>الفصول</th>
-            <th>Genre</th>
-            <th class="two wide">{{ 'Actions'|trans }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% set numero = 0 %}
-          {% for classe in classes %} 
-            {% if classe.niveau.groupeFormation.reference is same as(regime) %}
-              {% set numero = numero + 1 %}
-              {% set genre = '' %}
-              {% if classe.genre == 'H' %}
-                {% set genre = 'Homme' %}
-              {% elseif classe.genre == 'F' %}
-                {% set genre = 'Femme' %}
-              {% else %}
-                {% set genre = 'Mixte' %}
-              {% endif %}
-              <tr>
-                <td style="width: 5%; text-align: center">
-                  <h4 class="ui image header">{{ numero }}</h4>
-                </td>
-                <td>
-                  <h4 class="ui image header">{{ classe.getNiveau.getLibelleFr }}</h4>
-                </td>
-                <td>
-                  <h4 class="ui image header">{{ classe.libellefr }}</h4>
-                </td>
-                <td>
-                  <h4 class="ui image header">{{ classe.getNiveau.getLibelleAr }}</h4>
-                </td>
-                <td>
-                  <h4 class="ui image header">{{ classe.libellear }}</h4>
-                </td>
-                <td>
-                  <h4 class="ui image header">{{ genre }}</h4>
-                </td>
-                <td style="width: 15%; text-align: center">
-                  {% set lien = '' %}
-                  {% if regime == 'A' %}
-                    {% set lien = path('isi_tirer_liste_d_appel_de_la_classe_academie', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id}) %}
-                  {% else %}
-                    {% set lien = path('isi_tirer_liste_d_appel_de_la_classe_formation', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id}) %}
-                  {% endif %}
-                  <a href="{{ lien }}" data-tooltip="Liste d'appel">
-                    <i class="print icon"></i>
-                  </a>
-                  &nbsp;&nbsp;&nbsp;&nbsp;
-                  <a href="{{path('isi_tirer_liste_de_la_classe_edition_sans_impression', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}" data-tooltip="Liste simple">
-                    <i class="list icon"></i>
-                  </a>
-                  &nbsp;&nbsp;&nbsp;&nbsp;
-                  <a href="{{path('isi_mise_a_jour_informations_des_eleves_d_une_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}" data-tooltip="Mettre à jour les informations des élèves">
-                    <i class="edit icon"></i>
-                  </a>
-                  &nbsp;&nbsp;&nbsp;&nbsp;
-                  <a href="{{path('isi_cartes_scolaires_d_une_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}" data-tooltip="Cartes scolaire">
-                    <i class="ticket icon"></i>
-                  </a>
-                  &nbsp;&nbsp;&nbsp;&nbsp;
-                  <a href="{{path('isi_tirer_liste_de_la_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}" data-tooltip="Liste de classe">
-                    <i class="print icon"></i>
-                  </a>
-                </td>
-              </tr>
-            {% endif %} 
-          {% endfor %}
-        </tbody>
-      </table>
-      <hr width="75%">
-    </div><br><br>
+    <table class="ui selectable very basic table" id="classes">
+      <thead>
+        <tr>
+          <th style="width: 5%; text-align: center">N°</th>
+          <th>Niveaux</th>
+          <th>Classses</th>
+          <th>المستويات</th>
+          <th>الفصول</th>
+          <th>Genre</th>
+          <th class="two wide">{{ 'Actions'|trans }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% set numero = 0 %}
+        {% for classe in classes %} 
+          {% if classe.niveau.groupeFormation.reference is same as(regime) %}
+            {% set numero = numero + 1 %}
+            {% set genre = '' %}
+            {% if classe.genre == 'H' %}
+              {% set genre = 'Homme' %}
+            {% elseif classe.genre == 'F' %}
+              {% set genre = 'Femme' %}
+            {% else %}
+              {% set genre = 'Mixte' %}
+            {% endif %}
+            <tr>
+              <td style="width: 5%; text-align: center">
+                <h4 class="ui image header">{{ numero }}</h4>
+              </td>
+              <td>
+                <h4 class="ui image header">{{ classe.getNiveau.getLibelleFr }}</h4>
+              </td>
+              <td>
+                <h4 class="ui image header">{{ classe.libellefr }}</h4>
+              </td>
+              <td>
+                <h4 class="ui image header">{{ classe.getNiveau.getLibelleAr }}</h4>
+              </td>
+              <td>
+                <h4 class="ui image header">{{ classe.libellear }}</h4>
+              </td>
+              <td>
+                <h4 class="ui image header">{{ genre }}</h4>
+              </td>
+              <td style="width: 20%; text-align: center">
+                {% set lien = '' %}
+                {% if regime == 'A' %}
+                  {% set lien = path('isi_tirer_liste_d_appel_de_la_classe_academie', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id}) %}
+                {% else %}
+                  {% set lien = path('isi_tirer_liste_d_appel_de_la_classe_formation', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id}) %}
+                {% endif %}
+                <a href="{{ lien }}" data-tooltip="Liste d'appel">
+                  <i class="print icon"></i>
+                </a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="{{path('isi_tirer_liste_de_la_classe_edition_sans_impression', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}" data-tooltip="Liste simple">
+                  <i class="list icon"></i>
+                </a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="{{path('isi_mise_a_jour_informations_des_eleves_d_une_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}" data-tooltip="Mettre à jour les informations des élèves">
+                  <i class="edit icon"></i>
+                </a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="{{path('isi_cartes_scolaires_d_une_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}" data-tooltip="Cartes scolaire">
+                  <i class="ticket icon"></i>
+                </a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="{{path('isi_tirer_liste_de_la_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}" data-tooltip="Liste de classe">
+                  <i class="print icon"></i>
+                </a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="{{path('fiche_identification', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}" data-tooltip="Fiches d'identification">
+                  <i class="file icon"></i>
+                </a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="{{path('emploi_du_temps_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}"  data-tooltip="Voir l'emploi du temps de la classe">
+                  <i class="time icon"></i>
+                </a>
+              </td>
+            </tr>
+          {% endif %} 
+        {% endfor %}
+      </tbody>
+    </table>
+    <hr width="75%">
+  </div><br><br>
 {% endif %}
 {% endblock %}
 

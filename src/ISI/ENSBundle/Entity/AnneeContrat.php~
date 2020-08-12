@@ -329,4 +329,28 @@ class AnneeContrat
     {
         return $this->updatedBy;
     }
+
+    /**
+     * Set nombreHeuresBureau
+     *
+     * @param integer $nombreHeuresBureau
+     *
+     * @return AnneeContrat
+     */
+    public function setNombreHeuresBureau($nombreHeuresBureau)
+    {
+        $this->nombreHeuresBureau = $nombreHeuresBureau;
+
+        return $this;
+    }
+
+    /**
+     * Get nombreHeuresBureau
+     *
+     * @return integer
+     */
+    public function getNombreHeuresBureau()
+    {
+        return $this->nombreHeuresBureau;
+    }
 }

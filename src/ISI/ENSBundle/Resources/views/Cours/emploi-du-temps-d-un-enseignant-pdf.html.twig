@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>
+      Emploi du temps de {{ anneeContrat.contrat.enseignant.nom }} - {{ annee.libelle }}
+    </title>
+
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amiri">
+    <style>
+        {% if server == '/var/www/html' %}
+            @font-face{
+                font-family: "majalla";
+                src: url("file:///var/www/html/markaz/web/polices/majalla.ttf");
+            }
+
+            @font-face{
+                font-family: "Lato";
+                src: url("file:///var/www/html/markaz/web/polices/Lato-Regular.ttf");
+            }
+        {% else %}
+            @font-face{
+                font-family: "majalla";
+                src: url("file:///home/youstra/www/markaz/web/polices/majalla.ttf");
+            }
+
+            @font-face{
+                font-family: "Lato";
+                src: url("file:///home/youstra/www/markaz/web/polices/Lato-Regular.ttf");
+            }
+        {% endif %}
+        
+        * {
+            font-family: majalla, Lato;
+        }
+
+        body {
+			    direction: rtl
+        }
+
+        table {
+            display: inline-table;
+            border-spacing: 0px;
+            table-layout: fixed;
+        }
+
+        thead{
+            border: 1px solid black;
+        }
+
+        td {
+            border: 0.99px solid black;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .line-table {
+            /* font-size: 1.6em; */
+            line-height: 27px;
+        }
+
+        .line-table td{
+            border: solid 1px black;
+        }
+
+        .en-tete-fr, .en-tete-ar{
+            line-height: 5px;
+            font-weight: bold;
+            font-size: 1.7em;
+        }
+
+        .table-header {
+            border: 1px solid black;
+            font-weight: bold;
+            font-size: 1.5em;
+            height: 20px;
+            align-content: center;
+        }
+
+        .table-header-semaine{
+            border: 1px solid black;
+            font-size: 1em;
+        }
+  </style>
+</head>
+
+
+  <body>
+  <table width="100%" align="center" style="border: 1px solid white">
+      <tr>
+          <td align="" width="" class="en-tete-ar">
+              <center>
+                  <p>جمهورية ساحل العاج</p>
+                  <p>مركز العلوم الإسلامية</p>
+                  <p>أبدجان - حي أنياما</p>
+                  <p>هاتف : 21373048 - 20248312</p>
+              </center>
+          </td>
+          <td align="" width="" class="">
+              <center>
+              <img src="{{app.request.schemeAndHttpHost ~ asset('images/logoISI.png')}}" alt="" width="30%" height="auto">
+              </center>
+          </td>
+          <td align="" width="" class="en-tete-fr">
+              <center>
+                  <p>REPUBLIQUE DE COTE D'IVOIRE</p>
+                  <p>INSTITUT DES SCIENCES ISLAMIQUES</p>
+                  <p>ABIDJAN - ANYAMA</p>
+                  <p>Tél: 21373048 - 20248312</p>
+              </center>
+          </td>
+      </tr>
+  </table>
+  <p style="text-align: center; line-height: 1px; margin: 5px;">----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</p>
+  <p style="text-align: center; line-height: 1px; margin: 5px;">---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</p>
+  <h3 style="text-align: center; font-size: 1.5em; line-height: 15px" dir="ltr">{{ 'Emploi du temps de '|trans }} {{ anneeContrat.contrat.enseignant.nom }} ({{ anneeContrat.contrat.enseignant.pnomAr }} {{ anneeContrat.contrat.enseignant.nomAr }}) - {{ annee.libelle }}</h3>
+  <strong>Centre de formation</strong>
+  {% if coursCentreFormation is not empty %}
+    <table width="100%" align="center" style="font-size: 1em; border: 1px solid black;">
+      <thead>
+        <tr style="text-align: center;">
+          <th style="border: 1px solid black;"></th>
+          <th style="border: 1px solid black;">07h30 - 08h10</th>
+          <th style="border: 1px solid black;">08h10 - 08h50</th>
+          <th style="border: 1px solid black;">08h50 - 09h30</th>
+          <th style="border: 1px solid black;">09h30 - 10h10</th>
+          <th style="border: 1px solid black;">10h10 - 10h50</th>
+          <th style="border: 1px solid black;">11h15 - 11h55</th>
+          <th style="border: 1px solid black;">11h55 - 12h35</th>
+          <th style="border: 1px solid black;">12h35 - 13h15</th>
+        </tr>
+      </thead>
+      <tbody style="line-height: 20px; color: green" bgcolor="honeydew">
+        <tr style="text-align: center">
+          <td style="font-size: 1em; border: 1px solid black; font-weight: bold">Samedi</td>
+          {% for time in 1..8 %}
+            <td style="font-size: 1em; border: 1px solid black;">
+              {% for item in coursCentreFormation %}
+                  {% if item.heure == time %}
+                    {% if item.classe %}
+                      {{ item.classe.libelleAr }} <br>
+                      {{ item.classe.libelleFr }} 
+                    {% else %}
+                      {{ item.halaqa.libelle }}
+                    {% endif %}
+                    <br>
+                    <strong>{{ item.matiere.libelle }}</strong><br>
+                    <i>
+                      {% if item.classe.salle %}
+                        {{ item.classe.salle[0].salle.nom }} <br>
+                        {{ item.classe.salle[0].salle.batiment.nom }} - {{ item.classe.salle[0].salle.localisation }}
+                      {% endif %}
+                    </i>
+                  {% endif %}
+              {% endfor %}
+            </td> 
+          {% endfor %}
+        </tr>
+      </tbody>
+    </table>
+  {% else %}
+    Pas de cours enregistré
+  {% endif %}
+  <br><br>
+  <strong>Académie</strong>
+  {% if coursAcademie is not empty %}
+    <table width="100%" align="center" style="font-size: 1em; border: 1px solid black;">
+      <thead>
+        <tr style="text-align: center">
+          <th style="border: 1px solid black;"></th>
+          <th style="border: 1px solid black;">07h30 - 08h10</th>
+          <th style="border: 1px solid black;">08h10 - 08h50</th>
+          <th style="border: 1px solid black;">08h50 - 09h30</th>
+          <th style="border: 1px solid black;">09h30 - 10h10</th>
+          <th style="border: 1px solid black;">10h10 - 10h50</th>
+        </tr>
+      </thead>
+      <tbody style="line-height: 20px">
+        {% set jours = {2: "Dimanche", 3: "Lundi", 4: "Mardi", 5: "Mercredi", 6: "Jeudi"} %}
+        {% for day in 2..6 %}
+          {% set color = "black" %}
+          {% set bgcolor = "white" %}
+          {% if day % 2 == 0 %}
+            {% set color = "green" %}
+            {% set bgcolor = "honeydew" %}
+          {% endif %}
+          <tr bgcolor="{{ bgcolor }}" style="text-align: center; color: {{ color }}">
+            <td style="font-size: 1em; border: 1px solid black; font-weight: bold">{{ jours[day] }}</td>
+            {% for time in 1..5 %}
+              <td style="border: 1px solid black;">
+                {% for item in coursAcademie %}
+                  {% if item.jour == day %}
+                    {% if item.heure == time %}
+                      {% if item.classe %}
+                        {{ item.classe.libelleAr }} <br>
+                        {{ item.classe.libelleFr }} 
+                      {% else %}
+                        {{ item.halaqa.libelle }}
+                      {% endif %}
+                      <br>
+                      <strong>{{ item.matiere.libelle }}</strong><br>
+                      <i>
+                        {% if item.classe.salle %}
+                          {{ item.classe.salle[0].salle.nom }} - {{ item.classe.salle[0].salle.batiment.nom }}
+                        {% endif %}
+                      </i>
+                    {% endif %}
+                  {% endif %}
+                {% endfor %}
+              </td> 
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    Pas de cours enregistré
+  {% endif %}
+  <br><br>
+</body>
+</html>

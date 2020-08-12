@@ -29,6 +29,13 @@ class User extends BaseUser
     /**
      * @var string
      *
+     * @ORM\Column(name="is_root", type="boolean", nullable=false)
+     */
+    protected $is_root;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="nom", type="string", nullable=true)
      */
     protected $nom;
@@ -63,6 +70,7 @@ class User extends BaseUser
      */
     public function __construct()
     {
+        $this->is_root = false;
         $this->annexes = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -95,6 +103,18 @@ class User extends BaseUser
         }
 
         return $userAnnexe;
+    }
+
+    public function getIsRoot(): ?bool
+    {
+        return $this->is_root;
+    }
+
+    public function setIsRoot(bool $is_root): self
+    {
+        $this->is_root = $is_root;
+
+        return $this;
     }
 
     /**

@@ -2,7 +2,6 @@
 
 namespace ISI\ISIBundle\Controller;
 
-use ISI\ISIBundle\Entity\Annee;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -24,12 +23,40 @@ class DefaultController extends Controller
             $annee = $repoAnnee->find($request->get('as'));
         }
         $as = $annee->getId();
+        if(count($this->getUser()->getAnnexes()) == 1){
+            return $this->redirect($this->generateUrl('isi_homepage', ['as' => $annee->getId(), 'annexeId' => $this->getUser()->getAnnexes()[0]->getAnnexe()->getId()]));
+        }
 
         return $this->render('ISIBundle:Default:annexes.html.twig', [
             "asec"        => $as,
             "annee"       => $annee,
             "choixAnnexe" => "choix",
-            "annexes"     => $annexes,
+            // "annexes"     => $annexes,
+        ]);
+    }
+
+    /**
+     * @Route("/statistiques-annexes", name="statistiques_annexes")
+     */
+    public function statistiques_annexes(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $repoAnnee = $em->getRepository('ISIBundle:Annee');
+        $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+        $annee   = $repoAnnee->anneeEnCours();
+        $annexes = $repoAnnexe->findAll();
+        if(!empty($request->get('as'))){
+            $annee = $repoAnnee->find($request->get('as'));
+        }
+        $as = $annee->getId();
+        if(count($this->getUser()->getAnnexes()) == 1){
+            return $this->redirect($this->generateUrl('isi_homepage', ['as' => $annee->getId(), 'annexeId' => $this->getUser()->getAnnexes()[0]->getAnnexe()->getId()]));
+        }
+
+        return $this->render('ISIBundle:Default:statistiques-annexes.html.twig', [
+            "asec"        => $as,
+            "annee"       => $annee,
+            "choixAnnexe" => "choix",
         ]);
     }
 
@@ -98,7 +125,13 @@ class DefaultController extends Controller
 
             return $this->redirectToRoute('internat_home', ['as' => $annee->getId(), 'annexeId' => $annexeId]);
         }
-        elseif($this->get('security.authorization_checker')->isGranted('ROLE_DIRECTION_ENSEIGNANT'))
+        elseif(
+            $this->get('security.authorization_checker')->isGranted('ROLE_AGENT_DIRECTION_ENSEIGNANT') ||
+            $this->get('security.authorization_checker')->isGranted('ROLE_CONTROLE_ENSEIGNANT') ||
+            $this->get('security.authorization_checker')->isGranted('ROLE_DISCIPLINE_ENSEIGNANT') ||
+            $this->get('security.authorization_checker')->isGranted('ROLE_ADJOINT_DIRECTION_ENSEIGNANT') ||
+            $this->get('security.authorization_checker')->isGranted('ROLE_DIRECTION_ENSEIGNANT') 
+        )
         {
             if(empty($annee))
                 return new Response('Vous ne pouvez pas utiliser l\'application avant le directeur des affaires écolières/scolaires!!!');

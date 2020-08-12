@@ -1,0 +1,126 @@
+{# On affiche toues les classes d'un niveau de formation. On sélectionne alors une classe pour aller saisir les notes #}
+
+{% extends 'ISIBundle:Scolarite:index.html.twig' %}
+
+{% block title %}
+  Accueil rapport des absences en coran
+{% endblock %}
+
+
+{% block body %}
+  <h3>{{ 'Voir les heures d\'absence enregistrées en coran'|trans }}</h3>
+  <div>
+		<form action="" method="post" class="ui form">
+			<div class="form-group">
+				<div class="four fields">
+					<div class="field">
+						<label for="date">Date</label>
+						<input type="date" name="date" id="date" value="{% if date is defined %}{{ date|date('Y-m-d')}}{% else %}{{ 'now'|date('Y-m-d')}}{% endif %}">
+					</div>
+					<div class="field">
+						<br>
+						<button class="ui positive button">Rechercher</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+  {% if halaqas is empty %}
+    <p>{{ 'Pas de halaqaq pour le moment'|trans }}</p>
+  {% else %}
+    <div class="column" style="width:85%">
+      <table class="ui selectable very basic table" id="classes">
+        <thead>
+          <tr>
+            <th style="width: 5%; text-align: center">N°</th>
+            <th>Classses</th>
+            <th>Genre</th>
+            <th>6</th>
+            <th>7</th>
+            <th>8</th>
+            <th class="two wide">{{ 'Actions'|trans }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% set numero = 0 %}
+          {% for halaqa in halaqas %} 
+            {% set numero = numero + 1 %}
+            {% set genre = '' %}
+            {% if halaqa.genre == 'H' %}
+              {% set genre = 'Homme' %}
+            {% elseif halaqa.genre == 'F' %}
+              {% set genre = 'Femme' %}
+            {% else %}
+              {% set genre = 'Mixte' %}
+            {% endif %}
+            <tr>
+              <td style="width: 5%; text-align: center">
+                <h4 class="ui image header">{{ numero }}</h4>
+              </td>
+              <td>
+                <h4 class="ui image header">{{ halaqa.getLibelle }}</h4>
+              </td>
+              <td>
+                <h4 class="ui image header">{{ genre }}</h4>
+              </td>
+              {% for i in 6..8 %}
+                {% set nieme = '' %}
+                {% if i == 1 %}
+                  {% set nieme = 'ère' %}
+                {% else %}
+                  {% set nieme = 'ème' %}
+                {% endif %}
+                <td data-tooltip="{{i}}{{nieme}} heure">
+                  {% for item in taches if halaqa == item.cours.halaqa and i == item.cours.heure %}
+                    {# <i class="cheched icon"></i> #}
+                    ok
+                  {% endfor %}
+                </td>
+              {% endfor %}
+              <td>
+                {# <a href="{{path('rapport_absence_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': halaqa.id})}}" data-tooltip="Liste simple">
+                  <i class="list icon"></i>
+                </a> #}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <hr width="75%">
+    </div><br><br>
+  {% endif %}
+{% endblock %}
+
+
+{% block javascripts %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: 'TableFilter/dist/tablefilter/',
+      col_0: "none",
+      col_2: 'select',
+      col_3: 'none',
+      col_4: 'none',
+      col_5: 'none',
+      col_6: 'none',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string', 'string'
+      ],
+      col_widths: [
+          // '20px', , , '200px', , , '300px'
+      ],
+      extensions: [{ name: 'sort' }]
+    };
+
+    var tf = new TableFilter('classes', filtersConfig);
+    tf.init();
+  </script>
+{% endblock %}

@@ -19,7 +19,7 @@
     {{ 'Identification personnelle'|trans }}
   </h2>
   <center><h2><font color="red">{{ eleve.matricule }}</font></h2></center><br>
-  <div class="ui two column doubling stackable grid container">
+  <div class="ui three column doubling stackable grid container">
     <div class="column">
       <table>
         <tr>
@@ -71,6 +71,9 @@
           <td></td>
         </tr>
       </table>
+    </div>
+    <div class="column">
+      <img src="{{ asset('photos/eleves/' ~ eleve.photo) }}" width="30%" height="auto">
     </div>
   </div>
   <h2 class="ui horizontal divider header">

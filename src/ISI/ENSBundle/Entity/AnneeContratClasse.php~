@@ -59,7 +59,7 @@ class AnneeContratClasse
     /**
      * @var \Halaqa
      *
-     * @ORM\ManyToOne(targetEntity="\ISI\ISIBundle\Entity\Halaqa")
+     * @ORM\ManyToOne(targetEntity="\ISI\ISIBundle\Entity\Halaqa", inversedBy="cours")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="halaqa_id", referencedColumnName="id", nullable=true)
      * })
@@ -182,6 +182,14 @@ class AnneeContratClasse
     public function jourdecours()
     {
         return self::JOURS[$this->jour];
+    }
+
+    /**
+     * @return AnneeContratClasse
+     */
+    public function trouvejour(int $jour)
+    {
+        return self::JOURS[$jour];
     }
 
     /**

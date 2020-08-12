@@ -1,0 +1,97 @@
+{% set template = 'ISIBundle:Eleve:index.html.twig' %}
+{% extends template %}
+
+{% block title %}
+  Liste des récipiendaires
+{% endblock %}
+
+
+{% block body %}
+    <div class="ui {{ dir2 }} aligned segment">
+      <h1 class="ui header">
+        <i class="student icon"></i>{{ 'Liste des récipiendaires - '|trans }}
+      </h1>
+    </div>
+
+    <a href="{{ path('recipiendaires_home', {'as': asec, 'annexeId': annexe.id}) }}">
+      <button class="positive ui button">
+        <i class="plus icon"></i>
+        {{ 'Ajouter récipiendaire'|trans }}
+      </button>
+    </a>
+        <table id="eleves-renvoyes" cellspacing="0" class="mytable filterable ui very basic table" width="90%">
+          <thead>
+            <tr>
+              <th align="center">{{ 'N°'|trans }}</th>
+              <th>{{ 'Matricule'|trans }}</th>
+              <th>{{ 'Nom & Prénom'|trans }}</th>
+              <th>الإسم و اللقب</th>
+              <th>{{ 'Sexe'|trans }}</th>
+              <th>{{ 'Date de naissance'|trans }}</th>
+              <th>{{ 'Mention'|trans }}</th>
+              <th>{{ 'Numero'|trans }}</th>
+              <th>{{ 'Date délivrance'|trans }}</th>
+              <th>{{ 'Action'|trans }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% set numero = 0 %}
+            {% for item in recipiendaires %}
+            {% set numero = numero + 1 %}
+              <td align="center">{{ numero }}</td>
+              <td>{{ item.eleve.matricule }}</td>
+              <td>{{ item.eleve.nomFr }} {{ item.eleve.pnomFr }}</td>
+              <td><span>{{ item.eleve.pnomAr }} {{ item.eleve.nomAr }}</span></td>
+              <td>
+                <div class="home-eleve" data-tooltip="{{ item.eleve.nomFr }} {{ item.eleve.pnomFr }} est de sexe ">
+                  {% if item.eleve.sexe == 1 %}
+                    {{ 'ذكر' }}
+                  {% else %}
+                    {{ 'أنثى' }}
+                  {% endif %}
+                </div>
+              </td>
+              <td>{{ item.eleve.dateNaissance|date("d-m-Y") }}</td>
+              <td>{{ item.mention.appreciationFr }}</td>
+              <td>{{ item.numero }}</td>
+              <td>{{ item.date|date("d-m-Y") }}</td>
+              <td>
+                <a href="{{ path('imprimer_diplome', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'recipiendaireId': item.id}) }}" data-tooltip="Imprimer diplôme"><i class="print icon"></i></a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+{% endblock %}
+{% block javascripts %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: 'TableFilter/dist/tablefilter/',
+      col_0: 'none',
+      col_4: 'select',
+      col_6: 'select',
+      col_9: 'none',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string',
+        'string', 'string', 'string',
+        'string'
+      ],
+      col_widths: [
+        '5px', '130px', '300px', , , '100px', ,
+      ],
+      extensions: [{ name: 'sort' }]
+    };
+
+    var tf = new TableFilter('eleves-renvoyes', filtersConfig);
+    tf.init();
+  </script>
+{% endblock %}

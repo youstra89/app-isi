@@ -10,12 +10,33 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amiri">
     <style>
+        {% if server == '/var/www/html' %}
+            @font-face{
+                font-family: "majalla";
+                src: url("file:///var/www/html/markaz/web/polices/majalla.ttf");
+            }
+
+            @font-face{
+                font-family: "Lato";
+                src: url("file:///var/www/html/markaz/web/polices/Lato-Regular.ttf");
+            }
+        {% else %}
+            @font-face{
+                font-family: "majalla";
+                src: url("file:///home/youstra/www/markaz/web/polices/majalla.ttf");
+            }
+
+            @font-face{
+                font-family: "Lato";
+                src: url("file:///home/youstra/www/markaz/web/polices/Lato-Regular.ttf");
+            }
+        {% endif %}
+        
         * {
-            font-family: Amiri;
+            font-family: majalla, Lato;
         }
 
         body {
-            font-family: Lato;
 			direction: rtl
         }
 
@@ -44,32 +65,25 @@
             width: 100%;
             margin: auto;
             font-size: 1.5em;
-            font-family: "Amiri", "sakkal", "traditional arabic";
             font-weight: bold;
         }
 
-        span {
-            font-family: Amiri, serif;
-        }
-
         .id-fiche {
-            font-size: 2em;
+            font-family: majalla;
+            font-size: 1.5em;
             direction: rtl;
         }
 
         .classe, .annee {
-            font-family: Amiri, serif;
             display: inline;
         }
 
         .matiere {
-            font-family: Amiri, serif;
             display: inline;
             margin-right: 700px;
         }
 
         .libelleClasse, .libelleMatiere {
-            font-family: Amiri, serif;
             font-weight: bold;
         }
 
@@ -117,18 +131,15 @@
         }
 
         .nomAr, .nomFr {
-            font-family: "Amiri", serif;
             font-weight: bold;
         }
 
         .nomEleveAr {
-            font-family: "Amiri", serif;
             font-weight: bold;
             font-size: 0.9em
         }
 
         .nomEleveFr {
-            font-family: "Amiri", serif;
             white-space: nowrap;
             text-overflow: clip;
 			font-size: 0.85em
@@ -136,7 +147,6 @@
 
         .effectif {
             font-size: 2.5em;
-            font-family: Amiri;
         }
     </style>
 </head>
@@ -144,7 +154,7 @@
 <body style="font-family: Arial">
     <header>
         <center>
-            <img src="{{ app.request.schemeAndHttpHost ~ asset('../web/images/en-tete.png') }}" alt="" width="75%">
+            <img src="{{ app.request.schemeAndHttpHost ~ asset('images/en-tete.png') }}" alt="" width="75%">
             {# <img src="file:///C:/wamp64/www/markaz/web/images/en-tete.png"
                 alt=""> #}
         </center>

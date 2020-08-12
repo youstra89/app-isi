@@ -102,9 +102,23 @@ class Eleve
     /**
      * @var string
      *
+     * @ORM\Column(name="lieu_naissance_ar", type="string", length=255, nullable=true)
+     */
+    private $lieuNaissanceAr;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="nationalite", type="string", length=255, nullable=false)
      */
     private $nationalite;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nationalite_ar", type="string", length=255, nullable=true)
+     */
+    private $nationaliteAr;
 
     /**
      * @var string
@@ -1459,5 +1473,53 @@ class Eleve
     public function getAnnexe()
     {
         return $this->annexe;
+    }
+
+    /**
+     * Set lieuNaissanceAr
+     *
+     * @param string $lieuNaissanceAr
+     *
+     * @return Eleve
+     */
+    public function setLieuNaissanceAr($lieuNaissanceAr)
+    {
+        $this->lieuNaissanceAr = $lieuNaissanceAr;
+
+        return $this;
+    }
+
+    /**
+     * Get lieuNaissanceAr
+     *
+     * @return string
+     */
+    public function getLieuNaissanceAr()
+    {
+        return $this->lieuNaissanceAr;
+    }
+
+    /**
+     * Set nationaliteAr
+     *
+     * @param string $nationaliteAr
+     *
+     * @return Eleve
+     */
+    public function setNationaliteAr($nationaliteAr)
+    {
+        $this->nationaliteAr = $nationaliteAr;
+
+        return $this;
+    }
+
+    /**
+     * Get nationaliteAr
+     *
+     * @return string
+     */
+    public function getNationaliteAr()
+    {
+        return $this->nationaliteAr;
     }
 }

@@ -1,0 +1,138 @@
+{% set template = '' %}
+{% if is_granted('ROLE_DIRECTION_ENSEIGNANT') or is_granted('ROLE_AGENT_DIRECTION_ENSEIGNANT') %}
+    {% set template = "ENSBundle:Default:index.html.twig" %}
+{% elseif is_granted('ROLE_ETUDE') %}
+    {% set template = "ISIBundle:Etude:index.html.twig" %}
+{% elseif is_granted('ROLE_SCOLARITE') or is_granted('ROLE_PREINSCRIPTION') %}
+    {% set template = "ISIBundle:Default:index.html.twig" %}
+{% elseif is_granted('ROLE_ORGANISATION') %}
+    {% set template = "ORGBundle:Default:index.html.twig" %}
+{% elseif is_granted('ROLE_ENSEIGNANT') %}
+    {% set template = "ENSBundle:Enseignant:index.html.twig" %}
+{% endif %}
+
+{% extends template %}
+
+
+{% block title %}
+  Emploi du temps de {{ classe.libelleFr }} - {{ annee.libelle }}
+{% endblock %}
+
+{% block section %}
+  <i class="student icon"></i>{{ 'Gestion des cours'|trans }}
+{% endblock %}
+
+
+{% block contextual_menu %}
+  {{ include("ENSBundle::contextual-menu-cours.html.twig") }}
+{% endblock %}
+
+
+{% block body %}
+  <h3>{{ 'Emploi du temps de '|trans }} {{ classe.libelleAr }} ({{ classe.libelleFr }}) - {{ annee.libelle }}</h3>
+  <a href="{{ path('emploi_du_temps_classe_pdf', {as: annee.id, classeId: classe.id, annexeId: annexe.id}) }}"> 
+    <button class="ui positive button">
+      Imprimer
+    </button>
+  </a>
+  <div class="column" style="width: 95%">
+    {% if coursCentreFormation is not empty %}
+      <h2>Centre de formation</h2>
+      <table class="ui compact celled definition table" style="font-size: 1em;">
+        <thead>
+          <tr style="text-align: center">
+            <th></th>
+            <th>07h30 - 08h10</th>
+            <th>08h10 - 08h50</th>
+            <th>08h50 - 09h30</th>
+            <th>09h30 - 10h10</th>
+            <th>10h10 - 10h50</th>
+            <th>11h15 - 11h55</th>
+            <th>11h55 - 12h35</th>
+            <th>12h35 - 13h15</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="text-align: center">
+            <td>Samedi</td>
+            {% for time in 1..8 %}
+              <td>
+                {% for item in coursCentreFormation %}
+                    {% if item.heure == time %}
+                      {% if item.classe %}
+                        {{ item.anneeContrat.contrat.enseignant.nom }}
+                      {% else %}
+                        {{ item.halaqa.libelle }}
+                      {% endif %}
+                      <br>
+                      <strong>{{ item.matiere.libelle }}</strong><br>
+                      <i>
+                        {% if item.classe.salle %}
+                          {{ item.classe.salle[0].salle.nom }} <br>
+                          {{ item.classe.salle[0].salle.batiment.nom }} - {{ item.classe.salle[0].salle.localisation }}
+                        {% endif %}
+                      </i>
+                    {% endif %}
+                {% endfor %}
+              </td> 
+            {% endfor %}
+          </tr>
+        </tbody>
+      </table>
+    {% endif %}
+    <br><br>
+    {% if coursAcademie is not empty %}
+      <h2>Académie</h2>
+      <table class="ui compact celled definition table" style="font-size: 1em;" dir="rtl">
+        <thead>
+          <tr style="text-align: center">
+            <th></th>
+            <th>07h30 - 08h10</th>
+            <th>08h10 - 08h50</th>
+            <th>08h50 - 09h30</th>
+            <th>09h30 - 10h10</th>
+            <th>10h10 - 10h50</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% set jours = {2: "Dimanche", 3: "Lundi", 4: "Mardi", 5: "Mercredi", 6: "Jeudi"} %}
+          {% for day in 2..6 %}
+            {% set color = "white" %}
+            {% if day % 2 == 0 %}{% set color = "positive" %}{% endif %}
+            <tr class="{{ color }}" style="text-align: center">
+              <td>{{ jours[day] }}</td>
+              {% for time in 1..5 %}
+                <td>
+                  {% for item in coursAcademie %}
+                    {% if item.jour == day %}
+                      {% if item.heure == time %}
+                        {% if item.classe %}
+                          {{ item.anneeContrat.contrat.enseignant.pnomAr }} {{ item.anneeContrat.contrat.enseignant.nomAr }} <br>
+                          {{ item.anneeContrat.contrat.enseignant.nom }}
+                        {% else %}
+                          {{ item.halaqa.libelle }}
+                        {% endif %}
+                        <br>
+                        <strong>{{ item.matiere.libelle }}</strong><br>
+                        <i>
+                          {% if item.classe.salle %}
+                            {{ item.classe.salle[0].salle.nom }} <br>
+                            {{ item.classe.salle[0].salle.batiment.nom }} - {{ item.classe.salle[0].salle.localisation }}
+                          {% endif %}
+                        </i>
+                      {% endif %}
+                    {% endif %}
+                  {% endfor %}
+                </td> 
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+    <br><br>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

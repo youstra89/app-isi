@@ -25,7 +25,9 @@
       <div class="menu">
         <span class="sub-menu">
           <a class="item" href="{{ path('ens_enseignant_de_l_annee', {'as': asec, 'annexeId': annexe.id,}) }}">{{ 'Enseignants de l\'année'|trans }}</a>
-          <a class="item" href="{{ path('ens_fonctions_en_cours', {'as': asec, 'annexeId': annexe.id,}) }}">{{ 'Utiliser enseignant'|trans }}</a>
+          {% if is_granted('ROLE_DIRECTION_ENSEIGNANT') %}
+            <a class="item" href="{{ path('ens_fonctions_en_cours', {'as': asec, 'annexeId': annexe.id,}) }}">{{ 'Utiliser enseignant'|trans }}</a>
+          {% endif %}
         </span>
       </div>
     </div>
@@ -42,32 +44,36 @@
       </div>
     </div>
   </div>
-  <div class="ui input">
-    <div class="ui simple dropdown item">
-      <a><h4 class="ui header"><i class="flag checkered icon"></i>{{ 'Contrôle'|trans }}</h4></a>
-      <i class="dropdown icon"></i>
-      <div class="menu">
-        <span class="sub-menu">
-          <a class="item" href="{{ path('ens_absences_home', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Absences'|trans }}</a>
-          <a class="item" href="{{ path('ens_retards_home', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Retards'|trans }}</a>
-        </span>
+  {% if is_granted('ROLE_CONTROLE_ENSEIGNANT') %}
+    <div class="ui input">
+      <div class="ui simple dropdown item">
+        <a><h4 class="ui header"><i class="flag checkered icon"></i>{{ 'Contrôle'|trans }}</h4></a>
+        <i class="dropdown icon"></i>
+        <div class="menu">
+          <span class="sub-menu">
+            <a class="item" href="{{ path('ens_absences_home', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Absences'|trans }}</a>
+            <a class="item" href="{{ path('ens_retards_home', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Retards'|trans }}</a>
+          </span>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="ui input">
-    <div class="ui simple dropdown item">
-      <a><h4 class="ui header"><i class="american sign language interpreting icon"></i>{{ 'Discipline'|trans }}</h4></a>
-      <i class="dropdown icon"></i>
-      <div class="menu">
-        <span class="sub-menu">
-          <a class="item" href="{{ path('ens_convocation_home', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Convocations'|trans }}</a>
-          <a class="item" href="{{ path('ens_conduite_home', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Conduites'|trans }}</a>
-          <a class="item" href="{{ path('ens_sanction_home', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Sanctions'|trans }}</a>
-        </span>
+  {% endif %}
+  {% if is_granted('ROLE_DISCIPLINE_ENSEIGNANT') %}
+    <div class="ui input">
+      <div class="ui simple dropdown item">
+        <a><h4 class="ui header"><i class="american sign language interpreting icon"></i>{{ 'Discipline'|trans }}</h4></a>
+        <i class="dropdown icon"></i>
+        <div class="menu">
+          <span class="sub-menu">
+            <a class="item" href="{{ path('ens_convocation_home', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Convocations'|trans }}</a>
+            <a class="item" href="{{ path('ens_conduite_home', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Conduites'|trans }}</a>
+            <a class="item" href="{{ path('ens_sanction_home', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Sanctions'|trans }}</a>
+          </span>
+        </div>
       </div>
     </div>
-  </div>
-  <a class="item" href="{{ path('ens_rencontre_home', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header"><i class="handshake icon"></i> {{ 'Rencontres'|trans }}</h4></a>
+    <a class="item" href="{{ path('ens_rencontre_home', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header"><i class="handshake icon"></i> {{ 'Rencontres'|trans }}</h4></a>
+  {% endif %}
 {% endblock %}
 
 
@@ -76,33 +82,39 @@
   <span class="ui simple dropdown item">
     <a><h4 class="ui header">{{ 'Enseignants'|trans }}<i class="dropdown icon"></i></h4></a>
     <div class="menu">
-        <a class="item" href="{{ path('ens_enseignant_de_l_annee', {'as': asec, 'annexeId': annexe.id,}) }}">{{ 'Enseignants de l\'année'|trans }}</a>
+      <a class="item" href="{{ path('ens_enseignant_de_l_annee', {'as': asec, 'annexeId': annexe.id,}) }}">{{ 'Enseignants de l\'année'|trans }}</a>
+      {% if is_granted('ROLE_DIRECTION_ENSEIGNANT') %}
         <a class="item" href="{{ path('ens_fonctions_en_cours', {'as': asec, 'annexeId': annexe.id,}) }}">{{ 'Utiliser enseignant'|trans }}</a>
+      {% endif %}
     </div>
   </span>
   <span class="ui simple dropdown item">
     <a><h4 class="ui header">{{ 'Cours'|trans }}<i class="dropdown icon"></i></h4></a>
     <div class="menu">
-        <a class="item" href="{{ path('ens_liste_des_classes_save_cours', {'as': asec, 'annexeId': annexe.id, 'regime': 'A'}) }}">{{ 'Académie'|trans }}</a>
-        <a class="item" href="{{ path('ens_liste_des_classes_save_cours', {'as': asec, 'annexeId': annexe.id, 'regime': 'F'}) }}">{{ 'Centre de formation'|trans }}</a>
+      <a class="item" href="{{ path('ens_liste_des_classes_save_cours', {'as': asec, 'annexeId': annexe.id, 'regime': 'A'}) }}">{{ 'Académie'|trans }}</a>
+      <a class="item" href="{{ path('ens_liste_des_classes_save_cours', {'as': asec, 'annexeId': annexe.id, 'regime': 'F'}) }}">{{ 'Centre de formation'|trans }}</a>
     </div>
   </span>
-  <span class="ui simple dropdown item">
-    <a><h4 class="ui header">{{ 'Contrôle'|trans }}<i class="dropdown icon"></i></h4></a>
-    <div class="menu">
+  {% if is_granted('ROLE_CONTROLE_ENSEIGNANT') %}
+    <span class="ui simple dropdown item">
+      <a><h4 class="ui header">{{ 'Contrôle'|trans }}<i class="dropdown icon"></i></h4></a>
+      <div class="menu">
         <a class="item" href="{{ path('ens_absences_home', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Absences'|trans }}</a>
         <a class="item" href="{{ path('ens_retards_home', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Retards'|trans }}</a>
-    </div>
-  </span>
-  <span class="ui simple dropdown item">
-    <a><h4 class="ui header">{{ 'Discipline'|trans }}<i class="dropdown icon"></i></h4></a>
-    <div class="menu">
-        <div class="item"><a class="item" href="{{ path('ens_convocation_home', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Convocations'|trans }}</a></div>
-        <div class="item"><a class="item" href="{{ path('ens_conduite_home', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Conduites'|trans }}</a></div>
-        <div class="item"><a class="item" href="{{ path('ens_sanction_home', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Sanctions'|trans }}</a></div>
-    </div>
-  </span>
-  <a class="item" href="{{ path('ens_rencontre_home', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header">{{ 'Rencontres'|trans }}</h4></a>
+      </div>
+    </span>
+  {% endif %}
+  {% if is_granted('ROLE_DISCIPLINE_ENSEIGNANT') %}
+    <span class="ui simple dropdown item">
+      <a><h4 class="ui header">{{ 'Discipline'|trans }}<i class="dropdown icon"></i></h4></a>
+      <div class="menu">
+          <div class="item"><a class="item" href="{{ path('ens_convocation_home', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Convocations'|trans }}</a></div>
+          <div class="item"><a class="item" href="{{ path('ens_conduite_home', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Conduites'|trans }}</a></div>
+          <div class="item"><a class="item" href="{{ path('ens_sanction_home', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Sanctions'|trans }}</a></div>
+      </div>
+    </span>
+    <a class="item" href="{{ path('ens_rencontre_home', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header">{{ 'Rencontres'|trans }}</h4></a>
+  {% endif %}
 {% endblock %}
 
 
@@ -115,7 +127,7 @@
 
 {% block body %}
     {% if is_granted('ROLE_SUPER_ADMIN') %}
-      <a href="{{ path('ens_add', {'as': asec}) }}" class="ui positive button"><i class="plus icon"></i> {{ 'Ajouter un agent'|trans }}</a>
+      <a href="{{ path('ens_add', {'as': asec, annexeId: annexe.id}) }}" class="ui positive button"><i class="plus icon"></i> {{ 'Ajouter un agent'|trans }}</a>
     {% endif %}
     {% if enseignants is not defined %}
         <p>{{ 'Aucun enseignant n\'a encore été inscrit'|trans }}</p>

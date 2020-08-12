@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * SalleClasse
  *
- * @ORM\Table(name="salle_classe", uniqueConstraints={@ORM\UniqueConstraint(columns={"classe_id", "annee_id"})})
+ * @ORM\Table(name="salle_classe", uniqueConstraints={@ORM\UniqueConstraint(columns={"salle_id", "annee_id", "groupe_formation_id"})})
  * @ORM\Entity(repositoryClass="ISI\ISIBundle\Repository\SalleClasseRepository")
  */
 class SalleClasse
@@ -34,9 +34,9 @@ class SalleClasse
     /**
      * @var \Classe
      *
-     * @ORM\ManyToOne(targetEntity="Classe")
+     * @ORM\ManyToOne(targetEntity="Classe", inversedBy="salle")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="classe_id", referencedColumnName="id", nullable=false)
+     *   @ORM\JoinColumn(name="classe_id", referencedColumnName="id", nullable=true)
      * })
      */
     private $classe;
@@ -179,30 +179,6 @@ class SalleClasse
     }
 
     /**
-     * Set classe
-     *
-     * @param \ISI\ISIBundle\Entity\Classe $classe
-     *
-     * @return SalleClasse
-     */
-    public function setClasse(\ISI\ISIBundle\Entity\Classe $classe)
-    {
-        $this->classe = $classe;
-
-        return $this;
-    }
-
-    /**
-     * Get classe
-     *
-     * @return \ISI\ISIBundle\Entity\Classe
-     */
-    public function getClasse()
-    {
-        return $this->classe;
-    }
-
-    /**
      * Set annee
      *
      * @param \ISI\ISIBundle\Entity\Annee $annee
@@ -320,5 +296,29 @@ class SalleClasse
     public function getUpdatedBy()
     {
         return $this->updatedBy;
+    }
+
+    /**
+     * Set classe
+     *
+     * @param \ISI\ISIBundle\Entity\Classe $classe
+     *
+     * @return SalleClasse
+     */
+    public function setClasse(\ISI\ISIBundle\Entity\Classe $classe = null)
+    {
+        $this->classe = $classe;
+
+        return $this;
+    }
+
+    /**
+     * Get classe
+     *
+     * @return \ISI\ISIBundle\Entity\Classe
+     */
+    public function getClasse()
+    {
+        return $this->classe;
     }
 }

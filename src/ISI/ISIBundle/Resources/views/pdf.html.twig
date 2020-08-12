@@ -8,9 +8,30 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amiri">
     <style>
+        {% if server == '/var/www/html' %}
+            @font-face{
+                font-family: "majalla";
+                src: url("file:///var/www/html/markaz/web/polices/majalla.ttf");
+            }
+
+            @font-face{
+                font-family: "Lato";
+                src: url("file:///var/www/html/markaz/web/polices/Lato-Regular.ttf");
+            }
+        {% else %}
+            @font-face{
+                font-family: "majalla";
+                src: url("file:///home/youstra/www/markaz/web/polices/majalla.ttf");
+            }
+
+            @font-face{
+                font-family: "Lato";
+                src: url("file:///home/youstra/www/markaz/web/polices/Lato-Regular.ttf");
+            }
+        {% endif %}
         
         * {
-            font-family: "Amiri", serif;
+            font-family: majalla, Lato;
         }
 
         .titre-document{
@@ -19,13 +40,8 @@
             width: 70%;
             margin: auto;
             /* font-size: 2em; */
-            font-family: "Amiri", serif;
             font-weight: bold;
         }
-
-		span{
-			font-family: "Amiri", serif;
-		}
 
         .id-fiche{
             /* font-size: 2.5em; */
@@ -33,19 +49,16 @@
         }
 
         .classe, .annee{
-            font-family: "Amiri", serif;
             display: inline;
 
         }
 
         .matiere{
-            font-family: 'Amiri, serif';
             display: inline;
             margin-right: 700px;
         }
 
         .libelleClasse, .libelleMatiere{
-            font-family: 'Amiri', serif;
             font-weight: bold;
         }
 
@@ -81,35 +94,14 @@
         }
 
         .matricule-ar{
-            font-family: 'Amiri', serif;
             /* font-size: 0.8em; */
             font-weight: bold;
-        }
-
-        .matricule{
-            font-family: 'Amiri', serif;
-            /* font-size: 1.4em; */
         }
 
         .nomAr{
             font-family: 'Amiri', serif;
             /* font-size: 1.1em; */
             font-weight: bold;
-        }
-
-        .nomEleveFr{
-            font-family: 'Amiri', serif;
-            /* font-size: 1.5em */
-        }
-
-        .nomEleveAr{
-            font-family: 'Amiri', serif;
-            /* font-size: 1.4em */
-        }
-
-        .sexe, .numero{
-            font-family: 'Amiri', serif;
-            /* font-size: 1.3em */
         }
 
         .effectif{
@@ -119,26 +111,15 @@
     </style>
 </head>
 
-<body style="font-family: Arial">
-    <header>
-        <center>
-            <img src="{{app.request.schemeAndHttpHost ~ asset('../web/images/en-tete.png')}}" alt="">
-            {# <img src="file:///C:/wamp64/www/markaz/web/images/en-tete.png" alt=""> #}
-        </center>
-    </header>
-    {% block body %}
-    {% endblock %}
-</body>
+    <body style="font-family: Arial">
+        <header>
+            <center>
+                <img src="{{app.request.schemeAndHttpHost ~ asset('images/en-tete.png')}}" alt="">
+                {# <img src="file:///C:/wamp64/www/markaz/web/images/en-tete.png" alt=""> #}
+            </center>
+        </header>
+        {% block body %}
+        {% endblock %}
+    </body>
 
 </html>
-
-{# [2020-06-19 16:42:08] request.ERROR: Uncaught PHP Exception Symfony\Component\HttpKernel\Exception\NotFoundHttpException: "No route found for "GET /fr/affaires-scolaires/TableFilter/dist/tablefilter/tf-0-9f35c43ee2b90b920298.js" (from "http://backoffice.drdiallo.net/markaz/fr/affaires-scolaires/liste-de-classe-home-4-A.html?annexeId=1")" at /home/youstra/www/markaz/vendor/symfony/symfony/src/Symfony/Component/HttpKernel/EventListener/RouterListener.php line 128 {"exception":"[object] (Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException(code: 0): No route found for \"GET /fr/affaires-scolaires/TableFilter/dist/tablefilter/tf-0-9f35c43ee2b90b920298.js\" (from \"http://backoffice.drdiallo.net/markaz/fr/affaires-scolaires/liste-de-classe-home-4-A.html?annexeId=1\") at /home/youstra/www/markaz/vendor/symfony/symfony/src/Symfony/Component/HttpKernel/EventListener/RouterListener.php:128, Symfony\\Component\\Routing\\Exception\\ResourceNotFoundException(code: 0):  at /home/youstra/www/markaz/var/cache/prod/appProdProjectContainerUrlMatcher.php:1501)"} []
-[2020-06-19 16:42:11] request.ERROR: Uncaught PHP Exception Symfony\Component\HttpKernel\Exception\NotFoundHttpException: "No route found for "GET /fr/affaires-scolaires/TableFilter/dist/tablefilter/tf-0-9f35c43ee2b90b920298.js" (from "http://backoffice.drdiallo.net/markaz/fr/affaires-scolaires/liste-de-classe-home-4-A.html?annexeId=1")" at /home/youstra/www/markaz/vendor/symfony/symfony/src/Symfony/Component/HttpKernel/EventListener/RouterListener.php line 128 {"exception":"[object] (Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException(code: 0): No route found for \"GET /fr/affaires-scolaires/TableFilter/dist/tablefilter/tf-0-9f35c43ee2b90b920298.js\" (from \"http://backoffice.drdiallo.net/markaz/fr/affaires-scolaires/liste-de-classe-home-4-A.html?annexeId=1\") at /home/youstra/www/markaz/vendor/symfony/symfony/src/Symfony/Component/HttpKernel/EventListener/RouterListener.php:128, Symfony\\Component\\Routing\\Exception\\ResourceNotFoundException(code: 0):  at /home/youstra/www/markaz/var/cache/prod/appProdProjectContainerUrlMatcher.php:1501)"} []
-[2020-06-19 16:42:14] request.INFO: Matched route "isi_tirer_liste_de_la_classe". {"route":"isi_tirer_liste_de_la_classe","route_parameters":{"_controller":"ISI\\ISIBundle\\Controller\\AffairesScolairesController::tirerListeDeLaClasseAction","_locale":"fr","as":"4","regime":"A","classeId":"402","_route":"isi_tirer_liste_de_la_classe"},"request_uri":"http://backoffice.drdiallo.net/markaz/fr/affaires-scolaires/liste-de-la-classe-4-A-402.html?annexeId=1","method":"GET"} []
-[2020-06-19 16:42:14] security.DEBUG: Read existing security token from the session. {"key":"_security_main"} []
-[2020-06-19 16:42:14] security.DEBUG: User was reloaded from a user provider. {"username":"youstra","provider":"FOS\\UserBundle\\Security\\UserProvider"} []
-[2020-06-19 16:42:14] snappy.DEBUG: Set option encoding = 'UTF-8'. [] []
-[2020-06-19 16:42:14] snappy.DEBUG: Output from HTML (<!DOCTYPE html> <html>  <head>     <meta charset="UTF-8" />     <title>    Liste de classe | الر�). [] []
-[2020-06-19 16:42:14] request.CRITICAL: Uncaught PHP Exception Symfony\Component\Process\Exception\RuntimeException: "The process has been signaled with signal "6"." at /home/youstra/www/markaz/vendor/symfony/symfony/src/Symfony/Component/Process/Process.php line 430 {"exception":"[object] (Symfony\\Component\\Process\\Exception\\RuntimeException(code: 0): The process has been signaled with signal \"6\". at /home/youstra/www/markaz/vendor/symfony/symfony/src/Symfony/Component/Process/Process.php:430)"} []
-[2020-06-19 16:42:14] security.DEBUG: Stored the security token in the session. {"key":"_security_main"} [] #}
-

@@ -33,13 +33,15 @@ class AnneeContratClasseRepository extends \Doctrine\ORM\EntityRepository
             ->join('ac.contrat', 'cont')
             ->join('cont.enseignant', 'e')
             ->join('ac.annee', 'an')
-            ->join('c.classe', 'cl')
-            ->join('cl.niveau', 'n')
-            ->join('n.groupeFormation', 'grpF')
-            ->where('an.id = :anneeId AND e.annexe = :annexeId AND e.enseignant = true AND grpF.reference = :regime')
+            // ->join('c.classe', 'cl')
+            // ->join('c.halaqa', 'h')
+            // ->join('cl.niveau', 'n')
+            // ->join('n.groupeFormation', 'grpF')
+            ->where('an.id = :anneeId AND e.annexe = :annexeId AND e.enseignant = true')
+            // ->where('an.id = :anneeId AND e.annexe = :annexeId AND e.enseignant = true AND grpF.reference = :regime')
             ->setParameter('annexeId', $annexeId)
-            ->setParameter('anneeId', $anneeId)
-            ->setParameter('regime', $regime);
+            ->setParameter('anneeId', $anneeId);
+            // ->setParameter('regime', $regime);
 
         return $qb->getQuery()
                 ->getResult();

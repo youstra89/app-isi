@@ -38,16 +38,18 @@
           <td>{{ salle.localisation }}</td>
           <td>
             {% for sal in sallesClasses %}
-              {% if salle.id == sal.salle.id and sal.classe.niveau.groupeFormation.id == 1 %}
-                {{ sal.classe.libelleFr }}
+              {% if salle.id == sal.salle.id and sal.classe.niveau is defined and sal.classe.niveau.groupeFormation.id == 1 %}
+                {{ sal.classe.libelleFr }} 
+                {# {{ sal.classe.id }} #}
                 {% set editMode = true %}
               {% endif %}
             {% endfor %}
           </td>
           <td>
             {% for sal in sallesClasses %}
-              {% if salle.id == sal.salle.id and sal.classe.niveau.groupeFormation.id == 2 %}
-                {{ sal.classe.libelleFr }}
+              {% if salle.id == sal.salle.id and sal.classe.niveau is defined and sal.classe.niveau.groupeFormation.id == 2 %}
+                {{ sal.classe.libelleFr }} 
+                {# {{ sal.classe.id }} #}
                 {% set editMode = true %}
               {% endif %}
             {% endfor %}

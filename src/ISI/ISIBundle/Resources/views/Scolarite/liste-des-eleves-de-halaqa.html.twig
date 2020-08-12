@@ -10,28 +10,24 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     <style>
         {% if server == '/var/www/html' %}
-            @font-face
-            {
+            @font-face{
                 font-family: "majalla";
                 src: url("file:///var/www/html/markaz/web/polices/majalla.ttf");
             }
 
-            @font-face
-            {
+            @font-face{
                 font-family: "Lato";
                 src: url("file:///var/www/html/markaz/web/polices/Lato-Regular.ttf");
             }
         {% else %}
-            @font-face
-            {
+            @font-face{
                 font-family: "majalla";
-                src: url("file:///C:/xampp/htdocs/markaz/web/polices/majalla.ttf");
+                src: url("file:///home/youstra/www/markaz/web/polices/majalla.ttf");
             }
 
-            @font-face
-            {
+            @font-face{
                 font-family: "Lato";
-                src: url("file:///C:/xampp/htdocs/markaz/web/polices/Lato-Regular.ttf");
+                src: url("file:///home/youstra/www/markaz/web/polices/Lato-Regular.ttf");
             }
         {% endif %}
 
@@ -190,7 +186,7 @@
                 </td>
                 <td align="" width="" class="">
                     <center>
-                    <img src="{{app.request.schemeAndHttpHost ~ asset('../web/images/logoISI.png')}}" alt="" width="40%">
+                    <img src="{{app.request.schemeAndHttpHost ~ asset('images/logoISI.png')}}" alt="" width="40%">
                     </center>
                 </td>
                 <td align="" width="30%" class="en-tete-fr">
@@ -205,7 +201,7 @@
             </table>
         <div> #}
         <center>
-            <img src="{{app.request.schemeAndHttpHost ~ asset('../web/images/en-tete.png')}}" alt="" width="75%">
+            <img src="{{app.request.schemeAndHttpHost ~ asset('images/en-tete.png')}}" alt="" width="75%">
             {# <img src="file:///C:/wamp64/www/markaz/web/images/en-tete.png"
                 alt=""> #}
         </center>

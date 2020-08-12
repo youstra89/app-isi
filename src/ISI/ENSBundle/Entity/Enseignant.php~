@@ -264,6 +264,23 @@ class Enseignant
      */
     private $annexe;
 
+    /**
+     * @ORM\Column(name="photo", type="string", nullable=true)
+     */
+    private $photo;
+
+    public function getPhoto()
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto($photo)
+    {
+        $this->photo = $photo;
+
+        return $this;
+    }
+
 
 
     /**

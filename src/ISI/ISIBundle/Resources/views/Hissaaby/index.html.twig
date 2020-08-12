@@ -5,7 +5,7 @@
     {% if is_granted('ROLE_INTERNAT') %}
         {% set template = "ISIBundle:Internat:index.html.twig" %}
     {% elseif is_granted('ROLE_DIRECTION_ENSEIGNANT') %}
-        {% set template = "ISIBundle:Enseignant:index.html.twig" %}
+        {% set template = "ENSBundle:Enseignant:index.html.twig" %}
     {% elseif is_granted('ROLE_ETUDE') %}
         {% set template = "ISIBundle:Etude:index.html.twig" %}
     {% elseif is_granted('ROLE_SCOLARITE') or is_granted('ROLE_PREINSCRIPTION') %}

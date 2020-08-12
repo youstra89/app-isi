@@ -1,0 +1,194 @@
+{# ISIBundle/Ressources/views/Scolarite #}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Diplôme | {{ recipiendaire.eleve.nomFr }} {{ recipiendaire.eleve.pnomFr }} </title>
+        {% block stylesheets %}{% endblock %}
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <style>
+            {% if server == '/var/www/html' %}
+                @font-face{
+                    font-family: "majalla";
+                    src: url("file:///var/www/html/markaz/web/polices/majalla.ttf");
+                }
+
+                @font-face{
+                    font-family: "Lato";
+                    src: url("file:///var/www/html/markaz/web/polices/Lato-Regular.ttf");
+                }
+            {% else %}
+                @font-face{
+                    font-family: "majalla";
+                    src: url("file:///home/youstra/www/markaz/web/polices/majalla.ttf");
+                }
+
+                @font-face{
+                    font-family: "Lato";
+                    src: url("file:///home/youstra/www/markaz/web/polices/Lato-Regular.ttf");
+                }
+            {% endif %}
+
+            * {
+                font-family: majalla, Lato;
+            }
+
+            h2{
+                background-color: #C0C0C0;
+                font-size: 3em;
+                box-shadow: 5px;
+                font-family: "traditional arabic";
+                line-height: 80px;
+                width: 90%;
+                margin: auto;
+                border: 1px solid black;
+                border-radius: 5px;
+            }
+
+            .contenu {
+                font-size: 2em;
+            }
+
+            .en-tete-fr, .en-tete-ar{
+                line-height: 5px;
+                font-weight: bold;
+                font-size: 1.7em;
+                line-height: 15px;
+            }
+
+            .bulletin{
+                width: 1350px;
+                height: 2090px;
+            }
+
+            table{
+                width: 90%;
+                align: center;
+            }
+
+            .matricule-eleve{
+                line-height: 30px;
+                text-align: center;
+                font-size: 2em;
+                background-color: rgb(DC, DC, DC);
+                box-shadow: 5px;
+            }
+
+            .matricule{
+                color: red;
+                font-weight: bold;
+            }
+
+            .identification-eleve{
+                width: 75%;
+            }
+            .infos-identification-eleve{
+                line-height: 45px;
+                font-size: 2em;
+            }
+
+            .titre-info-eleve, .info-eleve-db{
+                width: 50%;
+            }
+
+
+            .titre-bloc{
+                text-align: center;
+                vertical-align: middle;
+                font-family: katibeth;
+                font-size: 1.7em;
+            }
+        </style>
+    </head>
+    <body>
+        <table width="100%" align="center">
+            <tr>
+                <td align="" width="35%" class="en-tete-ar">
+                    <center>
+                        <p>جمهورية ساحل العاج</p>
+                        <p>مركز العلوم الإسلامية</p>
+                        <p>أبدجان - حي أنياما</p>
+                        <p>هاتف : 21373048 - 20248312</p>
+                    </center>
+                </td>
+                <td align="" width="30%" class="">
+                    <center>
+                        <img src="{{app.request.schemeAndHttpHost ~ asset('images/logoISI.png')}}" alt="" width="30%">
+                    </center>
+                </td>
+                <td align="" width="35%" class="en-tete-fr">
+                    <center>
+                        <p>REPUBLIQUE DE COTE D'IVOIRE</p>
+                        <p>INSTITUT DES SCIENCES ISLAMIQUES</p>
+                        <p>ABIDJAN - ANYAMA</p>
+                        <p>Tél: 21373048 - 20248312</p>
+                    </center>
+                </td>
+            </tr>
+        </table>
+        {% set diplomeFr = "cycle primaire" %}
+        {% set diplomeAr = "الابتدائيـة" %}
+        {% if recipiendaire.diplome == 2 %}
+            {% set diplomeFr = "premier cycle" %}
+            {% set diplomeAr = "المتوسط" %}
+        {% endif %}
+        
+        <table class="matricule-eleve" align="center">
+            <tr><td>الشهادة {{ diplomeAr }}</td></tr>
+            <tr><td>Attestation de réussite du {{ diplomeFr }} </td></tr>
+        </table> 
+        <table align="center">
+            <tr>
+                <td style="width: 50%; font-size: 1.7em; text-align: center; line-height: 30px;">
+                    Louange à Allah, Prières et bénédictions sur le prophète, sur sa famille et ses compagnons. <br>
+                    Vu le procès-verbal de la commission des examens de l'Institut des Sciences Islamiques, la direction atteste que l’élève: <strong>{{ recipiendaire.eleve.nomFr }} {{ recipiendaire.eleve.pnomFr }}</strong>
+                    Originaire de : <strong>{{ recipiendaire.eleve.nationalite }}</strong> né(e) à: <strong>{{ recipiendaire.eleve.lieuNaissance }}</strong> le: <strong>{{ recipiendaire.eleve.dateNaissance|date('d-m-Y') }}</strong>  a subi avec succès les épreuves de l’examen du 
+                    certificat de fin d'étude du cycle primaire session : <strong>{{ recipiendaire.annee.libelle }}</strong> avec mention <strong>{{ recipiendaire.mention.appreciationFr }}</strong>.
+                    La direction lui délivre la présente attestation, lui conseille la crainte d’Allah dans la solitude et en public.
+                    Qu’Allah le comble de biens pour ce qu’il a appris. <br>
+                    <p style="text-align: left">Fait à Abidjan le : <strong>{{ recipiendaire.date|date('d-m-Y') }}</strong>.</p>
+                </td>
+                <td  style="width: 50%; font-size: 1.8em; text-align: center; line-height: 30px;">
+                    الحمد لله والصلاة والسلام على رسول الله وعلى آله وصحبه، وبعد: <br>
+بناء على تقرير لجنة الامتحانات بإدارة المناهج والمتابعة بمركز العلوم الإسلامية، فإنّ الإدارة تشهد أن الطالب (ة) <strong>{{ recipiendaire.eleve.nomAr }} {{ recipiendaire.eleve.pnomAr }}</strong>، من دولة: المولود (ة) في:<strong>{{ recipiendaire.eleve.lieuNaissance }}</strong>  بتاريخ: <strong>{{ recipiendaire.eleve.dateNaissance|date('d-m-Y') }}</strong>  قد استحق (ت) نيل الشهادة {{ diplomeAr }} للعام الدراسي:<strong>{{ recipiendaire.annee.libelle }}</strong>   بتقدير:<strong>{{ recipiendaire.mention.appreciationFr }}</strong> والإدارة إذ تمنحه (ها) هذه الشهادة وتوصيه (ها) بتقوى الله في السر والعلن.
+والله تعالى نسأل أن يوفّقه للعمل بما عَلِمَ. <br>
+<p style="text-align: right">حررت في أبيدجان بتاريخ:<strong>{{ recipiendaire.date|date('d-m-Y') }}</strong></p>
+                </td>
+            </tr>
+        </table>
+        <table width="100%" align="center" style="line-height: 25px">
+            <tr>
+                <td style="width: 30%; font-size: 1.7em; text-align: center">
+                    المدير العام
+                    <br><span style="font-size: 1em;">Directeur Général</span>
+                </td>
+                <td style="width: 40%; font-size: 1.7em; text-align: center">
+                    إدارة شؤون الطلاب والقبول
+                    <br><span style="font-size: 1em;">Directeur des affaires scolaires</span>
+                </td>
+                <td style="width: 30%; font-size: 1.7em; text-align: center">
+                    إدارة الشؤون التعليمية
+                    <br><span style="font-size: 1em;">Directeur du programme des études</span>
+                </td>
+            </tr>
+        </table>
+        <br><br>
+        <table width="100%" align="center" style="font-weight: bold; line-height:20px; font-size: .8em">
+            <tr>
+                <td style="width: 30%; font-size: 1.7em; text-align: center">
+                    N° d’enregistrement: <strong style="font-style: italic">{{ recipiendaire.numero }}</strong> Date: <strong>{{ recipiendaire.date|date('d-m-Y') }}</strong>.
+                    <br><span style="font-size: 1em;">Il n’est délivré qu’un seul diplôme</span>
+                </td>
+                <td style="width: 40%; font-size: 1.7em; text-align: center">
+                    <img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl={{recipiendaire.eleve.matricule}}&choe=UTF-8" alt="" width="20%"><br>
+                    <span style="font-size: 1em;">{{ recipiendaire.eleve.matricule }}</span>
+                </td>
+                <td style="width: 30%; font-size: 1.7em; text-align: center">
+                    سجّلت برقم: <strong style="font-style: italic">{{ recipiendaire.numero }}</strong> وتاريخ: <strong>{{ recipiendaire.date|date('d-m-Y') }}</strong>
+                    <br><span style="font-size: 1em;">أي كشط أو تغيير تلغى الشهادة، وهي تصدر مرة واحدة</span>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>

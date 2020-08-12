@@ -21,6 +21,15 @@
         {{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register', {'as': asec, 'annexeId': annexe.id}), 'attr': {'class': 'fos_user_registration_register'}}) }}
             <div class="three fields">
                 <div class="field">
+                    <label for="agentId">Personnel</label>
+                    <select class="js-example-basic-single" name="agentId" id="agentId">
+                        <option value="">Choisir un agent</option>
+                        {% for agent in agents if agent.user is empty %}
+                            <option value="{{ agent.id }}">{{ agent.matricule }} --- {{ agent.nomFr }} {{ agent.pnomFr }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="field">
                     <label for="">
                         {{ form_label(form.email, "E-mail", {'label_attr': {'class': ''}}) }} {{ form_errors(form.email) }}
                     </label>
@@ -31,15 +40,6 @@
                         {{ form_label(form.username, "Nom d'utilisateur", {'label_attr': {'class': ''}}) }} {{ form_errors(form.username) }}
                     </label>
                     {{ form_widget(form.username, {'attr': {'class': '', 'placeholder': 'Exemple: youstra'}}) }}
-                </div>
-                <div class="field">
-                    <label for="agentId">Personnel</label>
-                    <select class="js-example-basic-single" name="agentId" id="agentId">
-                        <option value="">Choisir un agent</option>
-                        {% for agent in agents if agent.user is empty %}
-                            <option value="{{ agent.id }}">{{ agent.matricule }} --- {{ agent.nomFr }} {{ agent.pnomFr }}</option>
-                        {% endfor %}
-                    </select>
                 </div>
             </div>
             <div class="two fields">
@@ -89,13 +89,32 @@
 {% endblock %}
 
 
-{% block scripts %}
+{% block javascripts %}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
     <script src="{{ asset('js/jquery-3.3.1.js') }}"></script>
     <script src="{{ asset('js/select2.min.js') }}"></script>
     <script>
         $(document).ready(function() {
             $('.js-example-basic-single').select2();
+
+
+            $("#agentId").change(function() {
+                console.log($(this).val());
+                
+                $.ajax({
+                    type: 'get',
+                    url: Routing.generate('get_agent', { agentId: $(this).val() }, true),
+                    beforeSend: function() {
+                        console.log('ça charge');
+                    },
+                    success: function(data) {
+                        $("#fos_user_registration_form_email").val(data.mail);
+                        console.log('nomFr Ok')
+                    }
+                });
+            });
         });
     </script>
 {% endblock %}

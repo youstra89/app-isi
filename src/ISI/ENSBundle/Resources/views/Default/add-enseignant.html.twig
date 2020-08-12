@@ -1,8 +1,16 @@
 {% extends "ENSBundle:Default:index.html.twig" %}
 
+
+{% block stylesheets %}
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+  <link href="{{ asset('css/select2.min.css') }}" rel="stylesheet" />
+{% endblock %}
+
+
 {% block title %}
 	Enregistrer un agent
 {% endblock %}
+
 
 {% block body %}
 	<h2>{{ 'Enregistrement d\'un nouvel agent'|trans }}</h2>
@@ -47,17 +55,39 @@
 				</div>
 			</div><br><br>
 			<div class="two fields">
-				<div class="field">
-					<label for="">
-						{{ form_label(form.nomFr, "Nom (français)", {'label_attr': {'class': ''}}) }}
-						{{ form_errors(form.nomFr) }}
-					</label> {{ form_widget(form.nomFr, {'attr': {'class': 'nomFr'}}) }}
+				<div class="sixteen wide field">
+					<div class="two fields">
+						<div class="field">
+							{{ form_label(form.nomFr, "Nom (français)", {'label_attr': {'class': ''}}) }}
+							{{ form_errors(form.nomFr) }}
+							{{ form_widget(form.nomFr, {'attr': {'class': 'nomFr'}}) }}
+							{{ form_label(form.nomAr, "Nom (arabe)", {'label_attr': {'class': ''}}) }}
+							{{ form_errors(form.nomAr) }}
+							{{ form_widget(form.nomAr, {'attr': {'class': 'nomAr'}}) }}
+						</div>
+						<div class="field">
+							{{ form_label(form.pnomFr, "Prénoms (français)", {'label_attr': {'class': ''}}) }}
+							{{ form_errors(form.pnomFr) }}
+							{{ form_widget(form.pnomFr, {'attr': {'class': 'nomFr'}}) }}
+							{{ form_label(form.pnomAr, "Prénoms (arabe)", {'label_attr': {'class': ''}}) }}
+							{{ form_errors(form.pnomAr) }}
+							{{ form_widget(form.pnomAr, {'attr': {'class': 'nomAr'}}) }}
+						</div>
+					</div>
 				</div>
 				<div class="field">
-					<label for="">
-						{{ form_label(form.nomAr, "Nom (arabe)", {'label_attr': {'class': ''}}) }}
-						{{ form_errors(form.nomAr) }}
-					</label> {{ form_widget(form.nomAr, {'attr': {'class': 'nomAr'}}) }}
+					<div class="col-lg-4">
+						<div class="p-5">
+							<h2>Photo d'identité</h2>
+							<hr>
+							<div class="form-group row">
+								<div class="col-sm-12 mb-3 mb-sm-0">
+									{{ form_row(form.photo, {'attr': {'accept': 'image/*', 'capture': 'capture'}}) }}
+									{# <input type="file" accept="" capture="" id="photo"> #}
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div class="two fields">
@@ -159,26 +189,102 @@
 			</div>
 			<div class="two fields">
 				<div class="field">
-					<label for="">
-						{{ form_label(form.expProfessionnelle, "Expérience professionnelle", {'label_attr': {'class': ''}}) }}
-						{{ form_errors(form.expProfessionnelle) }}
-					</label> {{ form_widget(form.expProfessionnelle, {'attr': {'class': 'niveauEtude'}}) }}
+					{{ form_label(form.expProfessionnelle, "Expérience professionnelle", {'label_attr': {'class': ''}}) }}
+					{{ form_errors(form.expProfessionnelle) }}
+					{{ form_widget(form.expProfessionnelle, {'attr': {'class': 'niveauEtude'}}) }}
+					{{ form_label(form.languesParlees, "Langues parlées", {'label_attr': {'class': ''}}) }}
+					{{ form_errors(form.languesParlees) }}
+					{{ form_widget(form.languesParlees, {'attr': {'class': 'anneeObtention'}}) }}
+					<br><br>
+					<div class="two fields">
+						<div class="field"><label for="annexe">Annexe liée</label>
+							<select class="js-example-basic-single" name="annexe" id="annexe">
+								<option value="">Sélectionnez une annexe</option>
+								{% for annexe in annexes %}
+									<option value="{{ annexe.id }}">{{ annexe.libelle }}</option>
+								{% endfor %}
+							</select>
+						</div>
+						<div class="field">
+							<label for="user">Utilisateur lié</label>
+							<select class="js-example-basic-single" name="user" id="user">
+								<option value="">Sélectionnez un utilisateur</option>
+								{% for user in users %}
+									<option value="{{ user.id }}">{{ user.nom }} {{ user.pnom }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
 				</div>
 				<div class="field">
-					<label for="">
-						{{ form_label(form.languesParlees, "Langues parlées", {'label_attr': {'class': ''}}) }}
-						{{ form_errors(form.languesParlees) }}
-					</label> {{ form_widget(form.languesParlees, {'attr': {'class': 'anneeObtention'}}) }}
+					{{ form_label(form.autresCompetences, "Autres compétences", {'label_attr': {'class': ''}}) }}
+					{{ form_errors(form.autresCompetences) }}
+					{{ form_widget(form.autresCompetences, {'attr': {'class': 'diplomeObtenu'}}) }}
 				</div>
-			</div>
-			<div class="field">
-				<label for="">
-						{{ form_label(form.autresCompetences, "Autres compétences", {'label_attr': {'class': ''}}) }}
-						{{ form_errors(form.autresCompetences) }}
-				</label> {{ form_widget(form.autresCompetences, {'attr': {'class': 'diplomeObtenu'}}) }}
 			</div>
 			{{ form_widget(form.save, {'attr': {'class': 'ui primary button'}}) }}
 	  	{{ form_end(form) }}
-	</div>
+	</div><br><br>
 
+{% endblock %}
+
+
+{% block javascripts %}
+ 	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <script src="{{ asset('js/jquery-3.3.1.js') }}"></script>
+    <script src="{{ asset('js/select2.min.js') }}"></script>
+    <script>
+		$(document).ready(function() {
+		$('.js-example-basic-single').select2();
+		});
+    </script>
+	<script>
+		var input = document.getElementById("ENSBundle_enseignant_photo");
+		function verifTaille(){
+			file =input.files[0];
+			window.URL = window.URL || window.webkitURL;
+			img = new Image();
+			
+			img.onload = function(){
+				if(img.width > 413 || img.height > 532){
+					pasGlop(img.width-413, img.height-532);
+					input.value = null
+				}
+				else{
+					// glop(img.width, img.height);
+					//Tout c'est bien passé
+					function readURL(input) {
+					if (input.files && input.files[0]) {
+						var reader = new FileReader();
+						
+						reader.onload = function (e) {
+							$('#blah').attr('src', e.target.result);
+						}
+						
+						reader.readAsDataURL(input.files[0]);
+					}
+					}
+					
+					$("#ENSBundle_enseignant_photo").change(function(){
+						readURL(this);
+					});
+				}
+			}
+			img.src = window.URL.createObjectURL(file);
+		}
+				
+		function glop(width, height){
+			alert("ok c'est cool (dims : "+width+"X"+height+"px)");
+		}
+
+		function pasGlop(width, height){
+			var str = "votre image est trop "
+			if(width>0){str+="large de "+width+"px";}
+			if(width>0 && height>0){str+=" et trop ";}
+			if(height>0){str+="haute de "+height+"px.";}
+			alert(str);
+		}
+
+		input.onchange=verifTaille;
+	</script>
 {% endblock %}

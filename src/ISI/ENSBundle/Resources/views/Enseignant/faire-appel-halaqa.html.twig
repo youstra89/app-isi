@@ -36,10 +36,8 @@ ul li span[class=deux] {
   {% set nieme = '' %}
   {% set heure = cours.heure %}
   {% if heure == 1 %}
-    <!-- Dans ce cas, c'est une femme. Il faudra donc dire: La première -->
     {% set nieme = 'ère' %}
   {% else %}
-    <!-- Pour le reste il n'a pas de différence -->
     {% set nieme = 'ème' %}
   {% endif %}
   <div class="ui info message" style="width:75%">
@@ -49,6 +47,12 @@ ul li span[class=deux] {
       <div class="sub header">{{ cours.jourdecours }} à la {{ cours.heure }}<sup>{{nieme}}</sup> heure</div>
 		</center>
 	</div>
+  {% set heure_precedente = heure - 1 %}
+  {% if heure_precedente == 1 %}
+    {% set nieme = 'ère' %}
+  {% else %}
+    {% set nieme = 'ème' %}
+  {% endif %}
   <div class="well" style="width:75%">
 			<form action="" method="post" class="ui form">
         <div>
@@ -70,7 +74,7 @@ ul li span[class=deux] {
             </div>
           </div>
           {% set i = 0 %}
-          {% for eleve in memoriser %}
+          {% for eleve in memoriser if eleve.eleve.renvoye == 0 %}
             {% set i = i + 1 %}
             {% set image = "" %}
             {% if eleve.eleve.sexe == 1 %}
@@ -90,9 +94,13 @@ ul li span[class=deux] {
                 <div class="content">
                   <ul>
                     <li>
-                    <span class="un"><i class="right chevron icon"></i> {{ eleve.eleve.matricule }} </span>
-                    <span class="deux"><i class="right chevron icon"></i> <strong>{{ eleve.eleve.nomFr }} {{ eleve.eleve.pnomFr }}</strong></span>
-                    <span class=""><i class="right chevron icon"></i> <strong>{{ eleve.eleve.nomAr }} {{ eleve.eleve.pnomAr }}</strong></span>
+                      <span class="un"><i class="right chevron icon"></i> {{ eleve.eleve.matricule }} </span>
+                      <span class="deux"><i class="right chevron icon"></i> <strong>{{ eleve.eleve.nomFr }} {{ eleve.eleve.pnomFr }}</strong></span>
+                      <span class="deux"><i class="right chevron icon"></i> <strong>{{ eleve.eleve.nomAr }} {{ eleve.eleve.pnomAr }}</strong></span>
+                      <span class="">
+                        <i class="right chevron icon"></i>
+                        {% if heure_precedente != 0 and appels[eleve.id] is defined and appels[eleve.id].heure(heure_precedente) == 1 %}Etait absent à la {{heure_precedente}}<sup>{{nieme}}</sup> heure{% endif %}
+                      </span>
                     </li>
                   </ul>
                 </div>

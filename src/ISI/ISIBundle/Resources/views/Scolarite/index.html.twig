@@ -18,6 +18,10 @@
     <div class="header">{{ 'Absences'|trans }}</div>
     <a class="item" href="{{path('isi_accueil_gestion_absences',{'as': asec, 'annexeId': annexe.id, 'regime': regime})}}">{{ 'Enregistrer les absences'|trans }}</a>
     <a class="item" href="{{path('isi_accueil_heures_enregistrees',{'as': asec, 'annexeId': annexe.id, 'regime': regime})}}">{{ 'Voir les heures d\'absences'|trans }}</a>
+    <a class="item" href="{{path('rapport_absence_cours_home',{'as': asec, 'annexeId': annexe.id, 'regime': regime})}}">{{ 'Rapport des absences au cours'|trans }}</a>
+    {% if regime == 'A' %}
+      <a class="item" href="{{path('rapport_absence_coran_home',{'as': asec, 'annexeId': annexe.id, 'regime': regime})}}">{{ 'Rapport des absences en coran'|trans }}</a>
+    {% endif %}
     <div class="header">{{ 'Conduites'|trans }}</div>
     <a class="item" href="{{path('isi_liste_des_classes_conduite',{'as': asec, 'annexeId': annexe.id, 'regime': regime})}}">{{ 'Voir les conduites'|trans }}</a>
     <div class="header">{{ 'Réaménagement'|trans }}</div>

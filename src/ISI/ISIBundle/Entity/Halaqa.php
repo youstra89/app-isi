@@ -98,6 +98,11 @@ class Halaqa
      */
     private $annexe;
 
+    /**
+     * @ORM\OneToMany(targetEntity="ISI\ENSBundle\Entity\AnneeContratClasse", mappedBy="halaqa")
+     */
+    private $anneeContratClasse;
+
 
     /**
      * Get id
@@ -372,5 +377,46 @@ class Halaqa
     public function getAnnexe()
     {
         return $this->annexe;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->anneeContratClasse = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add anneeContratClasse
+     *
+     * @param \ISI\ENSBundle\Entity\AnneeContratClasse $anneeContratClasse
+     *
+     * @return Halaqa
+     */
+    public function addAnneeContratClasse(\ISI\ENSBundle\Entity\AnneeContratClasse $anneeContratClasse)
+    {
+        $this->anneeContratClasse[] = $anneeContratClasse;
+
+        return $this;
+    }
+
+    /**
+     * Remove anneeContratClasse
+     *
+     * @param \ISI\ENSBundle\Entity\AnneeContratClasse $anneeContratClasse
+     */
+    public function removeAnneeContratClasse(\ISI\ENSBundle\Entity\AnneeContratClasse $anneeContratClasse)
+    {
+        $this->anneeContratClasse->removeElement($anneeContratClasse);
+    }
+
+    /**
+     * Get anneeContratClasse
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAnneeContratClasse()
+    {
+        return $this->anneeContratClasse;
     }
 }

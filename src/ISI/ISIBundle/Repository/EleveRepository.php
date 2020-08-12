@@ -146,7 +146,7 @@ class EleveRepository extends \Doctrine\ORM\EntityRepository
   }
 
 
-  public function elevesDeLaClasse(int $as, int $annexeId, $classeId)
+  public function elevesDeLaClasse(int $as, int $annexeId, int $classeId)
   {
     $qb = $this->createQueryBuilder('e');
     $qb->join('e.frequenter', 'f')

@@ -2,6 +2,7 @@
 
 namespace ISI\ENSBundle\Controller;
 
+use ISI\ISIBundle\Entity\Tache;
 use ISI\ISIBundle\Entity\Presence;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -72,48 +73,22 @@ class EnseignantController extends Controller
         $repoAnnexe     = $em->getRepository('ISIBundle:Annexe');
         $annexeId       = $request->get('annexeId');
         $annexe         = $repoAnnexe->find($annexeId);
-        $eleves         = $repoEleve->lesElevesDeLaClasse($as, $annexeId, $classeId);
+        $enseignantAnnexeId = $cours->getAnneeContrat()->getContrat()->getEnseignant()->getAnnexe()->getId();
+        $eleves         = $repoEleve->lesElevesDeLaClasse($as, $enseignantAnnexeId, $classeId);
         $appels         = [];
         $appels_enregistres = $repoPresence->appels_des_eleves_de_la_classe($classeId, (new \DateTime())->format("Y-m-d"));
         foreach ($appels_enregistres as $value) {
             $appels[$value->getEleve()->getId()] = $value;
         }
-        $continious     = false;
-        $heure_actuelle = time();
+        $lycee          = false;
         $heure_du_cours = $cours->getHeure();
-        switch ($heure_du_cours) {
-            case 1:
-                if(strtotime((new \DateTime())->format("Y-m-d 07:40")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 08:20"))){
-                    $continious = true;
-                }
-                break;
-            case 2:
-                if(strtotime((new \DateTime())->format("Y-m-d 08:20")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 09:00"))){
-                    $continious = true;
-                }
-                break;
-            case 3:
-                if(strtotime((new \DateTime())->format("Y-m-d 09:00")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 09:40"))){
-                    $continious = true;
-                }
-                break;
-            case 4:
-                if(strtotime((new \DateTime())->format("Y-m-d 09:40")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 10:20"))){
-                    $continious = true;
-                }
-                break;
-            case 5:
-                if(strtotime((new \DateTime())->format("Y-m-d 10:20")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 11:00"))){
-                    $continious = true;
-                }
-                break;
-            
-            default:
-                # code...
-                break;
-        }
+        $continious = $this->permettre_appel($heure_du_cours, $lycee);
+
         if($continious == false){
             $this->addFlash('error', "Désolé!!! Vous ne pouvez faire l'appel car l'heure du cours sélectionné est soit passée, soit à venir.");
+            if(null !== $request->get('origine')){
+                return $this->redirectToRoute('tous_les_cours', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $cours->getClasse()->getNiveau()->getGroupeFormation()->getReference()]);
+            }
             return $this->redirectToRoute('enseignant_home', ['as' => $as, 'annexeId' => $annexeId]);
         }
 
@@ -122,6 +97,7 @@ class EnseignantController extends Controller
             $date = new \DateTime($data["date"]);
             $numero_du_jour = date("w", strtotime($data["date"]));
             $jour_du_cours = $cours->getJour();
+            $nouvel_enregistrement = false;
             // Contrainte : Il faut que le jour sélectionné corresponde au jour du cours
             if(
                 $jour_du_cours == 1 and $numero_du_jour == 6 or
@@ -135,10 +111,11 @@ class EnseignantController extends Controller
                 if(isset($data["elevesId"])){
                     $elevesId = $data["elevesId"];
                     foreach ($eleves as $value) {
-                        $eleveId = $value["id"];
-                        $eleve   = $repoEleve->find($eleveId);
+                        $eleveId  = $value["id"];
+                        $eleve    = $repoEleve->find($eleveId);
                         $presence = $repoPresence->findOneBy(["eleve" => $eleveId, "date" => $date]);
                         if(empty($presence)){
+                            $nouvel_enregistrement = true;
                             $presence = new Presence();
                             $presence->setEleve($eleve);
                             $presence->setDate($date);
@@ -156,10 +133,11 @@ class EnseignantController extends Controller
                 }
                 else{
                     foreach ($eleves as $value) {
-                        $eleveId = $value["id"];
-                        $eleve   = $repoEleve->find($eleveId);
+                        $eleveId  = $value["id"];
+                        $eleve    = $repoEleve->find($eleveId);
                         $presence = $repoPresence->findOneBy(["eleve" => $eleveId, "date" => $date]);
                         if(empty($presence)){
+                            $nouvel_enregistrement = true;
                             $presence = new Presence();
                             $presence->setEleve($eleve);
                             $presence->setDate($date);
@@ -170,9 +148,20 @@ class EnseignantController extends Controller
                         $this->pointer_absence($presence, $cours->getHeure(), false);                            
                     }
                 }
+                $label = !empty($cours->getClasse()) ? $cours->getClasse()->getLibelleFr() : $cours->getHalaqa()->getLibelle();
+                $tache = new Tache();
+                $tache->setTitre("Appel");
+                $tache->setCours($cours);
+                $tache->setDescription("Appel fait par ".$cours->getAnneeContrat()->getContrat()->getEnseignant()->getNom()." (".$this->getUser()->getUsername().") en ".$label." à la ".$cours->getHeure()." heure au cours de ".$cours->getMatiere()->getLibelle().".");
+                $tache->setCreatedAt(new \DateTime());
+                $tache->setCreatedBy($this->getUser());
+                $em->persist($tache);
                 try{
                     $em->flush();
-                    $this->addFlash('info', 'Appel du cours de <strong>'.$cours->getMatiere()->getLibelle().'</strong> en <strong>'.$cours->getClasse()->getLibelleFr().'</strong> le <strong>'.$cours->jourdecours().'</strong> à la <strong>'.$cours->getHeure().' heure</strong> enregistré avec succès.');
+                    $this->addFlash('info', 'Appel du cours de <strong>'.$cours->getMatiere()->getLibelle().'</strong> en <strong>'.$label.'</strong> le <strong>'.$cours->jourdecours().'</strong> à la <strong>'.$cours->getHeure().' heure</strong> enregistré avec succès.');
+                    if(null !== $request->get('origine')){
+                        return $this->redirectToRoute('tous_les_cours', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $cours->getClasse()->getNiveau()->getGroupeFormation()->getReference()]);
+                    }
                     return $this->redirectToRoute('enseignant_home', ['as' => $as, 'annexeId' => $annexeId]);
                 } 
                 catch(\Doctrine\ORM\ORMException $e){
@@ -200,6 +189,101 @@ class EnseignantController extends Controller
         ]);
     }
 
+    public function permettre_appel($heure_du_cours, $lycee)
+    {
+        $heure_actuelle = time();
+        $continious     = false;
+
+        if($lycee == false)
+        {
+            switch ($heure_du_cours) {
+                case 1:
+                    if(strtotime((new \DateTime())->format("Y-m-d 07:30")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 08:10"))){
+                        $continious = true;
+                    }
+                    break;
+                case 2:
+                    if(strtotime((new \DateTime())->format("Y-m-d 08:10")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 08:50"))){
+                        $continious = true;
+                    }
+                    break;
+                case 3:
+                    if(strtotime((new \DateTime())->format("Y-m-d 08:50")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 09:30"))){
+                        $continious = true;
+                    }
+                    break;
+                case 4:
+                    if(strtotime((new \DateTime())->format("Y-m-d 09:30")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 10:10"))){
+                        $continious = true;
+                    }
+                    break;
+                case 5:
+                    if(strtotime((new \DateTime())->format("Y-m-d 10:10")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 10:50"))){
+                        $continious = true;
+                    }
+                    break;
+                case 6:
+                    if(strtotime((new \DateTime())->format("Y-m-d 11:15")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 11:55"))){
+                        $continious = true;
+                    }
+                    break;
+                case 7:
+                    if(strtotime((new \DateTime())->format("Y-m-d 11:55")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 12:35"))){
+                        $continious = true;
+                    }
+                    break;
+                case 8:
+                    if(strtotime((new \DateTime())->format("Y-m-d 12:35")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 13:20"))){
+                        $continious = true;
+                    }
+                    break;
+                
+                default:
+                    break;
+            }
+        }
+        else{
+            switch ($heure_du_cours) {
+                case 1:
+                    if(strtotime((new \DateTime())->format("Y-m-d 07:30")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 08:20"))){
+                        $continious = true;
+                    }
+                    break;
+                case 2:
+                    if(strtotime((new \DateTime())->format("Y-m-d 08:20")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 09:00"))){
+                        $continious = true;
+                    }
+                    break;
+                case 3:
+                    if(strtotime((new \DateTime())->format("Y-m-d 09:00")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 10:50"))){
+                        $continious = true;
+                    }
+                    break;
+                case 4:
+                    if(strtotime((new \DateTime())->format("Y-m-d 10:50")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 11:40"))){
+                        $continious = true;
+                    }
+                    break;
+                case 5:
+                    if(strtotime((new \DateTime())->format("Y-m-d 11:40")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 12:30"))){
+                        $continious = true;
+                    }
+                    break;
+                case 6:
+                    if(strtotime((new \DateTime())->format("Y-m-d 12:30")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 13:20"))){
+                        $continious = true;
+                    }
+                    break;
+                
+                default:
+                    break;
+            }
+        }
+
+
+        return $continious;
+    }
+
     /**
      * @Route("appel-halaqa/{as}/{coursId}", name="faire_appel_halaqa")
      */
@@ -217,7 +301,7 @@ class EnseignantController extends Controller
         $repoAnnexe     = $em->getRepository('ISIBundle:Annexe');
         $annexeId       = $request->get('annexeId');
         $annexe         = $repoAnnexe->find($annexeId);
-        $memoriser         = $repoMemoriser->findByHalaqa($halaqaId);
+        $memoriser      = $repoMemoriser->findByHalaqa($halaqaId);
         foreach ($memoriser as $key => $memo) {
             $nom[$key]   = $memo->getEleve()->getNomFr();
             $pnom[$key]  = $memo->getEleve()->getPnomFr();
@@ -231,7 +315,7 @@ class EnseignantController extends Controller
         $continious     = false;
         $heure_actuelle = time();
         $heure_du_cours = $cours->getHeure();
-        if(strtotime((new \DateTime())->format("Y-m-d 11:20")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 13:20"))){
+        if(strtotime((new \DateTime())->format("Y-m-d 11:15")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 13:15"))){
             $continious = true;
         }
         if($continious == false){
@@ -244,6 +328,7 @@ class EnseignantController extends Controller
             $date = new \DateTime($data["date"]);
             $numero_du_jour = date("w", strtotime($data["date"]));
             $jour_du_cours = $cours->getJour();
+            $nouvel_enregistrement = false;
             // Contrainte : Il faut que le jour sélectionné corresponde au jour du cours
             if(
                 $jour_du_cours == 1 and $numero_du_jour == 6 or
@@ -261,6 +346,7 @@ class EnseignantController extends Controller
                         $eleve   = $repoEleve->find($eleveId);
                         $presence = $repoPresence->findOneBy(["eleve" => $eleveId, "date" => $date]);
                         if(empty($presence)){
+                            $nouvel_enregistrement = true;
                             $presence = new Presence();
                             $presence->setEleve($eleve);
                             $presence->setDate($date);
@@ -269,10 +355,10 @@ class EnseignantController extends Controller
                             $em->persist($presence);
                         }
                         if(isset($elevesId[$eleveId])){
-                            $this->pointer_absence($presence, $cours->getHeure(), true);                            
+                            $this->pointer_absence($presence, $cours->getHeure(), true, true);                            
                         }
                         else{
-                            $this->pointer_absence($presence, $cours->getHeure(), false);
+                            $this->pointer_absence($presence, $cours->getHeure(), false, true);
                         }
                     }
                 }
@@ -282,6 +368,7 @@ class EnseignantController extends Controller
                         $eleve   = $repoEleve->find($eleveId);
                         $presence = $repoPresence->findOneBy(["eleve" => $eleveId, "date" => $date]);
                         if(empty($presence)){
+                            $nouvel_enregistrement = true;
                             $presence = new Presence();
                             $presence->setEleve($eleve);
                             $presence->setDate($date);
@@ -289,9 +376,18 @@ class EnseignantController extends Controller
                             $presence->setCreatedBy($this->getUser());
                             $em->persist($presence);
                         }
-                        $this->pointer_absence($presence, $cours->getHeure(), false);                         
+                        $this->pointer_absence($presence, $cours->getHeure(), false, true);                         
                     }
                 }
+
+                $label = !empty($cours->getClasse()) ? $cours->getClasse()->getLibelleFr() : $cours->getHalaqa()->getLibelle();
+                $tache = new Tache();
+                $tache->setTitre("Appel");
+                $tache->setCours($cours);
+                $tache->setDescription("Appel fait par ".$cours->getAnneeContrat()->getContrat()->getEnseignant()->getNom()." (".$this->getUser()->getUsername().") en ".$label." à la ".$cours->getHeure()." heure au cours de ".$cours->getMatiere()->getLibelle().".");
+                $tache->setCreatedAt(new \DateTime());
+                $tache->setCreatedBy($this->getUser());
+                $em->persist($tache);
                 try{
                     $em->flush();
                     $this->addFlash('info', 'Appel du cours de <strong>'.$cours->getMatiere()->getLibelle().'</strong> en <strong>'.$cours->getHalaqa()->getLibelle().'</strong> le <strong>'.$cours->jourdecours().'</strong> à la <strong>'.$cours->getHeure().' heure</strong> enregistré avec succès.');
@@ -322,7 +418,7 @@ class EnseignantController extends Controller
         ]);
     }
 
-    public function pointer_absence(Presence $presence, int $heure_du_cours, bool $cocher = true)
+    public function pointer_absence(Presence $presence, int $heure_du_cours, bool $cocher = true, bool $coran = false)
     {
         switch ($heure_du_cours) {
             case 1:
@@ -342,12 +438,24 @@ class EnseignantController extends Controller
                 break;
             case 6:
                 $presence->setHeure6($cocher);
+                if($coran == true){
+                    $presence->setHeure7($cocher);
+                    $presence->setHeure8($cocher);
+                }
                 break;
             case 7:
                 $presence->setHeure7($cocher);
+                if($coran == true){
+                    $presence->setHeure6($cocher);
+                    $presence->setHeure8($cocher);
+                }
                 break;
             default:
                 $presence->setHeure8($cocher);
+                if($coran == true){
+                    $presence->setHeure6($cocher);
+                    $presence->setHeure7($cocher);
+                }
                 break;
         }
     }

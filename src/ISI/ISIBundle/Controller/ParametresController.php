@@ -41,7 +41,7 @@ class ParametresController extends Controller
 
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
-    dump($as);
+    // dump($as);
     $annee = $repoAnnee->find($as);
 
     return $this->render('ISIBundle:Parametres:index.html.twig', [
@@ -193,7 +193,6 @@ class ParametresController extends Controller
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoClasse = $em->getRepository('ISIBundle:Classe');
-    $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
     $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
@@ -203,7 +202,6 @@ class ParametresController extends Controller
     }
 
     $classe = $repoClasse->find($classeId);
-    $genre  = $classe->getGenre();
     $annee  = $repoAnnee->find($as);
 
     /**
@@ -222,21 +220,6 @@ class ParametresController extends Controller
     ]);
     if($form->handleRequest($request)->isValid())
     {
-      $data = $form->getData();
-      // return new Response(var_dump($data->getGenre(), $genre));
-      // return new Response(var_dump($data->getGenre()));
-      // A la modofication de la classe, si l'on veut changer le genre alors qu'il y a déjà des élèves inscrits, 
-      // on bloque de code
-      $fq = $repoFrequenter->findBy(['classe' => $classe->getId()]);
-      if (count($fq) != 0 && $genre != $data->getGenre()) {
-        # code...
-        $request->getSession()->getFlashBag()->add('error', 'Vous ne pouvez pas modifier le genre de la classe <strong>'.$classe->getLibelleFr().'</strong>. Des élèves y sont déjà inscrits.');
-        return $this->redirect($this->generateUrl('isi_gestion_classes', [
-          'as' => $as,
-          'regime' => $regime, 
-          'annexeId' => $annexeId
-        ]));
-      }
       $classe->setUpdatedBy($this->getUser());
       $classe->setUpdatedAt(new \Datetime());
       $em->flush();

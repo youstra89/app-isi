@@ -237,4 +237,28 @@ class UserAnnexe
     {
         return $this->updatedBy;
     }
+
+    /**
+     * Set disabled
+     *
+     * @param boolean $disabled
+     *
+     * @return UserAnnexe
+     */
+    public function setDisabled($disabled)
+    {
+        $this->disabled = $disabled;
+
+        return $this;
+    }
+
+    /**
+     * Get disabled
+     *
+     * @return boolean
+     */
+    public function getDisabled()
+    {
+        return $this->disabled;
+    }
 }

@@ -15,7 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class CoursController extends Controller
 {
   /**
-   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+   * @Security("has_role('ROLE_AGENT_DIRECTION_ENSEIGNANT')")
    * @Route("/liste-des-classes/{as}/{regime}", name="ens_liste_des_classes_save_cours")
    */
   public function listeDesClassesSaveCours(Request $request, int $as, string $regime)
@@ -53,7 +53,7 @@ class CoursController extends Controller
 
 
   /**
-   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+   * @Security("has_role('ROLE_AGENT_DIRECTION_ENSEIGNANT')")
    * @Route("/liste-des-classes-enregistrement-cours-francais/{as}/{regime}", name="ens_liste_des_classes_save_cours_francais")
    */
   public function listeDesClassesSaveCoursFrancais(Request $request, int $as, string $regime)
@@ -81,7 +81,7 @@ class CoursController extends Controller
 
 
   /**
-   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+   * @Security("has_role('ROLE_AGENT_DIRECTION_ENSEIGNANT')")
    * @Route("/liste-des-halaqas/{as}/{regime}", name="ens_liste_des_halaqas_save_cours")
    */
   public function listeDesHalaqasSaveCours(Request $request, int $as, string $regime)
@@ -473,7 +473,7 @@ class CoursController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+   * @Security("has_role('ROLE_AGENT_DIRECTION_ENSEIGNANT')")
    * @Route("/liste-des-cours-de-la-classe/{as}/{regime}/{classeId}", name="ens_cours_de_la_classe")
    */
   public function voirLesCoursDeLaClasse(Request $request, int $as, string $regime, int $classeId)
@@ -508,31 +508,45 @@ class CoursController extends Controller
   }
 
   /**
-     * @Route("/tous-les-cours-enrgistres/{as}/{annexeId}/{regime}", name="tous_les_cours")
-     */
-    public function index(Request $request, int $as, int $annexeId, string $regime)
-    {
-        $em        = $this->getDoctrine()->getManager();
-        $repoAnnee = $em->getRepository('ISIBundle:Annee');
-        $repoCours = $em->getRepository('ENSBundle:AnneeContratClasse');
-        $annee     = $repoAnnee->find($as);
-        $cours     = $repoCours->tousLesCoursDeLAnnee($as, $annexeId, $regime);
-        
-        $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-        $annexe = $repoAnnexe->find($annexeId);
-        if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
-            $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
-            return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
-        }
+   * @Security("has_role('ROLE_AGENT_DIRECTION_ENSEIGNANT')")
+   * @Route("/tous-les-cours-enrgistres/{as}/{annexeId}/{regime}", name="tous_les_cours")
+   */
+  public function tous_les_cours(Request $request, int $as, int $annexeId, string $regime)
+  {
+    $em        = $this->getDoctrine()->getManager();
+    $repoAnnee = $em->getRepository('ISIBundle:Annee');
+    $repoCours = $em->getRepository('ENSBundle:AnneeContratClasse');
+    $annee     = $repoAnnee->find($as);
+    $cours     = $repoCours->tousLesCoursDeLAnnee($as, $annexeId, $regime);
     
-        return $this->render('ENSBundle:Cours:tous-les-cours-enregistres.html.twig', [
-            'asec'    => $as,
-            'annee'   => $annee, 
-            'annexe'  => $annexe,      
-            'cours'   => $cours,     
-            'regime'  => $regime,     
-        ]);
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
     }
+
+    foreach ($cours as $value) {
+      if($regime == "A"){
+        if($value->getClasse() !== null and $value->getClasse()->getNiveau()->getGroupeFormation()->getReference() != $regime){
+          unset($cours[array_search($value, $cours)]);
+        }
+      }
+      else{
+        if($value->getHalaqa() !== null or $value->getClasse() !== null and $value->getClasse()->getNiveau()->getGroupeFormation()->getReference() != $regime){
+          unset($cours[array_search($value, $cours)]);
+        }
+      }
+    }
+
+    return $this->render('ENSBundle:Cours:tous-les-cours-enregistres.html.twig', [
+        'asec'    => $as,
+        'annee'   => $annee, 
+        'annexe'  => $annexe,      
+        'cours'   => $cours,     
+        'regime'  => $regime,     
+    ]);
+  }
 
   /**
    * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
@@ -639,7 +653,7 @@ class CoursController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+   * @Security("has_role('ROLE_AGENT_DIRECTION_ENSEIGNANT')")
    * @Route("/liste-des-cours-de-francais-de-la-classe/{as}/{regime}/{classeId}", name="ens_cours_francais_de_la_classe")
    */
   public function voirLesCoursFrancaisDeLaClasse(Request $request, int $as, string $regime, int $classeId)
@@ -674,7 +688,7 @@ class CoursController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+   * @Security("has_role('ROLE_AGENT_DIRECTION_ENSEIGNANT')")
    * @Route("/nombre-heures-de-cours-des-enseignants/{as}", name="ens_nombre_heures_cours_enseignants")
    */
   public function nombreHeuresCoursEnseignants(Request $request, int $as)
@@ -711,11 +725,11 @@ class CoursController extends Controller
             foreach ($enseignements as $keyEns => $valueEns) {
               // Etape 1: On va calculer les heures de cours à l'académie
               if ($regimeClasse == 'A' and $valueEns->getNiveau()->getId() === $niveau->getId() and $v->getMatiere()->getId()  === $valueEns->getMatiere()->getId()) {
-                $heureAcademie += $valueEns->getNombreHeureCours();
+                $heureAcademie += 1;
               } 
               // Etape 2: Puis ceux du centre de formation
               elseif ($regimeClasse == 'F' and $valueEns->getNiveau()->getId() === $niveau->getId() and $v->getMatiere()->getId()  === $valueEns->getMatiere()->getId()) {
-                $heureCentreFormation += $valueEns->getNombreHeureCours();
+                $heureCentreFormation += 1;
               }
             }
           }
@@ -735,10 +749,10 @@ class CoursController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
-   * @Route("/cours-d-un-enseignant/{as}/{anneeContratId}", name="ens_cours_d_un_enseignant")
+   * @Security("has_role('ROLE_AGENT_DIRECTION_ENSEIGNANT')")
+   * @Route("/empoi-du-temps-d-un-enseignant/{as}/{anneeContratId}", name="emploi_du_temps_enseignant")
    */
-  public function coursDUnEnseignant(Request $request, $as, int $anneeContratId)
+  public function emploi_du_temps_enseignant(Request $request, $as, int $anneeContratId)
   {
     $em                     = $this->getDoctrine()->getManager();
     $repoEns                = $em->getRepository('ISIBundle:Enseignement');
@@ -746,8 +760,8 @@ class CoursController extends Controller
     $repoAnneeContrat       = $em->getRepository('ENSBundle:AnneeContrat');
     $repoAnneeContratClasse = $em->getRepository('ENSBundle:AnneeContratClasse');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
-    $annexe = $repoAnnexe->find($annexeId);
+    $annexeId   = $request->get('annexeId');
+    $annexe     = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
       return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
@@ -760,35 +774,48 @@ class CoursController extends Controller
 
     $anneeContratId = $anneeContrat->getId();
     $heureAcademie = 0;
+    $heureCoran = 0;
     $coursAcademie = [];
+    $coursCoran = [];
     $ensAcademie = [];
     $heureCentreFormation = 0;
     $coursCentreFormation = [];
     $ensCentreFormation = [];
+    $dars = [];
     foreach ($cours as $k => $v) {
-      $niveau = $v->getClasse()->getNiveau();
-      $regimeClasse = $niveau->getGroupeFormation()->getReference();
-      if ($anneeContratId == $v->getAnneeContrat()->getId()) {
-        foreach ($enseignements as $key => $value) {
-          // Etape 1: On va calculer les heures de cours à l'académie
-          if ($regimeClasse == 'A' and $value->getNiveau()->getId() === $niveau->getId() and $v->getMatiere()->getId()  === $value->getMatiere()->getId()) {
-            $heureAcademie += $value->getNombreHeureCours();
-            $coursAcademie[] = $v;
-            $ensAcademie[] = $value;
-          } 
-          // Etape 2: Puis ceux du centre de formation
-          elseif ($regimeClasse == 'F' and $value->getNiveau()->getId() === $niveau->getId() and $v->getMatiere()->getId()  === $value->getMatiere()->getId()) {
-            $heureCentreFormation += $value->getNombreHeureCours();
-            $coursCentreFormation[] = $v;
-            $ensCentreFormation[] = $value;
+      if(empty($v->getClasse())){
+        $dars[] = $v;
+        $heureCoran += 1;
+        $coursCoran[] = $v;
+      }
+      else{
+        $niveau = $v->getClasse()->getNiveau();
+        $regimeClasse = $niveau->getGroupeFormation()->getReference();
+        if ($anneeContratId == $v->getAnneeContrat()->getId()) {
+          foreach ($enseignements as $key => $value) {
+            // Etape 1: On va calculer les heures de cours à l'académie
+            if ($regimeClasse == 'A' and $value->getNiveau()->getId() === $niveau->getId() and $v->getMatiere()->getId()  === $value->getMatiere()->getId()) {
+              $heureAcademie += $value->getNombreHeureCours();
+              $coursAcademie[] = $v;
+              $ensAcademie[] = $value;
+            } 
+            // Etape 2: Puis ceux du centre de formation
+            elseif ($regimeClasse == 'F' and $value->getNiveau()->getId() === $niveau->getId() and $v->getMatiere()->getId()  === $value->getMatiere()->getId()) {
+              $heureCentreFormation += $value->getNombreHeureCours();
+              $coursCentreFormation[] = $v;
+              $ensCentreFormation[] = $value;
+            }
           }
         }
       }
     }
+    // dump($coursAcademie, $ensAcademie);
+    // die();
     $heuresCours = ["ens" => $anneeContrat->getContrat()->getEnseignant()->getNomFr().' '.$anneeContrat->getContrat()->getEnseignant()->getPnomFr(), "academie" => $heureAcademie, "centre" => $heureCentreFormation];
-    return $this->render('ENSBundle:Cours:cours-d-un-enseignant.html.twig', [
+    return $this->render('ENSBundle:Cours:emploi-du-temps-d-un-enseignant.html.twig', [
       'asec'                 => $as,
-      'annee' => $annee, 'annexe'   => $annexe,
+      'annee'                => $annee, 
+      'annexe'               => $annexe,
       'heuresCours'          => $heuresCours,
       'coursCentreFormation' => $coursCentreFormation,
       'ensCentreFormation'   => $ensCentreFormation,
@@ -797,6 +824,285 @@ class CoursController extends Controller
       'anneeContrat'         => $anneeContrat,      
 
     ]);
+  }
+
+  /**
+   * @Security("has_role('ROLE_AGENT_DIRECTION_ENSEIGNANT')")
+   * @Route("/emploi-du-temps-pdf-d-un-enseignant/{as}/{anneeContratId}", name="emploi_du_temps_enseignant_pdf")
+   */
+  public function emploi_du_temps_enseignant_pdf(Request $request, $as, int $anneeContratId)
+  {
+    $em                     = $this->getDoctrine()->getManager();
+    $repoEns                = $em->getRepository('ISIBundle:Enseignement');
+    $repoAnnee              = $em->getRepository('ISIBundle:Annee');
+    $repoAnneeContrat       = $em->getRepository('ENSBundle:AnneeContrat');
+    $repoAnneeContratClasse = $em->getRepository('ENSBundle:AnneeContratClasse');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId   = $request->get('annexeId');
+    $annexe     = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
+
+    $annee = $repoAnnee->find($as);
+    $anneeContrat   = $repoAnneeContrat->find($anneeContratId);
+    $enseignements  = $repoEns->findBy(['annee' => $as]);
+    $cours = $repoAnneeContratClasse->findBy(["annee" => $as]);
+
+    $anneeContratId = $anneeContrat->getId();
+    $heureAcademie = 0;
+    $heureCoran = 0;
+    $coursAcademie = [];
+    $coursCoran = [];
+    $ensAcademie = [];
+    $heureCentreFormation = 0;
+    $coursCentreFormation = [];
+    $ensCentreFormation = [];
+    $dars = [];
+    foreach ($cours as $k => $v) {
+      if(empty($v->getClasse())){
+        $dars[] = $v;
+        $heureCoran += 1;
+        $coursCoran[] = $v;
+      }
+      else{
+        $niveau = $v->getClasse()->getNiveau();
+        $regimeClasse = $niveau->getGroupeFormation()->getReference();
+        if ($anneeContratId == $v->getAnneeContrat()->getId()) {
+          foreach ($enseignements as $key => $value) {
+            // Etape 1: On va calculer les heures de cours à l'académie
+            if ($regimeClasse == 'A' and $value->getNiveau()->getId() === $niveau->getId() and $v->getMatiere()->getId()  === $value->getMatiere()->getId()) {
+              $heureAcademie += $value->getNombreHeureCours();
+              $coursAcademie[] = $v;
+              $ensAcademie[] = $value;
+            } 
+            // Etape 2: Puis ceux du centre de formation
+            elseif ($regimeClasse == 'F' and $value->getNiveau()->getId() === $niveau->getId() and $v->getMatiere()->getId()  === $value->getMatiere()->getId()) {
+              $heureCentreFormation += $value->getNombreHeureCours();
+              $coursCentreFormation[] = $v;
+              $ensCentreFormation[] = $value;
+            }
+          }
+        }
+      }
+    }
+    // dump($coursAcademie, $ensAcademie);
+    // die();
+    $heuresCours = ["ens" => $anneeContrat->getContrat()->getEnseignant()->getNomFr().' '.$anneeContrat->getContrat()->getEnseignant()->getPnomFr(), "academie" => $heureAcademie, "centre" => $heureCentreFormation];
+    $snappy = $this->get("knp_snappy.pdf");
+    $snappy->setOption("encoding", "UTF-8");
+    $snappy->setOption("orientation", "Landscape");
+    $filename = "emploi-du-temps-".$annee->getLibelle();
+
+    $html = $this->renderView('ENSBundle:Cours:emploi-du-temps-d-un-enseignant-pdf.html.twig', [
+    // return $this->render('ENSBundle:Cours:emploi-du-temps-d-un-enseignant-pdf.html.twig', [
+      // "title" => "Titre de mon document",
+      'asec'                 => $as,
+      'annee'                => $annee, 
+      'annexe'               => $annexe,
+      'heuresCours'          => $heuresCours,
+      'coursCentreFormation' => $coursCentreFormation,
+      'ensCentreFormation'   => $ensCentreFormation,
+      'coursAcademie'        => $coursAcademie,
+      'ensAcademie'          => $ensAcademie,
+      'anneeContrat'         => $anneeContrat,  
+      'server'               => $_SERVER["DOCUMENT_ROOT"],   
+    ]);
+    $header = $this->renderView( '::header.html.twig' );
+    // $footer = $this->renderView( '::footer.html.twig' );
+
+    $options = [
+        'header-html' => $header,
+        // 'footer-html' => $footer,
+    ];
+
+    // Tcpdf
+    // $this->returnPDFResponseFromHTML($html);
+
+    return new Response(
+        $snappy->getOutputFromHtml($html, $options),
+        200,
+        [
+          'Content-Type'        => 'application/pdf',
+          'Content-Disposition' => 'inline; filename="'.$filename.'.pdf"'
+        ]
+    );
+  }
+
+  /**
+   * @Security("has_role('ROLE_AGENT_DIRECTION_ENSEIGNANT') or has_role('ROLE_SCOLARITE') ")
+   * @Route("/emploi-du-temps-de-classe/{as}/{classeId}", name="emploi_du_temps_classe")
+   */
+  public function emploi_du_temps_classe(Request $request, $as, int $classeId)
+  {
+    $em                     = $this->getDoctrine()->getManager();
+    $repoEns                = $em->getRepository('ISIBundle:Enseignement');
+    $repoAnnee              = $em->getRepository('ISIBundle:Annee');
+    $repoClasse             = $em->getRepository('ISIBundle:Classe');
+    $repoAnneeContratClasse = $em->getRepository('ENSBundle:AnneeContratClasse');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId   = $request->get('annexeId');
+    $annexe     = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
+
+    $annee         = $repoAnnee->find($as);
+    $classe        = $repoClasse->find($classeId);
+    $enseignements = $repoEns->findBy(['annee' => $as]);
+    $cours         = $repoAnneeContratClasse->findBy(["annee" => $as]);
+
+    $classeId             = $classe->getId();
+    $heureAcademie        = 0;
+    $heureCoran           = 0;
+    $coursAcademie        = [];
+    $coursCoran           = [];
+    $ensAcademie          = [];
+    $heureCentreFormation = 0;
+    $coursCentreFormation = [];
+    $ensCentreFormation   = [];
+    $dars = [];
+    foreach ($cours as $k => $v) {
+      if(empty($v->getClasse())){
+        $dars[] = $v;
+        $heureCoran += 1;
+        $coursCoran[] = $v;
+      }
+      else{
+        $niveau = $v->getClasse()->getNiveau();
+        $regimeClasse = $niveau->getGroupeFormation()->getReference();
+        if ($classeId == $v->getClasse()->getId()) {
+          foreach ($enseignements as $key => $value) {
+            // Etape 1: On va calculer les heures de cours à l'académie
+            if ($regimeClasse == 'A' and $value->getNiveau()->getId() === $niveau->getId() and $v->getMatiere()->getId()  === $value->getMatiere()->getId()) {
+              $heureAcademie += $value->getNombreHeureCours();
+              $coursAcademie[] = $v;
+              $ensAcademie[] = $value;
+            } 
+            // Etape 2: Puis ceux du centre de formation
+            elseif ($regimeClasse == 'F' and $value->getNiveau()->getId() === $niveau->getId() and $v->getMatiere()->getId()  === $value->getMatiere()->getId()) {
+              $heureCentreFormation += $value->getNombreHeureCours();
+              $coursCentreFormation[] = $v;
+              $ensCentreFormation[] = $value;
+            }
+          }
+        }
+      }
+    }
+    // dump($coursAcademie, $ensAcademie);
+    // die();
+    return $this->render('ENSBundle:Cours:emploi-du-temps-d-une-classe.html.twig', [
+      'asec'                 => $as,
+      'annee'                => $annee, 
+      'annexe'               => $annexe,
+      'coursCentreFormation' => $coursCentreFormation,
+      'ensCentreFormation'   => $ensCentreFormation,
+      'coursAcademie'        => $coursAcademie,
+      'ensAcademie'          => $ensAcademie,
+      'classe'               => $classe,      
+    ]);
+  }
+
+  /**
+   * @Security("has_role('ROLE_AGENT_DIRECTION_ENSEIGNANT') or has_role('ROLE_SCOLARITE') ")
+   * @Route("/emploi-du-temps-pdf-de-classe/{as}/{classeId}", name="emploi_du_temps_classe_pdf")
+   */
+  public function emploi_du_temps_classe_pdf(Request $request, $as, int $classeId)
+  {
+    $em                     = $this->getDoctrine()->getManager();
+    $repoEns                = $em->getRepository('ISIBundle:Enseignement');
+    $repoAnnee              = $em->getRepository('ISIBundle:Annee');
+    $repoClasse             = $em->getRepository('ISIBundle:Classe');
+    $repoAnneeContratClasse = $em->getRepository('ENSBundle:AnneeContratClasse');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId   = $request->get('annexeId');
+    $annexe     = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
+
+    $annee         = $repoAnnee->find($as);
+    $classe        = $repoClasse->find($classeId);
+    $enseignements = $repoEns->findBy(['annee' => $as]);
+    $cours         = $repoAnneeContratClasse->findBy(["annee" => $as]);
+
+    $classeId             = $classe->getId();
+    $heureAcademie        = 0;
+    $heureCoran           = 0;
+    $coursAcademie        = [];
+    $coursCoran           = [];
+    $ensAcademie          = [];
+    $heureCentreFormation = 0;
+    $coursCentreFormation = [];
+    $ensCentreFormation   = [];
+    $dars = [];
+    foreach ($cours as $k => $v) {
+      if(empty($v->getClasse())){
+        $dars[] = $v;
+        $heureCoran += 1;
+        $coursCoran[] = $v;
+      }
+      else{
+        $niveau = $v->getClasse()->getNiveau();
+        $regimeClasse = $niveau->getGroupeFormation()->getReference();
+        if ($classeId == $v->getClasse()->getId()) {
+          foreach ($enseignements as $key => $value) {
+            // Etape 1: On va calculer les heures de cours à l'académie
+            if ($regimeClasse == 'A' and $value->getNiveau()->getId() === $niveau->getId() and $v->getMatiere()->getId()  === $value->getMatiere()->getId()) {
+              $heureAcademie += $value->getNombreHeureCours();
+              $coursAcademie[] = $v;
+              $ensAcademie[] = $value;
+            } 
+            // Etape 2: Puis ceux du centre de formation
+            elseif ($regimeClasse == 'F' and $value->getNiveau()->getId() === $niveau->getId() and $v->getMatiere()->getId()  === $value->getMatiere()->getId()) {
+              $heureCentreFormation += $value->getNombreHeureCours();
+              $coursCentreFormation[] = $v;
+              $ensCentreFormation[] = $value;
+            }
+          }
+        }
+      }
+    }
+    // dump($coursAcademie, $ensAcademie);
+    // die();
+    $snappy = $this->get("knp_snappy.pdf");
+    $snappy->setOption("encoding", "UTF-8");
+    $snappy->setOption("orientation", "Landscape");
+    $filename = "emploi-temps-de-la-classe-".$classe->getLibelleFr();
+    $html = $this->renderView('ENSBundle:Cours:emploi-du-temps-d-une-classe-pdf.html.twig', [
+      'asec'                 => $as,
+      'annee'                => $annee, 
+      'annexe'               => $annexe,
+      'coursCentreFormation' => $coursCentreFormation,
+      'ensCentreFormation'   => $ensCentreFormation,
+      'coursAcademie'        => $coursAcademie,
+      'ensAcademie'          => $ensAcademie,
+      'classe'               => $classe,      
+      'server'               => $_SERVER["DOCUMENT_ROOT"],   
+    ]);
+
+    $header = $this->renderView( '::header.html.twig' );
+    // $footer = $this->renderView( '::footer.html.twig' );
+
+    $options = [
+      'header-html' => $header,
+      // 'footer-html' => $footer,
+    ];
+
+    // Tcpdf
+    // $this->returnPDFResponseFromHTML($html);
+
+    return new Response(
+      $snappy->getOutputFromHtml($html, $options),
+      200,
+      [
+        'Content-Type'        => 'application/pdf',
+        'Content-Disposition' => 'inline; filename="'.$filename.'.pdf"'
+      ]
+    );
   }
 }
 

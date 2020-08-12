@@ -75,23 +75,29 @@
                   <h4 class="ui image header">{{ genre }}</h4>
                 </td>
                 <td>
-                  {% if classe.id in emplois %}
-                    <a href="{{path('ens_cours_de_la_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}"  data-tooltip="Voir les cours de la classe">
-                      <i class="list icon"></i>
-                    </a>
-                    &nbsp;&nbsp;&nbsp;
-                    <a href="{{path('ens_editer_cours_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}"  data-tooltip="Editer les cours de la classe">
-                      <i class="edit positive icon"></i>
-                    </a>
-                    &nbsp;&nbsp;&nbsp;
-                    <a href="{{path('ens_enregistrer_cours_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}"  data-tooltip="Enregistrer les cours de la classe">
-                      <i class="plus icon"></i>
-                    </a>
-                  {% else %}
-                    <a href="{{path('ens_enregistrer_cours_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}"  data-tooltip="Enregistrer les cours de la classe">
-                      <i class="plus icon"></i>
-                    </a>
-                  {% endif %}
+                    {% if classe.id in emplois %}
+                      <a href="{{path('ens_cours_de_la_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}"  data-tooltip="Voir les cours de la classe">
+                        <i class="list icon"></i>
+                      </a>
+                      &nbsp;&nbsp;&nbsp;
+                      <a href="{{path('emploi_du_temps_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}"  data-tooltip="Voir l'emploi du temps de la classe">
+                        <i class="time green icon"></i>
+                      </a>
+                      {% if is_granted('ROLE_DIRECTION_ENSEIGNANT') %}
+                        &nbsp;&nbsp;&nbsp;
+                        <a href="{{path('ens_editer_cours_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}"  data-tooltip="Editer les cours de la classe">
+                          <i class="edit positive icon"></i>
+                        </a>
+                        &nbsp;&nbsp;&nbsp;
+                        <a href="{{path('ens_enregistrer_cours_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}"  data-tooltip="Enregistrer les cours de la classe">
+                          <i class="plus icon"></i>
+                        </a>
+                      {% endif %}
+                    {% else %}
+                      <a href="{{path('ens_enregistrer_cours_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}"  data-tooltip="Enregistrer les cours de la classe">
+                        <i class="plus icon"></i>
+                      </a>
+                    {% endif %}
                 </td>
               </tr>
             {% endif %} 

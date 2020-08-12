@@ -94,6 +94,22 @@ class NoteRepository extends \Doctrine\ORM\EntityRepository
               ->getResult();
   }
 
+  public function notesDUnEleveLorsDesDeuxExamens($eleveId, $as)
+  {
+    $qb = $this->createQueryBuilder('n');
+    $qb->join('n.eleve', 'e')
+       ->join('n.examen', 'ex')
+       ->join('ex.annee', 'an')
+       ->where('e.id = :eleveId AND an.id = :an')
+       ->setParameter('eleveId', $eleveId)
+       ->setParameter('an', $as);
+
+    // return $qb->getDql();
+
+    return $qb->getQuery()
+              ->getResult();
+  }
+
   // Toutes les notes des élèves d'une classe pour un examen donné
   public function toutesLesNotesDesElevesDeLaClasse($examenId, $elevesIds)
   {
@@ -102,6 +118,20 @@ class NoteRepository extends \Doctrine\ORM\EntityRepository
       WHERE n.examen = :examenId AND n.eleve IN (:ids)');
     $query->setParameter('examenId', $examenId);
     $query->setParameter('ids', $elevesIds);
+
+    return $query->getResult();
+  }
+
+  // Toutes les notes des élèves d'une classe pour un examen donné
+  public function test($eleveId, $anneeId)
+  {
+    $query = $this->_em->createQuery(
+      'SELECT SUM(n.note) FROM ISIBundle:Note n
+      JOIN ISIBundle:Examen e ON n.examen = e
+      JOIN ISIBundle:Annee a ON e.annee = a
+      WHERE n.examen = :anneeId AND n.eleve = :eleveId');
+    $query->setParameter('anneeId', $anneeId);
+    $query->setParameter('ids', $eleveId);
 
     return $query->getResult();
   }

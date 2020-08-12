@@ -123,6 +123,11 @@ class Classe
     private $cours;
 
     /**
+     * @ORM\OneToMany(targetEntity="ISI\ISIBundle\Entity\SalleClasse", mappedBy="classe")
+     */
+    private $salle;
+
+    /**
      * @var \Annexe
      *
      * @ORM\ManyToOne(targetEntity="Annexe")
@@ -436,6 +441,7 @@ class Classe
     public function __construct()
     {
         $this->cours = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->salle = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -494,5 +500,39 @@ class Classe
     public function getAnnexe()
     {
         return $this->annexe;
+    }
+
+    /**
+     * Add salle
+     *
+     * @param \ISI\ENSBundle\Entity\SalleClasse $salle
+     *
+     * @return Classe
+     */
+    public function addSalle(\ISI\ISIBundle\Entity\SalleClasse $salle)
+    {
+        $this->salle[] = $salle;
+
+        return $this;
+    }
+
+    /**
+     * Remove salle
+     *
+     * @param \ISI\ENSBundle\Entity\SalleClasse $salle
+     */
+    public function removeSalle(\ISI\ISIBundle\Entity\SalleClasse $salle)
+    {
+        $this->salle->removeElement($salle);
+    }
+
+    /**
+     * Get salle
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSalle()
+    {
+        return $this->salle;
     }
 }

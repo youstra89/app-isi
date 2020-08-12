@@ -11,7 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class RencontreType extends AbstractType
@@ -29,10 +29,10 @@ class RencontreType extends AbstractType
                         'Autre' => 'Autre'
                     ],
                     'placeholder' => 'Choisir le type de la rencontre'
-                ], ["required" => TRUE])
+                ], ["required" => true])
             // ->add('date',  Date::class, ["required" => TRUE])
-            ->add('theme', TextType::class, ["required" => TRUE])
-            ->add('duree', TextType::class, ["required" => TRUE])
+            ->add('theme', TextType::class, ["required" => true])
+            ->add('duree', TextType::class, ["required" => true])
             ->add('lieu',  ChoiceType::class, [
                     'choices' => [
                         'Salle des enseignants' => 'Salle des enseignants',
@@ -42,7 +42,7 @@ class RencontreType extends AbstractType
                         'Autre' => 'Autre'
                     ],
                     'placeholder' => 'Choisir le lieu de la rencontre'
-                ], ["required" => TRUE])
+                ], ["required" => true])
             // ->add('dateSave')
             // ->add('dateUpdate')
         ;

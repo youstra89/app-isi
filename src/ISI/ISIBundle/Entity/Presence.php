@@ -203,6 +203,22 @@ class Presence
         }
     }
 
+    public function rapportAbsence()
+    {
+        $cours = 0;
+        $coran = 0;
+        if($this->heure1 == 1){ $cours++; }
+        if($this->heure2 == 2){ $cours++; }
+        if($this->heure3 == 3){ $cours++; }
+        if($this->heure4 == 4){ $cours++; }
+        if($this->heure5 == 5){ $cours++; }
+        if($this->heure6 == 6){ $coran++; }
+        if($this->heure7 == 7){ $coran++; }
+        if($this->heure8 == 8){ $coran++; }
+
+        return [$cours, $coran];
+    }
+
     /**
      * Set heure1
      *

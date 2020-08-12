@@ -43,6 +43,7 @@
               <a href="{{ path('ens_edit_rencontre', {'as': asec, 'annexeId': annexe.id, 'rencontreId': rencontre.id}) }}" title="Modifier la rencontre"><i class="edit icon"></i><a>
               <a href="{{ path('ens_participants_rencontre', {'as': asec, 'annexeId': annexe.id, 'rencontreId': rencontre.id}) }}" title="Ajouter des participants"><i class="plus icon"></i><a>
               <a href="{{ path('ens_liste_des_participants', {'as': asec, 'annexeId': annexe.id, 'rencontreId': rencontre.id}) }}" title="Liste des participants"><i class="list icon"></i><a>
+              <a href="{{ path('lire_rapport_rencontre', {'as': asec, 'annexeId': annexe.id, 'rencontreId': rencontre.id}) }}" title="Lire le rapport"><i class="newspaper icon"></i><a>
             </td>
           </tr>
         {% endfor %}

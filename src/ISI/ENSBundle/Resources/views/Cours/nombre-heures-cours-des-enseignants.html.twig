@@ -53,7 +53,7 @@
                 {% endif %}
                 <td>
                   {% set nom = item.contrat.enseignant.nomFr ~ ' ' ~ item.contrat.enseignant.pnomFr %}
-                  <a href="{{ path('ens_cours_d_un_enseignant', {'as': asec, 'annexeId': annexe.id, 'anneeContratId': item.id}) }}" data-tooltip="Voir les cours de l'enseigannt {{ nom }}">
+                  <a href="{{ path('emploi_du_temps_enseignant', {'as': asec, 'annexeId': annexe.id, 'anneeContratId': item.id}) }}" data-tooltip="Voir les cours de l'enseigannt {{ nom }}">
                     <i class="list icon"></i>
                   </a>
                 </td>

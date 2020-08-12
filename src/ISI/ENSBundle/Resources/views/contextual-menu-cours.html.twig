@@ -1,5 +1,7 @@
 <div class="header">{{ 'Affectation des enseignants'|trans }}</div>
 <a class="item" href="{{ path('ens_liste_des_classes_save_cours_francais', {'as': asec, 'annexeId': annexe.id, 'regime': "A"}) }}">{{ 'Pour les cours de français'|trans }}</a>
-<a class="item" href="{{ path('ens_liste_des_halaqas_save_cours', {'as': asec, 'annexeId': annexe.id, 'regime': "A"}) }}">{{ 'Pour les cours de Qur\'an'|trans }}</a>
+{% if is_granted('ROLE_ADJOINT_DIRECTION_ENSEIGNANT') %}
+    <a class="item" href="{{ path('ens_liste_des_halaqas_save_cours', {'as': asec, 'annexeId': annexe.id, 'regime': "A"}) }}">{{ 'Pour les cours de Qur\'an'|trans }}</a>
+{% endif %}
 <div class="header">{{ 'Volume horaire'|trans }}</div>
 <a class="item" href="{{ path('ens_nombre_heures_cours_enseignants', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Nombre heures cours'|trans }}</a>

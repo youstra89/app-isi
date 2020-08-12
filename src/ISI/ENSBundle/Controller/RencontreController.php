@@ -16,7 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class RencontreController extends Controller
 {
   /**
-   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+   * @Security("has_role('ROLE_ADJOINT_DIRECTION_ENSEIGNANT')")
    * @Route("/index-des-rencontres-{as}", name="ens_rencontre_home")
    */
   public function index(Request $request, $as)
@@ -44,7 +44,7 @@ class RencontreController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+   * @Security("has_role('ROLE_ADJOINT_DIRECTION_ENSEIGNANT')")
    * @Route("/enregistrement-de-rencontres-{as}", name="ens_add_rencontre")
    */
   public function addRencontre(Request $request, $as)
@@ -77,6 +77,9 @@ class RencontreController extends Controller
   	{
       $data = $request->request->all();
       $date = $data['date'];
+      if($data['rapport'] !== null){
+        $rencontre->setRapport($data['rapport']);
+      }
       $date = new \Datetime($date);
       $rencontre->setAnnee($annee);
       $rencontre->setDate($date);
@@ -97,7 +100,7 @@ class RencontreController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+   * @Security("has_role('ROLE_ADJOINT_DIRECTION_ENSEIGNANT')")
    * @Route("/mise-a-jour-des-informations-d-une-rencontre-{as}-{rencontreId}", name="ens_edit_rencontre")
    */
   public function editRencontre(Request $request, $as, $rencontreId)
@@ -128,6 +131,11 @@ class RencontreController extends Controller
       $data = $request->request->all();
       $date = $data['date'];
       $date = new \Datetime($date);
+      if($data['rapport'] !== null and $rencontre->getRapport() !== $data['rapport']){
+        $rencontre->setRapport($data['rapport']);
+      }
+      $rencontre->setUpdatedBy($this->getUser());
+      $rencontre->setUpdatedAt(new \Datetime());
       $em->flush();
       $request->getSession()->getFlashBag()->add('info', 'Les informations de la rencontre ont été mise à jour avec sussès.');
       return $this->redirectToRoute('ens_rencontre_home', ['as' => $as, 'annexeId' => $annexeId]);
@@ -143,7 +151,35 @@ class RencontreController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+   * @Security("has_role('ROLE_ADJOINT_DIRECTION_ENSEIGNANT')")
+   * @Route("/lire-le-rapport-d-une-rencontre-{as}-{rencontreId}", name="lire_rapport_rencontre")
+   */
+  public function lire_rapport_rencontre(Request $request, $as, $rencontreId)
+  {
+    $em            = $this->getDoctrine()->getManager();
+    $repoAnnee     = $em->getRepository('ISIBundle:Annee');
+    $repoRencontre = $em->getRepository('ENSBundle:Rencontre');
+    $annexeId      = $request->get('annexeId');
+    $repoAnnexe    = $em->getRepository('ISIBundle:Annexe');
+    $annexe        = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
+
+    $annee     = $repoAnnee->find($as);
+    $rencontre = $repoRencontre->find($rencontreId);
+
+    return $this->render('ENSBundle:Rencontre:lire-rapport-rencontre.html.twig', [
+      'asec'      => $as,
+      'annee'     => $annee,
+      'annexe'    => $annexe,
+      'rencontre' => $rencontre,
+    ]);
+  }
+
+  /**
+   * @Security("has_role('ROLE_ADJOINT_DIRECTION_ENSEIGNANT')")
    * @Route("/ajouter-des-participants-a-la-rencontre-{as}-{rencontreId}", name="ens_participants_rencontre")
    */
   public function participantsRencontre(Request $request, $as, $rencontreId)
@@ -220,7 +256,7 @@ class RencontreController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+   * @Security("has_role('ROLE_ADJOINT_DIRECTION_ENSEIGNANT')")
    * @Route("/liste-des-participants-a-la-rencontre-{as}-{rencontreId}", name="ens_liste_des_participants")
    */
   public function listeDesParticipantsRencontre(Request $request, $as, $rencontreId)

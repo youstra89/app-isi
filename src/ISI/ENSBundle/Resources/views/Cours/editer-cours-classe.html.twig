@@ -87,11 +87,10 @@
                     <option value="3" {% if cours.heure == 3 %}selected{% endif %}>3ème heure</option>
                     <option value="4" {% if cours.heure == 4 %}selected{% endif %}>4ème heure</option>
                     <option value="5" {% if cours.heure == 5 %}selected{% endif %}>5ème heure</option>
+                    <option value="6" {% if cours.heure == 6 %}selected{% endif %}>6ème heure</option>
                     {% if regime == "F" %}
-                      <option value="6" {% if cours.heure == 6 %}selected{% endif %}>6ème heure</option>
                       <option value="7" {% if cours.heure == 7 %}selected{% endif %}>7ème heure</option>
                       <option value="8" {% if cours.heure == 8 %}selected{% endif %}>8ème heure</option>
-                      <option value="9" {% if cours.heure == 9 %}selected{% endif %}>9ème heure</option>
                     {% endif %}
                   </select>
                 </td>
@@ -102,6 +101,7 @@
         <button class="ui primary large button">Appliquer les changements</button>
       </form>
     </div>
+    <br><br>
   {% endif %}
 
 {% endblock %}

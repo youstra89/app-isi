@@ -40,30 +40,10 @@
   {% if eleves is not defined %}
     Aucun élève inscrit
   {% else %}
-    {% set notif = app.session.flashbag.get('info') %}
-    {% if notif is not empty %}
-      <div class="ui green message">
-        <div class="header">{{ 'Notification'|trans }}:</div>
-        <ul class="list">
-          {% for message in notif %}
-            <li>{{ message|raw }}.</li>
-          {% endfor %}
-        </ul>
-      </div>
-    {% endif %}
-    {% for message in app.session.flashbag.get('error') %}
-      <div class="ui red message">
-        <div class="header">{{ 'Attention'|trans }} !!! </div>
-        <ul class="list">
-          <li>{{ message|raw }}</li>
-        </ul>
-      </div>
-    {% endfor %}
-    {#<table class="ui very basic table">#}
     {% if regime is same as('A') %}
-    <a href="{{ path('isi_preinscription', {'as': asec, 'annexeId': annexe.id, 'regime': 'A'}) }}">
+      <a href="{{ path('isi_preinscription', {'as': asec, 'annexeId': annexe.id, 'regime': 'A'}) }}">
     {% else %}
-    <a href="{{ path('isi_preinscription', {'as': asec, 'annexeId': annexe.id, 'regime': 'F'}) }}">
+      <a href="{{ path('isi_preinscription', {'as': asec, 'annexeId': annexe.id, 'regime': 'F'}) }}">
     {% endif %}
       <button class="positive ui button">
         <i class="plus icon"></i>

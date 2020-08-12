@@ -10,35 +10,33 @@
 
 {% block body %}
   <div>
-    <table class="ui compact celled definition table">
+    <a href="{{ path('fos_user_registration_register', {'as': asec, 'annexeId': annexe.id}) }}">
+      <!-- <a href=""> -->
+      <button class="ui left floated small primary labeled icon button">
+        <i class="user icon"></i>{{ 'Ajouter un utilisateur'|trans }}
+      </button>
+    </a>
+    <br><br>
+    <table class="ui compact celled definition table" id="users">
       <thead class="full-width">
-        <tr>
-          <th colspan="6">{##}
-            <a href="{{ path('fos_user_registration_register', {'as': asec, 'annexeId': annexe.id}) }}">
-              <!-- <a href=""> -->
-              <button class="ui left floated small primary labeled icon button">
-                <i class="user icon"></i>{{ 'Ajouter un utilisateur'|trans }}
-              </button>
-            </a>
-          </th>
-        </tr>
         <tr>
           <th></th>
           <th>{{ 'Nom d\'utilisateur'|trans }}</th>
           <th>{{ 'Rôles'|trans }}</th>
+          <th>{{ 'Annexes'|trans }}</th>
           <th>{{ 'Dernière connexion'|trans }}</th>
           <th>{{ 'Etat du compte'|trans }}</th>
           <th>{{ 'Autres actions'|trans }}</th>
         </tr>
       </thead>
       <tbody>
-        {% for user in users %}
+        {% for user in users if user.isRoot == 0 %}
           <tr>
             <td class="collapsing">
               <div class="ui fitted slider checkbox">
                 {% set checked = "" %}
                 {% if user.enabled == true %}
-                {% set checked = "checked" %}
+                  {% set checked = "checked" %}
                 {% endif %}
                 <input type="checkbox" {{checked}} name="{{ user.id }}" id="user[{{ user.id }}]" class="userStat">
                 <label></label>
@@ -49,6 +47,13 @@
               <ul>
                 {% for role in user.roles %}
                   <li>{{ role }}</li>
+                {% endfor %}
+              </ul>
+            </td>
+            <td>
+              <ul>
+                {% for item in user.annexes if item.disabled == 0 %}
+                  <li>{{ item.annexe.libelle }}</li>
                 {% endfor %}
               </ul>
             </td>
@@ -79,14 +84,40 @@
 {% endblock %}
 
 
-{% block scripts %}
-    <script src="{{ asset('js/jquery-3.3.1.js') }}"></script>
-    <script>
-        $(document).ready(function() {
-          $(".userStat").on("change", function(){
-            var id = $(this).attr("name");
-            // console.log(id);
-          })
-        });
+{% block javascripts %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+    <script data-config>
+      var filtersConfig = {
+        base_path: 'TableFilter/dist/tablefilter/',
+        col_0: 'none',
+        col_5: 'select',
+        col_6: 'none',
+        alternate_rows: true,
+        rows_counter: true,
+        btn_reset: true,
+        loader: true,
+        status_bar: true,
+        mark_active_columns: true,
+        highlight_keywords: true,
+        no_results_message: true,
+        col_types: [
+          'number', 'string', 'string',
+          'string', 'string', 'string',
+        ],
+        col_widths: [
+          // '15px', '130px', '270px', , , '100px'
+        ],
+        extensions: [{ name: 'sort' }]
+      };
+
+      var tf = new TableFilter('users', filtersConfig);
+      tf.init();
     </script>
-{% endblock %}
+    <script src="{{ asset('js/jquery-3.3.1.js') }}"></script>
+    <script src="{{ asset('semantic/ui/dist/semantic.min.js') }}"></script>
+    <script>
+      $('.ui.accordion')
+        .accordion()
+      ;
+    </script>
+  {% endblock %}

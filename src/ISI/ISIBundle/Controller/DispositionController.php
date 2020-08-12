@@ -257,42 +257,39 @@ class DispositionController extends Controller
      */
     public function dispositionAction(Request $request, int $as)
     {
-      $em = $this->getDoctrine()->getManager();
-      $repoAnnee = $em->getRepository('ISIBundle:Annee');
-      $repoSalle = $em->getRepository('ISIBundle:Salle');
-      $repoSC    = $em->getRepository('ISIBundle:SalleClasse');
+      $em         = $this->getDoctrine()->getManager();
+      $repoAnnee  = $em->getRepository('ISIBundle:Annee');
+      $repoSalle  = $em->getRepository('ISIBundle:Salle');
+      $repoSC     = $em->getRepository('ISIBundle:SalleClasse');
       $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-      $annexeId = $request->get('annexeId');
-      $annexe = $repoAnnexe->find($annexeId);
+      $annexeId   = $request->get('annexeId');
+      $annexe     = $repoAnnexe->find($annexeId);
       if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
         $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
         return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
       }
-      $annee     = $repoAnnee->find($as);
+      $annee  = $repoAnnee->find($as);
       $salles = $repoSalle->findBy(["annexe" => $annexeId]);
       $sallesClasses = $repoSC->findBy(['annee' => $as]);
       $sallesAOQP = [];
       $sallesFOQP = [];
       foreach ($sallesClasses as $key => $value) {
-        if ($value->getClasse()->getNiveau()->getGroupeFormation()->getId() == 1) {
-          # code...
+        if (!empty($value->getClasse()) and $value->getClasse()->getNiveau()->getGroupeFormation()->getId() == 1) {
           $sallesAOQP[] = $value->getSalle();
         } 
-        elseif ($value->getClasse()->getNiveau()->getGroupeFormation()->getId() == 2) {
-          # code...
+        elseif (!empty($value->getClasse()) and $value->getClasse()->getNiveau()->getGroupeFormation()->getId() == 2) {
           $sallesFOQP[] = $value->getSalle();
         }
-        
       }
       // dump($sallesClasses, $salles);
 
       return $this->render('ISIBundle:Disposition:disposition.html.twig', [
-        'asec'   => $as,
-        'annee'  => $annee,
-      'annexe'  => $annexe,
-      'salles' => $salles,
-        'sallesAOQP' => $sallesAOQP,
-        'sallesFOQP' => $sallesFOQP,
+        'asec'          => $as,
+        'annee'         => $annee,
+        'annexe'        => $annexe,
+        'salles'        => $salles,
+        'sallesAOQP'    => $sallesAOQP,
+        'sallesFOQP'    => $sallesFOQP,
         'sallesClasses' => $sallesClasses,
       ]);
     }
@@ -302,7 +299,7 @@ class DispositionController extends Controller
      * @param Salle $salle
      * @Route("/disposition-de-classes-en-salle-{as}-{id}", name="disposition_add")
      */
-    public function dispositionDeClasseEnSalleAction(Request $request, int $as, Salle $salle): Response
+    public function dispositionDeClasseEnSalleAction(Request $request, int $as, Salle $salle, int $id): Response
     {
       $em = $this->getDoctrine()->getManager();
       $enregistrement = false;
@@ -335,7 +332,7 @@ class DispositionController extends Controller
           unset($classesF[array_search($value->getClasse(), $classesF)]);
         }
       }
-
+      
       if($request->isMethod('post'))
       {
         $data = $request->request->all();
@@ -346,35 +343,51 @@ class DispositionController extends Controller
         }
         else{
           $classe   = $repoClasse->find($classeA);
-          $regime   = $repoGrpF->findOneBy(['reference' => 'A']);
-          $disposition = new SalleClasse();
-          $disposition->setClasse($classe);
-          $disposition->setSalle($salle);
-          $disposition->setAnnee($annee);
-          $disposition->setRegime($regime);
-          $disposition->setCreatedBy($this->getUser());
-          $disposition->setCreatedAt(new \DateTime());
-          $em->persist($disposition);
-          $enregistrement = true;
+          $academie = $repoSC->findOneBy(['annee' => $as, 'salle' => $id, 'regime' => 1]);
+          if(empty($academie)){
+            $regime   = $repoGrpF->findOneBy(['reference' => 'A']);
+            $disposition = new SalleClasse();
+            $disposition->setClasse($classe);
+            $disposition->setSalle($salle);
+            $disposition->setAnnee($annee);
+            $disposition->setRegime($regime);
+            $disposition->setCreatedBy($this->getUser());
+            $disposition->setCreatedAt(new \DateTime());
+            $em->persist($disposition);
+            $enregistrement = true;
+          }
+          else{
+            $academie->setClasse($classe);
+            $academie->setUpdatedBy($this->getUser());
+            $academie->setUpdatedAt(new \DateTime());
+          }
         }
-
+        
         if(empty($classeF)){
           $this->addFlash('error', 'Vous n\'avez pas sélectionné de classe au centre de formation.');
         }
         else{
+          $centreformation = $repoSC->findOneBy(['annee' => $as, 'salle' => $id, 'regime' => 2]);
           $classe   = $repoClasse->find($classeF);
-          $regime   = $repoGrpF->findOneBy(['reference' => 'F']);
-          $disposition = new SalleClasse();
-          $disposition->setClasse($classe);
-          $disposition->setSalle($salle);
-          $disposition->setAnnee($annee);
-          $disposition->setRegime($regime);
-          $disposition->setCreatedBy($this->getUser());
-          $disposition->setCreatedAt(new \DateTime());
-          $em->persist($disposition);
-          $enregistrement = true;
+          if(empty($centreformation)){
+            $regime   = $repoGrpF->findOneBy(['reference' => 'F']);
+            $disposition = new SalleClasse();
+            $disposition->setClasse($classe);
+            $disposition->setSalle($salle);
+            $disposition->setAnnee($annee);
+            $disposition->setRegime($regime);
+            $disposition->setCreatedBy($this->getUser());
+            $disposition->setCreatedAt(new \DateTime());
+            $em->persist($disposition);
+            $enregistrement = true;
+          }
+          else{
+            $centreformation->setClasse($classe);
+            $centreformation->setUpdatedBy($this->getUser());
+            $centreformation->setUpdatedAt(new \DateTime());
+          }
         }
-        if($enregistrement == true){
+        // if($enregistrement == true){
           try{
             $em->flush();
             $this->addFlash('info', 'Disposition de classe enregistrée avec succès.');
@@ -388,15 +401,15 @@ class DispositionController extends Controller
             $this->addFlash('error', $e->getMessage());
           }
           return $this->redirectToRoute('disposition_add', ['as' => $as, 'annexeId' => $annexeId, 'id' => $salle->getId()]);
-        }
+        // }
       }
 
       return $this->render('ISIBundle:Disposition:disposition-en-classe.html.twig', [
         'asec'     => $as,
         'annee'    => $annee,
         'salle'    => $salle,
-      'annexe'  => $annexe,
-      'classesA' => $classesA,
+        'annexe'   => $annexe,
+        'classesA' => $classesA,
         'classesF' => $classesF,
       ]);
     }
@@ -406,7 +419,7 @@ class DispositionController extends Controller
      * @param Salle $salle
      * @Route("/editer-disposition-de-classes-en-salle-{as}-{id}", name="disposition_edit")
      */
-    public function editerDispositionDeClasseEnSalleAction(Request $request, int $as, Salle $salle): Response
+    public function editerDispositionDeClasseEnSalleAction(Request $request, int $as, Salle $salle, int $id): Response
     {
       $em = $this->getDoctrine()->getManager();
       $enregistrement = false;
@@ -425,21 +438,21 @@ class DispositionController extends Controller
       // On sélectionne toutes les classes de l'académie et du centre de formation
       $classesA   = $repoClasse->classesDeLAnnee($as, $annexeId, 'A');
       $classesF   = $repoClasse->classesDeLAnnee($as, $annexeId, 'F');
+      // dump($classesA, $classesF);
 
       //On sélectionne ensuite toutes les classes qui ont déjà été disposées dans des salles
       $sallesClasses = $repoSC->findBy(['annee' => $as]);
 
-      $salleClasse     = $repoSC->findBy(['annee' => $as, 'salle' => $salle->getId()]);
-      $academie        = $repoSC->findOneBy(['annee' => $as, 'salle' => $salle->getId(), 'regime' => 1]);
-      $centreformation = $repoSC->findOneBy(['annee' => $as, 'salle' => $salle->getId(), 'regime' => 2]);
+      $academie        = $repoSC->findOneBy(['annee' => $as, 'salle' => $id, 'regime' => 1]);
+      $centreformation = $repoSC->findOneBy(['annee' => $as, 'salle' => $id, 'regime' => 2]);
       // dump($academie, $centreformation);
 
       // En pour classe disposition de classe dans une salle, on retire la classe de la liste des classes de l'académie ou du centre de formation
-      foreach ($sallesClasses as $key => $value) {
+      foreach ($sallesClasses as $value) {
         if(
-            (!empty($academie) && in_array($value->getClasse(), $classesA) && $value->getClasse() != $academie->getClasse()) ||
-            (empty($academie) && in_array($value->getClasse(), $classesA))
-          )
+          (!empty($academie) && in_array($value->getClasse(), $classesA) && $value->getClasse() != $academie->getClasse()) ||
+          (empty($academie) && in_array($value->getClasse(), $classesA))
+        )
         {
           unset($classesA[array_search($value->getClasse(), $classesA)]);
         }
@@ -453,21 +466,26 @@ class DispositionController extends Controller
         }
       }
 
-      if($request->isMethod('post'))
-      {
-        $data = $request->request->all();
+      if($request->isMethod('post')){
+        $data    = $request->request->all();
         $classeA = $data['classeA'];
         $classeF = $data['classeF'];
 
         // Dans le cas d'une modification
-        if(empty($classeA)){
+        if(empty($classeA) and !empty($academie)){
+          $pass = 1;
           $this->addFlash('error', 'Vous n\'avez pas sélectionné de classe à l\'academie.');
+          $academie->setClasse(null);
+          $academie->setUpdatedBy($this->getUser());
+          $academie->setUpdatedAt(new \DateTime());
         }
-        else{
+        elseif(!empty($classeA)){
+          $pass = 2;
           $classe = $repoClasse->find($classeA);
           if(empty($academie))
           {
-            // return new Response("Insertion");
+            $pass = 3;
+            // return new Response("Insertion A");
             $regime = $repoGrpF->findOneBy(['reference' => 'A']);
             $disposition = new SalleClasse();
             $disposition->setClasse($classe);
@@ -479,7 +497,8 @@ class DispositionController extends Controller
             $em->persist($disposition);
           }
           else{
-            // return new Response("Modification");
+            $pass = 4;
+            // return new Response("Modification A");
             $academie->setClasse($classe);
             $academie->setUpdatedBy($this->getUser());
             $academie->setUpdatedAt(new \DateTime());
@@ -487,14 +506,17 @@ class DispositionController extends Controller
           $enregistrement = true;
         }
 
-        if(empty($classeF)){
-          $this->addFlash('error', 'Vous n\'avez pas sélectionné de classe à l\'academie.');
+        if(empty($classeF) and !empty($centreformation)){
+          $this->addFlash('error', 'Vous n\'avez pas sélectionné de classe au centre de formation.');
+          $centreformation->setClasse(null);
+          $centreformation->setUpdatedBy($this->getUser());
+          $centreformation->setUpdatedAt(new \DateTime());
         }
-        else{
+        elseif(!empty($classeF)){
           $classe = $repoClasse->find($classeF);
           if(empty($centreformation))
           {
-            // return new Response("Insertion");
+            // return new Response("Insertion CF");
             $regime = $repoGrpF->findOneBy(['reference' => 'F']);
             $disposition = new SalleClasse();
             $disposition->setClasse($classe);
@@ -506,7 +528,7 @@ class DispositionController extends Controller
             $em->persist($disposition);
           }
           else{
-            // return new Response("Modification");
+            // return new Response("Modification CF");
             $centreformation->setClasse($classe);
             $centreformation->setUpdatedBy($this->getUser());
             $centreformation->setUpdatedAt(new \DateTime());
@@ -515,22 +537,26 @@ class DispositionController extends Controller
         }
 
         if($enregistrement == true){
-          try{
-            $em->flush();
-            $this->addFlash('info', 'Disposition de classe mise à jour avec succès.');
-            return $this->redirectToRoute('disposition', ['as' => $as, 'annexeId' => $annexeId]);
-          } 
-          catch(\Doctrine\ORM\ORMException $e){
-            $this->addFlash('error', $e->getMessage());
-            $this->get('logger')->error($e->getMessage());
-          } 
-          catch(\Exception $e){
-            $this->addFlash('error', $e->getMessage());
-          }
-          return $this->redirectToRoute('disposition_add', ['as' => $as, 'annexeId' => $annexeId, 'id' => $salle->getId()]);
+          $this->addFlash('info', 'Disposition de classe mise à jour avec succès.');
         }
+
+        try{
+          // dump($pass);
+          // die();
+          $em->flush();
+          return $this->redirectToRoute('disposition', ['as' => $as, 'annexeId' => $annexeId]);
+        } 
+        catch(\Doctrine\ORM\ORMException $e){
+          $this->addFlash('error', $e->getMessage());
+          $this->get('logger')->error($e->getMessage());
+        } 
+        catch(\Exception $e){
+          $this->addFlash('error', $e->getMessage());
+        }
+        return $this->redirectToRoute('disposition', ['as' => $as, 'annexeId' => $annexeId]);
       }
-      //>>
+      // dump($classesA, $classesF);
+      // dump($academie, $centreformation);
       return $this->render('ISIBundle:Disposition:editer-disposition-en-classe.html.twig', [
         'asec'     => $as,
         'annee'    => $annee,

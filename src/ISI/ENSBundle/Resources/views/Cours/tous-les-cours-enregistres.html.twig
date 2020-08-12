@@ -65,9 +65,20 @@
                 {% endif %}
               </td>
               <td>
-                <a href="{{path('ens_editer_un_cours', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'coursId': item.id})}}"  data-tooltip="Mettre à jour ce cours">
-                  <i class="edit icon"></i>
-                </a>
+                {% if is_granted('ROLE_ADJOINT_DIRECTION_ENSEIGNANT') %}
+                  <a href="{{path('ens_editer_un_cours', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'coursId': item.id})}}"  data-tooltip="Mettre à jour ce cours">
+                    <i class="edit icon"></i>
+                  </a>
+                  {% if item.classe is not empty %}
+                    <a href="{{ path('faire_appel_cours', {as: asec, annexeId: annexe.id, coursId:item.id, origine: 'all-courses'}) }}" data-tooltip="Procéder à l'appel pour ce cours">
+                      <i class="newspaper icon"></i>
+                    </a>
+                  {% else %}
+                    <a href="{{ path('faire_appel_halaqa', {as: asec, annexeId: annexe.id, coursId:item.id, origine: 'all-courses'}) }}" data-tooltip="Procéder à l'appel pour ce cours de coran">
+                      <i class="newspaper icon"></i>
+                    </a>
+                  {% endif %}
+                {% endif %}
               </td>
             </tr>
           {% endfor %}

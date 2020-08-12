@@ -39,4 +39,20 @@ class PresenceRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getResult();
     }
+    
+    public function presences_d_une_periode($classeId, $debut, $fin)
+    {
+        return $this->createQueryBuilder('p')
+            ->join('p.eleve', 'e')
+            ->join('e.frequenter', 'f')
+            ->join('f.classe', 'c')
+            ->where('c.id = :classeId AND e.renvoye = 0 AND p.date >= :debut AND p.date <= :fin')
+            ->orderBy('e.nomFr', 'ASC')
+            ->addOrderBy('e.pnomFr', 'ASC')
+            ->setParameter('debut', $debut)
+            ->setParameter('fin', $fin)
+            ->setParameter('classeId', $classeId)
+            ->getQuery()
+            ->getResult();
+    }
 }

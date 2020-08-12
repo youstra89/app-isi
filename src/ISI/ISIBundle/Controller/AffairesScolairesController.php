@@ -768,7 +768,72 @@ class AffairesScolairesController extends Controller
 
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
-   * @Route("/liste-de-halaqa-{as}-{regime}", name="isi_liste_des_halaqas")
+   * @Route("/fiche-d-identification-{as}-{regime}-{classeId}", name="fiche_identification")
+   */
+  public function fiche_identification(Request $request, int $as, int $classeId)
+  {
+    $em               = $this->getDoctrine()->getManager();
+    $repoClasse       = $em->getRepository('ISIBundle:Classe');
+    $repoAnnee        = $em->getRepository('ISIBundle:Annee');
+    $repoFrequenter   = $em->getRepository('ISIBundle:Frequenter');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId = $request->get('annexeId');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
+
+    $annee  = $repoAnnee->find($as);
+    $classe = $repoClasse->find($classeId);
+    $frequenter = $repoFrequenter->findBy(['annee' => $as, 'classe' => $classeId]);
+    foreach ($frequenter as $key => $fq) {
+      $nom[$key]  = $fq->getEleve()->getNomFr();
+      $pnom[$key] = $fq->getEleve()->getPnomFr();
+    }
+    array_multisort($nom, SORT_ASC, $pnom, SORT_ASC, $frequenter);
+
+    $snappy = $this->get("knp_snappy.pdf");
+    $snappy->setOption("encoding", "UTF-8");
+    $filename = "finche-d-inscription-de-classe-de-".$classe->getLibelleFr()."-".$annee->getLibelle();
+
+
+    $html = $this->renderView('ISIBundle:Scolarite:fiche-identification.html.twig', [
+      // "title" => "Titre de mon document",
+      "annee"        => $annee,
+      "classe"       => $classe,
+      'annexe'       => $annexe,
+      "frequenter"   => $frequenter,
+      'server'       => $_SERVER["DOCUMENT_ROOT"],   
+    ]);
+
+    // dump($_SERVER["DOCUMENT_ROOT"]);
+    // die();
+
+    $header = $this->renderView( '::header.html.twig' );
+    // $footer = $this->renderView( '::footer.html.twig' );
+
+    $options = [
+      'header-html' => $header,
+      // 'footer-html' => $footer,
+    ];
+
+    // Tcpdf
+    // $this->returnPDFResponseFromHTML($html);
+
+    return new Response(
+        $snappy->getOutputFromHtml($html, $options),
+        200,
+        [
+            'Content-Type'        => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="'.$filename.'.pdf"'
+        ]
+    );
+  }
+
+  /**
+   * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/liste-des-halaqas-{as}-{regime}", name="isi_liste_des_halaqas")
    */
   public function listeDesHalaqasAction(Request $request, int $as, $regime)
   {
@@ -784,11 +849,12 @@ class AffairesScolairesController extends Controller
     }
     $annee = $repoAnnee->find($as);
     $halaqas = $repoHalaqa->findBy(['annee' => $as, 'annexe' => $annexeId, 'regime' => $regime]);
+    // dump($halaqas[0]->getAnneeContratClasse()[0]->getAnneeContrat()->getContrat());
 
     return $this->render('ISIBundle:Scolarite:liste-de-halaqa-home.html.twig', [
       'asec'    => $as,
       'regime'  => $regime,
-      'annexe'      => $annexe,
+      'annexe'  => $annexe,
       'annee'   => $annee,
       'halaqas' => $halaqas,
     ]);
@@ -808,7 +874,6 @@ class AffairesScolairesController extends Controller
     $repoCours = $em->getRepository('ENSBundle:AnneeContratClasse');
     $repoAnnee = $em->getRepository('ISIBundle:Annee');
     $repoHalaqa = $em->getRepository('ISIBundle:Halaqa');
-    $repoInformations = $em->getRepository('ISIBundle:Informations');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
     $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
@@ -816,13 +881,12 @@ class AffairesScolairesController extends Controller
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
       return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
     }
-    
-    $annee  = $repoAnnee->find($as);
-    $halaqa = $repoHalaqa->find($halaqaId);
-    $memoriser = $repoMemoriser->findBy(['halaqa' => $halaqaId]);
-    $enseignant = $repoCours->findOneBy(['halaqa' => $halaqaId, "annee" => $as]);
-    $nomEnseignant = !empty($enseignant) ? $enseignant->getAnneeContrat()->getContrat()->getEnseignant()->getNom() : "Inconnu";
-    $informations = $repoInformations->find(1);
+    $annee         = $repoAnnee->find($as);
+    $halaqa        = $repoHalaqa->find($halaqaId);
+    $memoriser     = $repoMemoriser->findBy(['halaqa' => $halaqaId]);
+    $cours         = $repoCours->findOneBy(['halaqa'  => $halaqaId, "annee" => $as]);
+    $nomEnseignant = !empty($cours) ? $cours->getAnneeContrat()->getContrat()->getEnseignant()->getNom(): "Inconnu";
+    // dump($halaqa);
     
     $classes = [];
     foreach ($memoriser as $memo) {
@@ -850,14 +914,14 @@ class AffairesScolairesController extends Controller
     
     $html = $this->renderView('ISIBundle:Scolarite:liste-des-eleves-de-halaqa.html.twig', [
       // "title" => "Titre de mon document",
-      "annee"     => $annee,
-      "regime"    => $regime,
-      "halaqa"    => $halaqa,
-      "classes"   => $classes,
-      'annexe'      => $annexe,
-      "memoriser" => $memoriser,
-      'server'   => $_SERVER["DOCUMENT_ROOT"],   
-      "informations" => $informations,
+      "annee"         => $annee,
+      "regime"        => $regime,
+      "halaqa"        => $halaqa,
+      "classes"       => $classes,
+      'annexe'        => $annexe,
+      "memoriser"     => $memoriser,
+      'server'        => $_SERVER["DOCUMENT_ROOT"],   
+      "informations"  => $informations,
       "nomEnseignant" => $nomEnseignant,
       ]);
 
@@ -1269,12 +1333,98 @@ class AffairesScolairesController extends Controller
     ]);
   }
 
+  /**
+   * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/accueil-rapport-des-absences-au-cours-{as}-{regime}", name="rapport_absence_cours_home")
+   */
+  public function rapport_absence_cours_home(Request $request, int $as, $regime)
+  {
+    $em         = $this->getDoctrine()->getManager();
+    $repoAnnee  = $em->getRepository('ISIBundle:Annee');
+    $repoTache  = $em->getRepository('ISIBundle:Tache');
+    $repoClasse = $em->getRepository('ISIBundle:Classe');
+    $repoExamen = $em->getRepository('ISIBundle:Examen');
+    $examens    = $repoExamen->lesExamensDeLAnnee($as);
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId   = $request->get('annexeId');
+    $annexe     = $repoAnnexe->find($annexeId);
+    $date = new \DateTime();
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
+    $taches = $repoTache->appelsDuJours($date, $regime);
+    if($request->isMethod('post')){
+      $data = $request->request->all();
+      $date = new \DateTime($data['date']);
+      $taches = $repoTache->appelsDuJours($date, $regime);
+    }
+    // dump($taches);
+
+    $annee   = $repoAnnee->find($as);
+    $classes = $repoClasse->classeGrpFormation($as, $annexeId, $regime);
+
+    return $this->render('ISIBundle:Scolarite:rapport-absence-cours-home.html.twig', [
+      'asec'    => $as,
+      'regime'  => $regime,
+      'annee'   => $annee,
+      'classes' => $classes,
+      'annexe'  => $annexe,
+      'examens' => $examens,
+      'taches' => $taches,
+      'date' => $date,
+    ]);
+  }
+
+  /**
+   * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/accueil-rapport-des-absences-en-coran-{as}-{regime}", name="rapport_absence_coran_home")
+   */
+  public function rapport_absence_coran_home(Request $request, int $as, $regime)
+  {
+    $em         = $this->getDoctrine()->getManager();
+    $repoAnnee  = $em->getRepository('ISIBundle:Annee');
+    $repoTache  = $em->getRepository('ISIBundle:Tache');
+    $repoHalaqa = $em->getRepository('ISIBundle:Halaqa');
+    $repoExamen = $em->getRepository('ISIBundle:Examen');
+    $examens    = $repoExamen->lesExamensDeLAnnee($as);
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexeId   = $request->get('annexeId');
+    $annexe     = $repoAnnexe->find($annexeId);
+    $date = new \DateTime();
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
+    $taches = $repoTache->appelsCoranDuJours($date);
+    if($request->isMethod('post')){
+      $data = $request->request->all();
+      $date = new \DateTime($data['date']);
+      $taches = $repoTache->appelsCoranDuJours($date);
+    }
+    // dump($taches);
+
+    $annee   = $repoAnnee->find($as);
+    $halaqas = $repoHalaqa->findBy(['annee' => $as, 'annexe' => $annexeId]);
+
+    return $this->render('ISIBundle:Scolarite:rapport-absence-coran-home.html.twig', [
+      'asec'    => $as,
+      'regime'  => $regime,
+      'annee'   => $annee,
+      'halaqas' => $halaqas,
+      'annexe'  => $annexe,
+      'examens' => $examens,
+      'taches'  => $taches,
+      'date'    => $date,
+    ]);
+  }
+
   // Cette page affichera les heures d'absences enregistrées d'une classe
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
    * @Route("/heures-d-absences-enregistrees-de-la-classe-{as}-{regime}-{classeId}-{absence}", name="isi_heures_absences_enregistrees")
    */
-  public function heuresAbsenceEnregistreesAction(Request $request, int $as, $regime, int $classeId, $absence)
+  public function heuresAbsenceEnregistreesAction(Request $request, int $as, string $regime, int $classeId, string $absence)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
@@ -1320,6 +1470,61 @@ class AffairesScolairesController extends Controller
       'moisAbsences' => $moisAbsences,
       // 'examens' => $examens,
       // 'absencesDuMois' => $absencesDuMois
+    ]);
+  }
+
+  /**
+   * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/heures-d-absences-enregistrees-de-la-classe-{as}-{regime}-{classeId}", name="rapport_absence_classe")
+   */
+  public function rapport_absence_classe(Request $request, int $as, string $regime, int $classeId)
+  {
+    $em           = $this->getDoctrine()->getManager();
+    $repoAnnee    = $em->getRepository('ISIBundle:Annee');
+    $repoClasse   = $em->getRepository('ISIBundle:Classe');
+    $repoEleve    = $em->getRepository('ISIBundle:Eleve');
+    $repoPresence = $em->getRepository('ISIBundle:Presence');
+    $repoAnnexe   = $em->getRepository('ISIBundle:Annexe');
+    $annexeId     = $request->get('annexeId');
+    $annexe       = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
+
+    // Sélection des informations à envoyer vers le formulaire
+    $annee  = $repoAnnee->find($as);
+    $eleves = $repoEleve->lesElevesDeLaClasse($as, $annexeId, $classeId);
+    $classe = $repoClasse->find($classeId);
+
+    $eleves         = $repoEleve->lesElevesDeLaClasse($as, $annexeId, $classeId);
+    $appels         = [];
+    $presences = $repoPresence->appels_des_eleves_de_la_classe($classeId, (new \DateTime())->format("Y-m-d"));
+    foreach ($presences as $value) {
+      $appels[$value->getEleve()->getId()] = $value;
+    }
+
+    if($request->isMethod('post')){
+      $data  = $request->request->all();
+      $debut = $data['debut'];
+      $fin   = $data['fin'];
+      $appels = $repoPresence->presences_d_une_periode($classeId, $debut, $fin);
+      // dump($appels);
+      // die();
+    }
+    //foreach ($eleves as $eleve) {
+      # code...
+      //$absences[] = $repoAbsence->findOneBy(['eleve' => $eleve->getId(), 'annee' => $as]);
+    //}
+      // dump($appels);
+    return $this->render('ISIBundle:Scolarite:rapport-absence-classe.html.twig', [
+      'asec'         => $as,
+      'regime'       => $regime,
+      'annee'        => $annee,
+      'classe'       => $classe,
+      'eleves'       => $eleves,
+      'annexe'       => $annexe,
+      'appels'       => $appels,
     ]);
   }
 

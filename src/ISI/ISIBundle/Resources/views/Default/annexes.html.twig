@@ -10,10 +10,16 @@
 
 
   {% block menu %}
+    {# {% if is_granted('ROLE_SUPER_ADMIN') or is_granted('ROLE_ADMIN_ANNEXE') %}
+      <a class="item" href="{{ path('statistiques_annexes', {'as': asec}) }}"><h4 class="ui header"><i class="tasks icon"></i>{{ 'Statistiques'|trans }}</h4></a>
+    {% endif %} #}
   {% endblock %}
 
 
   {% block mobile_menu %}
+    {# {% if is_granted('ROLE_SUPER_ADMIN') or is_granted('ROLE_ADMIN_ANNEXE') %}
+      <a class="item" href="{{ path('statistiques_annexes', {'as': asec}) }}"><h4 class="ui header">{{ 'Statistiques'|trans }}</h4></a>
+    {% endif %} #}
   {% endblock %}
 
 
@@ -23,16 +29,16 @@
 
   {% block body %}
     <!-- Fin d'affichage des notifications et des message d'erreur  -->
-    <div class="ui four column stackable grid">
-      {% for item in annexes %}  
+    <div class="ui six column stackable grid">
+      {% for item in app.user.annexes if item.disabled == 0 %}  
         <div class="wide column">
-          <a class="item" href="{{ path('isi_homepage', {'as': asec, 'annexeId': item.id}) }}">
+          <a class="item" href="{{ path('isi_homepage', {'as': asec, 'annexeId': item.annexe.id}) }}">
             <div class="card ui segment">
               <div class="image" bgcolor="white">
                 <img src="{{ asset('images/logoISI.png') }}" style="width: 50%; height: auto">
               </div>
               <div class="content">
-                <div class="header">{{ item.libelle }}</div>
+                <div class="header">{{ item.annexe.libelle }}</div>
                 <div class="meta">
                   Annexe
                 </div>

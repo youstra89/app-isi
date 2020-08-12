@@ -19,7 +19,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class AbsencesEtRetardsController extends Controller
 {
     /**
-     * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+     * @Security("has_role('ROLE_CONTROLE_ENSEIGNANT')")
      * @Route("/page-d-accueil-des-retards-des-enseignants-{as}", name="ens_retards_home")
      */
     public function indexRetards(Request $request, $as)
@@ -76,7 +76,7 @@ class AbsencesEtRetardsController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+     * @Security("has_role('ROLE_CONTROLE_ENSEIGNANT')")
      * @Route("/page-de-saisie-des-retards-des-enseignants-{as}-{periode}", name="ens_saisi_retards")
      */
     public function saisieDesRetards(Request $request, $as, $periode)
@@ -145,7 +145,7 @@ class AbsencesEtRetardsController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+     * @Security("has_role('ROLE_CONTROLE_ENSEIGNANT')")
      * @Route("/apercu-des-retards-des-enseignants-enregistres-home-{as}", name="ens_voir_retards_home")
      */
     public function apercuDesRetardsHome(Request $request, $as)
@@ -183,7 +183,7 @@ class AbsencesEtRetardsController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+     * @Security("has_role('ROLE_CONTROLE_ENSEIGNANT')")
      * @Route("/apercu-des-retards-des-enseignants-enregistres-pour-un-mois-donnee-{as}-{moisId}", name="ens_voir_retards_mois")
      */
     public function apercuDesRetardsMois(Request $request, $as, $moisId)
@@ -231,7 +231,7 @@ class AbsencesEtRetardsController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+     * @Security("has_role('ROLE_CONTROLE_ENSEIGNANT')")
      * @Route("/apercu-du-bilan-des-retards-des-enseignants-enregistres-pour-un-mois-donnee-{as}-{moisId}", name="ens_voir_retards_mois_cumul")
      */
     public function apercuDesRetardsMoisCumul(Request $request, $as, $moisId)
@@ -268,7 +268,7 @@ class AbsencesEtRetardsController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+     * @Security("has_role('ROLE_CONTROLE_ENSEIGNANT')")
      * @Route("/page-d-accueil-des-absences-des-enseignants-{as}", name="ens_absences_home")
      */
     public function indexAbsences(Request $request, $as)
@@ -296,7 +296,7 @@ class AbsencesEtRetardsController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+     * @Security("has_role('ROLE_CONTROLE_ENSEIGNANT')")
      * @Route("/page-d-accueil-d-absence-d-un-enseignant-{as}-{contratId}", name="ens_enregistrer_absence")
      */
     public function enregistrerAbsence(Request $request, $as, $contratId)
@@ -347,7 +347,7 @@ class AbsencesEtRetardsController extends Controller
     }
 
     /**
-     * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
+     * @Security("has_role('ROLE_CONTROLE_ENSEIGNANT')")
      * @Route("/apercu-des-absences-des-enseignants-enregistrees-home-{as}", name="ens_voir_absences_home")
      */
     public function apercuDesAbsencesHome(Request $request, $as)

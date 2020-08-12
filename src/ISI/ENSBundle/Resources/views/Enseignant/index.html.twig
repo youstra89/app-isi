@@ -10,6 +10,11 @@
 {% endblock %}
 
 
+{% block mobile_menu %}
+  <a class="item" href="{{ path('isi_homepage', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header"><i class="home icon"></i>{{ 'Accueil'|trans }}</h4></a>
+{% endblock %}
+
+
 {% block contextual_menu %}
   {% if is_granted('ROLE_SUPER_ADMIN') %}
       {{ include("ISIBundle::contextual-menu-panel-admin.html.twig") }}
@@ -25,13 +30,14 @@
     {% if cours is not defined %}
       <p>{{ 'Aucun enseignant n\'a encore été inscrit'|trans }}</p>
     {% else %}
-      <table id="table-cours" cellspacing="0" class="mytable filterable ui very basic table">
+      {# <table id="table-cours" cellspacing="0" class="mytable filterable ui very basic table"> #}
+      <table id="table-cours" cellspacing="0" class="mytable filterable">
         <thead>
           <tr>
             <th style="width: 5%; text-align: center">{{ 'N°'|trans }}</th>
             <th>{{ 'Matière'|trans }}</th>
             <th>{{ 'Classe'|trans }}</th>
-            <th>{{ 'Numéro'|trans }}</th>
+            <th>{{ 'Salle'|trans }}</th>
             <th>{{ 'Jour'|trans }}</th>
             <th>{{ 'Heure'|trans }}</th>
             <th>{{ 'Actions'|trans }}</th>
@@ -55,7 +61,7 @@
                 {{ item.halaqa.libelle }}
               {% endif %}
               </td>
-              <td>{{ item.numero }}</td>
+              <td>{% if item.classe %}{{ item.classe.salle[0].salle.nom }}{% endif %}</td>
               <td>
                 {% if item.jour is not empty %}
                   {{ item.jourdecours }}
@@ -83,8 +89,57 @@
           {% endfor %}
         </tbody>
       </table>
+      <br><br>
     {% endif %}
     {# {{dump(cours)}} #}
+    <div class="responsive">
+      <table width="50%" class="ui compact celled definition table" style="font-size: 1em;">
+        <thead>
+          <tr style="text-align: center">
+            <th></th>
+            <th>07h30 - 08h10</th>
+            <th>08h10 - 08h50</th>
+            <th>08h50 - 09h30</th>
+            <th>09h30 - 10h10</th>
+            <th>10h10 - 10h50</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% set jours = {2: "Dimanche", 3: "Lundi", 4: "Mardi", 5: "Mercredi", 6: "Jeudi"} %}
+          {% for day in 2..6 %}
+            {% set color = "white" %}
+            {% if day % 2 == 0 %}{% set color = "positive" %}{% endif %}
+            <tr class="{{ color }}" style="text-align: center">
+              <td>{{ jours[day] }}</td>
+              {% for time in 1..5 %}
+                <td>
+                  {% for item in cours %}
+                    {% if item.jour == day %}
+                      {% if item.heure == time %}
+                        {% if item.classe %}
+                          {{ item.classe.libelleFr }}
+                        {% else %}
+                          {{ item.halaqa.libelle }}
+                        {% endif %}
+                        <br>
+                        <strong>{{ item.matiere.libelle }}</strong><br>
+                        <i>
+                          {% if item.classe.salle %}
+                            {{ item.classe.salle[0].salle.nom }} <br>
+                            {{ item.classe.salle[0].salle.batiment.nom }} - {{ item.classe.salle[0].salle.localisation }}
+                          {% endif %}
+                        </i>
+                      {% endif %}
+                    {% endif %}
+                  {% endfor %}
+                </td> 
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <br><br>
 {% endblock %}
 
 {% block javascripts %}

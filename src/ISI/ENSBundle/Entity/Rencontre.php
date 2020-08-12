@@ -54,6 +54,13 @@ class Rencontre
     private $theme;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="rapport", type="text", nullable=true)
+     */
+    private $rapport;
+
+    /**
      * @var int
      *
      * @ORM\Column(name="duree", type="string")
@@ -350,5 +357,29 @@ class Rencontre
     public function getUpdatedBy()
     {
         return $this->updatedBy;
+    }
+
+    /**
+     * Set rapport
+     *
+     * @param string $rapport
+     *
+     * @return Rencontre
+     */
+    public function setRapport($rapport)
+    {
+        $this->rapport = $rapport;
+
+        return $this;
+    }
+
+    /**
+     * Get rapport
+     *
+     * @return string
+     */
+    public function getRapport()
+    {
+        return $this->rapport;
     }
 }
