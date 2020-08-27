@@ -1104,6 +1104,103 @@ class CoursController extends Controller
       ]
     );
   }
+
+  /**
+   * @Security("has_role('ROLE_SCOLARITE') or has_role('ROLE_AGENT_DIRECTION_ENSEIGNANT') ")
+   * @Route("/accueil-rapport-des-appels-{as}-{regime}", name="rapport_appel_cours_home")
+   */
+  public function rapport_appel_cours_home(Request $request, int $as, $regime)
+  {
+    $em                    = $this->getDoctrine()->getManager();
+    $repoAnnee             = $em->getRepository('ISIBundle:Annee');
+    $repoTache             = $em->getRepository('ISIBundle:Tache');
+    $repoClasse            = $em->getRepository('ISIBundle:Classe');
+    $repoCours             = $em->getRepository('ENSBundle:AnneeContratClasse');
+    $repoAnneeContrat      = $em->getRepository('ENSBundle:AnneeContrat');
+    $repoAnnexe            = $em->getRepository('ISIBundle:Annexe');
+    $annexeId              = $request->get('annexeId');
+    $annexe                = $repoAnnexe->find($annexeId);
+    $date                  = new \DateTime();
+    $nouvel_enregistrement = false;
+    // Contrainte : Il faut que le jour sélectionné corresponde au jour du cours    
+    
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
+    $taches = $repoTache->appelsDuJours($date, $regime);
+    if($request->isMethod('post')){
+      $data = $request->request->all();
+      $date = new \DateTime($data['date']);
+      $taches = $repoTache->appelsDuJours($date, $regime);
+    }
+    $jour = $this->dateToFrench(date("l", strtotime($date->format("d-m-Y"))));
+
+    $numero_du_jour = date("w", strtotime($date->format("Y-m-d")));
+    if($numero_du_jour == 6) 
+      $jour_du_cours = 1;
+    elseif($numero_du_jour == 0) 
+      $jour_du_cours = 2;
+    elseif($numero_du_jour == 1) 
+      $jour_du_cours = 3;
+    elseif($numero_du_jour == 2) 
+      $jour_du_cours = 4;
+    elseif($numero_du_jour == 3) 
+      $jour_du_cours = 5;
+    elseif($numero_du_jour == 4) 
+      $jour_du_cours = 6;
+    else
+      $jour_du_cours = 0;
+
+    $cours = $repoCours->cours_d_un_jour($as, $annexeId, $jour_du_cours);
+    // dump($taches);
+
+    $annee   = $repoAnnee->find($as);
+    $enseignants = $repoAnneeContrat->fonctionDeLAnnee($as, $annexeId);
+
+    // dump($cours);
+
+    return $this->render('ENSBundle:Cours:rapport-absence-cours-home.html.twig', [
+      'asec'        => $as,
+      'regime'      => $regime,
+      'annee'       => $annee,
+      'annexe'      => $annexe,
+      'cours'       => $cours,
+      'taches'      => $taches,
+      'date'        => $date,
+      'jour'        => $jour,
+      'enseignants' => $enseignants,
+    ]);
+  }
+
+  public function dateToFrench($english) 
+    {
+        switch ($english) {
+            case 'Monday':
+                $jour = 'Lundi';
+                break;
+            
+            case 'Tuesday':
+                $jour = 'Mardi';
+                break;
+            case 'Wednesday':
+                $jour = 'Mercredi';
+                break;
+            case 'Thursday':
+                $jour = 'Jeudi';
+                break;
+            case 'Friday':
+                $jour = 'Vendredi';
+                break;
+            case 'Saturday':
+                $jour = 'Samedi';
+                break;
+            default:
+                $jour = 'Dimanche';
+                break;
+        }
+        return $jour;
+    }
 }
 
 

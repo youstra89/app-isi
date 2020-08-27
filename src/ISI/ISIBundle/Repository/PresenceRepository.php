@@ -55,4 +55,17 @@ class PresenceRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function absence_eleve_periode($eleveId, $debut, $fin)
+    {
+        return $this->createQueryBuilder('p')
+            ->join('p.eleve', 'e')
+            ->where('e.id = :eleveId AND e.renvoye = 0 AND p.date >= :debut AND p.date <= :fin')
+            ->orderBy('p.date', 'ASC')
+            ->setParameter('debut', $debut)
+            ->setParameter('fin', $fin)
+            ->setParameter('eleveId', $eleveId)
+            ->getQuery()
+            ->getResult();
+    }
 }

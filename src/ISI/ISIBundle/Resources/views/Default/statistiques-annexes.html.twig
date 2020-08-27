@@ -29,8 +29,8 @@
 
   {% block body %}
     <!-- Fin d'affichage des notifications et des message d'erreur  -->
-    <div class="ui six column stackable grid">
-      {% for item in app.user.annexes if item.disabled == 0 %}  
+    <div class="responsive">
+      {# {% for item in app.user.annexes if item.disabled == 0 %}  
         <div class="wide column">
           <a class="item" href="{{ path('isi_homepage', {'as': asec, 'annexeId': item.annexe.id}) }}">
             <div class="card ui segment">
@@ -51,6 +51,66 @@
             </div>
           </a>
         </div>
-      {% endfor %}
+      {% endfor %} #}
+      <table class="ui celled table selectable" width="75%">
+        <thead>
+          <tr>
+            <th rowspan="3">#</th>
+            <th rowspan="3">Annexes</th>
+            <th colspan="6" style="text-align: center">Elèves</th>
+            <th colspan="8" style="text-align: center">Classes</th>
+          </tr>
+          <tr style="text-align: center">
+            <th colspan="3">Académie</th>
+            <th colspan="3">Centre de formation</th>
+            <th colspan="4">Académie</th>
+            <th colspan="4">Centre de formation</th>
+          </tr>
+          <tr style="text-align: center">
+            <th><i class="male icon"></i></th>
+            <th><i class="female icon"></i></th>
+            <th>Total</th>
+            <th><i class="male icon"></i></th>
+            <th><i class="female icon"></i></th>
+            <th>Total</th>
+            <th><i class="male icon"></i></th>
+            <th><i class="female icon"></i></th>
+            <th>Mixte</th>
+            <th>Total</th>
+            <th><i class="male icon"></i></th>
+            <th><i class="female icon"></i></th>
+            <th>Mixte</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% set num = 0 %}
+          {% for item in annexes %}
+            {% set num = num + 1 %}
+            {% set info = infosAnnexes[item.annexe.id] %}
+            <tr>
+              <td>{{ num }}</td>
+              <td>{{ item.annexe.libelle }}</td>
+              <td>{{ info["garconsAcademie"] }}</td>
+              <td>{{ info["fillesAcademie"] }}</td>
+              <td>{{ info["garconsAcademie"] + info["fillesAcademie"] }}</td>
+              {#  #}
+              <td>{{ info["garconsCF"] }}</td>
+              <td>{{ info["fillesCF"] }}</td>
+              <td>{{ info["garconsCF"] + info["fillesCF"] }}</td>
+
+              <td>{{ info["classeGarconsAcademie"] }}</td>
+              <td>{{ info["classeFillesAcademie"] }}</td>
+              <td>{{ info["classeMixtesAcademie"] }}</td>
+              <td>{{ info["classeGarconsAcademie"] + info["classeFillesAcademie"] + info["classeMixtesAcademie"] }}</td>
+
+              <td>{{ info["classeGarconsCF"] }}</td>
+              <td>{{ info["classeFillesCF"] }}</td>
+              <td>{{ info["classeMixtesCF"] }}</td>
+              <td>{{ info["classeGarconsCF"] + info["classeFillesCF"] + info["classeMixtesCF"] }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
   {% endblock %}

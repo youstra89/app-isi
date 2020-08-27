@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use ISI\ISIBundle\Entity\Tache;
 
 
 /**
@@ -905,12 +906,10 @@ class AffairesScolairesController extends Controller
     
     // array_multisort() permet de trier un tableau multidimensionnel
     array_multisort($nom, SORT_ASC, $pnom, SORT_ASC, $memoriser);
-    
     $snappy = $this->get("knp_snappy.pdf");
     $snappy->setOption("encoding", "UTF-8");
     $snappy->setOption("orientation", "Landscape");
     $filename = "liste-de-halaqa-".$halaqa->getLibelle();
-    
     
     $html = $this->renderView('ISIBundle:Scolarite:liste-des-eleves-de-halaqa.html.twig', [
       // "title" => "Titre de mon document",
@@ -921,7 +920,6 @@ class AffairesScolairesController extends Controller
       'annexe'        => $annexe,
       "memoriser"     => $memoriser,
       'server'        => $_SERVER["DOCUMENT_ROOT"],   
-      "informations"  => $informations,
       "nomEnseignant" => $nomEnseignant,
       ]);
 
@@ -1145,11 +1143,11 @@ class AffairesScolairesController extends Controller
       }
 
       return $this->redirect($this->generateUrl('isi_heures_absences_d_une_classe_home',[
-        'as' => $as,
-        'regime' => $regime, 
+        'as'       => $as,
+        'regime'   => $regime, 
         'annexeId' => $annexeId,
         'classeId' => $classeId,
-        'absence' => $absence
+        'absence'  =>  $absence
       ]));
     }
 
@@ -1334,7 +1332,7 @@ class AffairesScolairesController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_SCOLARITE')")
+   * @Security("has_role('ROLE_SCOLARITE') or has_role('ROLE_AGENT_DIRECTION_ENSEIGNANT') ")
    * @Route("/accueil-rapport-des-absences-au-cours-{as}-{regime}", name="rapport_absence_cours_home")
    */
   public function rapport_absence_cours_home(Request $request, int $as, $regime)
@@ -1343,12 +1341,16 @@ class AffairesScolairesController extends Controller
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoTache  = $em->getRepository('ISIBundle:Tache');
     $repoClasse = $em->getRepository('ISIBundle:Classe');
-    $repoExamen = $em->getRepository('ISIBundle:Examen');
-    $examens    = $repoExamen->lesExamensDeLAnnee($as);
+    $repoCours  = $em->getRepository('ENSBundle:AnneeContratClasse');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
     $annexeId   = $request->get('annexeId');
     $annexe     = $repoAnnexe->find($annexeId);
     $date = new \DateTime();
+    $nouvel_enregistrement = false;
+    // Contrainte : Il faut que le jour sélectionné corresponde au jour du cours
+    
+    
+    
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
       return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
@@ -1359,10 +1361,28 @@ class AffairesScolairesController extends Controller
       $date = new \DateTime($data['date']);
       $taches = $repoTache->appelsDuJours($date, $regime);
     }
+    $numero_du_jour = date("w", strtotime($date->format("Y-m-d")));
+    if($numero_du_jour == 6) 
+      $jour_du_cours = 1;
+    elseif($numero_du_jour == 0) 
+      $jour_du_cours = 2;
+    elseif($numero_du_jour == 1) 
+      $jour_du_cours = 3;
+    elseif($numero_du_jour == 2) 
+      $jour_du_cours = 4;
+    elseif($numero_du_jour == 3) 
+      $jour_du_cours = 5;
+    elseif($numero_du_jour == 4) 
+      $jour_du_cours = 6;
+    else
+      $jour_du_cours = 0;
+
+    $cours = $repoCours->cours_d_un_jour($as, $annexeId, $jour_du_cours);
     // dump($taches);
 
     $annee   = $repoAnnee->find($as);
     $classes = $repoClasse->classeGrpFormation($as, $annexeId, $regime);
+    // dump($cours);
 
     return $this->render('ISIBundle:Scolarite:rapport-absence-cours-home.html.twig', [
       'asec'    => $as,
@@ -1370,9 +1390,9 @@ class AffairesScolairesController extends Controller
       'annee'   => $annee,
       'classes' => $classes,
       'annexe'  => $annexe,
-      'examens' => $examens,
-      'taches' => $taches,
-      'date' => $date,
+      'cours'   => $cours,
+      'taches'  => $taches,
+      'date'    => $date,
     ]);
   }
 
@@ -1503,11 +1523,13 @@ class AffairesScolairesController extends Controller
     foreach ($presences as $value) {
       $appels[$value->getEleve()->getId()] = $value;
     }
-
+    
+    $debut = new \DateTime();
+    $fin   = new \DateTime();
     if($request->isMethod('post')){
-      $data  = $request->request->all();
-      $debut = $data['debut'];
-      $fin   = $data['fin'];
+      $data   = $request->request->all();
+      $debut  = $data['debut'];
+      $fin    = $data['fin'];
       $appels = $repoPresence->presences_d_une_periode($classeId, $debut, $fin);
       // dump($appels);
       // die();
@@ -1518,13 +1540,219 @@ class AffairesScolairesController extends Controller
     //}
       // dump($appels);
     return $this->render('ISIBundle:Scolarite:rapport-absence-classe.html.twig', [
-      'asec'         => $as,
-      'regime'       => $regime,
-      'annee'        => $annee,
-      'classe'       => $classe,
-      'eleves'       => $eleves,
-      'annexe'       => $annexe,
-      'appels'       => $appels,
+      'asec'   => $as,
+      'regime' => $regime,
+      'annee'  => $annee,
+      'classe' => $classe,
+      'eleves' => $eleves,
+      'annexe' => $annexe,
+      'appels' => $appels,
+      'debut'  => $debut,
+      'fin'    => $fin,
+    ]);
+  }
+
+
+  /**
+   * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/absences-d-un-eleve-sur-une-periode-{as}-{regime}-{eleveId}", name="absences_d_un_eleve")
+   */
+  public function absences_d_un_eleve(Request $request, int $as, string $regime, int $eleveId)
+  {
+    $em           = $this->getDoctrine()->getManager();
+    $repoAnnee    = $em->getRepository('ISIBundle:Annee');
+    $repoEleve    = $em->getRepository('ISIBundle:Eleve');
+    $repoPresence = $em->getRepository('ISIBundle:Presence');
+    $repoAnnexe   = $em->getRepository('ISIBundle:Annexe');
+    $annexeId     = $request->get('annexeId');
+    $annexe       = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
+
+    // Sélection des informations à envoyer vers le formulaire
+    $annee = $repoAnnee->find($as);
+    $eleve = $repoEleve->find($eleveId);
+
+    $debut = $request->get('debut');
+    $fin   = $request->get('fin');
+    $presences = $repoPresence->absence_eleve_periode($eleveId, $debut, $fin);
+    if($request->isMethod('post')){
+      $data   = $request->request->all();
+      $debut  = $data['debut'];
+      $fin    = $data['fin'];
+      $presences = $repoPresence->absence_eleve_periode($eleveId, $debut, $fin);
+    }
+    // dump($presences);
+
+    return $this->render('ISIBundle:Scolarite:absences-d-un-eleve.html.twig', [
+      'asec'      => $as,
+      'regime'    => $regime,
+      'annee'     => $annee,
+      'eleve'     => $eleve,
+      'annexe'    => $annexe,
+      'debut'     => new \DateTime($debut),
+      'fin'       => new \DateTime($fin),
+      'presences' => $presences,
+    ]);
+  }
+
+  /**
+   * @Security("has_role('ROLE_SCOLARITE')")
+   * @Route("/mise-a-jour-absence-d-un-eleve-sur-une-periode-{as}-{regime}-{eleveId}-{classeId}", name="update_absence_d_un_eleve")
+   */
+  public function update_absence_d_un_eleve(Request $request, int $as, string $regime, int $eleveId, int $classeId)
+  {
+    $em           = $this->getDoctrine()->getManager();
+    $repoAnnee    = $em->getRepository('ISIBundle:Annee');
+    $repoEleve    = $em->getRepository('ISIBundle:Eleve');
+    $repoPresence = $em->getRepository('ISIBundle:Presence');
+    $repoAnnexe   = $em->getRepository('ISIBundle:Annexe');
+    $repoCours    = $em->getRepository('ENSBundle:AnneeContratClasse');
+    $annexeId     = $request->get('annexeId');
+    $annexe       = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
+    // dump(time() < strtotime((new \DateTime())->format("Y-m-d 10:50")));
+
+    if(time() < strtotime((new \DateTime())->format("Y-m-d 10:50"))){
+      $this->addFlash('error', "Vous ne pouvez pas faire la mise à jour de l'appel avant la fin des cours du matin.");
+      return $this->redirect($this->generateUrl('rapport_absence_classe', ['as' => $as, 'regime' => $regime, 'classeId' => $classeId, 'annexeId' => $annexeId]));
+    }
+
+    $date = new \DateTime();
+    $annee = $repoAnnee->find($as);
+    $eleve = $repoEleve->find($eleveId);
+    $numero_du_jour = date("w", strtotime($date->format("Y-m-d")));
+    if($numero_du_jour == 6) 
+      $jour_du_cours = 1;
+    elseif($numero_du_jour == 0) 
+      $jour_du_cours = 2;
+    elseif($numero_du_jour == 1) 
+      $jour_du_cours = 3;
+    elseif($numero_du_jour == 2) 
+      $jour_du_cours = 4;
+    elseif($numero_du_jour == 3) 
+      $jour_du_cours = 5;
+    elseif($numero_du_jour == 4) 
+      $jour_du_cours = 6;
+
+    $cours = $repoCours->cours_d_un_jour_d_une_classe($as, $annexeId, $jour_du_cours, $classeId);
+    // dump($cours);
+
+    $presence = $repoPresence->findOneBy(["eleve" => $eleveId, "date" => $date]);
+    // dump($presence);
+    if($request->isMethod('post')){
+      $data   = $request->request->all();
+      if(isset($data["heure1"])){
+        // $data["heure1"] = null;
+        $presence->setHeure1(true);
+      }
+      else{
+        if($presence->getHeure1() == true)
+          $presence->setHeure1(false);
+      }
+
+      if(isset($data["heure2"])){
+        // $data["heure2"] = null;
+        $presence->setHeure2(true);
+      }
+      else{
+        if($presence->getHeure2() == true)
+          $presence->setHeure2(false);
+      }
+
+      if(isset($data["heure3"])){
+        // $data["heure3"] = null;
+        $presence->setHeure3(true);
+      }
+      else{
+        if($presence->getHeure3() == true)
+          $presence->setHeure3(false);
+      }
+
+      if(isset($data["heure4"])){
+        // $data["heure4"] = null;
+        $presence->setHeure4(true);
+      }
+      else{
+        if($presence->getHeure4() == true)
+          $presence->setHeure4(false);
+      }
+
+      if(isset($data["heure5"])){
+        // $data["heure5"] = null;
+        $presence->setHeure5(true);
+      }
+      else{
+        if($presence->getHeure5() == true)
+          $presence->setHeure5(false);
+      }
+
+      if(isset($data["heure6"])){
+        // $data["heure6"] = null;
+        $presence->setHeure6(true);
+      }
+      else{
+        if($presence->getHeure6() == true)
+          $presence->setHeure6(false);
+      }
+
+      if(isset($data["heure7"])){
+        // $data["heure7"] = null;
+        $presence->setHeure7(true);
+      }
+      else{
+        if($presence->getHeure7() == true)
+          $presence->setHeure7(false);
+      }
+
+      if(isset($data["heure8"])){
+        // $data["heure8"] = null;
+        $presence->setHeure8(true);
+      }
+      else{
+        if($presence->getHeure8() == true)
+          $presence->setHeure8(false);
+      }
+      // dump($presence);
+      $presence->setUpdatedAt(new \DateTime());
+      $presence->setUpdatedBy($this->getUser());
+      // die();
+      $tache = new Tache();
+      $tache->setTitre("Mise à jour appel");
+      $tache->setDescription("Mise à jour appel du ".$date->format("d-m-Y")." de l'élève ".$eleve->getPnomFr()." ".$eleve->getNomFr().".");
+      $tache->setCreatedAt(new \DateTime());
+      $tache->setCreatedBy($this->getUser());
+      $em->persist($tache);
+
+      try{
+        $em->flush();
+        $request->getSession()->getFlashBag()->add('info', 'Les heures d\'absence de l\'élève <strong>'.$eleve->getPnomFr().' '.$eleve->getNomFr().' ('.$eleve->getMatricule().')</strong> ont été bien enregistrées.');
+      } 
+      catch(\Doctrine\ORM\ORMException $e){
+        $this->addFlash('error', $e->getMessage());
+        $this->get('logger')->error($e->getMessage());
+      } 
+      catch(\Exception $e){
+        $this->addFlash('error', $e->getMessage());
+      }
+      return $this->redirect($this->generateUrl('rapport_absence_classe', ['as' => $as, 'regime' => $regime, 'classeId' => $classeId, 'annexeId' => $annexeId]));
+    }
+    // dump($presences);
+
+    return $this->render('ISIBundle:Scolarite:mettre-a-jour-absence-d-un-eleve.html.twig', [
+      'asec'      => $as,
+      'regime'    => $regime,
+      'annee'     => $annee,
+      'dateAppel' => $date,
+      'eleve'     => $eleve,
+      'cours'     => $cours,
+      'annexe'    => $annexe,
+      'presence'  => $presence,
     ]);
   }
 

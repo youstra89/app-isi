@@ -26,7 +26,7 @@
   {% else %}
     {% set grp = 'Formation' %}
   {% endif %}
-  <h3>{{ 'Voir les heures d\'absence au cours enregistrées'|trans }} : {{grp}}</h3>
+  <h3>{{ 'Voir les heures d\'absence au cours enregistrées'|trans }} du {{ jour }} {{ date|date('d-m-Y') }}</h3>
   <div>
 		<form action="" method="post" class="ui form">
 			<div class="form-group">
@@ -43,35 +43,74 @@
 			</div>
 		</form>
 	</div>
-  {% if classes is empty %}
+  {% if enseignants is empty %}
     <p>{{ 'Pas de classes pour le moment'|trans }}</p>
   {% else %}
-    {% set nombreHeures = 5 %}
     <div class="column" style="width:85%">
       <table class="ui selectable very basic table" id="classes">
         <thead>
           <tr>
             <th style="width: 5%; text-align: center">N°</th>
-            <th>Niveaux</th>
-            <th>Classses</th>
-            <th>المستويات</th>
-            <th>الفصول</th>
-            <th>Genre</th>
+            <th>Matricule</th>
+            <th>Nom & Prénom</th>
+            <th>الاسم و اللقب</th>
             <th>1</th>
             <th>2</th>
             <th>3</th>
             <th>4</th>
             <th>5</th>
-            {% if regime == 'F' %}
-              {% set nombreHeures = 8 %}
-              <th>6</th>
-              <th>7</th>
-              <th>8</th>
-            {% endif %}
-            <th class="two wide">{{ 'Actions'|trans }}</th>
+            <th>6</th>
+            <th>7</th>
+            <th>8</th>
           </tr>
         </thead>
         <tbody>
+          {% set i = 0 %}
+          {% for enseignant in enseignants if (regime == "A" and enseignant.nombreHeuresCours > 0 or enseignant.nombreHeuresCoran > 0 ) or (regime == "F" and enseignant.nombreHeuresSamedi > 0) %}
+            {% set i = i + 1 %}
+            <tr>
+              <td style="width: 5%; text-align: center">{{ i }}</td>
+              <td>{{ enseignant.contrat.enseignant.matricule }}</td>
+              <td>{{ enseignant.contrat.enseignant.nom }}</td>
+              <td>{{ enseignant.contrat.enseignant.pnomAr }} {{ enseignant.contrat.enseignant.nomAr }}</td>
+              {% for i in 1..8 %}
+                {% set nieme = '' %}
+                {% if i == 1 %}
+                  {% set nieme = 'ère' %}
+                {% else %}
+                  {% set nieme = 'ème' %}
+                {% endif %}
+                {% set checked = false %}
+                {% for item in taches if enseignant == item.cours.anneeContrat and i == item.cours.heure %}
+                  {% set checked = true %}
+                {% endfor %}
+                {% set title_text = "" %}
+                {% for item in cours if item.anneeContrat == enseignant and item.heure == i %}
+                  {% if item.halaqa %}
+                    {% set title_text = item.halaqa.libelle ~ ' ' ~ item.matiere.libelle %}
+                  {% else %}
+                    {% set title_text = item.classe.libelleFr ~ ' ' ~ item.matiere.libelle %}
+                  {% endif %}
+                {% endfor %}
+                <td data-tooltip="{{i}}{{nieme}} heure: {{ title_text }}">
+                  {% if title_text == "" %}
+                    <i class="question icon"></i>
+                  {% else %}
+                    {% if checked == true %}
+                      <i class="green checkmark icon"></i>
+                    {% else %}
+                      <i class="red delete icon"></i>
+                    {% endif %}
+                  {% endif %}
+                </td>
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <hr width="75%">
+    </div><br><br>
+    {# <tbody>
           {% set numero = 0 %}
           {% for classe in classes %} 
             {% if classe.niveau.groupeFormation.reference is same as(regime) %}
@@ -115,26 +154,14 @@
                     {% set checked = true %}
                   {% endfor %}
                   {% set title_text = "" %}
-                  {% set coursId = 0 %}
                   {% for item in cours if item.classe == classe and item.heure == i %}
-                    {% set coursId = item.id %}
                     {% set title_text = item.anneeContrat.contrat.enseignant.nom ~ ' ' ~ item.matiere.libelle %}
                   {% endfor %}
                   <td data-tooltip="{{i}}{{nieme}} heure: {{ title_text }}">
-                    {% if title_text == "" %}
-                      <i class="question icon"></i>
+                    {% if checked == true %}
+                      <i class="green checkmark icon"></i>
                     {% else %}
-                      {% if checked == true %}
-                        <i class="green checkmark icon"></i>
-                      {% else %}
-                        {% if is_granted('ROLE_SCOLARITE') and 'now'|date('Y-m-d') == date|date('Y-m-d') %}
-                          <a href="{{ path('faire_appel_cours', {as: asec, annexeId: annexe.id, coursId: coursId, origine: 'scolarite'}) }}">
-                            <i class="orange delete icon"></i>
-                          </a>
-                        {% else %}
-                          <i class="red delete icon"></i>
-                        {% endif %}
-                      {% endif %}
+                      <i class="red delete icon"></i>
                     {% endif %}
                   </td>
                 {% endfor %}
@@ -148,11 +175,7 @@
               </tr>
             {% endif %} 
           {% endfor %}
-        </tbody>
-      </table>
-      <hr width="75%">
-    </div><br><br>
-    {# <img src="{{asset('images/logoISI.png')}}" data-title="Elliot Fu" data-content="Elliot has been a member since July 2012" class="ui avatar image"> #}
+        </tbody> #}
   {% endif %}
 {% endblock %}
 
@@ -170,9 +193,8 @@
     var filtersConfig = {
       base_path: 'TableFilter/dist/tablefilter/',
       col_0: "none",
-      col_1: 'select',
-      col_3: 'select',
-      col_5: 'select',
+      col_4: 'none',
+      col_5: 'none',
       col_6: 'none',
       col_7: 'none',
       col_8: 'none',
@@ -180,8 +202,6 @@
       col_10: 'none',
       col_11: 'none',
       col_12: 'none',
-      col_13: 'none',
-      col_14: 'none',
       alternate_rows: true,
       rows_counter: true,
       btn_reset: true,

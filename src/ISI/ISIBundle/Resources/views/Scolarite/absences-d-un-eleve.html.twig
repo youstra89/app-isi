@@ -1,0 +1,78 @@
+{# Page d'ajout d'un nouvel examen #}
+
+{% extends "ISIBundle:Scolarite:index.html.twig" %}
+
+{% block title %}
+	Rapport des absences de l'élève {{ eleve.pnomFr }} {{ eleve.nomFr }}
+{% endblock %}
+
+{% block body %}
+	<h3>{{ 'Rapport des absences de l\'élève '|trans }} {{ eleve.pnomFr }} {{ eleve.nomFr }} - {{ eleve.matricule }}</h3>
+	<div>
+		<form action="" method="post" class="ui form">
+			<div class="form-group">
+				<div class="four fields">
+					<div class="field">
+						<label for="debut">Du</label>
+						<input type="date" name="debut" id="debut" value="{% if debut %}{{ debut|date('Y-m-d') }}{% endif %}">
+					</div>
+					<div class="field">
+						<label for="fin">Au</label>
+						<input type="date" name="fin" id="fin" value="{% if fin is defined %}{{ fin|date('Y-m-d') }}{% else %}{{ 'now'|date('Y-m-d') }}{% endif %}">
+					</div>
+					<div class="field">
+						<br>
+						<button class="ui positive button">Rechercher</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<table class="ui selectable celled table">
+		<thead>
+			<tr style="background-color: #efefef">
+				<th>Date</th>
+				<th width="7%" style="text-align: center">1<sup>ère</sup> heure</th>
+				<th width="7%" style="text-align: center">2<sup>ème</sup> heure</th>
+				<th width="7%" style="text-align: center">3<sup>ème</sup> heure</th>
+				<th width="7%" style="text-align: center">4<sup>ème</sup> heure</th>
+				<th width="7%" style="text-align: center">5<sup>ème</sup> heure</th>
+				<th width="7%" style="text-align: center">6<sup>ème</sup> heure</th>
+				<th width="7%" style="text-align: center">7<sup>ème</sup> heure</th>
+				<th width="7%" style="text-align: center">8<sup>ème</sup> heure</th>
+				<th>Total absence</th>
+			</tr>
+		</thead>
+		<tbody>
+			{# {% set start_date = '01-06-2014' %}
+			{% set end_date = '05-06-2014' %} #}
+			{% set totalDeLaPeriode = 0 %}
+			{% for dt in range(debut|date('U'), fin|date('U'), 86400 ) %}
+				{% set totalDuJour = 0 %}
+				<tr>
+					<td>{{ dt|date('d-m-Y') }}</td>
+					{% set checked = false %}
+					{% for item in presences if item.date|date("d-m-Y") == dt|date('d-m-Y') %}
+						<td style="text-align: center">{% if item.heure1 is null %}<i class="blue question icon"></i>{% elseif item.heure1 == 1 %}{% set totalDuJour = totalDuJour + 1 %}<i class="red delete icon"></i>{% else %}<i class="green checkmark icon"></i>{% endif %}</td>
+						<td style="text-align: center">{% if item.heure2 is null %}<i class="blue question icon"></i>{% elseif item.heure2 == 1 %}{% set totalDuJour = totalDuJour + 1 %}<i class="red delete icon"></i>{% else %}<i class="green checkmark icon"></i>{% endif %}</td>
+						<td style="text-align: center">{% if item.heure3 is null %}<i class="blue question icon"></i>{% elseif item.heure3 == 1 %}{% set totalDuJour = totalDuJour + 1 %}<i class="red delete icon"></i>{% else %}<i class="green checkmark icon"></i>{% endif %}</td>
+						<td style="text-align: center">{% if item.heure4 is null %}<i class="blue question icon"></i>{% elseif item.heure4 == 1 %}{% set totalDuJour = totalDuJour + 1 %}<i class="red delete icon"></i>{% else %}<i class="green checkmark icon"></i>{% endif %}</td>
+						<td style="text-align: center">{% if item.heure5 is null %}<i class="blue question icon"></i>{% elseif item.heure5 == 1 %}{% set totalDuJour = totalDuJour + 1 %}<i class="red delete icon"></i>{% else %}<i class="green checkmark icon"></i>{% endif %}</td>
+						<td style="text-align: center">{% if item.heure6 is null %}<i class="blue question icon"></i>{% elseif item.heure6 == 1 %}{% set totalDuJour = totalDuJour + 1 %}<i class="red delete icon"></i>{% else %}<i class="green checkmark icon"></i>{% endif %}</td>
+						<td style="text-align: center">{% if item.heure7 is null %}<i class="blue question icon"></i>{% elseif item.heure7 == 1 %}{% set totalDuJour = totalDuJour + 1 %}<i class="red delete icon"></i>{% else %}<i class="green checkmark icon"></i>{% endif %}</td>
+						<td style="text-align: center">{% if item.heure8 is null %}<i class="blue question icon"></i>{% elseif item.heure8 == 1 %}{% set totalDuJour = totalDuJour + 1 %}<i class="red delete icon"></i>{% else %}<i class="green checkmark icon"></i>{% endif %}</td>
+					{% endfor %}
+					<td>{{ totalDuJour }}</td>
+					{% set totalDeLaPeriode = totalDeLaPeriode + totalDuJour %}
+				</tr>
+			{% endfor %}
+		</tbody>
+		<tfoot>
+			<tr>
+				<th colspan="9">Total</th>
+				<th>{{ totalDeLaPeriode }} heures</th>
+			</tr>
+		</tfoot>
+	</table>
+	<br><br>
+{% endblock %}

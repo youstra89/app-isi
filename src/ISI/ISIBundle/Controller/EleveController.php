@@ -303,7 +303,7 @@ class EleveController extends Controller
       return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
     }
 
-    $tabs= [14, 15, 16, 17, 18];
+    $tabs= [9, 14, 15, 16, 17, 18];
     if(!in_array($annexeId, $tabs)){
       die();
     }

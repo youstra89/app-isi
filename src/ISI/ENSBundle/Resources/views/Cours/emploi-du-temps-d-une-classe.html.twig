@@ -14,9 +14,25 @@
 {% extends template %}
 
 
+{% block stylesheets %}
+  <style>
+    @font-face{
+      font-family: "majalla";
+      src: url("file:///var/www/html/markaz/web/polices/majalla.ttf");
+    }
+
+    /* @font-face{
+      font-family: "majalla";
+      src: url("file:///home/youstra/www/markaz/web/polices/majalla.ttf");
+    } */
+  </style>
+{% endblock %}
+
+
 {% block title %}
   Emploi du temps de {{ classe.libelleFr }} - {{ annee.libelle }}
 {% endblock %}
+
 
 {% block section %}
   <i class="student icon"></i>{{ 'Gestion des cours'|trans }}
@@ -107,7 +123,7 @@
                     {% if item.jour == day %}
                       {% if item.heure == time %}
                         {% if item.classe %}
-                          {{ item.anneeContrat.contrat.enseignant.pnomAr }} {{ item.anneeContrat.contrat.enseignant.nomAr }} <br>
+                          <span style="font-family: majalla">{{ item.anneeContrat.contrat.enseignant.pnomAr }} {{ item.anneeContrat.contrat.enseignant.nomAr }}</span> <br>
                           {{ item.anneeContrat.contrat.enseignant.nom }}
                         {% else %}
                           {{ item.halaqa.libelle }}

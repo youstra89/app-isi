@@ -30,11 +30,39 @@ class Annee
     private $libelle;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="debut_premier_semestre", type="date", nullable=true)
+     */
+    private $debutPremierSemestre;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fin_premier_semestre", type="date", nullable=true)
+     */
+    private $finPremierSemestre;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="debut_second_semestre", type="date", nullable=true)
+     */
+    private $debutSecondSemestre;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fin_second_semestre", type="date", nullable=true)
+     */
+    private $finSecondSemestre;
+
+    /**
      * @var boolean
      *
      * @ORM\Column(name="achevee", type="boolean", nullable=false)
      */
-    private $achevee = FALSE;
+    private $achevee = false;
 
     /**
      * @var \User
@@ -290,5 +318,101 @@ class Annee
     public function getUpdatedBy()
     {
         return $this->updatedBy;
+    }
+
+    /**
+     * Set debutPremierSemestre
+     *
+     * @param \DateTime $debutPremierSemestre
+     *
+     * @return Annee
+     */
+    public function setDebutPremierSemestre($debutPremierSemestre)
+    {
+        $this->debutPremierSemestre = $debutPremierSemestre;
+
+        return $this;
+    }
+
+    /**
+     * Get debutPremierSemestre
+     *
+     * @return \DateTime
+     */
+    public function getDebutPremierSemestre()
+    {
+        return $this->debutPremierSemestre;
+    }
+
+    /**
+     * Set finPremierSemestre
+     *
+     * @param \DateTime $finPremierSemestre
+     *
+     * @return Annee
+     */
+    public function setFinPremierSemestre($finPremierSemestre)
+    {
+        $this->finPremierSemestre = $finPremierSemestre;
+
+        return $this;
+    }
+
+    /**
+     * Get finPremierSemestre
+     *
+     * @return \DateTime
+     */
+    public function getFinPremierSemestre()
+    {
+        return $this->finPremierSemestre;
+    }
+
+    /**
+     * Set debutSecondSemestre
+     *
+     * @param \DateTime $debutSecondSemestre
+     *
+     * @return Annee
+     */
+    public function setDebutSecondSemestre($debutSecondSemestre)
+    {
+        $this->debutSecondSemestre = $debutSecondSemestre;
+
+        return $this;
+    }
+
+    /**
+     * Get debutSecondSemestre
+     *
+     * @return \DateTime
+     */
+    public function getDebutSecondSemestre()
+    {
+        return $this->debutSecondSemestre;
+    }
+
+    /**
+     * Set finSecondSemestre
+     *
+     * @param \DateTime $finSecondSemestre
+     *
+     * @return Annee
+     */
+    public function setFinSecondSemestre($finSecondSemestre)
+    {
+        $this->finSecondSemestre = $finSecondSemestre;
+
+        return $this;
+    }
+
+    /**
+     * Get finSecondSemestre
+     *
+     * @return \DateTime
+     */
+    public function getFinSecondSemestre()
+    {
+        return $this->finSecondSemestre;
     }
 }

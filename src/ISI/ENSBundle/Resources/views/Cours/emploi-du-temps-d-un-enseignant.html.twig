@@ -23,8 +23,8 @@
     </button>
   </a>
   <div class="column" style="width: 80%">
-    <h2>Centre de formation</h2>
     {% if coursCentreFormation is not empty %}
+      <h2>Centre de formation</h2>
       <table class="ui compact celled definition table" style="font-size: 1em;" dir="rtl">
         <thead>
           <tr style="text-align: center">
@@ -67,12 +67,11 @@
           </tr>
         </tbody>
       </table>
-    {% else %}
-      Pas de cours enregistré
+
     {% endif %}
     <br><br>
-    <h2>Académie</h2>
     {% if coursAcademie is not empty %}
+      <h2>Académie</h2>
       <table class="ui compact celled definition table" style="font-size: 1em;" dir="rtl">
         <thead>
           <tr style="text-align: center">
@@ -119,8 +118,6 @@
           {% endfor %}
         </tbody>
       </table>
-    {% else %}
-      Pas de cours enregistré
     {% endif %}
     <br><br>
   </div>

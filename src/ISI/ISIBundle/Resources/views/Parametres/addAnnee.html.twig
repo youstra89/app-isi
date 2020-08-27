@@ -12,21 +12,32 @@
 	<div class="well">
 		{{ form_start(form, {'attr': {'class': 'ui form'}}) }}
 			<div class="field">
-				<label for="">
-					{# Génération du label. #}
-					{{ form_label(form.libelle, "Année scolaire", {'label_attr': {'class': ''}}) }}
-
-					{# Affichage des erreurs pour ce champ précis. #}
-					{{ form_errors(form.libelle) }}
-				</label>
-
-			    <div class="">
-			        {# Génération de l'input. #}
-			        {{ form_widget(form.libelle, {'attr': {'class': ''}}) }}
-			    </div>
-		    </div>
-
-		    {{ form_widget(form.save, {'attr': {'class': ''}}) }}
+				{# Génération du label. #}
+				{{ form_label(form.libelle) }}
+				{# Affichage des erreurs pour ce champ précis. #}
+				{{ form_errors(form.libelle) }}
+				{# Génération de l'input. #}
+				{{ form_widget(form.libelle, {'attr': {'class': ''}}) }}
+			</div>
+			<div class="four fields">
+				<div class="field">
+					<label for="debut_semestre_1">Début premier semestre</label>
+					<input type="date" name="debut_semestre_1" id="debut_semestre_1" required>
+				</div>
+				<div class="field">
+					<label for="fin_semestre_1">Fin premier semestre</label>
+					<input type="date" name="fin_semestre_1" id="fin_semestre_1" required>
+				</div>
+				<div class="field">
+					<label for="debut_semestre_2">Début second semestre</label>
+					<input type="date" name="debut_semestre_2" id="debut_semestre_2" required>
+				</div>
+				<div class="field">
+					<label for="fin_semestre_2">Fin second semestre</label>
+					<input type="date" name="fin_semestre_2" id="fin_semestre_2" required>
+				</div>
+			</div>
+		    {{ form_widget(form.save, {'attr': {'class': 'ui primary button'}}) }}
 
 	  	{{ form_end(form) }}
 	</div>

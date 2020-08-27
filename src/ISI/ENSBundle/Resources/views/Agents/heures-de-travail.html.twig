@@ -43,9 +43,9 @@
                 <td>{{ heuresTravail[item.id].bureau }}</td>
                 <td>
                   {% set nom = item.contrat.enseignant.nom %}
-                  <a href="{{ path('ens_cours_d_un_enseignant', {'as': asec, 'annexeId': annexe.id, 'anneeContratId': item.id}) }}" data-tooltip="Voir les cours de l'enseigannt {{ nom }}">
+                  {# <a href="{{ path('ens_cours_d_un_enseignant', {'as': asec, 'annexeId': annexe.id, 'anneeContratId': item.id}) }}" data-tooltip="Voir les cours de l'enseigannt {{ nom }}">
                     <i class="list icon"></i>
-                  </a>
+                  </a> #}
                 </td>
               </tr>
           {% endfor %}

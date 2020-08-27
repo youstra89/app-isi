@@ -1,0 +1,103 @@
+{# Page d'ajout d'un nouvel examen #}
+
+{% extends "ISIBundle:Scolarite:index.html.twig" %}
+
+
+{% block title %}
+	Mise à jour d'appel de l'élève {{ eleve.pnomFr }} {{ eleve.nomFr }} du {{ dateAppel|date('d-m-Y') }}
+{% endblock %}
+
+
+{% block section %}
+  <i class="student open icon"></i>{{ 'Mise à jour d\'appel de l\'élève '|trans }} {{ eleve.pnomFr }} {{ eleve.nomFr }} - {{ eleve.matricule }} du {{ dateAppel|date('d-m-Y') }}
+{% endblock %}
+
+
+{% block body %}
+	<div>
+		<table width="100%" class="ui celled table">
+			<thead>
+			<tr style="background-color: #efefef">
+				<th width="7%" style="text-align: center">1<sup>ère</sup> heure</th>
+				<th width="7%" style="text-align: center">2<sup>ème</sup> heure</th>
+				<th width="7%" style="text-align: center">3<sup>ème</sup> heure</th>
+				<th width="7%" style="text-align: center">4<sup>ème</sup> heure</th>
+				<th width="7%" style="text-align: center">5<sup>ème</sup> heure</th>
+				<th width="7%" style="text-align: center">6<sup>ème</sup> heure</th>
+				<th width="7%" style="text-align: center">7<sup>ème</sup> heure</th>
+				<th width="7%" style="text-align: center">8<sup>ème</sup> heure</th>
+			</tr>
+		</thead>
+			<tbody>
+				<tr style="text-align: center">
+					{% for item in cours %}
+						<td>
+							{{ item.anneeContrat.contrat.enseignant.nom }}<br>
+							<strong>{{ item.matiere.libelle }}</strong><br>
+						</td>
+					{% endfor %}
+				</tr>
+			</tbody>
+		</table>
+		<form action="" method="post" class="ui form">
+			<div class="form-group">
+				<div class="eight fields">
+					<div class="field">
+						{# <div class="ui toggle checkbox"> #}
+						<div class="ui slider checkbox" {% if presence.heure1 is null %}data-tooltip="L'appel n'a pas été fait" {% elseif presence.heure1 == true %} data-tooltip="Absent(e)" {% else %}data-tooltip="Présent(e)"{% endif %}>
+							<input type="checkbox" name="heure1" id="heure1" {% if presence.heure1 == true %} checked {% endif %}>
+							<label for="heure1">1<sup>ère</sup> heure</label>
+							{# <label for=""></label> #}
+						</div>
+					</div>
+					<div class="field">
+						<div class="ui slider checkbox" {% if presence.heure2 is null %}data-tooltip="L'appel n'a pas été fait" {% elseif presence.heure2 == true %} data-tooltip="Absent(e)" {% else %}data-tooltip="Présent(e)"{% endif %}>
+							<input type="checkbox" name="heure2" id="heure2" {% if presence.heure2 == true %} checked {% endif %}>
+							<label for="heure2">2<sup>ème</sup> heure</label>
+						</div>
+					</div>
+					<div class="field">
+						<div class="ui slider checkbox" {% if presence.heure3 is null %}data-tooltip="L'appel n'a pas été fait" {% elseif presence.heure3 == true %} data-tooltip="Absent(e)" {% else %}data-tooltip="Présent(e)"{% endif %}>
+							<input type="checkbox" name="heure3" id="heure3" {% if presence.heure3 == true %} checked {% endif %}>
+							<label for="heure3">3<sup>ème</sup> heure</label>
+						</div>
+					</div>
+					<div class="field">
+						<div class="ui slider checkbox" {% if presence.heure4 is null %}data-tooltip="L'appel n'a pas été fait" {% elseif presence.heure4 == true %} data-tooltip="Absent(e)" {% else %}data-tooltip="Présent(e)"{% endif %}>
+							<input type="checkbox" name="heure4" id="heure4" {% if presence.heure4 == true %} checked {% endif %}>
+							<label for="heure4">4<sup>ème</sup> heure</label>
+						</div>
+					</div>
+					<div class="field">
+						<div class="ui slider checkbox" {% if presence.heure5 is null %}data-tooltip="L'appel n'a pas été fait" {% elseif presence.heure5 == true %} data-tooltip="Absent(e)" {% else %}data-tooltip="Présent(e)"{% endif %}>
+							<input type="checkbox" name="heure5" id="heure5" {% if presence.heure5 == true %} checked {% endif %}>
+							<label for="heure5">5<sup>ème</sup> heure</label>
+						</div>
+					</div>
+					<div class="field">
+						<div class="ui slider checkbox" {% if presence.heure6 is null %}data-tooltip="L'appel n'a pas été fait" {% elseif presence.heure6 == true %} data-tooltip="Absent(e)" {% else %}data-tooltip="Présent(e)"{% endif %}>
+							<input type="checkbox" name="heure6" id="heure6" {% if presence.heure6 == true %} checked {% endif %}>
+							<label for="heure6">6<sup>ème</sup> heure</label>
+						</div>
+					</div>
+					<div class="field">
+						<div class="ui slider checkbox" {% if presence.heure7 is null %}data-tooltip="L'appel n'a pas été fait" {% elseif presence.heure7 == true %} data-tooltip="Absent(e)" {% else %}data-tooltip="Présent(e)"{% endif %}>
+							<input type="checkbox" name="heure7" id="heure7" {% if presence.heure7 == true %} checked {% endif %}>
+							<label for="heure7">7<sup>ème</sup> heure</label>
+						</div>
+					</div>
+					<div class="field">
+						<div class="ui slider checkbox" {% if presence.heure8 is null %}data-tooltip="L'appel n'a pas été fait" {% elseif presence.heure8 == true %} data-tooltip="Absent(e)" {% else %}data-tooltip="Présent(e)"{% endif %}>
+							<input type="checkbox" name="heure8" id="heure8" {% if presence.heure8 == true %} checked {% endif %}>
+							<label for="heure8">8<sup>ème</sup> heure</label>
+						</div>
+					</div>
+				</div>
+			</div><br><br><br>
+			<div class="form-group">
+				<button class="ui positive button">Appliquer les changements</button>
+			</div>
+		</form>
+	</div>
+	<br><br>
+{% endblock %}

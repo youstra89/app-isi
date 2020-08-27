@@ -449,9 +449,9 @@ class AgentsController extends Controller
 
     $heuresTravail = [];
     foreach ($anneeContrats as $key => $value) {
-      $anneeContratId       = $value->getId();
-      $heuresCours        = 0;
-      $heuresBureau = 0;
+      $anneeContratId = $value->getId();
+      $heuresCours    = 0;
+      $heuresBureau   = 0;
       foreach ($cours as $k => $v) {
         if(!empty($v->getClasse())){
           $niveau = $v->getClasse()->getNiveau();
@@ -459,8 +459,8 @@ class AgentsController extends Controller
           if ($anneeContratId == $v->getAnneeContrat()->getId()) {
             foreach ($enseignements as $keyEns => $valueEns) {
               // Etape 1: On va calculer les heures de cours à l'académie
-              if ($valueEns->getNiveau()->getId() === $niveau->getId() and $v->getMatiere()->getId()  === $valueEns->getMatiere()->getId()) {
-                $heuresCours += $valueEns->getNombreHeureCours();
+              if ($valueEns->getNiveau() === $niveau and $v->getMatiere()  === $valueEns->getMatiere()) {
+                $heuresCours += 1;
               } 
             }
           }

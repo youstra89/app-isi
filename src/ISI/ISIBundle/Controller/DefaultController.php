@@ -40,11 +40,12 @@ class DefaultController extends Controller
      */
     public function statistiques_annexes(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        $repoAnnee = $em->getRepository('ISIBundle:Annee');
-        $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-        $annee   = $repoAnnee->anneeEnCours();
-        $annexes = $repoAnnexe->findAll();
+        $em             = $this->getDoctrine()->getManager();
+        $repoAnnee      = $em->getRepository('ISIBundle:Annee');
+        $repoEleve      = $em->getRepository('ISIBundle:Eleve');
+        $repoClasse     = $em->getRepository('ISIBundle:Classe');
+        $annee          = $repoAnnee->anneeEnCours();
+        $annexes        = $this->getUser()->getAnnexes();
         if(!empty($request->get('as'))){
             $annee = $repoAnnee->find($request->get('as'));
         }
@@ -53,10 +54,73 @@ class DefaultController extends Controller
             return $this->redirect($this->generateUrl('isi_homepage', ['as' => $annee->getId(), 'annexeId' => $this->getUser()->getAnnexes()[0]->getAnnexe()->getId()]));
         }
 
+        $infosAnnexes = [];
+        foreach ($annexes as $annexe) {
+            $annexeId   = $annexe->getAnnexe()->getId();
+            $eleves = $repoEleve->tousLesElevesInscrits($as, $annexeId);
+            $classes = $repoClasse->lesClasseDeLAnnee($as, $annexeId);
+            
+            $garconsAcademie = 0;
+            $fillesAcademie  = 0;
+            $garconsCF       = 0;
+            $fillesCF        = 0;
+            foreach ($eleves as $eleve) {
+                $sexe = $eleve->getSexe();
+                $regime = $eleve->getRegime();
+                if($sexe == 1 and $regime == "A")
+                    $garconsAcademie++;
+                elseif($sexe == 2 and $regime == "A")
+                    $fillesAcademie++;
+                elseif($sexe == 1 and $regime == "F")
+                    $garconsCF++;
+                elseif($sexe == 2 and $regime == "F")
+                    $fillesCF++;
+            }
+
+            $classeGarconsAcademie = 0;
+            $classeFillesAcademie  = 0;
+            $classeMixtesAcademie  = 0;
+            $classeGarconsCF       = 0;
+            $classeFillesCF        = 0;
+            $classeMixtesCF        = 0;
+            foreach ($classes as $classe) {
+                $genre = $classe->getGenre();
+                $regime = $classe->getNiveau()->getGroupeFormation()->getReference();
+                if($genre == "H" and $regime == "A")
+                    $classeGarconsAcademie++;
+                elseif($genre == "F" and $regime == "A")
+                    $classeFillesAcademie++;
+                elseif($genre == "M" and $regime == "A")
+                    $classeMixtesAcademie++;
+                elseif($genre == "H" and $regime == "F")
+                    $classeGarconsCF++;
+                elseif($genre == "F" and $regime == "F")
+                    $classeFillesCF++;
+                elseif($genre == "M" and $regime == "F")
+                    $classeMixtesCF++;
+            }
+
+            $infosAnnexes[$annexeId] = [
+                "garconsAcademie"       => $garconsAcademie, 
+                "fillesAcademie"        => $fillesAcademie, 
+                "garconsCF"             => $garconsCF, 
+                "fillesCF"              => $fillesCF,
+                "classeGarconsAcademie" => $classeGarconsAcademie, 
+                "classeFillesAcademie"  => $classeFillesAcademie, 
+                "classeMixtesAcademie"  => $classeMixtesAcademie, 
+                "classeGarconsCF"       => $classeGarconsCF, 
+                "classeFillesCF"        => $classeFillesCF,
+                "classeMixtesCF"        => $classeMixtesCF
+            ];
+        }
+
+        // dump($infosAnnexes);
         return $this->render('ISIBundle:Default:statistiques-annexes.html.twig', [
-            "asec"        => $as,
-            "annee"       => $annee,
-            "choixAnnexe" => "choix",
+            "asec"         => $as,
+            "annee"        => $annee,
+            "annexes"      => $annexes,
+            "infosAnnexes" => $infosAnnexes,
+            "choixAnnexe"  => "choix",
         ]);
     }
 

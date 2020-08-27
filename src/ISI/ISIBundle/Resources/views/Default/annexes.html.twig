@@ -10,16 +10,16 @@
 
 
   {% block menu %}
-    {# {% if is_granted('ROLE_SUPER_ADMIN') or is_granted('ROLE_ADMIN_ANNEXE') %}
+    {% if is_granted('ROLE_SUPER_ADMIN') or is_granted('ROLE_ADMIN_ANNEXE') %}
       <a class="item" href="{{ path('statistiques_annexes', {'as': asec}) }}"><h4 class="ui header"><i class="tasks icon"></i>{{ 'Statistiques'|trans }}</h4></a>
-    {% endif %} #}
+    {% endif %}
   {% endblock %}
 
 
   {% block mobile_menu %}
-    {# {% if is_granted('ROLE_SUPER_ADMIN') or is_granted('ROLE_ADMIN_ANNEXE') %}
+    {% if is_granted('ROLE_SUPER_ADMIN') or is_granted('ROLE_ADMIN_ANNEXE') %}
       <a class="item" href="{{ path('statistiques_annexes', {'as': asec}) }}"><h4 class="ui header">{{ 'Statistiques'|trans }}</h4></a>
-    {% endif %} #}
+    {% endif %}
   {% endblock %}
 
 

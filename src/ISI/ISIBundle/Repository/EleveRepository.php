@@ -6,7 +6,7 @@ namespace ISI\ISIBundle\Repository;
 class EleveRepository extends \Doctrine\ORM\EntityRepository
 {
   // Récuperation des élèves qui sont inscrits en fonction du regime
-  public function elevesInscrits(int $as, int $annexeId, $regime)
+  public function elevesInscrits(int $as, int $annexeId, string $regime)
   {
     // $elevesAcademie = $this->_em->createQuery('SELECT * FROM ISIBundle:Eleve e WHERE e.matricule LIKE '*A*'');
     $qb = $this->createQueryBuilder('e');

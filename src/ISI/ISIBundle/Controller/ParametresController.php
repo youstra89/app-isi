@@ -88,16 +88,16 @@ class ParametresController extends Controller
       //   if($frequente->getValidation() == NULL)
       //     $nbr++;
       // }
-      if (!empty($frequentation)) {
-        if($annee->getAchevee() == FALSE)
-        {
-          // return new Response(var_dump($frequentation));
-          $request->getSession()->getFlashBag()->add("error", "L'année scolaire en cours(<strong>".$annee->getLibelle()."</strong>) n'est pas encore terminée.");
-          return $this->redirect($this->generateUrl('isi_parametres',
-              array('as' => $annee->getId(), 'annexeId' => $annexeId)
-            ));
-        }
-      }
+      // if (!empty($frequentation)) {
+      //   if($annee->getAchevee() == FALSE)
+      //   {
+      //     // return new Response(var_dump($frequentation));
+      //     $request->getSession()->getFlashBag()->add("error", "L'année scolaire en cours(<strong>".$annee->getLibelle()."</strong>) n'est pas encore terminée.");
+      //     return $this->redirect($this->generateUrl('isi_parametres',
+      //         array('as' => $annee->getId(), 'annexeId' => $annexeId)
+      //       ));
+      //   }
+      // }
       // return new Response(var_dump($frequentation));
     }
 
@@ -108,12 +108,23 @@ class ParametresController extends Controller
 
   	if($form->handleRequest($request)->isValid())
   	{
-  		//Ici on procède à l'enrigistrement effectif de l'année scolaire en base de données
-      $em = $this->getDoctrine()->getManager();
-      $nouvelleAnnee->setAchevee(FALSE);
+      //Ici on procède à l'enrigistrement effectif de l'année scolaire en base de données
+      $data  = $request->request->all();
+      $debut_semestre_1 = new \DateTime($data['debut_semestre_1']);
+      $fin_semestre_1   = new \DateTime($data['fin_semestre_1']);
+      $debut_semestre_2 = new \DateTime($data['debut_semestre_2']);
+      $fin_semestre_2   = new \DateTime($data['fin_semestre_2']);
+
+      $nouvelleAnnee->setDebutPremierSemestre($debut_semestre_1);
+      $nouvelleAnnee->setFinPremierSemestre($fin_semestre_1);
+      $nouvelleAnnee->setDebutSecondSemestre($debut_semestre_2);
+      $nouvelleAnnee->setFinSecondSemestre($fin_semestre_2);
+      $nouvelleAnnee->setCreatedAt(new \DateTime());
+      $nouvelleAnnee->setCreatedAt($this->getUser());
+      $nouvelleAnnee->setAchevee(false);
       $em->persist($nouvelleAnnee);
 
-      $annee->setAchevee(TRUE);
+      $annee->setAchevee(true);
       $annee->setUpdatedBy($this->getUser());
       $annee->setUpdatedAt(new \Datetime());
       $em->flush();
@@ -121,16 +132,18 @@ class ParametresController extends Controller
       $request->getSession()->getFlashBag()->add('info', 'La nouvelle année scolaire a été bien enrégistrée.');
 
       // On redirige l'utilisateur vers index paramèTraversable
-      return $this->redirect($this->generateUrl('isi_parametres',
-          array('as' => $nouvelleAnnee->getId(), 'annexeId' => $annexeId)
-        ));
+      return $this->redirect($this->generateUrl('isi_parametres',[
+        'as'       => $nouvelleAnnee->getId(), 
+        'annexeId' => $annexeId
+      ]));
   	}
 
   	return $this->render('ISIBundle:Parametres:addAnnee.html.twig', array(
-        'asec'  => $as,
-        'annee' => $annee, 'annexe'   => $annexe,
-  			'form'  => $form->createView()
-  		));
+        'asec'   => $as,
+        'annee'  => $annee, 
+        'annexe' => $annexe,
+  			'form'      => $form->createView()
+  	));
   }
 
   // Pour voir les années précédentes d'activité

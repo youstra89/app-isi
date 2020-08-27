@@ -1,6 +1,17 @@
-{# On affiche toues les classes d'un niveau de formation. On sélectionne alors une classe pour aller saisir les notes #}
+{% set template = '' %}
+{% if is_granted('ROLE_DIRECTION_ENSEIGNANT') or is_granted('ROLE_AGENT_DIRECTION_ENSEIGNANT') %}
+    {% set template = "ENSBundle:Default:index.html.twig" %}
+{% elseif is_granted('ROLE_ETUDE') %}
+    {% set template = "ISIBundle:Etude:index.html.twig" %}
+{% elseif is_granted('ROLE_SCOLARITE') or is_granted('ROLE_PREINSCRIPTION') %}
+    {% set template = "ISIBundle:Default:index.html.twig" %}
+{% elseif is_granted('ROLE_ORGANISATION') %}
+    {% set template = "ORGBundle:Default:index.html.twig" %}
+{% elseif is_granted('ROLE_ENSEIGNANT') %}
+    {% set template = "ENSBundle:Enseignant:index.html.twig" %}
+{% endif %}
 
-{% extends 'ISIBundle:Scolarite:index.html.twig' %}
+{% extends template %}
 
 {% block title %}
   Accueil rapport des absences en coran
@@ -70,11 +81,21 @@
                 {% else %}
                   {% set nieme = 'ème' %}
                 {% endif %}
-                <td data-tooltip="{{i}}{{nieme}} heure">
-                  {% for item in taches if halaqa == item.cours.halaqa and i == item.cours.heure %}
-                    {# <i class="cheched icon"></i> #}
-                    ok
-                  {% endfor %}
+                {% set enseignant = "" %}
+                {% if halaqa.anneeContratClasse|length != 0 %}
+                  {% set enseignant = halaqa.anneeContratClasse[0].anneeContrat.contrat.enseignant.nom %}
+                {% endif %}
+                <td data-tooltip="{{i}}{{nieme}} heure {{ enseignant }}">
+                  {% set checked = false %}
+                    {% for item in taches if halaqa == item.cours.halaqa and i == item.cours.heure %}
+                      {% set checked = true %}
+                      {# <i class="cheched icon"></i> #}
+                    {% endfor %}
+                    {% if checked == true %}
+                      <i class="green checkmark icon"></i>
+                    {% else %}
+                      <i class="red delete icon"></i>
+                    {% endif %}
                 </td>
               {% endfor %}
               <td>

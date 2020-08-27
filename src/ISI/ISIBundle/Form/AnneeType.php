@@ -20,8 +20,8 @@ class AnneeType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('libelle', TextType::class)
-            ->add('save',    SubmitType::class, array('label' => 'Enregistrer'))
+            ->add('libelle', TextType::class,   ['label' => 'Libelle de l\'année', 'required' => true])
+            ->add('save',    SubmitType::class, ['label' => 'Enregistrer'])
         ;
     }
     

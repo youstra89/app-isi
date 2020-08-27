@@ -18,6 +18,8 @@ class AnneeContratClasseRepository extends \Doctrine\ORM\EntityRepository
             ->join('cont.enseignant', 'e')
             ->join('ac.annee', 'an')
             ->where('an.id = :as AND e.id = :enseignantId AND e.enseignant = true')
+            ->addOrderBy('c.jour')
+            ->addOrderBy('c.heure')
             ->setParameter('as', $as)
             ->setParameter('enseignantId', $enseignantId)
             ->setParameter('as', $as);
@@ -37,11 +39,57 @@ class AnneeContratClasseRepository extends \Doctrine\ORM\EntityRepository
             // ->join('c.halaqa', 'h')
             // ->join('cl.niveau', 'n')
             // ->join('n.groupeFormation', 'grpF')
+            ->orderBy('e.id')
+            ->addOrderBy('c.jour')
+            ->addOrderBy('c.heure')
             ->where('an.id = :anneeId AND e.annexe = :annexeId AND e.enseignant = true')
             // ->where('an.id = :anneeId AND e.annexe = :annexeId AND e.enseignant = true AND grpF.reference = :regime')
             ->setParameter('annexeId', $annexeId)
             ->setParameter('anneeId', $anneeId);
             // ->setParameter('regime', $regime);
+
+        return $qb->getQuery()
+                ->getResult();
+    }
+    
+    public function cours_d_un_jour(int $anneeId, int $annexeId, int $jour_du_cours)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb ->join('c.anneeContrat', 'ac')
+            ->join('ac.contrat', 'cont')
+            ->join('cont.enseignant', 'e')
+            ->join('ac.annee', 'an')
+            // ->join('c.classe', 'cl')
+            // ->join('c.halaqa', 'h')
+            // ->join('cl.niveau', 'n')
+            // ->join('n.groupeFormation', 'grpF')
+            ->where('an.id = :anneeId AND e.annexe = :annexeId AND e.enseignant = true AND c.jour = :jour_du_cours')
+            // ->where('an.id = :anneeId AND e.annexe = :annexeId AND e.enseignant = true AND grpF.reference = :regime')
+            ->setParameter('annexeId', $annexeId)
+            ->setParameter('anneeId', $anneeId)
+            ->setParameter('jour_du_cours', $jour_du_cours);
+
+        return $qb->getQuery()
+                ->getResult();
+    }
+    
+    public function cours_d_un_jour_d_une_classe(int $anneeId, int $annexeId, int $jour_du_cours, int $classeId)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb ->join('c.anneeContrat', 'ac')
+            ->join('ac.contrat', 'cont')
+            ->join('cont.enseignant', 'e')
+            ->join('ac.annee', 'an')
+            ->join('c.classe', 'cl')
+            // ->join('c.halaqa', 'h')
+            // ->join('cl.niveau', 'n')
+            // ->join('n.groupeFormation', 'grpF')
+            ->where('an.id = :anneeId AND e.annexe = :annexeId AND e.enseignant = true AND c.jour = :jour_du_cours AND cl.id = :classeId')
+            // ->where('an.id = :anneeId AND e.annexe = :annexeId AND e.enseignant = true AND grpF.reference = :regime')
+            ->setParameter('annexeId', $annexeId)
+            ->setParameter('classeId', $classeId)
+            ->setParameter('anneeId', $anneeId)
+            ->setParameter('jour_du_cours', $jour_du_cours);
 
         return $qb->getQuery()
                 ->getResult();

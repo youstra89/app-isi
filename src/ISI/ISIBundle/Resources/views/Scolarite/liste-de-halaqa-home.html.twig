@@ -40,7 +40,7 @@
                 <h4 class="ui image header">{{ halaqa.getLibelle }}</h4>
               </td>
               <td>
-                {% if halaqa.anneeContratClasse[0] %}
+                {% if halaqa.anneeContratClasse|length != 0 %}
                   {{ halaqa.anneeContratClasse[0].anneeContrat.contrat.enseignant.nom }}
                 {% endif %}
               </td>

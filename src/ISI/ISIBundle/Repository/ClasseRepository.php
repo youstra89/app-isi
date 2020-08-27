@@ -20,6 +20,7 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
        ->join('c.annee', 'a')
        ->where('a.id = :as')
        ->andWhere('grp.reference = :regime AND c.annexe = :annexeId')
+       ->orderBy('c.libelleFr')
        ->setParameter('as', $as)
        ->setParameter('annexeId', $annexeId)
        ->setParameter('regime', $regime)
@@ -37,6 +38,7 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
               ->join('c.annee', 'a')
               ->where('c.niveau = :niveau')
               ->andWhere('a.id = :annee AND c.annexe = :annexeId')
+              ->orderBy('c.libelleFr')
               ->setParameter('niveau', $niveau)
               ->setParameter('annexeId', $annexeId)
               ->setParameter('annee', $as);
@@ -64,6 +66,7 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
     $qb->select('grpF.reference')
        ->join('c.niveau', 'n')
        ->join('n.groupeFormation', 'grpF')
+       ->orderBy('c.libelleFr')
        ->where('c.id = :classe')
        ->setParameter('classe', $classeId);
 
@@ -78,6 +81,7 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
     $qb->join('c.niveau', 'n')
        ->join('n.groupeFormation', 'grpF')
        ->join('c.annee', 'an')
+       ->orderBy('c.libelleFr')
        ->where('grpF.reference = :regime AND an.id = :an AND c.annexe = :annexeId')
        ->setParameter('regime', $regime)
        ->setParameter('annexeId', $annexeId)
@@ -93,6 +97,7 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
     $qb->join('c.niveau', 'n')
        ->join('n.groupeFormation', 'grpF')
        ->join('c.annee', 'an')
+       ->orderBy('c.libelleFr')
        ->where('grpF.reference = :regime AND an.id = :an AND n.succession = :succession AND c.annexe = :annexeId')
        ->setParameter('succession', $succession)
        ->setParameter('annexeId', $annexeId)
@@ -109,6 +114,7 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
     $qb = $this->createQueryBuilder('c');
     $qb->join('c.niveau', 'n')
        ->join('c.annee', 'an')
+       ->orderBy('c.libelleFr')
        ->where('an.id = :an AND c.annexe = :annexeId')
        ->setParameter('an', $as)
        ->setParameter('annexeId', $annexeId)
@@ -126,11 +132,12 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
         ->join('n.groupeFormation', 'grpF')
         ->join('fiche.examen', 'exam')
         ->join('c.annee', 'an')
+        ->orderBy('c.libelleFr')
         ->where('an.id = :as AND exam.id = :examen AND grpF.reference = :regime AND c.annexe = :annexeId')
         ->setParameter('as', $as)
         ->setParameter('examen', $examen)
-       ->setParameter('annexeId', $annexeId)
-       ->setParameter('regime', $regime);
+        ->setParameter('annexeId', $annexeId)
+        ->setParameter('regime', $regime);
 
     return $qb->getQuery()
             ->getResult();
@@ -144,6 +151,7 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
         ->join('ac.contrat', 'cont')
         ->join('cont.enseignant', 'e')
         ->join('ac.annee', 'an')
+        ->orderBy('c.libelleFr')
         ->where('an.id = :as AND e.id = :enseignantId')
         ->setParameter('as', $as)
         ->setParameter('enseignantId', $enseignantId)
@@ -161,6 +169,7 @@ class ClasseRepository extends \Doctrine\ORM\EntityRepository
           ->join('n.groupeFormation', 'grpF')
           ->join('ac.annee', 'an')
           ->where('an.id = :as AND grpF.reference = :regime AND c.annexe = :annexeId')
+          ->orderBy('c.libelleFr')
           ->setParameter('as', $as)
           ->setParameter('annexeId', $annexeId)
           ->setParameter('regime', $regime);

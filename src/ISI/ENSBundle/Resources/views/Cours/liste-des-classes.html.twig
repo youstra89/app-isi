@@ -26,6 +26,15 @@
 {% block body %}
   <h3>{{ 'Affectation des enseignants pour les cours '|trans }} : {{grp}}</h3>
   <a href="{{ path('tous_les_cours', {as: asec, annexeId: annexe.id, regime: regime}) }}" class="ui positive button">Voir tous les cours</a>
+  
+  <div class="ui buttons">
+    <a href="{{ path('rapport_absence_cours_home', {as: asec, annexeId: annexe.id, regime: regime}) }}" class="ui primary button">Rapport des appels du jour par classe</a>
+    <div class="or" data-text="ou"></div>
+    <a href="{{ path('rapport_appel_cours_home', {as: asec, annexeId: annexe.id, regime: regime}) }}" class="ui primary button">Rapport des appels du jour par enseignant</a>
+  </div>
+  {% if regime == 'A' %}
+    <a href="{{path('rapport_absence_coran_home',{'as': asec, 'annexeId': annexe.id, 'regime': regime})}}" class="negative ui button">{{ 'Rapport des absences en coran'|trans }}</a>
+  {% endif %}
 {% if classes is empty %}
   <p>{{ 'Pas de classes pour le moment'|trans }}</p>
 {% else %}

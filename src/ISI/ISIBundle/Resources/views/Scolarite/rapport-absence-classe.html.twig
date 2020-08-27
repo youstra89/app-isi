@@ -14,11 +14,11 @@
 				<div class="four fields">
 					<div class="field">
 						<label for="debut">Du</label>
-						<input type="date" name="debut" id="debut" value="">
+						<input type="date" name="debut" id="debut" value="{% if debut %}{{ debut|date('Y-m-d') }}{% else %}{{ 'now'|date('Y-m-d') }}{% endif %}">
 					</div>
 					<div class="field">
 						<label for="fin">Au</label>
-						<input type="date" name="fin" id="fin" value="">
+						<input type="date" name="fin" id="fin" value="{% if fin is defined %}{{ fin|date('Y-m-d') }}{% else %}{{ 'now'|date('Y-m-d') }}{% endif %}">
 					</div>
 					<div class="field">
 						<br>
@@ -28,16 +28,18 @@
 			</div>
 		</form>
 	</div>
-	<table class="">
+	<table class="ui selectable celled table">
 		<thead>
 			<tr style="background-color: #efefef">
 				<th width="25px" align="center" class="table-header">N°</th>
 				<th width="110px" align="center" class="matricule-ar">الرقم التسلسلي</th>
 				<th width="180px" class="">الاسم و اللقب</th>
-				<th width="180px" align="right" class="">{{ 'Nom & Prénom'|trans }}</th>
+				<th width="250px" align="right" class="">{{ 'Nom & Prénom'|trans }}</th>
 				<th width="30px" align="center" class=""><span class="sexe-ar">الجنس</span></th>
-				<th>Cours</th>
-				<th>Coran</th>
+				<th width="7%">Cours</th>
+				<th width="7%">Coran</th>
+				<th width="7%">Total</th>
+				<th width="7%">Actions</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -48,7 +50,7 @@
 				{% if (numero % 2) == 0 %}
 					{% set color = 'white' %}
 				{% else %}
-					{% set color = '#efefef' %}
+					{% set color = 'teal' %}
 				{% endif %}
 				{# Pour le sexe #}
 				{% if eleve.sexe == 1 %}
@@ -57,7 +59,7 @@
 					{% set sexe = 'أنثى' %}
 				{% endif %}
 				{% set numero = numero + 1 %}
-				<tr class="line-table" bgcolor={{ color }}>
+				<tr class="line-table" class={{ color }}>
 					<td align="center">{{ numero }}</td>
 					<td align="right" class="matricule">{{ eleve.matricule }}</td>
 					<td align="right" class="nomEleveAr">{{ eleve.pnomAr }} {{ eleve.nomAr  }}</td>
@@ -75,14 +77,22 @@
 						{% if appel.heure7 == true  %}{% set absenceCoran = absenceCoran + 1 %}{% endif %}
 						{% if appel.heure8 == true  %}{% set absenceCoran = absenceCoran + 1 %}{% endif %}
 					{% endfor %}
-					<td>
+					<td {% if absenceCours != 0 %}class="warning"{% endif %}>
 						{{ absenceCours }}
 					</td>
-					<td>
+					<td {% if absenceCoran != 0 %}class="warning"{% endif %}>
 						{{ absenceCoran }}
+					</td>
+					<td {% if (absenceCours + absenceCoran) != 0 %}class="warning"{% endif %}>
+						{{ absenceCours + absenceCoran }}
+					</td>
+					<td>
+						<a href="{{path('absences_d_un_eleve', {as: asec, annexeId: annexe.id, regime: regime, eleveId: eleve.id, debut: debut|date('Y-m-d'), fin: fin|date('Y-m-d')})}}" data-tooltip="Voir le rapport des absences pendant une période donnée"><i class="folder open icon"></i></a>
+						<a href="{{path('update_absence_d_un_eleve', {as: asec, annexeId: annexe.id, regime: regime, eleveId: eleve.id, classeId: classe.id})}}" data-tooltip="Mettre à jour l'appel du jour"><i class="red folder open icon"></i></a>
 					</td>
                 </tr>
 			{% endfor %}
 		</tbody>
 	</table>
+	<br><br>
 {% endblock %}

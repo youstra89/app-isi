@@ -329,7 +329,8 @@ class DirectionEnseignantController extends Controller
 
     return $this->render('ENSBundle:Default:enseignants-de-l-annee.html.twig', [
       'asec'     => $as,
-      'annee'   => $annee, 'annexe'   => $annexe,
+      'annee'    => $annee, 
+      'annexe'   => $annexe,
       'contrats' => $anneeContrats,
     ]);
   }

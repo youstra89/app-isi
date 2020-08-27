@@ -22,6 +22,7 @@
         <tr>
           <th></th>
           <th>{{ 'Nom d\'utilisateur'|trans }}</th>
+          <th>{{ 'Nom & Prénom'|trans }}</th>
           <th>{{ 'Rôles'|trans }}</th>
           <th>{{ 'Annexes'|trans }}</th>
           <th>{{ 'Dernière connexion'|trans }}</th>
@@ -43,6 +44,7 @@
               </div>
             </td>
             <td>{{ user.username }}</td>
+            <td>{{ user.nom }} {{ user.pnom }}</td>
             <td>
               <ul>
                 {% for role in user.roles %}
@@ -90,8 +92,8 @@
       var filtersConfig = {
         base_path: 'TableFilter/dist/tablefilter/',
         col_0: 'none',
-        col_5: 'select',
-        col_6: 'none',
+        col_6: 'select',
+        col_7: 'none',
         alternate_rows: true,
         rows_counter: true,
         btn_reset: true,

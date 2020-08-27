@@ -30,11 +30,39 @@ class Annee
     private $libelle;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="debut_premier_semestre", type="date", nullable=true)
+     */
+    private $debutPremierSemestre;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fin_premier_semestre", type="date", nullable=true)
+     */
+    private $finPremierSemestre;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="debut_second_semestre", type="date", nullable=true)
+     */
+    private $debutSecondSemestre;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fin_second_semestre", type="date", nullable=true)
+     */
+    private $finSecondSemestre;
+
+    /**
      * @var boolean
      *
      * @ORM\Column(name="achevee", type="boolean", nullable=false)
      */
-    private $achevee = FALSE;
+    private $achevee = false;
 
     /**
      * @var \User

@@ -27,15 +27,15 @@ class EnseignantController extends Controller
         $repoAnnee      = $em->getRepository('ISIBundle:Annee');
         $repoCours      = $em->getRepository('ENSBundle:AnneeContratClasse');
         $repoClasse     = $em->getRepository('ISIBundle:Classe');
-        $annee     = $repoAnnee->find($as);
-        $enseignant = $repoEnseignant->findOneByUser($this->getUser()->getId());
-        $enseignantId = $enseignant->getId();
-        $classes = $repoClasse->lesClassesDeLEnseignant($as, $enseignantId);
-        $cours = $repoCours->lesCoursDeLEnseignant($as, $enseignantId);
+        $annee          = $repoAnnee->find($as);
+        $enseignant     = $repoEnseignant->findOneByUser($this->getUser()->getId());
+        $enseignantId   = $enseignant->getId();
+        $classes        = $repoClasse->lesClassesDeLEnseignant($as, $enseignantId);
+        $cours          = $repoCours->lesCoursDeLEnseignant($as, $enseignantId);
         
-        $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-        $annexeId = $request->get('annexeId');
-        $annexe = $repoAnnexe->find($annexeId);
+        $repoAnnexe     = $em->getRepository('ISIBundle:Annexe');
+        $annexeId       = $request->get('annexeId');
+        $annexe         = $repoAnnexe->find($annexeId);
         // if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
         //     $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
         //     return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
@@ -82,12 +82,15 @@ class EnseignantController extends Controller
         }
         $lycee          = false;
         $heure_du_cours = $cours->getHeure();
-        $continious = $this->permettre_appel($heure_du_cours, $lycee);
-
+        $origine        = $request->get('origine');
+        $continious     = $this->permettre_appel($heure_du_cours, $lycee, $origine);
         if($continious == false){
             $this->addFlash('error', "Désolé!!! Vous ne pouvez faire l'appel car l'heure du cours sélectionné est soit passée, soit à venir.");
-            if(null !== $request->get('origine')){
+            if('all-courses' == $origine){
                 return $this->redirectToRoute('tous_les_cours', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $cours->getClasse()->getNiveau()->getGroupeFormation()->getReference()]);
+            }
+            elseif('scolarite' == $origine){
+                return $this->redirectToRoute('rapport_absence_cours_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $cours->getClasse()->getNiveau()->getGroupeFormation()->getReference()]);
             }
             return $this->redirectToRoute('enseignant_home', ['as' => $as, 'annexeId' => $annexeId]);
         }
@@ -159,8 +162,11 @@ class EnseignantController extends Controller
                 try{
                     $em->flush();
                     $this->addFlash('info', 'Appel du cours de <strong>'.$cours->getMatiere()->getLibelle().'</strong> en <strong>'.$label.'</strong> le <strong>'.$cours->jourdecours().'</strong> à la <strong>'.$cours->getHeure().' heure</strong> enregistré avec succès.');
-                    if(null !== $request->get('origine')){
+                    if('all-courses' == $origine){
                         return $this->redirectToRoute('tous_les_cours', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $cours->getClasse()->getNiveau()->getGroupeFormation()->getReference()]);
+                    }
+                    elseif('scolarite' == $origine){
+                        return $this->redirectToRoute('rapport_absence_cours_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $cours->getClasse()->getNiveau()->getGroupeFormation()->getReference()]);
                     }
                     return $this->redirectToRoute('enseignant_home', ['as' => $as, 'annexeId' => $annexeId]);
                 } 
@@ -171,11 +177,23 @@ class EnseignantController extends Controller
                 catch(\Exception $e){
                     $this->addFlash('error', $e->getMessage());
                 }
+                if('all-courses' == $origine){
+                    return $this->redirectToRoute('tous_les_cours', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $cours->getClasse()->getNiveau()->getGroupeFormation()->getReference()]);
+                }
+                elseif('scolarite' == $origine){
+                    return $this->redirectToRoute('rapport_absence_cours_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $cours->getClasse()->getNiveau()->getGroupeFormation()->getReference()]);
+                }
                 return $this->redirectToRoute('faire_appel_cours', ['as' => $as, 'annexeId' => $annexeId, 'coursId' => $coursId]);
             }
             else{
                 $jour = $this->dateToFrench(date("l", strtotime($data["date"])));
                 $this->addFlash('error', "Désolé!!! Le jour selectionné (<strong>".$jour."</strong>) ne corespond pas au jour du cours (<strong>".$cours->jourdecours()."</strong>).");
+                if('all-courses' == $origine){
+                    return $this->redirectToRoute('tous_les_cours', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $cours->getClasse()->getNiveau()->getGroupeFormation()->getReference()]);
+                }
+                elseif('scolarite' == $origine){
+                    return $this->redirectToRoute('rapport_absence_cours_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $cours->getClasse()->getNiveau()->getGroupeFormation()->getReference()]);
+                }
                 return $this->redirectToRoute('enseignant_home', ['as' => $as, 'annexeId' => $annexeId]);
             }
         }
@@ -189,10 +207,37 @@ class EnseignantController extends Controller
         ]);
     }
 
-    public function permettre_appel($heure_du_cours, $lycee)
+    public function permettre_appel($heure_du_cours, $lycee, $origine)
     {
         $heure_actuelle = time();
         $continious     = false;
+        if($origine == "scolarite"){
+            if(strtotime((new \DateTime())->format("Y-m-d 16:00")) >= $heure_actuelle){
+                if (
+                    ($heure_du_cours == 1 and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 08:10")) and $lycee == false) or
+                    ($heure_du_cours == 2 and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 08:50")) and $lycee == false) or
+                    ($heure_du_cours == 3 and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 09:30")) and $lycee == false) or
+                    ($heure_du_cours == 4 and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 10:10")) and $lycee == false) or
+                    ($heure_du_cours == 5 and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 10:50")) and $lycee == false) or
+                    ($heure_du_cours == 6 and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 11:55")) and $lycee == false) or
+                    ($heure_du_cours == 7 and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 12:35")) and $lycee == false) or
+                    ($heure_du_cours == 8 and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 13:15")) and $lycee == false) or
+                    ($heure_du_cours == 1 and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 08:20")) and $lycee ==  true) or
+                    ($heure_du_cours == 2 and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 09:10")) and $lycee ==  true) or
+                    ($heure_du_cours == 3 and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 10:00")) and $lycee ==  true) or
+                    ($heure_du_cours == 4 and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 10:50")) and $lycee ==  true) or
+                    ($heure_du_cours == 5 and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 12:15")) and $lycee ==  true) or
+                    ($heure_du_cours == 6 and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 13:15")) and $lycee ==  true)
+                ) {
+                    # code...
+                }
+                else{
+                    $continious = true;
+                }
+            }
+            
+            return $continious;
+        }
 
         if($lycee == false)
         {
@@ -250,27 +295,27 @@ class EnseignantController extends Controller
                     }
                     break;
                 case 2:
-                    if(strtotime((new \DateTime())->format("Y-m-d 08:20")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 09:00"))){
+                    if(strtotime((new \DateTime())->format("Y-m-d 08:20")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 09:10"))){
                         $continious = true;
                     }
                     break;
                 case 3:
-                    if(strtotime((new \DateTime())->format("Y-m-d 09:00")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 10:50"))){
+                    if(strtotime((new \DateTime())->format("Y-m-d 09:10")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 10:00"))){
                         $continious = true;
                     }
                     break;
                 case 4:
-                    if(strtotime((new \DateTime())->format("Y-m-d 10:50")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 11:40"))){
+                    if(strtotime((new \DateTime())->format("Y-m-d 10:00")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 10:50"))){
                         $continious = true;
                     }
                     break;
                 case 5:
-                    if(strtotime((new \DateTime())->format("Y-m-d 11:40")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 12:30"))){
+                    if(strtotime((new \DateTime())->format("Y-m-d 11:15")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 12:15"))){
                         $continious = true;
                     }
                     break;
                 case 6:
-                    if(strtotime((new \DateTime())->format("Y-m-d 12:30")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 13:20"))){
+                    if(strtotime((new \DateTime())->format("Y-m-d 12:15")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 13:15"))){
                         $continious = true;
                     }
                     break;
@@ -314,7 +359,6 @@ class EnseignantController extends Controller
         }
         $continious     = false;
         $heure_actuelle = time();
-        $heure_du_cours = $cours->getHeure();
         if(strtotime((new \DateTime())->format("Y-m-d 11:15")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 13:15"))){
             $continious = true;
         }
