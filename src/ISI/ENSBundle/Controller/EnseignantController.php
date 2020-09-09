@@ -212,7 +212,7 @@ class EnseignantController extends Controller
         $heure_actuelle = time();
         $continious     = false;
         if($origine == "scolarite"){
-            if(strtotime((new \DateTime())->format("Y-m-d 16:00")) >= $heure_actuelle){
+            if(strtotime((new \DateTime())->format("Y-m-d 19:00")) >= $heure_actuelle){
                 if (
                     ($heure_du_cours == 1 and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 08:10")) and $lycee == false) or
                     ($heure_du_cours == 2 and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 08:50")) and $lycee == false) or
