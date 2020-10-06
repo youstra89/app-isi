@@ -24,7 +24,7 @@
         {% set nbrAdmis = 0 %}
         {% set nbrRecales = 0 %}
         {% for moyenne in moyennes %}
-            {% if moyenne.getMoyenne > 5 %}
+            {% if moyenne.getMoyenne > 5.5 %}
                 {% set nbrAdmis = nbrAdmis + 1 %}
             {% endif %}
         {% endfor %}
@@ -82,25 +82,14 @@
                         {% set nieme = 'ème' %}
                     {% endif %}
                     {# Fin afficher ème en exposant #}
-                    {% if moyenne.getMoyenne > 5 %}
-                        <tr bgcolor="">
-                            <td>{{ i }}</td>
-                            <td>{{ moyenne.getEleve.getMatricule }}</td>
-                            <td>{{ moyenne.getEleve.getNomFr }} {{ moyenne.getEleve.getPnomFr }}</td>
-                            <td>{{ moyenne.getTotalPoints }}</td>
-                            <td>{{ moyenne.getMoyenne }}</td>
-                            <td>{{ moyenne.getRang }}<sup>{{ nieme }}</sup></td>
-                        </tr>
-                    {% else %}
-                        <tr class="error">
-                            <td>{{ i }}</td>
-                            <td>{{ moyenne.getEleve.getMatricule }}</td>
-                            <td>{{ moyenne.getEleve.getNomFr }} {{ moyenne.getEleve.getPnomFr }}</td>
-                            <td>{{ moyenne.getTotalPoints }}</td>
-                            <td>{{ moyenne.getMoyenne }}</td>
-                            <td>{{ moyenne.getRang }}<sup>{{ nieme }}</sup></td>
-                        </tr>
-                    {% endif %}
+                    <tr {% if moyenne.getMoyenne < 5.5 %}class="error"{% endif %}>
+                        <td>{{ i }}</td>
+                        <td>{{ moyenne.getEleve.getMatricule }}</td>
+                        <td>{{ moyenne.getEleve.getNomFr }} {{ moyenne.getEleve.getPnomFr }}</td>
+                        <td>{{ moyenne.getTotalPoints }}</td>
+                        <td>{{ moyenne.getMoyenne }}</td>
+                        <td>{{ moyenne.getRang }}<sup>{{ nieme }}</sup></td>
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>

@@ -111,11 +111,11 @@
 
   <body>
     <div class="">
-      <div class="ui fixed borderless main menu">
+      <div class="ui fixed borderless main menu" style="background-color:GhostWhite">
         <div class="ui container">
           {% block menu %}
             <a class="item" href="{{ path('isi_home_scolarite', {'as': annee.id, 'annexeId': annexe.id}) }}"><h4 class="ui header"><i class="home icon"></i>{{ 'Accueil'|trans }}</h4></a>
-            {% if is_granted('ROLE_PREINSCRIPTION') %}
+            {% if is_granted('ROLE_PREINSCRIPTION') or is_granted('ROLE_SCOLARITE_ANNEXE') %}
               <span class="ui simple dropdown item">
                 <a><h4 class="ui header"><span class="style-main-menu">{{ 'Espace élèves'|trans }}</span></h4></a>
                 <i class="dropdown icon"></i>
@@ -225,6 +225,7 @@
                 {% if app.user.annexes|length > 1 %}
                   <a class="item" href="{{ path('annexes_homepage', {'as': asec, 'annexeId': annexe.id})}}">{{ 'Autres annexes'|trans }}</a>
                 {% endif %}
+                <a class="item" href="{{ path('programme_annuel', {'as': asec, 'annexeId': annexe.id})}}">{{ 'Programme annuel'|trans }}</a>
               {% endif %}
               {% block contextual_menu %}{% endblock %} 
             </div>
@@ -264,7 +265,6 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
-    <script src="{{ asset('js/jquery-3.3.1.js') }}"></script>
     <script>
       $(document).ready(function() {
         $(".ui.toggle.button").click(function() {

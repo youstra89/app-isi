@@ -142,7 +142,7 @@ class DefaultController extends Controller
         }
 
         // Cette condition ne sera vraie que lorsque nous seront à la toute première exécution du programme
-        if($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN') || $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN_ANNEXE'))
+        if($this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN') || $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN_ANNEXE') || $this->get('security.authorization_checker')->isGranted('ROLE_DIRECTEUR_ANNEXE'))
         {
             if(empty($annee))
             {

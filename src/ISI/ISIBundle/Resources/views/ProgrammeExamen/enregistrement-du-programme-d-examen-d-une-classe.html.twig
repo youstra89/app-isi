@@ -1,0 +1,101 @@
+{# Accueil pour l'édition des listes de classe' #}
+
+{% extends 'ISIBundle:ProgrammeExamen:index.html.twig' %}
+
+{% block title %}
+  Enregistrement du programme d'examen de la classe {{ classe.libelleFr }}
+{% endblock %}
+
+
+{% block stylesheets %}
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+  <link href="{{ asset('css/select2.min.css') }}" rel="stylesheet" />
+{% endblock %}
+
+
+{% block section %}
+  <i class="settings icon"></i>{{ 'Programme d\'examen '|trans }}
+{% endblock %}
+
+
+{% block body %}
+    {% if programmesNiveau is empty %}
+        <p>{{ 'Le programme de composition du niveau de cette classe n\'a pas encore été enregistré.'|trans }}</p>
+    {% else %}
+        <div class="titre-document">
+          <h3>{{ 'Enregistrement du programme d\'examen de la classe'|trans }} {{ classe.libelleFr }}</h3>
+        </div>
+        <br />
+        <form action="" class="ui form" method="post">
+          <table width="100%" class="ui celled selectable table" align="center">
+            <thead>
+              <tr class="table-header" bgcolor="">
+                <th width="2%">N°</th>
+                <th width="10%">Matières</th>
+                <th width="10%">Groupes</th>
+                <th width="20%">{{ 'Salles'|trans }}</th>
+                <th width="">Surveillants</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% set numero = 0 %}
+              {% for progNiveau in programmesNiveau %}
+                {% for groupe in groupeClasse|sort|reverse %}
+                  {% set programmeEnregistre = null %}
+                  {% set matiere = progNiveau.matiere %}
+                  {% set numero = numero + 1 %}
+                  {% for programme in programmes if programme.groupeComposition == groupe and programme.programmeexamenniveau.matiere == matiere %}
+                    {% set programmeEnregistre = programme %}
+                  {% endfor %}
+                  <tr>
+                    <td>{{ numero }}</td>
+                    <td>{{ matiere.libelle }}</td>
+                    <td>{{ groupe.classe.libelleFr }} {{ groupe.libelle }}</td>
+                    <td>
+                      <select class="js-example-basic-single" id="salles{{groupe.id}}[{{matiere.id}}]" name="salles{{groupe.id}}[{{matiere.id}}]">
+                        <option value="">Sélectionnez une salle</option>
+                        {% for salle in salles %}
+                          <option value="{{ salle.id }}" {% if programmeEnregistre is not null and programmeEnregistre.salle == salle %}selected{% endif %}>{{ salle.nom }} - {{ salle.batiment.nom }}</option>
+                        {% endfor %}
+                      </select>
+                    </td>
+                    <td>
+                      <select class="js-example-basic-multiple" id="surveillants{{groupe.id}}[{{matiere.id}}]" name="surveillants{{groupe.id}}[{{matiere.id}}][]" multiple="multiple">
+                        <option value="">Sélectionnez un ou des surveillants</option>
+                        {% for item in anneeContrats %}
+                          <option value="{{ item.id }}"
+                            {% if programmeEnregistre is not null %}
+                              {% for surveillant in programmeEnregistre.surveillances %}
+                                {% if surveillant.anneeContrat == item and surveillant.disabled == false %}selected{% endif %}
+                                
+                              {% endfor %}
+                            {% endif %}
+                          >
+                            {{ item.contrat.enseignant.matricule }} --- {{ item.contrat.enseignant.nom }}
+                          </option>
+                        {% endfor %}
+                      </select>
+                    </td>
+                  </tr>
+                {% endfor %}
+              {% endfor %}
+            </tbody>
+          </table>
+          <br><br>
+          <button class="ui large primary button">Valider les modifications</button>
+        </form>
+        <br><br>
+    {% endif %}
+
+{% endblock %}
+
+
+{% block javascripts %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('.js-example-basic-single').select2();
+      $('.js-example-basic-multiple').select2();
+    });
+  </script>
+{% endblock %}

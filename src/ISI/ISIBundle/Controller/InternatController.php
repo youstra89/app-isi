@@ -21,16 +21,15 @@ class InternatController extends Controller
 {
   /**
    * @Security("has_role('ROLE_INTERNAT')")
-   * @Route("/internat-home-{as}", name="internat_home")
+   * @Route("/internat-home-{as}-{annexeId}", name="internat_home")
    */
-  public function indexAction(Request $request, $as)
+  public function indexAction(Request $request, $as, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee    = $em->getRepository('ISIBundle:Annee');
     $repoInterner = $em->getRepository('ISIBundle:Interner');
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -69,15 +68,14 @@ class InternatController extends Controller
   // Accueil de la gestion des chambres
   /**
    * @Security("has_role('ROLE_INTERNAT')")
-   * @Route("/gestion-des-chambres-{as}", name="internat_gestion_chambres")
+   * @Route("/gestion-des-chambres-{as}-{annexeId}", name="internat_gestion_chambres")
    */
-  public function gestionDesChambresAction(Request $request, $as)
+  public function gestionDesChambresAction(Request $request, $as, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoChambre = $em->getRepository('ISIBundle:Chambre');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -95,14 +93,13 @@ class InternatController extends Controller
   // Accueil de la gestion des chambres
   /**
    * @Security("has_role('ROLE_INTERNAT')")
-   * @Route("/ajouter-des-chambres-{as}", name="internat_add_chambre")
+   * @Route("/ajouter-des-chambres-{as}-{annexeId}", name="internat_add_chambre")
    */
-  public function addChambresAction(Request $request, int $as)
+  public function addChambresAction(Request $request, int $as, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -135,15 +132,14 @@ class InternatController extends Controller
 
   /**
    * @Security("has_role('ROLE_INTERNAT')")
-   * @Route("/editer-des-chambres/{chambreId}/{as}", name="internat_edit_chambre")
+   * @Route("/editer-des-chambres/{chambreId}/{as}-{annexeId}", name="internat_edit_chambre")
    */
-  public function editChambresAction(Request $request, int $as, int $chambreId)
+  public function editChambresAction(Request $request, int $as, int $chambreId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoChambre = $em->getRepository('ISIBundle:Chambre');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -179,15 +175,14 @@ class InternatController extends Controller
   // Ajout d'un élève à l'internat
   /**
    * @Security("has_role('ROLE_INTERNAT')")
-   * @Route("/ajouter-un-interne-home-{as}", name="internat_add")
+   * @Route("/ajouter-un-interne-home-{as}-{annexeId}", name="internat_add")
    */
-  public function addInterneAction(Request $request, $as)
+  public function addInterneAction(Request $request, $as, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee = $em->getRepository('ISIBundle:Annee');
     $repoEleve = $em->getRepository('ISIBundle:Eleve');  
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -234,9 +229,9 @@ class InternatController extends Controller
 
   /**
    * @Security("has_role('ROLE_INTERNAT')")
-   * @Route("/ajouter-un-eleve-a-l-internat-{as}-{eleveId}", name="internat_add_eleve")
+   * @Route("/ajouter-un-eleve-a-l-internat-{as}-{eleveId}-{annexeId}", name="internat_add_eleve")
    */
-  public function addEleveInternatAction(Request $request, $as, $eleveId)
+  public function addEleveInternatAction(Request $request, $as, $eleveId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
@@ -245,13 +240,11 @@ class InternatController extends Controller
     $repoEleve   = $em->getRepository('ISIBundle:Eleve');
     $repoReinscription = $em->getRepository('ISIBundle:Reinscription');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
       return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
     }
-    
     
     $annee    = $repoAnnee->find($as);
     $eleve    = $repoEleve->find($eleveId);
@@ -334,19 +327,126 @@ class InternatController extends Controller
     ]);
   }
 
+  /**
+   * @Security("has_role('ROLE_INTERNAT')")
+   * @Route("/mise-a-jour-inscription-a-l-internat-{as}-{internerId}-{annexeId}", name="modifier_inscription_internat")
+   */
+  public function modifier_inscription_internat(Request $request, $as, $internerId, int $annexeId)
+  {
+    $em                = $this->getDoctrine()->getManager();
+    $repoFrequenter    = $em->getRepository('ISIBundle:Frequenter');
+    $repoChambre       = $em->getRepository('ISIBundle:Chambre');
+    $repoAnnee         = $em->getRepository('ISIBundle:Annee');
+    $repoInterner      = $em->getRepository('ISIBundle:Interner');
+    $repoReinscription = $em->getRepository('ISIBundle:Reinscription');
+    $repoAnnexe        = $em->getRepository('ISIBundle:Annexe');
+    $annexe            = $repoAnnexe->find($annexeId);
+    
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
+    
+    $annee    = $repoAnnee->find($as);
+    $interner = $repoInterner->find($internerId);
+    $eleve    = $interner->getEleve();
+    $eleveId  = $eleve->getId();
+    $fq       = $repoFrequenter->findOneBy(['annee' => $as, 'eleve' => $eleveId]);
+    $fqs      = $repoFrequenter->findBy(['eleve' => $eleveId]);
+    $chambres = $repoChambre->chambresDisponibles($eleve->getSexe());
+    $reinscription = $repoReinscription->findOneBy(['eleve' => $eleveId, 'annee' => $as - 1]);
+
+    if(empty($reinscription) and count($fqs) != 0) {
+      $request->getSession()->getFlashBag()->add('error', 'Cet élève ne s\'est pas réinscrit pour l\'année scolaire en cours');
+      return $this->redirectToRoute('internat_add', array('as' => $as, 'annexeId' => $annexeId));
+    }
+
+    /**
+     * Quand l'année scolaire est finie, on doit plus faire des
+     * mofications, des mises à jour
+     **/
+    if($annee->getAchevee() == TRUE)
+    {
+      $request->getSession()->getFlashBag()->add('error', 'Impossible d\'inscrire un élève à l\'internat car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
+      return $this->redirect($this->generateUrl('internat_add', ['as' => $as, 'annexeId' => $annexeId]));
+    }
+
+    if($request->isMethod('post')) {
+      $data = $request->request->all();
+      $chambreId = $data['chambre'];
+      $dateI = new \DateTime($data['dateI']);
+
+      if(empty($chambreId))
+      {
+        $request->getSession()->getFlashBag()->add('error', 'Vous avez oublié de sélectionner la chambre de l\'élève');
+        return $this->redirectToRoute('modifier_inscription_internat', array('as' => $as, 'annexeId' => $annexeId, 'internerId' => $internerId));
+      }
+
+      if($chambreId == $interner->getChambre()->getId())
+      {
+        $request->getSession()->getFlashBag()->add('error', 'Aucun changement n\'a été observé');
+      }
+      else{
+        $ancienneChambre = $repoChambre->find($interner->getChambre()->getId());
+        $ancienneChambre->setPlacesDisponibles($ancienneChambre->getPlacesDisponibles() + 1);
+
+        $chambre = $repoChambre->find($chambreId);
+        // On va faire un test ici pour savoir s'il y a toujours de la place libre dans
+        $nbrPlcs = $chambre->getPlacesDisponibles() - 1;
+        $chambre->setPlacesDisponibles($nbrPlcs);
+        $interner->setChambre($chambre);
+        $interner->setUpdatedBy($this->getUser());
+        $interner->setUpdatedAt(new \Datetime());
+  
+        // On va profiter pour enregistrer une conduite
+        // Un renvoi peut être considéré comme effet immédiat ou non d'un problème
+        $probleme = new Probleme();
+        $appreciation = "Changement de chambre";
+        $description  = "De la chambre ".$ancienneChambre->getLibelle()." à la chambre ".$chambre->getLibelle();
+        $probleme->setDate($dateI);
+        $probleme->setAppreciation($appreciation);
+        $probleme->setDescription($description);
+        $probleme->setCreatedBy($this->getUser());
+        $probleme->setCreatedAt(new \Datetime());
+  
+        // Il nous faut un occurence de commettre pour enregistrer un problème
+        $commettre = new Commettre();
+        $commettre->setEleve($eleve);
+        $commettre->setProbleme($probleme);
+        $commettre->setAnnee($annee);
+  
+        $em->persist($probleme);
+        $em->persist($commettre);
+        $em->flush();
+        $request->getSession()->getFlashBag()->add('info', 'L\'élève <strong>'.$eleve->getNom().'</strong> a bien été transféré de la chambre <strong>'.$ancienneChambre->getLibelle().'</strong> à la chambre <strong>'.$chambre->getLibelle().'</strong>');
+      }
+
+      return $this->redirectToRoute('internat_home', array('as' => $as, 'annexeId' => $annexeId));
+    }
+
+    return $this->render('ISIBundle:Internat:infos-interner-a-modifier.html.twig', [
+      'asec'     => $as,
+      'annee'    => $annee, 
+      'annexe'   => $annexe,
+      'eleve'    => $eleve,
+      'interner' => $interner,
+      'fq'       => $fq,
+      'chambres' => $chambres,
+    ]);
+  }
+
   // Retrait d'un élève à l'internat
   /**
    * @Security("has_role('ROLE_INTERNAT')")
-   * @Route("/retirer-un-interne-home-{as}", name="internat_delete")
+   * @Route("/retirer-un-interne-home-{as}-{annexeId}", name="internat_delete")
    */
-  public function deleteInterneAction(Request $request, $as)
+  public function deleteInterneAction(Request $request, $as, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee    = $em->getRepository('ISIBundle:Annee');
     $repoEleve    = $em->getRepository('ISIBundle:Eleve');
     $repoInterner = $em->getRepository('ISIBundle:Interner');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -394,9 +494,9 @@ class InternatController extends Controller
 
   /**
    * @Security("has_role('ROLE_INTERNAT')")
-   * @Route("/retirer-un-eleve-de-l-internat-{as}-{eleveId}", name="internat_delete_eleve")
+   * @Route("/retirer-un-eleve-de-l-internat-{as}-{eleveId}-{annexeId}", name="internat_delete_eleve")
    */
-  public function deleteEleveInternatAction(Request $request, $as, $eleveId)
+  public function deleteEleveInternatAction(Request $request, $as, $eleveId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
@@ -405,7 +505,6 @@ class InternatController extends Controller
     $repoAnnee    = $em->getRepository('ISIBundle:Annee');
     $repoEleve    = $em->getRepository('ISIBundle:Eleve');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -473,9 +572,9 @@ class InternatController extends Controller
   //
   /**
    * @Security("has_role('ROLE_INTERNAT')")
-   * @Route("/info-eleve-{as}-{id}", name="internat_info_eleve")
+   * @Route("/info-eleve-{as}-{id}-{annexeId}", name="internat_info_eleve")
    */
-  public function infoEleveAction(Request $request, $as, $id)
+  public function infoEleveAction(Request $request, $as, $id, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee       = $em->getRepository('ISIBundle:Annee');
@@ -483,7 +582,6 @@ class InternatController extends Controller
     $repoProbleme    = $em->getRepository('ISIBundle:Probleme');
     $repoFrequenter  = $em->getRepository('ISIBundle:Frequenter');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -516,15 +614,14 @@ class InternatController extends Controller
   // Voir la liste des élèves qui ont été retiré de l'internat
   /**
    * @Security("has_role('ROLE_INTERNAT')")
-   * @Route("/liste-des-eleves-retires-de-l-internat-{as}", name="internat_deleted")
+   * @Route("/liste-des-eleves-retires-de-l-internat-{as}-{annexeId}", name="internat_deleted")
    */
-  public function deletedElevesAction(Request $request, $as)
+  public function deletedElevesAction(Request $request, $as, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee    = $em->getRepository('ISIBundle:Annee');
     $repoInterner = $em->getRepository('ISIBundle:Interner');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -544,15 +641,14 @@ class InternatController extends Controller
   // Pour ajouter les mois qui seront pris en compte pour le paiement des frais de l'internat
   /**
    * @Security("has_role('ROLE_INTERNAT')")
-   * @Route("/ajouter-les-mois-de-paiement-de-l-internat-{as}", name="internat_add_mois_de_paiement")
+   * @Route("/ajouter-les-mois-de-paiement-de-l-internat-{as}-{annexeId}", name="internat_add_mois_de_paiement")
    */
-  public function addMoisDePaiementAction(Request $request, $as)
+  public function addMoisDePaiementAction(Request $request, $as, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee = $em->getRepository('ISIBundle:Annee');
     $repoMois  = $em->getRepository('ISIBundle:Mois');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -576,16 +672,15 @@ class InternatController extends Controller
   // Les mois de paiement seront ajoutés l'un après l'autre
   /**
    * @Security("has_role('ROLE_INTERNAT')")
-   * @Route("/ajouter-un-mois-de-paiement-{as}-{moisId}", name="internat_add_mois_de_paie")
+   * @Route("/ajouter-un-mois-de-paiement-{as}-{moisId}-{annexeId}", name="internat_add_mois_de_paie")
    */
-  public function addLeMoisDePaieAction(Request $request, $as, $moisId)
+  public function addLeMoisDePaieAction(Request $request, $as, $moisId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoMoisDePaie = $em->getRepository('ISIBundle:Moisdepaiementinternat');
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoMois       = $em->getRepository('ISIBundle:Mois');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -634,9 +729,9 @@ class InternatController extends Controller
   // Pour le règlement des droits/frais de l'internat
   /**
    * @Security("has_role('ROLE_INTERNAT')")
-   * @Route("/paiement-des-frais-internat-{as}", name="internat_pay")
+   * @Route("/paiement-des-frais-internat-{as}-{annexeId}", name="internat_pay")
    */
-  public function payInterneRightAction(Request $request, $as)
+  public function payInterneRightAction(Request $request, $as, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoMoisDePaie = $em->getRepository('ISIBundle:Moisdepaiementinternat');
@@ -644,7 +739,6 @@ class InternatController extends Controller
     $repoInterner   = $em->getRepository('ISIBundle:Interner');
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -677,9 +771,9 @@ class InternatController extends Controller
   // Paiement des frais de l'internat pour un élève donné et pour un mois donné
   /**
    * @Security("has_role('ROLE_INTERNAT')")
-   * @Route("/paiement-des-frais-internat-d-un-eleve-pour-un-mois-{as}-{eleveId}-{moisId}", name="internat_pay_mois")
+   * @Route("/paiement-des-frais-internat-d-un-eleve-pour-un-mois-{as}-{eleveId}-{moisId}-{annexeId}", name="internat_pay_mois")
    */
-  public function paiementDesFraisPourUnMoisAction(Request $request, $as, $eleveId, $moisId)
+  public function paiementDesFraisPourUnMoisAction(Request $request, $as, $eleveId, $moisId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoMoisDePaie = $em->getRepository('ISIBundle:Moisdepaiementinternat');
@@ -688,7 +782,6 @@ class InternatController extends Controller
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoEleve      = $em->getRepository('ISIBundle:Eleve');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -776,9 +869,9 @@ class InternatController extends Controller
 
   /**
    * @Security("has_role('ROLE_INTERNAT')")
-   * @Route("/recu-de-paiement-{as}-{eleveId}-{moisId}-{paiementId}", name="internat_recu_de_paiement")
+   * @Route("/recu-de-paiement-{as}-{eleveId}-{moisId}-{paiementId}-{annexeId}", name="internat_recu_de_paiement")
    */
-  public function recuDePaiementAction(Request $request, $as, $eleveId, $moisId, $paiementId)
+  public function recuDePaiementAction(Request $request, $as, $eleveId, $moisId, $paiementId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoMoisDePaie = $em->getRepository('ISIBundle:Moisdepaiementinternat');
@@ -786,7 +879,6 @@ class InternatController extends Controller
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoEleve      = $em->getRepository('ISIBundle:Eleve');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');

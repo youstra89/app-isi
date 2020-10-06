@@ -17,16 +17,15 @@ class RencontreController extends Controller
 {
   /**
    * @Security("has_role('ROLE_ADJOINT_DIRECTION_ENSEIGNANT')")
-   * @Route("/index-des-rencontres-{as}", name="ens_rencontre_home")
+   * @Route("/index-des-rencontres-{as}-{annexeId}", name="ens_rencontre_home")
    */
-  public function index(Request $request, $as)
+  public function index(Request $request, $as, int $annexeId)
   {
-    $em = $this->getDoctrine()->getManager();
+    $em            = $this->getDoctrine()->getManager();
     $repoAnnee     = $em->getRepository('ISIBundle:Annee');
     $repoRencontre = $em->getRepository('ENSBundle:Rencontre');
-    $annexeId = $request->get('annexeId');
-    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexe = $repoAnnexe->find($annexeId);
+    $repoAnnexe    = $em->getRepository('ISIBundle:Annexe');
+    $annexe        = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
       return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
@@ -45,14 +44,12 @@ class RencontreController extends Controller
 
   /**
    * @Security("has_role('ROLE_ADJOINT_DIRECTION_ENSEIGNANT')")
-   * @Route("/enregistrement-de-rencontres-{as}", name="ens_add_rencontre")
+   * @Route("/enregistrement-de-rencontres-{as}-{annexeId}", name="ens_add_rencontre")
    */
-  public function addRencontre(Request $request, $as)
+  public function addRencontre(Request $request, $as, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee     = $em->getRepository('ISIBundle:Annee');
-    // $repoRencontre = $em->getRepository('ENSBundle:Rencontre');
-    $annexeId = $request->get('annexeId');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
@@ -101,14 +98,13 @@ class RencontreController extends Controller
 
   /**
    * @Security("has_role('ROLE_ADJOINT_DIRECTION_ENSEIGNANT')")
-   * @Route("/mise-a-jour-des-informations-d-une-rencontre-{as}-{rencontreId}", name="ens_edit_rencontre")
+   * @Route("/mise-a-jour-des-informations-d-une-rencontre-{as}-{rencontreId}-{annexeId}", name="ens_edit_rencontre")
    */
-  public function editRencontre(Request $request, $as, $rencontreId)
+  public function editRencontre(Request $request, $as, $rencontreId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee     = $em->getRepository('ISIBundle:Annee');
     $repoRencontre = $em->getRepository('ENSBundle:Rencontre');
-    $annexeId = $request->get('annexeId');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
@@ -152,14 +148,13 @@ class RencontreController extends Controller
 
   /**
    * @Security("has_role('ROLE_ADJOINT_DIRECTION_ENSEIGNANT')")
-   * @Route("/lire-le-rapport-d-une-rencontre-{as}-{rencontreId}", name="lire_rapport_rencontre")
+   * @Route("/lire-le-rapport-d-une-rencontre-{as}-{rencontreId}-{annexeId}", name="lire_rapport_rencontre")
    */
-  public function lire_rapport_rencontre(Request $request, $as, $rencontreId)
+  public function lire_rapport_rencontre(Request $request, $as, $rencontreId, int $annexeId)
   {
     $em            = $this->getDoctrine()->getManager();
     $repoAnnee     = $em->getRepository('ISIBundle:Annee');
     $repoRencontre = $em->getRepository('ENSBundle:Rencontre');
-    $annexeId      = $request->get('annexeId');
     $repoAnnexe    = $em->getRepository('ISIBundle:Annexe');
     $annexe        = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
@@ -180,9 +175,9 @@ class RencontreController extends Controller
 
   /**
    * @Security("has_role('ROLE_ADJOINT_DIRECTION_ENSEIGNANT')")
-   * @Route("/ajouter-des-participants-a-la-rencontre-{as}-{rencontreId}", name="ens_participants_rencontre")
+   * @Route("/ajouter-des-participants-a-la-rencontre-{as}-{rencontreId}-{annexeId}", name="ens_participants_rencontre")
    */
-  public function participantsRencontre(Request $request, $as, $rencontreId)
+  public function participantsRencontre(Request $request, $as, $rencontreId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee     = $em->getRepository('ISIBundle:Annee');
@@ -190,7 +185,6 @@ class RencontreController extends Controller
     $repoRencontre = $em->getRepository('ENSBundle:Rencontre');
     $repoAnneeContrat   = $em->getRepository('ENSBundle:AnneeContrat');
     $repoAnneeContratRencontre = $em->getRepository('ENSBundle:AnneeContratRencontre');
-    $annexeId = $request->get('annexeId');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
@@ -257,15 +251,14 @@ class RencontreController extends Controller
 
   /**
    * @Security("has_role('ROLE_ADJOINT_DIRECTION_ENSEIGNANT')")
-   * @Route("/liste-des-participants-a-la-rencontre-{as}-{rencontreId}", name="ens_liste_des_participants")
+   * @Route("/liste-des-participants-a-la-rencontre-{as}-{rencontreId}-{annexeId}", name="ens_liste_des_participants")
    */
-  public function listeDesParticipantsRencontre(Request $request, $as, $rencontreId)
+  public function listeDesParticipantsRencontre(Request $request, $as, $rencontreId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee     = $em->getRepository('ISIBundle:Annee');
     $repoRencontre = $em->getRepository('ENSBundle:Rencontre');
     $repoAnneeContratRencontre = $em->getRepository('ENSBundle:AnneeContratRencontre');
-    $annexeId = $request->get('annexeId');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){

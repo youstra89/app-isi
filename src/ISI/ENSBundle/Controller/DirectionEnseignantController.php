@@ -20,15 +20,14 @@ class DirectionEnseignantController extends Controller
 {
   /**
    * @Security("has_role('ROLE_AGENT_DIRECTION_ENSEIGNANT')")
-   * @Route("/direction-enseignant-{as}", name="ens_home")
+   * @Route("/direction-enseignant-{as}-{annexeId}", name="ens_home")
    */
-  public function index(Request $request, $as)
+  public function index(Request $request, $as, int $annexeId)
   {
     $em             = $this->getDoctrine()->getManager();
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoEnseignant = $em->getRepository('ENSBundle:Enseignant');
     $annee          = $repoAnnee->find($as);
-    $annexeId       = $request->get('annexeId');
     $repoAnnexe     = $em->getRepository('ISIBundle:Annexe');
     $annexe         = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
@@ -36,7 +35,6 @@ class DirectionEnseignantController extends Controller
       return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
     }
     $enseignants = $repoEnseignant->findBy(["enseignant" => true, "annexe" => $annexeId]);
-
 
     return $this->render('ENSBundle:Default:index.html.twig', [
       'asec'        => $as,
@@ -78,13 +76,12 @@ class DirectionEnseignantController extends Controller
 
   /**
    * @Security("has_role('ROLE_SUPER_ADMIN')")
-   * @Route("/ajouter-un-nouvel-enseignant-{as}", name="ens_add")
+   * @Route("/ajouter-un-nouvel-enseignant-{as}-{annexeId}", name="ens_add")
    */
-  public function addEnseignant(Request $request, $as)
+  public function addEnseignant(Request $request, $as, int $annexeId)
   {
     $em          = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
-    $annexeId    = $request->get('annexeId');
     $repoAnnexe  = $em->getRepository('ISIBundle:Annexe');
     $annexe      = $repoAnnexe->find($annexeId);
     $annexes     = $repoAnnexe->findAll();
@@ -172,15 +169,14 @@ class DirectionEnseignantController extends Controller
 
   /**
    * @Security("has_role('ROLE_SUPER_ADMIN')")
-   * @Route("/editer-un-enseignant-{as}-{enseignantId}", name="ens_edit")
+   * @Route("/editer-un-enseignant-{as}-{enseignantId}-{annexeId}", name="ens_edit")
    */
-  public function editEnseignant(Request $request, $as, $enseignantId)
+  public function editEnseignant(Request $request, $as, $enseignantId, int $annexeId)
   {
     $em             = $this->getDoctrine()->getManager();
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoEnseignant = $em->getRepository('ENSBundle:Enseignant');
     $repoAnnexe     = $em->getRepository('ISIBundle:Annexe');
-    $annexeId       = $request->get('annexeId');
     $annexe         = $repoAnnexe->find($annexeId);
     $annexes        = $repoAnnexe->findAll();
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
@@ -273,29 +269,19 @@ class DirectionEnseignantController extends Controller
 
   /**
    * @Security("has_role('ROLE_AGENT_DIRECTION_ENSEIGNANT')")
-   * @Route("/information-sur-l-enseignant-{as}-{enseignantId}", name="ens_info")
+   * @Route("/information-sur-l-enseignant-{as}-{enseignantId}-{annexeId}", name="ens_info")
    */
-  public function infoEnseignant(Request $request, $as, $enseignantId)
+  public function infoEnseignant(Request $request, $as, $enseignantId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoEnseignant = $em->getRepository('ENSBundle:Enseignant');
-    $annexeId = $request->get('annexeId');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
       return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
     }
-    // $repoContrat = $em->getRepository('ENSBundle:Contrat');
-    // $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
-    // $repoConduite = $em->getRepository('ENSBundle:AnneeContratConduite');
-    // $repoSanction = $em->getRepository('ENSBundle:AnneeContratSanction');
-    // // $repo = $em->getRepository('ENSBundle:AnneeContrat');
-    // $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
-
-    // $contrat   = $repoAnneeContrat->findOneBy(['asec' => $as, 'enseignant' => $enseignantId]);
-    // $contratId = $contrat->getContrat()->getId();
 
     $annee      = $repoAnnee->find($as);
     $enseignant = $repoEnseignant->find($enseignantId);
@@ -308,14 +294,13 @@ class DirectionEnseignantController extends Controller
 
   /**
    * @Security("has_role('ROLE_AGENT_DIRECTION_ENSEIGNANT')")
-   * @Route("/direction-enseignants-de-l-annee-{as}", name="ens_enseignant_de_l_annee")
+   * @Route("/direction-enseignants-de-l-annee-{as}-{annexeId}", name="ens_enseignant_de_l_annee")
    */
-  public function enseignantsDeLAnnee(Request $request, $as)
+  public function enseignantsDeLAnnee(Request $request, $as, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoAnneeContrat   = $em->getRepository('ENSBundle:AnneeContrat');
-    $annexeId = $request->get('annexeId');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
@@ -337,14 +322,13 @@ class DirectionEnseignantController extends Controller
 
   /**
    * @Security("has_role('ROLE_AGENT_DIRECTION_ENSEIGNANT')")
-   * @Route("/liste-des-enseignants-annee-{as}", name="ens_impression_liste_des_enseignants")
+   * @Route("/liste-des-enseignants-annee-{as}-{annexeId}", name="ens_impression_liste_des_enseignants")
    */
-  public function impressionListeDesEnseignantsDeLAnnee(Request $request, $as)
+  public function impressionListeDesEnseignantsDeLAnnee(Request $request, $as, int $annexeId)
   {
     $em               = $this->getDoctrine()->getManager();
     $repoAnnee        = $em->getRepository('ISIBundle:Annee');
     $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
-    $annexeId         = $request->get('annexeId');
     $repoAnnexe       = $em->getRepository('ISIBundle:Annexe');
     $annexe           = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
@@ -402,14 +386,13 @@ class DirectionEnseignantController extends Controller
 
   /**
    * @Security("has_role('ROLE_AGENT_DIRECTION_ENSEIGNANT')")
-   * @Route("/liste-detaillee-des-enseignants-de-l-annee-{as}", name="ens_impression_liste_des_enseignants_plus_de_details")
+   * @Route("/liste-detaillee-des-enseignants-de-l-annee-{as}-{annexeId}", name="ens_impression_liste_des_enseignants_plus_de_details")
    */
-  public function impressionListeDesEnseignantsDeLAnneeAvecDetails(Request $request, $as)
+  public function impressionListeDesEnseignantsDeLAnneeAvecDetails(Request $request, $as, int $annexeId)
   {
     $em               = $this->getDoctrine()->getManager();
     $repoAnnee        = $em->getRepository('ISIBundle:Annee');
     $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
-    $annexeId         = $request->get('annexeId');
     $repoAnnexe       = $em->getRepository('ISIBundle:Annexe');
     $annexe           = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
@@ -466,14 +449,13 @@ class DirectionEnseignantController extends Controller
 
   /**
    * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
-   * @Route("/mise-a-jour-un-enseignant-pour-l-annee-en-cours-{as}-{anneeContratId}", name="ens_edit_enseignant_annee")
+   * @Route("/mise-a-jour-un-enseignant-pour-l-annee-en-cours-{as}-{anneeContratId}-{annexeId}", name="ens_edit_enseignant_annee")
    */
-  public function modifierEnseignantAnnee(Request $request, $as, $anneeContratId)
+  public function modifierEnseignantAnnee(Request $request, $as, $anneeContratId, int $annexeId)
   {
     $em               = $this->getDoctrine()->getManager();
     $repoAnnee        = $em->getRepository('ISIBundle:Annee');
     $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
-    $annexeId         = $request->get('annexeId');
     $repoAnnexe       = $em->getRepository('ISIBundle:Annexe');
     $annexe           = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
@@ -514,15 +496,14 @@ class DirectionEnseignantController extends Controller
 
   /**
    * @Security("has_role('ROLE_AGENT_DIRECTION_ENSEIGNANT')")
-   * @Route("/fonctions-enseignant-en-cours-{as}", name="ens_fonctions_en_cours")
+   * @Route("/fonctions-enseignant-en-cours-{as}-{annexeId}", name="ens_fonctions_en_cours")
    */
-  public function fonctionEnCours(Request $request, $as)
+  public function fonctionEnCours(Request $request, $as, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoContrat = $em->getRepository('ENSBundle:Contrat');
     $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
-    $annexeId = $request->get('annexeId');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){

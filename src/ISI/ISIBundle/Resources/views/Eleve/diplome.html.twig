@@ -1,14 +1,25 @@
 {# ISIBundle/Ressources/views/Scolarite #}
+{% set diplomeFr = "cycle primaire" %}
+        {% set diplomeAr = "الابتدائيـة" %}
+        {% if recipiendaire.diplome == 2 %}
+            {% set diplomeFr = "premier cycle" %}
+            {% set diplomeAr = "المتوسط" %}
+        {% endif %}
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>Diplôme | {{ recipiendaire.eleve.nomFr }} {{ recipiendaire.eleve.pnomFr }} </title>
+        <title>Diplôme {{ diplomeFr }} | {{ recipiendaire.eleve.nomFr }} {{ recipiendaire.eleve.pnomFr }} </title>
         {% block stylesheets %}{% endblock %}
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
         <style>
             {% if server == '/var/www/html' %}
+                body{
+                    background-image: url("file:///var/www/html/markaz/web/images/arriere-plan-diplome.png");
+                    background-repeat: no-repeat;
+                    background-size: 1290px 880px;
+                }
                 @font-face{
                     font-family: "majalla";
                     src: url("file:///var/www/html/markaz/web/polices/majalla.ttf");
@@ -19,6 +30,11 @@
                     src: url("file:///var/www/html/markaz/web/polices/Lato-Regular.ttf");
                 }
             {% else %}
+                body{
+                    background-image: url("file:///home/youstra/www/markaz/web/images/arriere-plan-diplome.png");
+                    background-repeat: no-repeat;
+                    background-size: 1290px 880px;        
+                }
                 @font-face{
                     font-family: "majalla";
                     src: url("file:///home/youstra/www/markaz/web/polices/majalla.ttf");
@@ -102,6 +118,7 @@
         </style>
     </head>
     <body>
+        <br><br><br>
         <table width="100%" align="center">
             <tr>
                 <td align="" width="35%" class="en-tete-ar">
@@ -127,17 +144,12 @@
                 </td>
             </tr>
         </table>
-        {% set diplomeFr = "cycle primaire" %}
-        {% set diplomeAr = "الابتدائيـة" %}
-        {% if recipiendaire.diplome == 2 %}
-            {% set diplomeFr = "premier cycle" %}
-            {% set diplomeAr = "المتوسط" %}
-        {% endif %}
         
         <table class="matricule-eleve" align="center">
-            <tr><td>الشهادة {{ diplomeAr }}</td></tr>
-            <tr><td>Attestation de réussite du {{ diplomeFr }} </td></tr>
+            <tr><td style="font-size: 1.5em">الشهادة {{ diplomeAr }}</td></tr>
+            <tr><td style="font-size: 1.5em">Attestation de réussite du {{ diplomeFr }} </td></tr>
         </table> 
+        <br>
         <table align="center">
             <tr>
                 <td style="width: 50%; font-size: 1.7em; text-align: center; line-height: 30px;">
@@ -173,11 +185,11 @@
                 </td>
             </tr>
         </table>
-        <br><br>
-        <table width="100%" align="center" style="font-weight: bold; line-height:20px; font-size: .8em">
+        <br>
+        <table width="100%" align="center" style="font-weight: bold; line-height:25px; font-size: .8em">
             <tr>
                 <td style="width: 30%; font-size: 1.7em; text-align: center">
-                    N° d’enregistrement: <strong style="font-style: italic">{{ recipiendaire.numero }}</strong> Date: <strong>{{ recipiendaire.date|date('d-m-Y') }}</strong>.
+                    N° d’enregistrement: <strong style="font-style: italic; color: red;">{{ recipiendaire.numero }}</strong> Date: <strong>{{ recipiendaire.date|date('d-m-Y') }}</strong>.
                     <br><span style="font-size: 1em;">Il n’est délivré qu’un seul diplôme</span>
                 </td>
                 <td style="width: 40%; font-size: 1.7em; text-align: center">
@@ -185,10 +197,11 @@
                     <span style="font-size: 1em;">{{ recipiendaire.eleve.matricule }}</span>
                 </td>
                 <td style="width: 30%; font-size: 1.7em; text-align: center">
-                    سجّلت برقم: <strong style="font-style: italic">{{ recipiendaire.numero }}</strong> وتاريخ: <strong>{{ recipiendaire.date|date('d-m-Y') }}</strong>
+                    سجّلت برقم: <strong style="font-style: italic; color: red;">{{ recipiendaire.numero }}</strong> وتاريخ: <strong>{{ recipiendaire.date|date('d-m-Y') }}</strong>
                     <br><span style="font-size: 1em;">أي كشط أو تغيير تلغى الشهادة، وهي تصدر مرة واحدة</span>
                 </td>
             </tr>
         </table>
+        
     </body>
 </html>

@@ -20,7 +20,7 @@
             <select class="" id="chambre" name="chambre">
               <option value="">{{ 'Choisir une chambre pour l\'élève'|trans }}</option>
               {% for chambre in chambres %}
-                <option value="{{ chambre.id }}">{{ chambre.libelle }}</option>
+                <option value="{{ chambre.id }}">{{ chambre.libelle }} {{ chambre.batiment.responsable }}</option>
               {% endfor %}
             </select>
           </div>

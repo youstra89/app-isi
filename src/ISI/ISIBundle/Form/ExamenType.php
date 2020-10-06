@@ -25,21 +25,16 @@ class ExamenType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('session', ChoiceType::class, [
-            'placeholder' => 'Choisir session de l\'examen',
-            'multiple'    => false,
-            'choices'     => [
+                    'placeholder' => 'Choisir session de l\'examen',
+                    'multiple'    => false,
+                    'choices'     => [
                         'Première session (1)' => 1,
                         'Deuxième session (2)' => 2
                     ]
                 ])
                 ->add('libelleFr', TextType::class)
                 ->add('libelleAr', TextType::class)
-                // ->add('dateProclamationResultats', DateType::class, [
-                //     'html5' => false,
-                //     'attr' => ['class' => 'js-datepicker']
-                // ])
                 ->add('save', SubmitType::class, ['label' => 'Enregistrer l\'examen'])
-                // ->add('anneeScolaire')
             ;
     }
     

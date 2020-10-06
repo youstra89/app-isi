@@ -19,16 +19,15 @@ class AgentsController extends Controller
 
   /**
    * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
-   * @Route("/direction-technique/{as}", name="agents")
+   * @Route("/direction-technique/{as}-{annexeId}", name="agents")
    */
-  public function agents(Request $request, $as)
+  public function agents(Request $request, $as, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoEnseignant = $em->getRepository('ENSBundle:Enseignant');
     $annee       = $repoAnnee->find($as);
     $enseignants = $repoEnseignant->findAll();
-    $annexeId = $request->get('annexeId');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
@@ -48,15 +47,14 @@ class AgentsController extends Controller
 
   /**
    * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
-   * @Route("/initialisation-de-la-prise-de-fonction-d-un-enseignant-{as}", name="ens_initialisation_prise_de_fonction")
+   * @Route("/initialisation-de-la-prise-de-fonction-d-un-enseignant-{as}-{annexeId}", name="ens_initialisation_prise_de_fonction")
    */
-  public function priseDeFonctionHome(Request $request, $as)
+  public function priseDeFonctionHome(Request $request, $as, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoContrat    = $em->getRepository('ENSBundle:Contrat');
     $repoEnseignant = $em->getRepository('ENSBundle:Enseignant');
-    $annexeId = $request->get('annexeId');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
@@ -113,15 +111,14 @@ class AgentsController extends Controller
 
   /**
    * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
-   * @Route("/prise-de-fonction-de-l-enseignant-{as}-{enseignantId}", name="ens_prise_de_fonction")
+   * @Route("/prise-de-fonction-de-l-enseignant-{as}-{enseignantId}-{annexeId}", name="ens_prise_de_fonction")
    */
-  public function priseDeFonction(Request $request, $as, $enseignantId)
+  public function priseDeFonction(Request $request, $as, $enseignantId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoContrat    = $em->getRepository('ENSBundle:Contrat');
     $repoEnseignant = $em->getRepository('ENSBundle:Enseignant');
-    $annexeId = $request->get('annexeId');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
@@ -166,15 +163,14 @@ class AgentsController extends Controller
 
   /**
    * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
-   * @Route("/initialisation-de-l-arret-de-fonction-d-un-enseignant-{as}", name="ens_initialisation_l_arret_de_fonction")
+   * @Route("/initialisation-de-l-arret-de-fonction-d-un-enseignant-{as}-{annexeId}", name="ens_initialisation_l_arret_de_fonction")
    */
-  public function arretDeFonctionHome(Request $request, $as)
+  public function arretDeFonctionHome(Request $request, $as, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoContrat    = $em->getRepository('ENSBundle:Contrat');
     $repoEnseignant = $em->getRepository('ENSBundle:Enseignant');
-    $annexeId = $request->get('annexeId');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
@@ -243,14 +239,13 @@ class AgentsController extends Controller
 
   /**
    * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
-   * @Route("/arret-de-fonction-de-l-enseignant-{as}-{contratId}", name="ens_arret_de_fonction")
+   * @Route("/arret-de-fonction-de-l-enseignant-{as}-{contratId}-{annexeId}", name="ens_arret_de_fonction")
    */
-  public function arretDeFonction(Request $request, $as, $contratId)
+  public function arretDeFonction(Request $request, $as, $contratId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoContrat    = $em->getRepository('ENSBundle:Contrat');
-    $annexeId = $request->get('annexeId');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
@@ -293,15 +288,14 @@ class AgentsController extends Controller
 
   /**
    * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
-   * @Route("/ajouter-cet-enseignant-pour-l-annee-en-cours-{as}-{contratId}", name="ens_ajouter_a_l_annee")
+   * @Route("/ajouter-cet-enseignant-pour-l-annee-en-cours-{as}-{contratId}-{annexeId}", name="ens_ajouter_a_l_annee")
    */
-  public function ajouterEnseignantAnnee(Request $request, $as, $contratId)
+  public function ajouterEnseignantAnnee(Request $request, $as, $contratId, int $annexeId)
   {
     $em               = $this->getDoctrine()->getManager();
     $repoAnnee        = $em->getRepository('ISIBundle:Annee');
     $repoContrat      = $em->getRepository('ENSBundle:Contrat');
     $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
-    $annexeId = $request->get('annexeId');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
@@ -358,15 +352,14 @@ class AgentsController extends Controller
 
   /**
    * @Security("has_role('ROLE_SUPER_ADMIN')")
-   * @Route("/definir-heures-de-travail-{as}-{contratId}", name="definir_le_temps_de_travail")
+   * @Route("/definir-heures-de-travail-{as}-{contratId}-{annexeId}", name="definir_le_temps_de_travail")
    */
-  public function definirLeTempsDeTravail(Request $request, $as, $contratId)
+  public function definirLeTempsDeTravail(Request $request, $as, $contratId, int $annexeId)
   {
     $em               = $this->getDoctrine()->getManager();
     $repoAnnee        = $em->getRepository('ISIBundle:Annee');
     $repoContrat      = $em->getRepository('ENSBundle:Contrat');
     $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
-    $annexeId = $request->get('annexeId');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
@@ -425,9 +418,9 @@ class AgentsController extends Controller
 
   /**
    * @Security("has_role('ROLE_SUPER_ADMIN')")
-   * @Route("/nombre-heures-de-travail-des-agents/{as}", name="heures_de_travail")
+   * @Route("/nombre-heures-de-travail-des-agents/{as}-{annexeId}", name="heures_de_travail")
    */
-  public function heuresDeTravail(Request $request, int $as)
+  public function heuresDeTravail(Request $request, int $as, int $annexeId)
   {
     $em                     = $this->getDoctrine()->getManager();
     $repoEns                = $em->getRepository('ISIBundle:Enseignement');
@@ -435,7 +428,6 @@ class AgentsController extends Controller
     $repoAnneeContrat       = $em->getRepository('ENSBundle:AnneeContrat');
     $repoAnneeContratClasse = $em->getRepository('ENSBundle:AnneeContratClasse');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId   = $request->get('annexeId');
     $annexe     = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -483,15 +475,14 @@ class AgentsController extends Controller
 
   /**
    * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
-   * @Route("/agents-en-cours-de-fonctions/{as}", name="agents_fonctions_en_cours")
+   * @Route("/agents-en-cours-de-fonctions/{as}-{annexeId}", name="agents_fonctions_en_cours")
    */
-  public function fonctionEnCours(Request $request, $as)
+  public function fonctionEnCours(Request $request, $as, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoContrat = $em->getRepository('ENSBundle:Contrat');
     $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
-    $annexeId = $request->get('annexeId');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
@@ -518,14 +509,13 @@ class AgentsController extends Controller
 
   /**
    * @Security("has_role('ROLE_DIRECTION_ENSEIGNANT')")
-   * @Route("/liste-detaillee-des-enseignants-de-l-annee-{as}", name="liste_des_agents")
+   * @Route("/liste-detaillee-des-enseignants-de-l-annee-{as}-{annexeId}", name="liste_des_agents")
    */
-  public function liste_des_agents(Request $request, $as)
+  public function liste_des_agents(Request $request, $as, int $annexeId)
   {
     $em               = $this->getDoctrine()->getManager();
     $repoAnnee        = $em->getRepository('ISIBundle:Annee');
     $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
-    $annexeId         = $request->get('annexeId');
     $repoAnnexe       = $em->getRepository('ISIBundle:Annexe');
     $annexe           = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){

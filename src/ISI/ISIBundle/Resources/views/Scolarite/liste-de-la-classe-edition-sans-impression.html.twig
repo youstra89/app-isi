@@ -26,6 +26,7 @@
         <table width="100%" class="" align="center">
             <thead>
                 <tr class="table-header" bgcolor="">
+                    <th align="right" width="10%">Photo</th>
                     <th align="right" class="nomAr">الجنس</th>
                     <th align="right">{{ 'Nom & Prénom'|trans }}</th>
                     <th class="nomAr">الاسم و اللقب</th>
@@ -51,6 +52,11 @@
                     {% endif %}
                     {% set numero = numero + 1 %}
                     <tr class="line-table" bgcolor={{ color }}>
+                        <td align="right">
+                            {% if eleve.photo %}
+                                <img src="{{ asset('photos/eleves/' ~ eleve.photo) }}" width="100%" height="auto">
+                            {% endif %}
+                        </td>
                         <td align="right">{{ sexe }}</td>
                         <td align="right">{{ eleve.nomFr }} {{ eleve.pnomFr }}</td>
                         <td align="right" width="40%" class="nomEleveAr">{{ eleve.pnomAr }} {{ eleve.nomAr }}</td>

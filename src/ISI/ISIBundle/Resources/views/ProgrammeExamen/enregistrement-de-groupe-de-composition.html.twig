@@ -1,0 +1,139 @@
+{# Accueil pour l'édition des listes de classe' #}
+
+{% extends 'ISIBundle:ProgrammeExamen:index.html.twig' %}
+
+{% block title %}
+  Enregistrement de groupe de composition de la classe {{ classe.libelleFr }}
+{% endblock %}
+
+
+{% block section %}
+  <i class="settings icon"></i>{{ 'Programme d\'examen '|trans }}
+{% endblock %}
+
+
+{% block body %}
+  {% if eleves is empty %}
+    <p>{{ 'Inscrivez d\'abord des élèves dans cette classe.'|trans }}</p>
+  {% else %}
+    <div class="titre-document">
+      <h3>{{ 'Enregistrement de groupe de composition de la classe'|trans }} {{ classe.libelleFr }}</h3>
+    </div>
+    <br />
+    <form class="ui form">
+      <div class="two fields">
+        <div class="field">
+          <label for="oneGroupeOption">{{ 'Mettre tout le monde dans le même groupe'|trans }}</label>
+          <input type="checkbox" name="oneGroupeOption" id="oneGroupeOption">
+        </div>
+        <div class="field">
+          <label for="twoGroupeOption">{{ 'Repartir les élèves en deux groupes'|trans }}</label>
+          <input type="checkbox" name="twoGroupeOption" id="twoGroupeOption">
+        </div>
+      </div>
+    </form>
+    <form action="" class="ui form" method="post">
+      <table width="100%" class="ui celled selectable table" align="center">
+        <thead>
+          <tr class="table-header" bgcolor="">
+            <th width="5%">N°</th>
+            <th width="10%" class="nomAr">الرقم التسلسلي</th>
+            <th width="20%">الاسم و اللقب</th>
+            <th width="20%">{{ 'Nom & Prénom'|trans }}</th>
+            <th width="10%" class="nomAr">الجنس</th>
+            <th width="5%">Photo</th>
+            <th>Groupe de composition</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% set numero = 0 %}
+          {% set color = '' %}
+          {% for eleve in eleves %}
+            {# Ce code me permet d'alterner la couleur des lignes du tableau #}
+            {% if (numero % 2) == 1 %}
+              {% set color = 'white' %}
+            {% else %}
+              {% set color = '#DCDCDC' %}
+            {% endif %}
+            {# Pour le sexe #}
+            {% if eleve.sexe == 1 %}
+              {% set sexe = 'Masculin' %}
+            {% else %}
+              {% set sexe = 'Féminin' %}
+            {% endif %}
+            {% set numero = numero + 1 %}
+            <tr class="line-table" bgcolor={{ color }}>
+              <td align="center">{{ numero }}</td>
+              <td align="right">{{ eleve.matricule }}</td>
+              <td align="right" class="nomEleveAr">{{ eleve.pnomAr }} {{ eleve.nomAr }}</td>
+              <td align="right">{{ eleve.nomFr }} {{ eleve.pnomFr }}</td>
+              <td align="right">{{ sexe }}</td>
+              <td align="right">
+                {% if eleve.photo %}
+                  <img src="{{ asset('photos/eleves/' ~ eleve.photo) }}" width="100%" height="auto">
+                {% endif %}
+              </td>
+              {% set groupe = "" %}
+              {% for item in elevesGroupe if item.eleve.id == eleve.id %}
+                {% set groupe = item.groupeComposition.libelle %}
+              {% endfor %}
+              <td>
+                <select name="groupes[{{eleve.id}}]" id="groupes[{{eleve.id}}]" class="option-groupe {% if numero > (eleves|length / 2) == 0 %}groupe1{% else %}groupe2{% endif %}">
+                  <option value="">Sélectionner un groupe</option>
+                  <option value="A" {% if groupe == "A" %}selected{% endif %}>A</option>
+                  <option value="B" {% if groupe == "B" %}selected{% endif %}>B</option>
+                  <option value="C" {% if groupe == "C" %}selected{% endif %}>C</option>
+                </select>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <br><br>
+      <button class="ui large primary button">Valider les modifications</button>
+    </form>
+    <br><br>
+  {% endif %}
+
+{% endblock %}
+
+
+{% block javascripts %}
+  <script>
+    $("document").ready(function () {
+      $("#oneGroupeOption").on("change", function () {
+        if($(this).prop("checked") == true)
+        {
+          $(".option-groupe").prop("selectedIndex", 1).val();
+        }
+        else{
+          $(".option-groupe").prop("selectedIndex", 0).val();
+        }
+      })
+
+      $("#twoGroupeOption").on("change", function () {
+        if($(this).prop("checked") == true)
+        {
+          var groupes = $(".option-groupe");
+          // console.log(groupes);
+          // for (let index = 0; index < groupes.length; index++) {
+          //   console.log(groupes[index].attr("id"));
+          //   // var id = groupes[index].attr("id");
+          //   if(index <= (groupes.length / 2)){
+          //     groupes[index].prop("selectedIndex", 1).val();
+          //   }
+          //   else{
+          //     groupes[index].prop("selectedIndex", 2).val();
+          //   }
+          // }
+          $(".groupe1").prop("selectedIndex", 1).val();
+          $(".groupe2").prop("selectedIndex", 2).val();
+
+        }
+        else{
+          $(".option-groupe").prop("selectedIndex", 0).val();
+        }
+      })
+    });
+  </script>
+{% endblock %}

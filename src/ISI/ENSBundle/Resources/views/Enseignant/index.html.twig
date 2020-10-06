@@ -7,11 +7,13 @@
 
 {% block menu %}
   <a class="item" href="{{ path('isi_homepage', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header"><i class="home icon"></i>{{ 'Accueil'|trans }}</h4></a>
+  <a class="item" href="{{ path('accueil_examen_enseignant', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header"><i class="flag checkered icon"></i>{{ 'Programme d\'examen'|trans }}</h4></a>
 {% endblock %}
 
 
 {% block mobile_menu %}
   <a class="item" href="{{ path('isi_homepage', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header"><i class="home icon"></i>{{ 'Accueil'|trans }}</h4></a>
+  <a class="item" href="{{ path('accueil_examen_enseignant', {'as': asec, 'annexeId': annexe.id}) }}"><h4 class="ui header"><i class="flag checkered icon"></i>{{ 'Programme d\'examen'|trans }}</h4></a>
 {% endblock %}
 
 
@@ -20,8 +22,8 @@
       {{ include("ISIBundle::contextual-menu-panel-admin.html.twig") }}
   {% elseif is_granted('ROLE_ADMIN_ANNEXE') %}
     <div class="header">{{ 'Autres modules'|trans }}</div>
-    <a class="item" href="{{path('isi_home_scolarite')}}">{{ 'Scolarité'|trans }}</a>
-    <a class="item" href="{{path('etude_home', {'as': asec})}}">{{ 'Programmes d\'étude'|trans }}</a>
+    <a class="item" href="{{path('isi_home_scolarite', {'annexeId': annexe.id})}}">{{ 'Scolarité'|trans }}</a>
+    <a class="item" href="{{path('etude_home', {'as': asec, 'annexeId': annexe.id})}}">{{ 'Programmes d\'étude'|trans }}</a>
   {% endif %}
 {% endblock %}
 
@@ -92,7 +94,7 @@
       <br><br>
     {% endif %}
     {# {{dump(cours)}} #}
-    <div class="responsive">
+    <div class="responsive" style="width: 80%">
       <table width="50%" class="ui compact celled definition table" style="font-size: 1em;">
         <thead>
           <tr style="text-align: center">
@@ -109,7 +111,7 @@
           {% for day in 2..6 %}
             {% set color = "white" %}
             {% if day % 2 == 0 %}{% set color = "positive" %}{% endif %}
-            <tr class="{{ color }}" style="text-align: center">
+            <tr class="{{ color }}" style="text-align: center; min-height: 45px">
               <td>{{ jours[day] }}</td>
               {% for time in 1..5 %}
                 <td>
@@ -175,7 +177,7 @@
       var tf = new TableFilter('table-cours', filtersConfig);
       tf.init();
     </script>
-  {% endblock %}
+{% endblock %}
 
 {# 
 ALTER TABLE matiere ADD matiere_mere INT DEFAULT NULL;

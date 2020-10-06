@@ -1,0 +1,91 @@
+{% extends 'ISIBundle:Etude:index.html.twig' %}
+
+{% block title %}
+    Programme de {{ examen.libelleFr }} de l'année scolaire {{ examen.annee.libelle }}
+{% endblock %}
+
+{% block contextual_menu %}  
+    {% include('ISIBundle:ProgrammeExamen:contextual-menu-programme-examen.html.twig') %}
+{% endblock %}
+
+{% block section %}
+  <i class="settings icon"></i>{{ 'Programme d\'examen '|trans }}
+{% endblock %}
+
+
+{% block body %}
+  {% set grp = '' %}
+  {% if regime is same as('A') %}
+    {% set grp = 'Académie' %}
+  {% else %}
+    {% set grp = 'Formation' %}
+  {% endif %}
+  <h3>{{ 'Programme de '|trans }} {{ examen.libelleFr }} de l'année scolaire {{ examen.annee.libelle }} - <span style="color: darkgreen">{{ grp }}</span></h3>
+  <table class="ui selectable very basic table" id="programmes">
+    <thead>
+      <tr>
+        <th width="3%" style="text-align: center">N°</th>
+        <th width="">{{ 'Niveaux'|trans }}</th>
+        <th width="">{{ 'Matières'|trans }}</th>
+        <th width="">{{ 'Dates'|trans }}</th>
+        <th width="">{{ 'Heures début'|trans }}</th>
+        <th width="">{{ 'Heures fin'|trans }}</th>
+        <th class="">{{ 'Actions'|trans }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% set numero = 0 %}
+      {% for programme in programmes %}
+        {% set numero = numero + 1 %}
+        <tr>
+          <td style="text-align: center">{{ numero }}</td>
+          <td>{{ programme.niveau.libelleFr }}</td>
+          <td>{{ programme.matiere.libelle }}</td>
+          <td>{{ programme.date|date("d-m-Y") }}</td>
+          <td>{{ programme.heureDebut|date("H:i") }}</td>
+          <td>{{ programme.heureFin|date("H:i") }}</td>
+          <td>
+            <a href="{{path('enregistrement_du_programme_d_examen_d_un_niveau', {'as': asec, 'annexeId': annexe.id, 'regime': regime, examenId: examen.id, 'niveauId': programme.niveau.id})}}" data-tooltip="Pour enregistrer ou modifier le programme d'examen du niveau">
+              <i class="teal tasks icon"></i>
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+
+{% block javascripts %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: 'TableFilter/dist/tablefilter/',
+      col_0: "none",
+      col_1: "select",
+      col_2: "select",
+      col_3: "select",
+      col_4: "select",
+      col_5: "select",
+      col_6: 'none',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string', 'string'
+      ],
+      col_widths: [
+          '10px', , 
+      ],
+      extensions: [{ name: 'sort' }]
+    };
+
+    var tf = new TableFilter('programmes', filtersConfig);
+    tf.init();
+  </script>
+{% endblock %}

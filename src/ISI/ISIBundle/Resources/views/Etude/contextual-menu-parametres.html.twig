@@ -1,5 +1,7 @@
 <div class="header">{{ 'Programme de formation'|trans }}</div>
 <a class="item" href="{{ path('etude_gestion_matieres', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Gestion des matières'|trans }}</a>
+<div class="header">{{ 'Programme annuel'|trans }}</div>
+<a class="item" href="{{ path('programme_annuel', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Voir le programme'|trans }}</a>
 <div class="header">{{ 'Niveaux de formation'|trans }}</div>
 <a class="item" href="{{ path('etude_gestion_niveaux', {'as': asec, 'annexeId': annexe.id, 'regime': 'A'}) }}">{{ 'Academie'|trans }}</a>
 <a class="item" href="{{ path('etude_gestion_niveaux', {'as': asec, 'annexeId': annexe.id, 'regime': 'F'}) }}">{{ 'Formation'|trans }}</a>

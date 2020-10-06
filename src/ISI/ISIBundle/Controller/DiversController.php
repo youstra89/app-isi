@@ -12,19 +12,14 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class DiversController extends Controller
 {
   /**
-   * @Route("/saisie-des-notes-{as}", name="isi_home_note")
-   *
-   * @param Request $request
-   * @param [type] $as
-   * @return void
+   * @Route("/saisie-des-notes-{as}-{annexeId}", name="isi_home_note")
    */
-  public function indexAction(Request $request, $as)
+  public function indexAction(Request $request, $as, int $annexeId)
   {
     $repoAnnee = $this->getDoctrine()->getManager()->getRepository('ISIBundle:Annee');
     $em = $this->getDoctrine()->getManager();
     $annee = $repoAnnee->find($as);
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');

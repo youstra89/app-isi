@@ -20,37 +20,41 @@
 {% if anneeContrats is empty %}
   <p>{{ 'Pas de données disponibles pour l\'heure'|trans }}</p>
 {% else %}
-  <div class="column" style="width:75%">
+  <div class="column" style="width:95%">
       <table class="ui selectable very basic table" id="enseignants">
         <thead>
           <tr>
             <th style="width: 5%; text-align: center">N°</th>
             <th>Matricule</th>
-            <th>Nom</th>
-            <th>Prénoms</th>
+            <th>Nom & Prénoms</th>
+            <th></th>
             <th>Heures Académie</th>
             <th>Heures Coran</th>
             <th>Heures Centre de Formation</th>
+            <th>Total</th>
             <th class="two wide">{{ 'Actions'|trans }}</th>
           </tr>
         </thead>
         <tbody>
           {% set numero = 0 %}
           {% for item in anneeContrats %} 
+              {% set totalHeures = 0 %}
               {% set numero = numero + 1 %}
               <tr>
                 <td style="width: 5%; text-align: center">{{ numero }}</td>
                 <td>{{ item.contrat.enseignant.matricule }}</td>
-                <td>{{ item.contrat.enseignant.nomFr }}</td>
-                <td>{{ item.contrat.enseignant.pnomFr }}</td>
+                <td>{{ item.contrat.enseignant.nom }}</td>
+                <td>{{ item.contrat.enseignant.pnomAr }} {{ item.contrat.enseignant.nomAr }}</td>
                 {% if heuresCours[item.id] is defined %}
                   <td>{{ heuresCours[item.id].academie }}</td>
                   <td>{{ heuresCours[item.id].coran }}</td>
                   <td>{{ heuresCours[item.id].centre }}</td>
+                  {% set totalHeures = totalHeures + heuresCours[item.id].academie + heuresCours[item.id].coran + heuresCours[item.id].centre %}
                 {% else %}
                   <td></td>
                   <td></td>
                 {% endif %}
+                <td>{{ totalHeures }}</td>
                 <td>
                   {% set nom = item.contrat.enseignant.nomFr ~ ' ' ~ item.contrat.enseignant.pnomFr %}
                   <a href="{{ path('emploi_du_temps_enseignant', {'as': asec, 'annexeId': annexe.id, 'anneeContratId': item.id}) }}" data-tooltip="Voir les cours de l'enseigannt {{ nom }}">
@@ -75,7 +79,8 @@
       col_4: 'select',
       col_5: 'select',
       col_6: 'select',
-      col_7: 'none',
+      col_7: 'select',
+      col_8: 'none',
       alternate_rows: true,
       rows_counter: true,
       btn_reset: true,

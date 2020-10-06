@@ -1,12 +1,13 @@
 <div class="ui divider"></div>
-<a class="item" href="{{ path('admin_home', {'as': annee.id, 'annexeId': annexe.id}) }}">Home Panel Admin</a>
-<a class="item" href="{{ path('isi_home_scolarite', {'annexeId': annexe.id}) }}">Scolarité</a>
-<a class="item" href="{{ path('ens_home', {'as': asec, 'annexeId': annexe.id}) }}">Enseignants</a>
+<div class="header">Autres Directions</div>
+<a class = "item" href = "{{ path('admin_home', {'as'              : annee.id, 'annexeId': annexe.id}) }}">{{ 'Home Panel Admin'|trans }}</a>
+<a class = "item" href = "{{ path('isi_home_scolarite', {'annexeId': annexe.id}) }}">{{ 'Direction affaires scolaires'|trans }}</a>
+<a class = "item" href = "{{ path('ens_home', {'as'                : asec, 'annexeId'    : annexe.id}) }}">{{ 'Direction des enseignants'|trans }}</a>
 {% if is_granted("ROLE_SUPER_ADMIN") %}
-    <a class="item" href="{{ path('etude_home', {'as': asec, 'annexeId': annexe.id}) }}">Etude</a>
-    <a class="item" href="{{ path('internat_home', {'as': asec, 'annexeId': annexe.id}) }}">Internat</a>
-    <a class="item" href="{{ path('org_homepage', {'as': asec, 'annexeId': annexe.id}) }}">Organisation</a>
-    <a class = "item" href = "{{ path('isi_user', {'as'          : asec, 'annexeId': annexe.id}) }}">Utilisateurs</a>
-    <a class = "item" href = "{{ path('agents', {'as'            : asec, 'annexeId': annexe.id}) }}">Agents de l'Institut</a>
-    <a class = "item" href = "{{ path('liste_recipiendaires', {'as' : asec, 'annexeId': annexe.id}) }}">Récipiendaires</a>
+    <a class = "item" href = "{{ path('etude_home', {'as'          : asec, 'annexeId': annexe.id}) }}">{{ 'Direction des études'|trans }}</a>
+    <a class = "item" href = "{{ path('org_homepage', {'as'        : asec, 'annexeId': annexe.id}) }}">{{ 'Direction affaires sociales'|trans }}</a>
+    <a class = "item" href = "{{ path('internat_home', {'as'       : asec, 'annexeId': annexe.id}) }}">{{ 'Gestion de l\'internat'|trans }}</a>
+    <a class = "item" href = "{{ path('isi_user', {'as'            : asec, 'annexeId': annexe.id}) }}">{{ 'Gestion des utilisateurs'|trans }}</a>
+    <a class = "item" href = "{{ path('agents', {'as'              : asec, 'annexeId': annexe.id}) }}">{{ 'Agents de l\'Institut'|trans }}</a>
+    <a class = "item" href = "{{ path('liste_recipiendaires', {'as': asec, 'annexeId': annexe.id}) }}">{{ 'Récipiendaires'|trans }}</a>
 {% endif %}

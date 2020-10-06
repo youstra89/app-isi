@@ -1,0 +1,85 @@
+{# Accueil pour l'édition des listes de classe' #}
+
+{% extends 'ISIBundle:ProgrammeExamen:index.html.twig' %}
+
+{% block title %}
+  Enregistrement du programme de composition
+{% endblock %}
+
+
+{% block body %}
+  {% set grp = '' %}
+  {% if regime is same as('A') %}
+    {% set grp = 'Académie' %}
+  {% else %}
+    {% set grp = 'Formation' %}
+  {% endif %}
+  <h3>{{ 'Enregistrement du programme de composition'|trans }} : {{grp}}</h3>
+  <a class="ui teal button" href="{{ path('programme_d_examen_du_regime', {as: asec, regime: regime, annexeId: annexe.id, examenId: examen.id}) }}">{{ 'Voir tous le programme d\'examen de tous les niveaux'|trans }}</a>
+  <div class="column" style="width:85%">
+    <table class="ui selectable very basic table" id="classes">
+      <thead>
+        <tr>
+          <th style="width: 5%; text-align: center">N°</th>
+          <th>Niveaux</th>
+          <th>المستويات</th>
+          <th class="two wide">{{ 'Actions'|trans }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% set numero = 0 %}
+        {% for niveau in niveaux %} 
+            {% set numero = numero + 1 %}
+            <tr>
+              <td style="width: 5%; text-align: center">{{ numero }}</td>
+              <td>{{ niveau.getLibelleFr }}</td>
+              <td>{{ niveau.getLibelleAr }}</td>
+              <td>
+                <h3>
+                  <a href="{{path('enregistrement_du_programme_d_examen_d_un_niveau', {'as': asec, 'annexeId': annexe.id, 'regime': regime, examenId: examen.id, 'niveauId': niveau.id})}}"  data-tooltip="Pour enregistrer ou modifier le programme d'examen de la classe">
+                    <i class="teal tasks icon"></i>
+                  </a>&nbsp;&nbsp;&nbsp;
+                  <a href="{{path('calendier_de_composition_du_niveau', {'as': asec, 'annexeId': annexe.id, 'regime': regime, examenId: examen.id, 'niveauId': niveau.id})}}"  data-tooltip="Calendier de composition du niveau">
+                    <i class="calendar icon"></i>
+                  </a>
+                </h3>
+              </td>
+            </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <hr width="75%">
+  </div><br><br>
+{% endblock %}
+
+{% block javascripts %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: 'TableFilter/dist/tablefilter/',
+      col_0: "none",
+      col_1: 'select',
+      col_3: 'select',
+      col_5: 'select',
+      col_6: 'none',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string', 'string'
+      ],
+      col_widths: [
+          // '20px', , , '200px', , , '300px'
+      ],
+      extensions: [{ name: 'sort' }]
+    };
+
+    var tf = new TableFilter('classes', filtersConfig);
+    tf.init();
+  </script>
+{% endblock %}

@@ -30,7 +30,7 @@
       <table class="ui selectable very basic table" id="livres">
         <thead>
           <tr>
-            <th width="10%">N°</th>
+            <th width="10%" style="text-align: center">N°</th>
             <th>اسم الكتاب</th>
             <th>اسم المألف</th>
             <th>المادة</th>
@@ -42,7 +42,7 @@
           {% for livre in livres %} 
             {% set numero = numero + 1 %}
             <tr title="{{ livre.description }}">
-              <td>
+              <td style="text-align: center">
                 <h4 class="ui image header">{{ numero }}</h4>
               </td>
               <td>

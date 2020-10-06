@@ -50,6 +50,13 @@ class Examen
     private $dateProclamationResultats;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_publication_programme", type="date", nullable=true)
+     */
+    private $datePublicationProgramme;
+
+    /**
      * @var \Annee
      *
      * @ORM\ManyToOne(targetEntity="Annee")
@@ -363,5 +370,29 @@ class Examen
     public function getUpdatedBy()
     {
         return $this->updatedBy;
+    }
+
+    /**
+     * Set datePublicationProgramme
+     *
+     * @param \DateTime $datePublicationProgramme
+     *
+     * @return Examen
+     */
+    public function setDatePublicationProgramme($datePublicationProgramme)
+    {
+        $this->datePublicationProgramme = $datePublicationProgramme;
+
+        return $this;
+    }
+
+    /**
+     * Get datePublicationProgramme
+     *
+     * @return \DateTime
+     */
+    public function getDatePublicationProgramme()
+    {
+        return $this->datePublicationProgramme;
     }
 }

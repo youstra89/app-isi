@@ -21,4 +21,16 @@ class PermissionRepository extends \Doctrine\ORM\EntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function permission_eleve_periode($eleveId, $debut, $fin)
+    {
+        return $this->createQueryBuilder('p')
+            ->join('p.eleve', 'e')
+            ->where('e.id = :eleveId AND e.renvoye = 0 AND p.depart >= :debut AND p.retour <= :fin')
+            ->setParameter('debut', $debut)
+            ->setParameter('fin', $fin)
+            ->setParameter('eleveId', $eleveId)
+            ->getQuery()
+            ->getResult();
+    }
 }

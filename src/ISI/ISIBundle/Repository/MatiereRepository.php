@@ -28,6 +28,27 @@ class MatiereRepository extends \Doctrine\ORM\EntityRepository
     ;
   }
 
+  public function lesMatieresDeCompositionDuNiveau($as, $niveauId, $matiereEnfant = false)
+  {
+    $qb = $this->createQueryBuilder('m');
+    $qb->join('m.enseignements', 'ens')
+       ->addSelect('ens')
+       ->join('ens.niveau', 'n')
+       ->addSelect('n')
+       ->join('ens.annee', 'an')
+       ->addSelect('an')
+       ->orderBy('m.id', 'ASC');
+    if($matiereEnfant == false)
+      $qb->where('an.id = :annee AND n.id = :niveau AND ens.matiereExamen = true AND m.matiere_mere IS NULL');
+    else
+      $qb->where('an.id = :annee AND n.id = :niveau AND ens.matiereExamen = true');
+    $qb->setParameters(['annee' => $as, 'niveau' => $niveauId]);
+    return $qb
+      ->getQuery()
+      ->getResult()
+    ;
+  }
+
   public function lesMatieresEnfantsDuNiveau($as, $niveauId)
   {
     $qb = $this->createQueryBuilder('m');

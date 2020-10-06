@@ -1,0 +1,178 @@
+{# Page de gestion des examens #}
+
+{% extends "ENSBundle:Enseignant:index.html.twig" %}
+
+{% block title %}
+	Programme de surveillance de l'examen {{ examen.libelleFr }} {{ annee.libelle }}
+{% endblock %}
+
+
+{% block stylesheets %}
+  <script>
+    document.getElementsByTagName("html")[0].className += " js";
+  </script>
+  <link href="{{ asset('agenda/css/style.css') }}" rel="stylesheet" />
+{% endblock %}
+
+{# {% block section %}
+	<i class="settings icon"></i>{{ 'Examens'|trans }}
+{% endblock %} #}
+
+{% block body %}
+	<h3>{{ 'Programme de surveillance de l\'examen '|trans }} <span style="color: blue">{{ examen.libelleFr }} {{ annee.libelle }}</span></h3>
+	{% if examen.datePublicationProgramme != null and 'now'|date('Y-m-d') >= examen.datePublicationProgramme|date('Y-m-d') %}
+		{% if surveillances is empty %}
+			<p>{{ 'Aucun programme de surveillance n\'a été enregistré pour vous'|trans }}</p>
+		{% else %}
+			<table class="" id="programme-surveillance" style="margin: auto" width="75%">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Groupe</th>
+						<th>Effectif</th>
+						<th>Matière</th>
+						<th>Salle</th>
+						<th>Date</th>
+						<th>Heure début</th>
+						<th>Heure fin</th>
+						<th>{{ 'Actions'|trans }}</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% set numero = 0 %}
+				{% for surveillance in surveillances if surveillance.disabled == false %}
+					{% set numero = numero + 1 %}
+					<tr>
+						<td>{{ numero }}</td>
+						<td>{{ surveillance.programmegroupecomposition.groupeComposition.classe.libelleFr }} - {{ surveillance.programmegroupecomposition.groupeComposition.libelle }}</td>
+						<td>{{ surveillance.programmegroupecomposition.groupeComposition.elevegroupecomposition|length }}</td>
+						<td>{{ surveillance.programmegroupecomposition.programmeexamenniveau.matiere.libelle }}</td>
+						<td>{{ surveillance.programmegroupecomposition.salle.nom }}</td>
+						<td>{{ surveillance.programmegroupecomposition.programmeexamenniveau.date|date("d-m-Y") }}</td>
+						<td>{{ surveillance.programmegroupecomposition.programmeexamenniveau.heureDebut|date("H:i") }}</td>
+						<td>{{ surveillance.programmegroupecomposition.programmeexamenniveau.heureFin|date("H:i") }}</td>
+						<td>
+							<a href="{{ path('appel_lors_d_une_epreuve_a_l_examen', {surveillanceId: surveillance.id, as: annee.id, annexeId: annexe.id, regime: regime, examenId: examen.id}) }}" data-tooltip="Faire l'appel"><i class="microphone icon"></i></a>
+						</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+			<br><br>
+			<header class="cd-main-header text-center flex flex-column flex-center">
+				<h3 class="text-xl">Calendrier de composition de <span style="color: blue">{{ enseignant.nom }}</span></h3>
+			</header>
+			<div class="cd-schedule cd-schedule--loading margin-top-lg margin-bottom-lg js-cd-schedule">
+				<div class="cd-schedule__timeline">
+					<ul>
+					<li><span>08:00</span></li>
+					<li><span>08:30</span></li>
+					<li><span>09:00</span></li>
+					<li><span>09:30</span></li>
+					<li><span>10:00</span></li>
+					<li><span>10:30</span></li>
+					<li><span>11:00</span></li>
+					<li><span>11:30</span></li>
+					<li><span>12:00</span></li>
+					<li><span>12:30</span></li>
+					<li><span>13:00</span></li>
+					<li><span>13:30</span></li>
+					<li><span>14:00</span></li>
+					<li><span>14:30</span></li>
+					<li><span>15:00</span></li>
+					{# <li><span>15:30</span></li>
+					<li><span>16:00</span></li>
+					<li><span>16:30</span></li>
+					<li><span>17:00</span></li>
+					<li><span>17:30</span></li>
+					<li><span>18:00</span></li> #}
+					</ul>
+				</div>
+				<!-- .cd-schedule__timeline -->
+
+				<div class="cd-schedule__events">
+					<ul>
+					{% for key in dates|keys|sort %}
+						<li class="cd-schedule__group">
+							<div class="cd-schedule__top-info"><span><strong>{{ dates[key] }} {{ key|date("d-m-Y") }}</strong></span></div>
+							<ul>
+								{% for programme in programmes %}
+									{% if programme.date|date("d-m-Y") == key|date("d-m-Y") %}
+										{% set eventNumber = 4 %}
+										{% if programme.matiere.matiereMere %}{% set eventNumber = 3 %}{% elseif programme.matiere.id == 1 %}{% set eventNumber = 1 %}{% endif %}
+											<li class="cd-schedule__event">
+												<a data-start="{{ programme.heureDebut|date("H:i") }}" data-end="{{ programme.heureFin|date("H:i") }}" data-content="event-abs-circuit" data-event="event-{{eventNumber}}" href="#0">
+													<em class="cd-schedule__name">{{ programme.matiere.libelle }}</em>
+												</a>
+											</li>
+									{% endif %}
+								{% endfor %}
+							</ul>
+						</li>
+					{% endfor %}
+					</ul>
+				</div>
+				<br><br><br>
+
+				<div class="cd-schedule-modal">
+					<header class="cd-schedule-modal__header">
+					<div class="cd-schedule-modal__content">
+						<span class="cd-schedule-modal__date"></span>
+						<h3 class="cd-schedule-modal__name"></h3>
+					</div>
+					<div class="cd-schedule-modal__header-bg"></div>
+					</header>
+
+					<div class="cd-schedule-modal__body">
+					<div class="cd-schedule-modal__event-info"></div>
+					<div class="cd-schedule-modal__body-bg"></div>
+					</div>
+					<a href="#0" class="cd-schedule-modal__close text-replace">Close</a>
+				</div>
+				<div class="cd-schedule__cover-layer"></div>
+			</div>
+			<br><br>
+		{% endif %}
+	{% else %}
+		<p>{{ 'Le programme n\'a pas encore été publié. Vueillez patienter s\'il vous plaît.'|trans }}</p>
+	{% endif %}
+{% endblock %}
+
+
+{% block javascripts %}
+    <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+    <script data-config>
+      var filtersConfig = {
+        base_path: 'TableFilter/dist/tablefilter/',
+        col_0: 'none',
+        col_2: 'select',
+        col_3: 'select',
+        col_4: 'select',
+        col_5: 'select',
+        col_6: 'select',
+        col_7: 'select',
+        col_8: 'none',
+        alternate_rows: true,
+        rows_counter: true,
+        btn_reset: true,
+        loader: true,
+        status_bar: true,
+        mark_active_columns: true,
+        highlight_keywords: true,
+        no_results_message: true,
+        col_types: [
+          'number', 'string', 'string',
+          'string', 'string', 'string',
+        ],
+        col_widths: [
+        ],
+        extensions: [{ name: 'sort' }]
+      };
+
+      var tf = new TableFilter('programme-surveillance', filtersConfig);
+      tf.init();
+    </script>
+
+  <script src="{{ asset('agenda/js/util.js') }}"></script>
+  <script src="{{ asset('agenda/js/main.js') }}"></script>
+{% endblock %}

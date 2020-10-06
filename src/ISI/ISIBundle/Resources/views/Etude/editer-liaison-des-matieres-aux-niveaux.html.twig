@@ -9,36 +9,35 @@
 {% block body %}
 	<h3>{{ 'Edition de la matière pour le niveau'|trans }} {{ enseignement.matiere.libelle }} {{ niveau.libelleFr }}</h3>
 	{{ form_start(form, {'attr': {'class': 'ui form'}}) }} 
-		<div class="five fields">
+		<div class="three fields">
 			<div class="field">
-				<label for="">
-					{{ form_label(form.coefficient, "Coefficient", {'label_attr': {'class': ''}}) }} 
-					{{ form_errors(form.coefficient) }}
-				</label>
+				{{ form_label(form.coefficient, "Coefficient", {'label_attr': {'class': ''}}) }} 
+				{{ form_errors(form.coefficient) }}
 				{{ form_widget(form.coefficient, {'attr' : {'class' : 'niveauclass'}}) }}
 			</div>
 			<div class="field">
-				<label for="">
-					{{ form_label(form.livre, "Sélectionner un livre", {'label_attr': {'class': ''}}) }} 
-					{{ form_errors(form.livre) }}
-				</label>
+				{{ form_label(form.livre, "Sélectionner un livre", {'label_attr': {'class': ''}}) }} 
+				{{ form_errors(form.livre) }}
 				{{ form_widget(form.livre) }}
 			</div>
 			<div class="field">
-				<label for="">
-					{{ form_label(form.nombre_heure_cours, "Nombre d'heures de cours", {'label_attr': {'class': ''}}) }} 
-					{{ form_errors(form.nombre_heure_cours) }}
-				</label>
+				{{ form_label(form.nombre_heure_cours, "Nombre d'heures de cours", {'label_attr': {'class': ''}}) }} 
+				{{ form_errors(form.nombre_heure_cours) }}
 				{{ form_widget(form.nombre_heure_cours) }}
 			</div>
+		</div><br>
+		<div class="three fields">
 			<div class="field">
-				<label for="">
-					{{ form_label(form.statu, "Cocher si c'est une matière spécifique", {'label_attr': {'class': ''}}) }} 
-					{{ form_errors(form.statu) }}
-				</label>
+				{{ form_label(form.statu, "Cocher si c'est une matière spécifique", {'label_attr': {'class': ''}}) }} 
+				{{ form_errors(form.statu) }}
 				{{ form_widget(form.statu, {'attr' : {'class' : 'ui toggle checkbox'}}) }}
 			</div>
-		</div>
+			<div class="field">
+				{{ form_label(form.matiere_examen, "Cocher si c'est une matière dans laquelle on compose", {'label_attr': {'class': ''}}) }} 
+				{{ form_errors(form.matiere_examen) }}
+				{{ form_widget(form.matiere_examen, {'attr' : {'class' : 'ui toggle checkbox'}}) }}
+			</div>
+		</div><br><br>
 		{{ form_widget(form.update, {'attr': {'class': 'ui primary button'}}) }}
 	{{ form_end(form) }}
 {% endblock %}

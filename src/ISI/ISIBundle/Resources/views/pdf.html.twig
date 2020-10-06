@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8" />
     <title>{% block title %}Impression{% endblock %}</title>
-    {% block stylesheets %}{% endblock %}
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amiri">
     <style>
@@ -37,7 +36,7 @@
         .titre-document{
             border: solid 2px;
             line-height: 0px;
-            width: 70%;
+            width: 100%;
             margin: auto;
             /* font-size: 2em; */
             font-weight: bold;
@@ -109,9 +108,13 @@
             font-family: 'majalla';
         }
     </style>
+    {% block stylesheets %}{% endblock %}
 </head>
 
     <body style="font-family: Arial">
+        <div style="color: maroon; font-size: 2em">
+            {{ "now"|date("d-m-Y à H:i") }}
+        </div>
         <header>
             <center>
                 <img src="{{app.request.schemeAndHttpHost ~ asset('images/en-tete.png')}}" alt="">

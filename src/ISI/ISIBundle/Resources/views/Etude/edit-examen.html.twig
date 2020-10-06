@@ -1,0 +1,55 @@
+{# Page d'ajout d'un nouvel examen #}
+
+{% extends "ISIBundle:Etude:index.html.twig" %}
+
+{% block title %}
+	Mise à jour d'examen {{ examen.libelleFr }}
+{% endblock %}
+
+{% block contextual_menu %}
+{% endblock %}
+
+
+{% block section %}
+	<i class="settings icon"></i>{{ 'Examen'|trans }}
+{% endblock %}
+
+
+{% block body %}
+	<h3>{{ 'Mise à jour d\'un examen '|trans }} - {{ examen.libelleFr }}</h3>
+	{# {{ dump(form.dateProclamationResultats) }} #}
+
+	<div class="form-group">
+		{{ form_start(form, {'attr': {'class': 'ui form'}}) }}
+			<div class="three fields">
+				<div class="field"> 
+					{{ form_label(form.session, "Session", {'label_attr': {'class': ''}}) }}
+					{{ form_errors(form.session) }}
+					{{ form_widget(form.session, {'attr': {'class': 'session'}}) }}
+				</div>
+				<div class="field">
+					{{ form_label(form.libelleAr, "Libellé (arabe)", {'label_attr': {'class': ''}}) }}
+					{{ form_errors(form.libelleAr) }}
+					{{ form_widget(form.libelleAr, {'attr': {'class': 'libelleAr'}}) }}
+				</div>
+				<div class="field"> 
+					{{ form_label(form.libelleFr, "Libellé (français)", {'label_attr': {'class': ''}}) }}
+					{{ form_errors(form.libelleFr) }}
+					{{ form_widget(form.libelleFr, {'attr': {'class': 'libelleFr'}}) }}
+				</div>
+			</div>
+			<div class="two fields">
+				<div class="field">
+					<label for="">Date de proclamation</label> 
+					<input type="date" name="dateProclamation" value="{{ examen.dateProclamationResultats|date("Y-m-d") }}" required="required"/>
+				</div>
+				<div class="field">
+					<label for="">Date de publication du programme de l'examen</label> 
+					<input type="date" name="datePublicationProgramme" value="{{ examen.datePublicationProgramme|date("Y-m-d") }}" required="required"/>
+				</div>
+			</div>
+			{{ form_widget(form.save, {'attr': {'class': 'ui primary button'}}) }}
+		{{ form_end(form) }}
+	</div>
+
+{% endblock %}

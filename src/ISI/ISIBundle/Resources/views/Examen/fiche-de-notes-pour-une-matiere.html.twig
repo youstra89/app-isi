@@ -1,13 +1,9 @@
 {# ISIBundle/Ressources/views/Scolarite #}
 {% extends "ISIBundle::pdf.html.twig" %}
-    {% block title %}
-        Fiche de notes
-    {% endblock %}
 
 
-
-{% block contextual_menu %}
-  {{ include("ISIBundle:Examen:contextual-menu-fiche-notes-exam.html.twig") }}
+{% block title %}
+    Fiche de notes {{ classe.libelleFr }} - {{ matiere.libelle }}
 {% endblock %}
 
 
@@ -16,31 +12,36 @@
     {% if eleves is empty %}
         <p>{{ 'Inscrivez d\'abord des élèves dans cette classe'|trans }}</p>
     {% else %}
-        <div class="titre-document">
+        <div class="titre-document" style="font-size: 2.5em">
             <center>
                 <h1>كشف الدرجات</h1>
             </center>
         </div>
         <br />
-        <div class="id-fiche">
+        <div class="id-fiche" style="font-size: 2.5em">
             <div class="classe">
-                <span>الفصل : <span class="libelleClasse">{{ classe.libelleAr }}</span></span>
+                <span>الفصل : <span>{{ classe.libelleAr }}</span></span>
             </div>
             <div class="matiere">
-                <span>المادة: <span class="libelleMatiere nomAr">{{ matiere.libelle }}</span></span>
+                <span>المادة: <span>{{ matiere.libelle }}</span></span>
+            </div>
+            <div>
+                <span>Correcteurs:</span>
+                {% for item in corrections if item.disabled == false %}
+                    {{ item.anneeContrat.contrat.enseignant.nom }}
+                {% endfor %}
             </div>
         </div>
         <br />
 
-        <table width="100%" class="" align="center">
+        <table width="100%" align="center">
             <thead>
-                <tr class="table-header" bgcolor="">
-                    <th align="right" class="nomAr">الدرجة</th>
-                    {# <th align="right" class="nomAr">الجنس</th> #}
-                    <th align="right" width="40%">Nom & Prénom</th>
-                    <th class="nomAr" width="30%"><span>الاسم و اللقب</span></th>
-                    <th align="right" width="18%" class="nomAr">الرقم التسلسلي</th>
-                    <th align="center" width="7%">N°</th>
+                <tr class="table-header" bgcolor="" style="font-size: 1.5em">
+                    <th align="right"  width="10%">الدرجة</th>
+                    <th align="right"  width="40%">Nom & Prénom</th>
+                    <th class="nomAr"  width="30%"><span>الاسم و اللقب</span></th>
+                    <th align="right"  width="18%">الرقم التسلسلي</th>
+                    <th align="center" width="5%">N°</th>
                 </tr>
             </thead>
             <tbody>
@@ -53,20 +54,13 @@
                     {% else %}
                          {% set color = '#DCDCDC' %}
                     {% endif %}
-                    {# Pour le sexe #}
-                    {% if eleve.sexe == 1 %}
-                        {% set sexe = 'Masculin' %}
-                    {% else %}
-                        {% set sexe = 'Féminin' %}
-                    {% endif %}
                     {% set numero = numero + 1 %}
-                    <tr class="line-table" bgcolor={{ color }}>
-                        <td align="right"></td>
-                        {# <td align="right">{{sexe}}</td> #}
-                        <td align="right">{{ eleve.nomFr }} {{ eleve.pnomFr }}</td>
-                        <td align="right" class="nomEleveAr">{{ eleve.nomAr }} {{ eleve.pnomAr }}</td>
-                        <td align="right">{{ eleve.matricule }}</td>
-                        <td align="center">{{ numero }}</td>
+                    <tr class="line-table" bgcolor={{ color }} style="font-size: 2em">
+                        <td align="right"  style="border: 1px solid black;"></td>
+                        <td align="right"  style="border: 1px solid black;">{{ eleve.nomFr }} {{ eleve.pnomFr }}</td>
+                        <td align="right"  style="border: 1px solid black;" class="nomEleveAr">{{ eleve.nomAr }} {{ eleve.pnomAr }}</td>
+                        <td align="right"  style="border: 1px solid black;">{{ eleve.matricule }}</td>
+                        <td align="center" style="border: 1px solid black;">{{ numero }}</td>
                     </tr>
                     <!-- On divise le tableau pour mieux afficher la suite de la liste -->
                     {% if (numero % 24) == 0 %}
@@ -75,27 +69,26 @@
                     <br>
                     <table width="100%" class="" align="center">
                         <thead>
-                            <tr class="table-header" bgcolor="">
-                                <th align="right" class="nomAr">الدرجة</th>
-                                <th align="right" width="40%">Nom & Prénom</th>
-                                <th class="nomAr" width="30%"><span>الاسم و اللقب</span></th>
-                                <th align="right" width="18%" class="nomAr">الرقم التسلسلي</th>
-                                <th align="center" width="7%">N°</th>
+                            <tr class="table-header" bgcolor="" style="font-size: 1.5em">
+                                <th align="right"  width="10%">الدرجة</th>
+                                <th align="right"  width="40%">Nom & Prénom</th>
+                                <th class="nomAr"  width="30%"><span>الاسم و اللقب</span></th>
+                                <th align="right"  width="18%">الرقم التسلسلي</th>
+                                <th align="center" width="5%">N°</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% if (numero % 2) == 0 %} {% set color = 'white' %} {% else %} {% set color = '#DCDCDC' %} {% endif %} {# Pour le sexe #}
-                            {% if eleve.sexe == 1 %} {% set sexe = 'Masculin' %} {% else %} {% set sexe = 'Féminin' %}
-                            {% endif %} {% set numero = numero %}
+                            {% set numero = numero %}
                             {% if loop.index == 24 %}
                                 {% set code = 1 %}
                             {% else %}
-                            <tr class="line-table" bgcolor={{ color }}>
-                                <td align="right"></td>
-                                <td align="right">{{ eleve.nomFr }} {{ eleve.pnomFr }}</td>
-                                <td align="right" class="nomEleveAr">{{ eleve.pnomAr }} {{ eleve.nomAr }} </td>
-                                <td align="right">{{ eleve.matricule }}</td>
-                                <td align="center">{{ numero }}</td>
+                            <tr class="line-table" bgcolor={{ color }} style="font-size: 2em">
+                                <td align="right"  style="border: 1px solid black;"></td>
+                                <td align="right"  style="border: 1px solid black;">{{ eleve.nomFr }} {{ eleve.pnomFr }}</td>
+                                <td align="right"  style="border: 1px solid black;" class="nomEleveAr">{{ eleve.pnomAr }} {{ eleve.nomAr }} </td>
+                                <td align="right"  style="border: 1px solid black;">{{ eleve.matricule }}</td>
+                                <td align="center" style="border: 1px solid black;">{{ numero }}</td>
                             </tr>
                             {% endif %}
                         {% endif %}
@@ -103,7 +96,7 @@
             </tbody>
         </table>
         <br />
-        <center><span class="effectif">المجموع : {{ numero }}</span> </center>
+        <center><span style="font-size: 2em">المجموع : {{ numero }}</span> </center>
     {% endif %}
 
 {% endblock %}

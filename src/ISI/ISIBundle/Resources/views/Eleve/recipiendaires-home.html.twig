@@ -27,53 +27,54 @@
     {% set grp = 'Centre de formation' %}
   {% endif %}
   <h3>{{ 'Regime de formation '|trans }} : {{ grp }}</h3>
+  <a href="{{ path('liste_recipiendaires', {as: annee.id, annexeId: annexe.id}) }}" class="ui positive button">Liste des récipiendaires</a>
   <div class="ui raised very padded text container segment">
-      <h3>{{ 'Entrez le matricule de l\'élève récipiendaire et appuyez sur la touche "Entrée"'|trans }}</h3>
-      <form action="" class="ui form" method="post">
+    <h3>{{ 'Entrez le matricule de l\'élève récipiendaire et appuyez sur la touche "Entrée"'|trans }}</h3>
+    <form action="" class="ui form" method="post">
+      <div class="field">
+        <label for="matricule">Matricule</label>
+        <input type="text" name="matricule"  id="matricule" placeholder="ISI-0555KG-17" required>
+      </div>
+      <div class="three fields">
         <div class="field">
-          <label for="matricule">Matricule</label>
-          <input type="text" name="matricule"  id="matricule" placeholder="ISI-0555KG-17" required>
+          <label for="diplome">Diplôme</label>
+          <select name="diplome" id="diplome" required>
+            <option value="">Choisir un niveau</option>
+            <option value="1">Primaire</option>
+            <option value="2">Premier cycle</option>
+          </select>
         </div>
-        <div class="three fields">
-          <div class="field">
-            <label for="diplome">Diplôme</label>
-            <select name="diplome" id="diplome" required>
-              <option value="">Choisir un niveau</option>
-              <option value="1">Primaire</option>
-              <option value="2">Premier cycle</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="annee">Année</label>
-            <select name="annee" id="annee" required>
-              <option value="">Choisir une année</option>
-              {% for item in annees %}
-                <option value="{{ item.id }}">{{ item.libelle }}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="field">
-            <label for="mention">Mention</label>
-            <select name="mention" id="mention" required>
-              <option value="">Choisir une mention</option>
-              <option value="3">Bien</option>
-              <option value="4">Très bien</option>
-              <option value="5">Excellent</option>
-            </select>
-          </div>
+        <div class="field">
+          <label for="annee">Année</label>
+          <select name="annee" id="annee" required>
+            <option value="">Choisir une année</option>
+            {% for item in annees %}
+              <option value="{{ item.id }}">{{ item.libelle }}</option>
+            {% endfor %}
+          </select>
         </div>
-        <div class="two fields">
-          <div class="field">
-            <label for="date">Date de délivrance</label>
-            <input type="date" name="date"  id="date" required />
-          </div>
-          <div class="field">
-            <label for="numero">Numéro d'enregistrement</label>
-            <input type="text" name="numero"  id="numero" placeholder="00125" required/>
-          </div>
+        <div class="field">
+          <label for="mention">Mention</label>
+          <select name="mention" id="mention" required>
+            <option value="">Choisir une mention</option>
+            <option value="3">Bien</option>
+            <option value="4">Très bien</option>
+            <option value="5">Excellent</option>
+          </select>
         </div>
-        <input type="hidden" id="regime" value="{{ regime }}"><br><br>
-        <button class="ui positive button">Valider</button>
-      </form>
+      </div>
+      <div class="two fields">
+        <div class="field">
+          <label for="date">Date de délivrance</label>
+          <input type="date" name="date"  id="date" required />
+        </div>
+        <div class="field">
+          <label for="numero">Numéro d'enregistrement</label>
+          <input type="text" name="numero"  id="numero" placeholder="00125" required/>
+        </div>
+      </div>
+      <input type="hidden" id="regime" value="{{ regime }}"><br><br>
+      <button class="ui positive button">Valider</button>
+    </form>
   </div>
 {% endblock %}

@@ -54,7 +54,7 @@
 							<div class="right floated content">
 								<div class="">
 									<div class="ui right labeled input">
-										<input name="note[{{ eleve.id }}]" type="integer" value="{{ notes[eleve.id].note }}" class="noteSelectionnee">
+										<input name="note[{{ eleve.id }}]" id="note[{{ eleve.id }}]" type="text" data-eleveId="{{ eleve.id }}" value="{{ notes[eleve.id].note }}" class="note">
 										<div class="ui basic label">{{ 'points'|trans }}</div>
 									</div>
 								</div>
@@ -67,7 +67,7 @@
 							<div class="right floated content">
 								<div class="">
 									<div class="ui right labeled input">
-										<input name="note[{{ eleve.id }}]" type="integer" class="noteSelectionnee">
+										<input name="note[{{ eleve.id }}]" id="note[{{ eleve.id }}]" type="text" data-eleveId="{{ eleve.id }}" class="note">
 										<div class="ui basic label">{{ 'points'|trans }}</div>
 									</div>
 								</div>
@@ -83,9 +83,26 @@
 				</div>
 			</form>
 		</div>
-		{# {{dump(notes)}}
-		{{ dump(eleves) }} #}
-
-		{# {{dump(form.notes.parent.vars.value[0])}} #}
 	</table>
+{% endblock %}
+
+
+{% block javascripts %}
+	<script>
+		$(document).ready(function(){
+			var nombreMatieres = $("#nombreMatieres").val();
+			$(".note").on("keyup", function(){
+				// var id = $(this).attr("id");
+				var eleveId = $(this).attr("data-eleveId");
+				var note = parseFloat($(this).val());
+				console.log(eleveId, note);
+				if(note < 0 || note > 10){
+					alert('La note doit être comprise en 0 et 10');
+					$(this).val("");
+					$(this).focus();
+					$(this).select();
+				}
+			})
+		});
+	</script>
 {% endblock %}

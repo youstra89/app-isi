@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>
+      Programme annuel - {{ annee.libelle }}
+    </title>
+
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amiri">
+    <style>
+        {% if server == '/var/www/html' %}
+            @font-face{
+                font-family: "majalla";
+                src: url("file:///var/www/html/markaz/web/polices/majalla.ttf");
+            }
+
+            @font-face{
+                font-family: "Lato";
+                src: url("file:///var/www/html/markaz/web/polices/Lato-Regular.ttf");
+            }
+        {% else %}
+            @font-face{
+                font-family: "majalla";
+                src: url("file:///home/youstra/www/markaz/web/polices/majalla.ttf");
+            }
+
+            @font-face{
+                font-family: "Lato";
+                src: url("file:///home/youstra/www/markaz/web/polices/Lato-Regular.ttf");
+            }
+        {% endif %}
+        
+        * {
+            font-family: majalla, Lato;
+        }
+
+        body {
+			    direction: rtl
+        }
+
+        table {
+            display: inline-table;
+            border-spacing: 0px;
+            table-layout: fixed;
+        }
+
+        thead{
+            border: 1px solid black;
+        }
+
+        td {
+            border: 0.99px solid black;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .line-table {
+            /* font-size: 1.6em; */
+            line-height: 27px;
+        }
+
+        .line-table td{
+            border: solid 1px black;
+        }
+
+        .en-tete-fr, .en-tete-ar{
+            line-height: 5px;
+            font-weight: bold;
+            font-size: 1.7em;
+        }
+
+        .table-header {
+            border: 1px solid black;
+            font-weight: bold;
+            font-size: 1.5em;
+            height: 20px;
+            align-content: center;
+        }
+
+        .table-header-semaine{
+            border: 1px solid black;
+            font-size: 1em;
+        }
+  </style>
+</head>
+
+
+  <body>
+  <table width="100%" align="center" style="border: 1px solid white">
+      <tr>
+          <td align="" width="" class="en-tete-ar">
+              <center>
+                  <p>جمهورية ساحل العاج</p>
+                  <p>مركز العلوم الإسلامية</p>
+                  <p>أبدجان - حي أنياما</p>
+                  <p>هاتف : 21373048 - 20248312</p>
+              </center>
+          </td>
+          <td align="" width="" class="">
+              <center>
+              <img src="{{app.request.schemeAndHttpHost ~ asset('images/logoISI.png')}}" alt="" width="30%" height="auto">
+              </center>
+          </td>
+          <td align="" width="" class="en-tete-fr">
+              <center>
+                  <p>REPUBLIQUE DE COTE D'IVOIRE</p>
+                  <p>INSTITUT DES SCIENCES ISLAMIQUES</p>
+                  <p>ABIDJAN - ANYAMA</p>
+                  <p>Tél: 21373048 - 20248312</p>
+              </center>
+          </td>
+      </tr>
+  </table>
+  <p style="text-align: center; line-height: 1px; margin: 5px;">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</p>
+  <p style="text-align: center; line-height: 1px; margin: 5px;">------------------------------------------------------------------------------------------------------------------------------------------------------------</p>
+  <h3 style="text-align: center; font-size: 2em; line-height: 40px; border: 2px solid black" dir="ltr">{{ 'Programme annuel'|trans }} {{ annee.libelle }}</h3>
+
+    <table width="100%" align="center" style="font-size: 1em;">
+      <thead>
+        <tr>
+          <th width="5%"  style="border: 1px solid black; text-align: center">N°</th>
+          <th width="75%" style="border: 1px solid black;">Description</th>
+          <th width="10%" style="border: 1px solid black;">Début </th>
+          <th width="10%" style="border: 1px solid black;">Fin</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% set numero = 0 %}
+        {% for programme in programmes %} 
+          {% set numero = numero + 1 %}
+          <tr style="border: 1px solid black;">
+            <td style="border: 1px solid black; text-align: center">{{ numero }}</td>
+            <td style="border: 1px solid black;">{{ programme.description }}</td>
+            <td style="border: 1px solid black;">{{ programme.debut|date("d-m-Y") }}</td>
+            <td style="border: 1px solid black;">{{ programme.fin|date("d-m-Y") }}</td>
+          </tr> 
+        {% endfor %}
+      </tbody>
+    </table>
+  <br><br>
+</body>
+</html>

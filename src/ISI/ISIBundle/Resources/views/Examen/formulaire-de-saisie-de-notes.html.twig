@@ -3,7 +3,7 @@
 {% extends "ISIBundle:Examen:index.html.twig" %}
 
 {% block title %}
-	Enregistrement des notes
+	Enregistrement des notes de {{ matiere.libelle }} en {{ classe.libelleFr }}
 {% endblock %}
 
 
@@ -47,21 +47,25 @@
 					{% set i = i + 1 %}
 					{% set image = "" %}
 					{% if eleve.sexe == 1 %}
-						{% set image = "{{ asset('images/mark.png') }}" %}
+						{% set image = "images/mark.png" %}
 					{% else %}
-						{% set image = "{{ asset('images/molly.png') }}" %}
+						{% set image = "images/molly.png" %}
 					{% endif %}
 							{% set num = num + 1 %}
 							<div class="item ui selectable">
 								<div class="right floated content">
 									<div class="">
 										<div class="ui right labeled input">
-											<input name="note[{{ eleve.id }}]" type="integer" id="{{ num }}" class="note">
+											<input id="note[{{ eleve.id }}]" class="note" name="note[{{ eleve.id }}]" data-eleveId="{{ eleve.id }}" type="text" id="{{ num }}" class="note">
 											<div class="ui basic label">{{ 'points'|trans }}</div>
 										</div>
 									</div>
 								</div>
-								<img class="ui avatar image" src="{{ image }}">
+								{% if eleve.photo %}
+      								<img class="ui avatar image" src="{{ asset('photos/eleves/' ~ eleve.photo) }}">
+								{% else %}
+									<img class="ui avatar image" src="{{asset(image)}}">
+								{% endif %}
 								<div class="content"><span class="ui violet circular label">{{ i }}</span><i class="right chevron icon"></i>{{ eleve.matricule }} <i class="right chevron icon"></i> <strong>{{eleve.nomFr}} {{eleve.pnomFr}}</strong></div>
 							</div>
 				{% endfor %}
@@ -71,32 +75,26 @@
 				</div>
 			</form>
 		</div>
-	</table>
-	<script>
-		
-		$(document).ready(function(){
-				
-				//$(".item.ui.selectable").on('click', function () {
-				//	$(this).hide(1000);
-				//});
-			 
-		$(".note").focus(function () {
-			current = $(this).attr("id")
-			id = + current
-			console.log(id + 1)
-			$(document).keydown(function (e) {
-				switch (e.which) {
-					case 38: // Flèche haut				
-						id = id - 1					
-						$("#" + id).focus()
-					case 40: // Flèche bas
-						id = id + 1
-						$("#" + id).focus()
-						console.log("#" + id)
-				}
-			})			
+	</table><br><br>
+{% endblock %}
 
-		})
-	});
+
+{% block javascripts %}
+	<script>
+		$(document).ready(function(){
+			var nombreMatieres = $("#nombreMatieres").val();
+			$(".note").on("keyup", function(){
+				// var id = $(this).attr("id");
+				var eleveId = $(this).attr("data-eleveId");
+				var note = parseFloat($(this).val());
+				console.log(eleveId, note);
+				if(note < 0 || note > 10){
+					alert('La note doit être comprise en 0 et 10');
+					$(this).val("");
+					$(this).focus();
+					$(this).select();
+				}
+			})
+		});
 	</script>
 {% endblock %}

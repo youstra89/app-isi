@@ -20,14 +20,13 @@ class AbsencesEtRetardsController extends Controller
 {
     /**
      * @Security("has_role('ROLE_CONTROLE_ENSEIGNANT')")
-     * @Route("/page-d-accueil-des-retards-des-enseignants-{as}", name="ens_retards_home")
+     * @Route("/page-d-accueil-des-retards-des-enseignants-{as}-{annexeId}", name="ens_retards_home")
      */
-    public function indexRetards(Request $request, $as)
+    public function indexRetards(Request $request, $as, int $annexeId)
     {
         $em = $this->getDoctrine()->getManager();
         $repoAnnee   = $em->getRepository('ISIBundle:Annee');
         $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-        $annexeId = $request->get('annexeId');
         $annexe = $repoAnnexe->find($annexeId);
         if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
             $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -77,15 +76,14 @@ class AbsencesEtRetardsController extends Controller
 
     /**
      * @Security("has_role('ROLE_CONTROLE_ENSEIGNANT')")
-     * @Route("/page-de-saisie-des-retards-des-enseignants-{as}-{periode}", name="ens_saisi_retards")
+     * @Route("/page-de-saisie-des-retards-des-enseignants-{as}-{periode}-{annexeId}", name="ens_saisi_retards")
      */
-    public function saisieDesRetards(Request $request, $as, $periode)
+    public function saisieDesRetards(Request $request, $as, $periode, int $annexeId)
     {
         $em = $this->getDoctrine()->getManager();
         $repoAnnee        = $em->getRepository('ISIBundle:Annee');
         $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
         $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-        $annexeId = $request->get('annexeId');
         $annexe = $repoAnnexe->find($annexeId);
         if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
             $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -146,16 +144,15 @@ class AbsencesEtRetardsController extends Controller
 
     /**
      * @Security("has_role('ROLE_CONTROLE_ENSEIGNANT')")
-     * @Route("/apercu-des-retards-des-enseignants-enregistres-home-{as}", name="ens_voir_retards_home")
+     * @Route("/apercu-des-retards-des-enseignants-enregistres-home-{as}-{annexeId}", name="ens_voir_retards_home")
      */
-    public function apercuDesRetardsHome(Request $request, $as)
+    public function apercuDesRetardsHome(Request $request, $as, int $annexeId)
     {
         $em = $this->getDoctrine()->getManager();
         $repoAnnee  = $em->getRepository('ISIBundle:Annee');
         $repoMois   = $em->getRepository('ISIBundle:Mois');
         $repoRetard = $em->getRepository('ENSBundle:AnneeContratRetard');
         $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-        $annexeId = $request->get('annexeId');
         $annexe = $repoAnnexe->find($annexeId);
         if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
             $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -184,15 +181,14 @@ class AbsencesEtRetardsController extends Controller
 
     /**
      * @Security("has_role('ROLE_CONTROLE_ENSEIGNANT')")
-     * @Route("/apercu-des-retards-des-enseignants-enregistres-pour-un-mois-donnee-{as}-{moisId}", name="ens_voir_retards_mois")
+     * @Route("/apercu-des-retards-des-enseignants-enregistres-pour-un-mois-donnee-{as}-{moisId}-{annexeId}", name="ens_voir_retards_mois")
      */
-    public function apercuDesRetardsMois(Request $request, $as, $moisId)
+    public function apercuDesRetardsMois(Request $request, $as, $moisId, int $annexeId)
     {
         $em = $this->getDoctrine()->getManager();
         $repoAnnee  = $em->getRepository('ISIBundle:Annee');
         $repoMois   = $em->getRepository('ISIBundle:Mois');
         $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-        $annexeId = $request->get('annexeId');
         $annexe = $repoAnnexe->find($annexeId);
         if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
             $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -232,15 +228,14 @@ class AbsencesEtRetardsController extends Controller
 
     /**
      * @Security("has_role('ROLE_CONTROLE_ENSEIGNANT')")
-     * @Route("/apercu-du-bilan-des-retards-des-enseignants-enregistres-pour-un-mois-donnee-{as}-{moisId}", name="ens_voir_retards_mois_cumul")
+     * @Route("/apercu-du-bilan-des-retards-des-enseignants-enregistres-pour-un-mois-donnee-{as}-{moisId}-{annexeId}", name="ens_voir_retards_mois_cumul")
      */
-    public function apercuDesRetardsMoisCumul(Request $request, $as, $moisId)
+    public function apercuDesRetardsMoisCumul(Request $request, $as, $moisId, int $annexeId)
     {
         $em = $this->getDoctrine()->getManager();
         $repoAnnee  = $em->getRepository('ISIBundle:Annee');
         $repoMois   = $em->getRepository('ISIBundle:Mois');
         $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-        $annexeId = $request->get('annexeId');
         $annexe = $repoAnnexe->find($annexeId);
         if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
             $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -269,15 +264,14 @@ class AbsencesEtRetardsController extends Controller
 
     /**
      * @Security("has_role('ROLE_CONTROLE_ENSEIGNANT')")
-     * @Route("/page-d-accueil-des-absences-des-enseignants-{as}", name="ens_absences_home")
+     * @Route("/page-d-accueil-des-absences-des-enseignants-{as}-{annexeId}", name="ens_absences_home")
      */
-    public function indexAbsences(Request $request, $as)
+    public function indexAbsences(Request $request, $as, int $annexeId)
     {
         $em = $this->getDoctrine()->getManager();
         $repoAnnee        = $em->getRepository('ISIBundle:Annee');
         $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
         $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-        $annexeId = $request->get('annexeId');
         $annexe = $repoAnnexe->find($annexeId);
         if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
             $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -297,15 +291,14 @@ class AbsencesEtRetardsController extends Controller
 
     /**
      * @Security("has_role('ROLE_CONTROLE_ENSEIGNANT')")
-     * @Route("/page-d-accueil-d-absence-d-un-enseignant-{as}-{contratId}", name="ens_enregistrer_absence")
+     * @Route("/page-d-accueil-d-absence-d-un-enseignant-{as}-{contratId}-{annexeId}", name="ens_enregistrer_absence")
      */
-    public function enregistrerAbsence(Request $request, $as, $contratId)
+    public function enregistrerAbsence(Request $request, $as, $contratId, int $annexeId)
     {
         $em = $this->getDoctrine()->getManager();
         $repoAnnee   = $em->getRepository('ISIBundle:Annee');
         $repoContrat = $em->getRepository('ENSBundle:Contrat');
         $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-        $annexeId = $request->get('annexeId');
         $annexe = $repoAnnexe->find($annexeId);
         if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
             $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -348,16 +341,14 @@ class AbsencesEtRetardsController extends Controller
 
     /**
      * @Security("has_role('ROLE_CONTROLE_ENSEIGNANT')")
-     * @Route("/apercu-des-absences-des-enseignants-enregistrees-home-{as}", name="ens_voir_absences_home")
+     * @Route("/apercu-des-absences-des-enseignants-enregistrees-home-{as}-{annexeId}", name="ens_voir_absences_home")
      */
-    public function apercuDesAbsencesHome(Request $request, $as)
+    public function apercuDesAbsencesHome(Request $request, $as, int $annexeId)
     {
         $em = $this->getDoctrine()->getManager();
         $repoAnnee   = $em->getRepository('ISIBundle:Annee');
-        $repoMois    = $em->getRepository('ISIBundle:Mois');
         $repoAbsence = $em->getRepository('ENSBundle:AnneeContratAbsence');
         $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-        $annexeId = $request->get('annexeId');
         $annexe = $repoAnnexe->find($annexeId);
         if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
             $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');

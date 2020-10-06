@@ -94,4 +94,22 @@ class AnneeContratClasseRepository extends \Doctrine\ORM\EntityRepository
         return $qb->getQuery()
                 ->getResult();
     }
+
+    public function enseignant_de_la_classe(int $anneeId, int $annexeId, int $classeId)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb ->join('c.anneeContrat', 'ac')
+            ->join('ac.contrat', 'cont')
+            ->join('cont.enseignant', 'e')
+            ->join('ac.annee', 'an')
+            ->join('c.matiere', 'm')
+            ->join('c.classe', 'cl')
+            ->where('an.id = :anneeId AND e.annexe = :annexeId AND e.enseignant = true AND cl.id = :classeId')
+            ->setParameter('annexeId', $annexeId)
+            ->setParameter('classeId', $classeId)
+            ->setParameter('anneeId', $anneeId);
+
+        return $qb->getQuery()
+                ->getResult();
+    }
 }

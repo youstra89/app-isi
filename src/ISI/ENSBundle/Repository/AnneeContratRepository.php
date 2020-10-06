@@ -13,8 +13,6 @@ class AnneeContratRepository extends \Doctrine\ORM\EntityRepository
     public function fonctionDeLAnnee($anneeId, $annexeId)
     {
         $qb = $this->createQueryBuilder('a');
-        $offset = 0;
-        $limit = 1;
         $qb->select('a')
            ->join('a.annee', 'an')
            ->addSelect('an')
@@ -32,7 +30,6 @@ class AnneeContratRepository extends \Doctrine\ORM\EntityRepository
         return $qb
             ->getQuery()
             ->getResult()
-            // ->getResult()
         ;
     }
 }

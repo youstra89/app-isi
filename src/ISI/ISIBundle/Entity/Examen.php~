@@ -50,6 +50,13 @@ class Examen
     private $dateProclamationResultats;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_publication_programme", type="date", nullable=false)
+     */
+    private $datePublicationProgramme;
+
+    /**
      * @var \Annee
      *
      * @ORM\ManyToOne(targetEntity="Annee")

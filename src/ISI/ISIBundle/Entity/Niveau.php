@@ -92,6 +92,11 @@ class Niveau
      */
     private $enseignements;
 
+    /**
+     * @ORM\OneToMany(targetEntity="ISI\ISIBundle\Entity\ProgrammeExamenNiveau", mappedBy="niveau")
+     */
+    private $programmeexamenniveau;
+
     public function __construct()
     {
         $this->enseignements = new \Doctrine\Common\Collections\ArrayCollection();
@@ -397,5 +402,39 @@ class Niveau
     public function getUpdatedBy()
     {
         return $this->updatedBy;
+    }
+
+    /**
+     * Add programmeexamenniveau
+     *
+     * @param \ISI\ISIBundle\Entity\ProgrammeExamenNiveau $programmeexamenniveau
+     *
+     * @return Niveau
+     */
+    public function addProgrammeexamenniveau(\ISI\ISIBundle\Entity\ProgrammeExamenNiveau $programmeexamenniveau)
+    {
+        $this->programmeexamenniveau[] = $programmeexamenniveau;
+
+        return $this;
+    }
+
+    /**
+     * Remove programmeexamenniveau
+     *
+     * @param \ISI\ISIBundle\Entity\ProgrammeExamenNiveau $programmeexamenniveau
+     */
+    public function removeProgrammeexamenniveau(\ISI\ISIBundle\Entity\ProgrammeExamenNiveau $programmeexamenniveau)
+    {
+        $this->programmeexamenniveau->removeElement($programmeexamenniveau);
+    }
+
+    /**
+     * Get programmeexamenniveau
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getProgrammeexamenniveau()
+    {
+        return $this->programmeexamenniveau;
     }
 }

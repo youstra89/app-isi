@@ -9,7 +9,6 @@ Paramètres: الإعدادات
 'Changer la langue': 'تغيير اللغة'
 Déconnexion: 'قطع الاتصال'
 'Année scolaire': 'السنة الدراسية'
-'': __
 'Une liste de classe': 'قائمة الفصل'
 'Une liste d''appel': 'قائمة التحضير'
 Absences: الغياب
@@ -90,7 +89,7 @@ Recalés: الراسبون
 'Pourcentage de réussite à l''examen': 'نسبة النجاح في الامتحان'
 'Gestion des examens': 'إدارة الامتحانات'
 'Aucune examen n''a encore été enregistré': 'لم يتم تسجيل الامتحان بعد'
-Actions: __Actions
+Actions: الإجراءات
 'Enregistrement d''un nouvel examen': 'تسجيل امتحان جديد'
 'Impression des fiches de notes des classes': 'طباعة كشوفات الفصول'
 'Fiches de notes': الكشوفات
@@ -138,7 +137,7 @@ Supprimer: حذف
 'Il n y a aucune matière pour ce niveau': 'لا يوجد أي مادة لهذا المستوى'
 Matière: مادة
 Langue: اللغة
-'Les classe de': '__Les classe de'
+'Les classe de': 'الفصول ل'
 'Tirer liste d''appel': 'سحب كشف الفصل'
 'Liste des élèves': 'كشف الطلاب'
 'Tirer liste de classe': 'طباعة كشف الفصل'
@@ -176,15 +175,15 @@ Rôles: الأدوار
 Sexe: الجنس
 'Date de naissance': 'تاريخ الميلاد'
 Classe: الفصل
-'Renvoyer un élève': '__Renvoyer un élève'
-'Date de renvoi': '__Date de renvoi'
+'Renvoyer un élève': 'لفصل طالب'
+'Date de renvoi': 'تاريخ الفصل'
 'Eleve - Académie': 'طالب - أكاديمي'
 'Eleve - Centre de formation': 'طالب - مركز التدريب'
 Affectations: تعيين
 'Elèves inscrits': 'الطلاب المسجلين'
 'Modifier inscription': 'تعديل التسجيل'
 Inscription: تسجيل
-Renvoi: __Renvoi
+Renvoi: الفصل
 'Infos. Elève': 'معلومات الطالب'
 'Fiche d''information': 'كشف المعلومات'
 Divers: متنوّع
@@ -198,7 +197,7 @@ Femme: امرءة
 'Référence extrait de naissance': 'معلومات شهادة الميلاد'
 Nationalité: جنسية
 Résidence: ساكن
-'Etablissement d''origine': '__Etablissement d''origine'
+'Etablissement d''origine': 'المؤسسة الأصلية'
 Contact: العلوان
 'Identification des parents': 'التحقيق من بيانات الوالدين'
 Père: الأب
@@ -209,126 +208,126 @@ Décédé: توفي
 Mère: الأم
 Vivante: 'قيد الحياة'
 Décédée: توفيت
-Renvoyer: __Renvoyer
-'Motif du renvoi': '__Motif du renvoi'
-Scolarité: __Scolarité
+Renvoyer: فصل
+'Motif du renvoi': 'سبب الفصل'
+Scolarité: 'شؤون الطلاب'
 'Inscription dans une classe': 'التسجيل في الفصل'
 Halaqa: الحلقة
 'Veuillez choisir une halaqa': 'الرجاء اختيار حلقة'
 'Modification de la classe de': 'تعديل فصل'
 'Classe actuelle': 'الفصل الحالي'
-'Choisir la nouvelle classe pour': '__Choisir la nouvelle classe pour'
-'Modifier l''inscription d''un(e) élève de': '__Modifier l''inscription d''un(e) élève de'
+'Choisir la nouvelle classe pour': 'اختيار الفصل الجديد'
+'Modifier l''inscription d''un(e) élève de': 'تعديل تسجيل طالب(ة)'
 'Modifier la classe': 'تعديل الفصل'
 'Le matricule': 'رقم السجل'
 'Regime de formation': 'نظام التدريب'
-'Cliquez ici pour voir les conduites/problèmes enregistrés': '__Cliquez ici pour voir les conduites/problèmes enregistrés'
+'Cliquez ici pour voir les conduites/problèmes enregistrés': 'انقر هنا لنظرة السلوك / المشاكل المسجلة'
 'Entrez le matricule d''un élève': 'إدخال رقم سجل الطالب'
-'Réintégration de': '__Réintégration de'
-'Classe avant renvoi': '__Classe avant renvoi'
-'Nouvelle classe': 'فصل جديد'
-'Liste des élèves renvoyés': '__Liste des élèves renvoyés'
-'Entrez le matricule de l''élève à renvoyer': '__Entrez le matricule de l''élève à renvoyer'
-'Appréciation de la conduite': '__Appréciation de la conduite'
+'Réintégration de': 'إعادة طالب(ة)'
+'Classe avant renvoi': 'الصف قبل الفصل'
+'Nouvelle classe': 'صف جديد'
+'Liste des élèves renvoyés': 'قائمة الطلاب المفصولين'
+'Entrez le matricule de l''élève à renvoyer': 'إدخال الرقم السير للطالب عليه فصل'
+'Appréciation de la conduite': 'تقدير السلوك'
 Excellente: ممتازة
 'Très bonne': 'جيد جدا'
 Bonne: جيدة
 Passable: مقبول
 Mauvaise: سيئة
 'Très mauvaise': 'سيئة جدا'
-'Description de la conduite': '__Description de la conduite'
-'Enregister une conduite pour': '__Enregister une conduite pour'
-'Nouvelle année': '__Nouvelle année'
-'Années précédentes': '__Années précédentes'
-'Programme de formation': '__Programme de formation'
-'Gestion des matières': '__Gestion des matières'
-'Contenu de formation': '__Contenu de formation'
-'Tirer fiches de notes: Académie': '__Tirer fiches de notes: Académie'
-'Tirer fiches de notes: Formation': '__Tirer fiches de notes: Formation'
-'Une liste de halaqa': '__Une liste de halaqa'
-'DIRECTION DES AFFAIRES SCOLAIRES': '__DIRECTION DES AFFAIRES SCOLAIRES'
-'Tout ce qui concerne les élèves: préinscription, réinscription, inscription et autre...': '__Tout ce qui concerne les élèves: préinscription, réinscription, inscription et autre...'
-'GESTION DES INTERNES': '__GESTION DES INTERNES'
-'Les élèves qui sont inscrits à l''internat': '__Les élèves qui sont inscrits à l''internat'
-'GESTION DES ENSEIGNANTS': '__GESTION DES ENSEIGNANTS'
-'Les enseignants de l''institut': '__Les enseignants de l''institut'
-'Ajout d''une nouvelle chambre': '__Ajout d''une nouvelle chambre'
-'Ajouter un(e) interne': '__Ajouter un(e) interne'
-'Entrez le matricule de l''élève à interner': '__Entrez le matricule de l''élève à interner'
-Valider: __Valider
-'Retirer un(e) interne': '__Retirer un(e) interne'
-'Entrez le matricule de l''élève à renvoyer de l''internat': '__Entrez le matricule de l''élève à renvoyer de l''internat'
+'Description de la conduite': 'وصف السلوك'
+'Enregister une conduite pour': 'سجيل سلوك على'
+'Nouvelle année': 'العام الجديد'
+'Années précédentes': 'الأعوام القديمة'
+'Programme de formation': 'برنامج التدريبي'
+'Gestion des matières': 'تدبير المواد'
+'Contenu de formation': 'محتوى التدريب'
+'Tirer fiches de notes                                                                                : Académie': 'إسحاب كشوفات الدرجات: الأكدمي'
+'Tirer fiches de notes                                                                                : Formation': 'إسحاب كشوفات الدرجات: التكوين'
+'Une liste de halaqa': 'قائمة حلقة'
+'DIRECTION DES AFFAIRES SCOLAIRES': 'إدارة الشؤون الطلاب'
+'Tout ce qui concerne les élèves                                                                      : préinscription, réinscription, inscription et autre...': 'كل ما يتعلق بالطلاب : تسجيل جديد، إعادة التسجيل، بسجيل وغيرها'
+'GESTION DES INTERNES': السكن
+'Les élèves qui sont inscrits à l''internat': 'الطلاب مسجلون في السكن'
+'GESTION DES ENSEIGNANTS': 'تدبير المدرسين'
+'Les enseignants de l''institut': 'مدرسو المركز'
+'Ajout d''une nouvelle chambre': 'لإضافة الغرفة الجديدة'
+'Ajouter un(e) interne': 'لإضافة طالب سكني'
+'Entrez le matricule de l''élève à interner': 'إدخال الرقم السير الطالب عليه التسجيل في السكن'
+Valider: تم
+'Retirer un(e) interne': 'إخراج طالب من السكن'
+'Entrez le matricule de l''élève à renvoyer de l''internat': 'إدخال رقم سير الطالب المفصول من السكن'
 'Ajouter une chambre': 'إضافة غرفة'
-'Libellé chambre': '__Libellé chambre'
-Genre: __Genre
-'Aucun élève n''a encore été inscrits cette année cette année': '__Aucun élève n''a encore été inscrits cette année cette année'
-Interner: __Interner
+'Libellé chambre': 'اسم الغرفة'
+Genre: جنس
+'Aucun élève n''a encore été inscrits cette année cette année': 'لم يتم تسجيل أي طالب بعد هذا العام'
+Interner: داخليا
 Chambre: غرفة
-'Choisir une chambre pour l''élève': '__Choisir une chambre pour l''élève'
+'Choisir une chambre pour l''élève': 'إختيار غرفة للطالب'
 Retirer: إزالة
-'de l''internat': '__de l''internat'
+'de l''internat': 'من السكن'
 'Gestion des chambres': 'إدارة الغرف'
-'Gestion des internes': '__Gestion des internes'
-'Liste des retiré(e)s': '__Liste des retiré(e)s'
-'Règlement des frais': '__Règlement des frais'
-Admin: __Admin
+'Gestion des internes': 'تدبير الطلاب السكني'
+'Liste des retiré(e)s': 'قائمة المخرجين'
+'Règlement des frais': 'دفع الرسوم'
+Admin: مشرف
 Utilisateur: مستخدم
-'GESTION DE L''INTERNAT': '__GESTION DE L''INTERNAT'
-'Sélection des mois de paiement de l''internat': '__Sélection des mois de paiement de l''internat'
-'Déjà ajouté': '__Déjà ajouté'
+'GESTION DE L''INTERNAT': 'تدبير السكن'
+'Sélection des mois de paiement de l''internat': 'اختيار شهور فيها يدافع رسوم السكن'
+'Déjà ajouté': 'تمت إضافة'
 Ajouter: إضافة
-'Liste des élèves retirés': '__Liste des élèves retirés'
-'Aucun élève n''a été renvoyé de l''internat cette année.': '__Aucun élève n''a été renvoyé de l''internat cette année.'
-'Date renvoi': '__Date renvoi'
-'Règlement des droits d''un(e) interne': '__Règlement des droits d''un(e) interne'
-'Vous devez définir les mois pris en charge pour cette année à l''internat': '__Vous devez définir les mois pris en charge pour cette année à l''internat'
+'Liste des élèves retirés': 'قائمة الطلاب المخرجين'
+'Aucun élève n''a été renvoyé de l''internat cette année.': 'لم يفصل أي طالب من السكن في هذه السنة'
+'Date renvoi': 'تاريخ الفصل'
+'Règlement des droits d''un(e) interne': 'دفع رسوم داخل(ة)'
+'Vous devez définir les mois pris en charge pour cette année à l''internat': 'يجب عليكم تحديد الأشهر التي اتخذت حسابها لهذا العام إلى السكن'
 'Aucun enseignant n''a encore été inscrit': 'لم يتم تسجيل أي مدرس'
 'Nombre de places': 'عدد المقاعد'
 Bâtiment: مبنى
 'Nombre de places disponibles': 'عدد المقاعد الفارغة'
-'Aucun élève n''a encore été inscrit cette année': '__Aucun élève n''a encore été inscrit cette année'
-'Règlement des frais du mois de': '__Règlement des frais du mois de'
-'Payer les frais de': '__Payer les frais de'
+'Aucun élève n''a encore été inscrit cette année': 'لم يتم تسجيل أي طالب(ة) هذا العام'
+'Règlement des frais du mois de': 'دفع رسوم الشهر'
+'Payer les frais de': 'إعطاء الرسوم'
 Montant: مبلغ
-'Nom & Prénom :': 'الاسم واللقب'
-'Mois de :': '__Mois de :'
-'Somme :': مبلغ
-'Les mois à regler': '__Les mois à regler'
+'Nom & Prénom                                                                                         : ': 'الاسم واللقب'
+'Mois de                                                                                              : ': الشهر
+'Somme                                                                                                : ': مبلغ
+'Les mois à regler': 'الأشهر التي سيجب دفعها'
 'GESTION DES ETUDES': 'إدارة الدراسة'
-'Les programmes d''étude, les progressions des différents niveaux, découpage de l''année scolaire...': '__Les programmes d''étude, les progressions des différents niveaux, découpage de l''année scolaire...'
+'Les programmes d''étude, les progressions des différents niveaux, découpage de l''année scolaire...': 'البرامج الدراسيةّ، المناهج للمستويات المختلفة، قطع العام الدراسي'
 'Gestion des utilisateurs': 'إدارة المسخدمين'
 'Supp. Utilisateur': 'حذف مستخدم'
 'Activités Utilisateur': 'أنشطة المستخدم'
-'Espace Coran': '__Espace Coran'
-'Gestion des halaqa': 'إدارة الحلقات'
-'Bilan annuel': '__Bilan annuel'
-Edition: __Edition
-'Elèves - Espace Coran': '__Elèves - Espace Coran'
-'Gestion des enseignants': 'إدارة المدرسين'
-Enseignants: مدرسون
-'Liste des élèves ayant changé de regime': '__Liste des élèves ayant changé de regime'
-'Entrez le matricule de l''élève dont vous voulez changer le regime et appuyez sur la touche "Entrée"': '__Entrez le matricule de l''élève dont vous voulez changer le regime et appuyez sur la touche "Entrée"'
-'Elèves renvoyés -': '__Elèves renvoyés -'
-Action: عمل
-'Changer le regime de formation': '__Changer le regime de formation'
-'Identification du tuteur': '__Identification du tuteur'
+'Espace Coran': 'منطقة القرآن'
+'Gestion des halaqa': 'تدبير الحلقات'
+'Bilan annuel': 'خلاصة سنوية'
+Edition: تعديل
+'Elèves - Espace Coran': 'منطقة القرآن - الطلاب'
+'Gestion des enseignants': 'تدبير المعلمين'
+Enseignants: المعلمون
+'Liste des élèves ayant changé de regime': 'قائمة الطلاب الذين تغيروا النظام'
+'Entrez le matricule de l''élève dont vous voulez changer le regime et appuyez sur la touche "Entrée"': 'أدخل رقم سير الطالب الذي تريد تغيير المخطط واضغط على مفتاح إنتر'
+'Elèves renvoyés -': 'الطلاب المفصولين'
+Action: إجراء
+'Changer le regime de formation': 'تغيير نظام التدريب'
+'Identification du tuteur': 'تعريف الولي'
 'n''est pas encore inscrit(e)': 'لم تسجل بعد'
 Réintegrer: إعادة
-'Motif de réintégration': '__Motif de réintégration'
-'Annee de renvoi': '__Annee de renvoi'
-'Cause de renvoi': '__Cause de renvoi'
-'Changer le regime de formation de': '__Changer le regime de formation de'
-'Motif du changement de regime': '__Motif du changement de regime'
+'Motif de réintégration': 'سبب الإعادة'
+'Annee de renvoi': 'عام الفصل'
+'Cause de renvoi': 'سبب الفصل'
+'Changer le regime de formation de': 'تغيير نظام التدريب ل'
+'Motif du changement de regime': 'سبب تغيير نظام التدريب'
 Niveau: المستوى
 'Veuillez choisir un niveau': 'يرجى اختيار المستوى'
 'Veuillez choisir une classe': 'يرجى اختيار الفصل'
 'Choisir la nouvelle halaqa': 'اختر حلقة جديدة'
-'Entrez le matricule de l''élève à renvoyer et appuyez sur la touche "Entrée"': '__Entrez le matricule de l''élève à renvoyer et appuyez sur la touche "Entrée"'
+'Entrez le matricule de l''élève à renvoyer et appuyez sur la touche "Entrée"': 'أدخل رقم سر الطالب عليه الفصل واضغط مفتاح إنتر'
 'Mise à jour des informations': 'تحديث البيانات'
 'Gestion des élèves': 'إدارة الطلاب'
 Elèves: الطلاب
 'Ajouter un enseignant': 'إضافة المدرس'
-'Permission et conduite': '__Permission et conduite'
+'Permission et conduite': 'إذن والسلوك'
 PARAMETRES: الإعدادات
 'Enregistrement d''un nouveau livre': 'تسجيل كتاب جديد'
 'Matières au programme': 'المواد في البرنامج'
@@ -336,93 +335,165 @@ Academie: الأكاديمية
 Formation: التكون
 'Livres étudiés': 'الكتب المدروسة'
 'Gestion des livres': 'إدارة الكتب'
-'Modification d''un nouveau livre': '__Modification d''un nouveau livre'
+'Modification d''un nouveau livre': 'إبدال كتاب جديد'
 'GESTION DES PROGRAMMES D''ETUDE': 'إدارة برامج الدراسة'
 Progression: التقدم
 'Mémorisation de coran': 'حفظ القرآن الكريم'
 'Les livres au programme': 'الكتب في البرنامج'
 'Ajouter un livre': 'إضافة كتاب'
-'Pas de livre pour le moment': '__Pas de livre pour le moment'
-'PROGRESSION :': التقدم
+'Pas de livre pour le moment': 'لا كتاب الآن'
+'PROGRESSION                                                                                          : ': التقدم
 'Programme général': 'البرنامج العام'
-'Voir le bilan de l''Academie': '__Voir le bilan de l''Academie'
-'Voir le bilan du centre de formation': '__Voir le bilan du centre de formation'
+'Voir le bilan de l''Academie': 'انظر الخلاصة العمومية للأكاديمية'
+'Voir le bilan du centre de formation': 'انظر الخلاصة العمومية للتكوين'
 'Bilan Annuel': 'المراجعة السنوية'
-Session: __Session
-'Changer mon mot de passe': 'تغيير رقم السر'
+Session: الفترة
+'Changer mon mot de passe': 'تغيير الرقم السر'
 'Années scolaires précédentes': 'السنة الدراسية الماضية'
-'Revenir en': '__Revenir en'
+'Revenir en': 'عد إلى'
 Statut: حالة
 'Saisie des notes des classes': 'تسجيل درجات الفصول'
 'Heures d''absences enregistrées': 'ساعات الغياب المسجلة'
 'Voir les heures d''absence enregistrées': 'عرض ساعات الغياب المسجلة'
 Statistiques: الإحصائيات
 'Voir les heures d''absences': 'عرض ساعات الغياب'
-'Edition des listes d''appel': '__Edition des listes d''appel'
-'Edition des listes de classe': '__Edition des listes de classe'
+'Edition des listes d''appel': 'تغيير قوائم الأسماء'
+'Edition des listes de classe': 'تغيير قوائم الفصول '
 'Nombre de redoublants': 'عدد الراسبين'
 'Nombre de Garçons': 'عدد البنون'
 'Nombre de Filles': 'عدد البنات'
-'Modification dniveau de': '__Modification dniveau de'
+'Modification du niveau de': 'تغيير مستوى'
 'Modifier le niveau': 'تغيير المستوى'
 Matières: 'المواد الدرسية'
-'Autres modules': '__Autres modules'
-'Programmes d''étude': '__Programmes d''étude'
-'Les classes de': '__Les classes de'
-Redoublants: __Redoublants
-Garçons: __Garçons
-Filles: __Filles
-'Espace élèves inscrits': '__Espace élèves inscrits'
-Motif: __Motif
-'Motif de renvoi': '__Motif de renvoi'
-'Identification des parents / Tuteur': '__Identification des parents / Tuteur'
-Tuteur: __Tuteur
-'Scolarité & Conduite': '__Scolarité & Conduite'
-'Liste des permissions enregistrées': '__Liste des permissions enregistrées'
-'Entrez le matricule de l''élève puis appuyez sur la touche "Entrée"': '__Entrez le matricule de l''élève puis appuyez sur la touche "Entrée"'
-'Liste des permissions demandées -': '__Liste des permissions demandées -'
-'Enregistrer une permission': '__Enregistrer une permission'
-Départ: __Départ
-Retour: __Retour
-'Flash inscription de la classe': '__Flash inscription de la classe'
-'Sélectionner une halaqa': '__Sélectionner une halaqa'
-'Inscriptions groupées': '__Inscriptions groupées'
-'Flash inscription': '__Flash inscription'
-'Gestion des notes': '__Gestion des notes'
-'Notes & résultats': '__Notes & résultats'
-Bilan: __Bilan
-'GESTION DES NOTES D''EXAMEN': '__GESTION DES NOTES D''EXAMEN'
-'Notes et résultats d''examen': '__Notes et résultats d''examen'
-'Flash Inscription': '__Flash Inscription'
-Annexe: __Annexe
-'Accueil de la direction des affaires scolaires': '__Accueil de la direction des affaires scolaires'
-'Date d''inscription à l''internat': '__Date d''inscription à l''internat'
-'Elèves internés': '__Elèves internés'
-Responsable: __Responsable
-Messages: __Messages
-Disposition: __Disposition
-'Disposition en salle de classe': '__Disposition en salle de classe'
-'Disposition des salles de cours': '__Disposition des salles de cours'
-Bâtiments: __Bâtiments
-'Mise à jour des informations des élèves de': '__Mise à jour des informations des élèves de'
-'Conduite des élèves de la classe': '__Conduite des élèves de la classe'
-'Conduites enregistrées pour les élèves de': '__Conduites enregistrées pour les élèves de'
-'Conduite des élèves': '__Conduite des élèves'
-'Afficher les conduites saisies': '__Afficher les conduites saisies'
-Conduites: __Conduites
-'Voir les conduites': '__Voir les conduites'
-'Disposition des classes': '__Disposition des classes'
-Résultats: __Résultats
-'Modification des heures d''absence de': '__Modification des heures d''absence de'
-'Edition de la matière pour le niveau': '__Edition de la matière pour le niveau'
-'Progression :': '__Progression :'
-Coefficient: __Coefficient
-'Nbr. heures de cours': '__Nbr. heures de cours'
-'Niveaux de formation': '__Niveaux de formation'
-'Gestion du programme d''étude': '__Gestion du programme d''étude'
-'Notes d''examen': '__Notes d''examen'
-'Gestion des notes d''examens': '__Gestion des notes d''examens'
-'Autres annexes': '__Autres annexes'
-'Espace coran': '__Espace coran'
-'Disposition classes': '__Disposition classes'
-'Espace enseignant': '__Espace enseignant'
+'Autres modules': 'وحدات أخرى'
+'Programmes d''étude': 'شؤون التعلمية'
+'Les classes de': الفصول
+Redoublants: الراسبون
+Garçons: البنون
+Filles: البنات
+'Espace élèves inscrits': 'منطقة الطلاب المسجلة'
+Motif: سبب
+'Motif de renvoi': 'سبب الفصل'
+'Identification des parents / Tuteur': 'معلومات الوالدية/الولي'
+Tuteur: ولي
+'Scolarité & Conduite': 'الدراسة والسلوك'
+'Liste des permissions enregistrées': 'قائمة الأذونات المسجلة'
+'Entrez le matricule de l''élève puis appuyez sur la touche "Entrée"': 'أدخل رقم سير الطالب واضغط على مفتاح إنتر'
+'Liste des permissions demandées -': 'قائمة الاستذانات المطلبة'
+'Enregistrer une permission': 'تسجيل استذان'
+Départ: بداية
+Retour: إعادة
+'Flash inscription de la classe': 'تسجيل الفصل فلاش'
+'Sélectionner une halaqa': 'اختيار حلقة'
+'Inscriptions groupées': 'التسجيلات المجمعة'
+'Flash inscription': 'تسجيل فلاش'
+'Gestion des notes': 'تدبير الدرجات'
+'Notes & résultats': 'الدرجات والنتائج'
+Bilan: خلاصة
+'GESTION DES NOTES D''EXAMEN': 'تدبير درجات الامتحان'
+'Notes et résultats d''examen': 'دزجات ونتائج الامتحان'
+'Flash Inscription': 'تسجيل فلاش'
+Annexe: فرع
+'Accueil de la direction des affaires scolaires': 'الصفحة الرئيسية لإدارة الشؤون الطلاب'
+'Date d''inscription à l''internat': 'تاريخ التسجيل في السكن'
+'Elèves internés': 'الطلاب السكني'
+Responsable: المسؤول
+Messages: الرسائل
+Disposition: تخطيط
+'Disposition en salle de classe': 'تخطيط عن قاعة الفصل'
+'Disposition des salles de cours': 'تخطيط قاعات الدروس'
+Bâtiments: قصور
+'Mise à jour des informations des élèves de': 'تحديث معلومات الطلاب من'
+'Conduite des élèves de la classe': 'خلق طلاب الفصل'
+'Conduites enregistrées pour les élèves de': 'الأخلاق المسجلة على الطلاب من'
+'Conduite des élèves': 'أخلاق الطلاب'
+'Afficher les conduites saisies': 'عرض الأخلاق المسجلة'
+Conduites: الأخلاق
+'Voir les conduites': 'انظر الأخلاق'
+'Disposition des classes': 'تخطيط الفصول'
+Résultats: النتائج
+'Modification des heures d''absence de': 'تغيير ساعات من غياب ل'
+'Edition de la matière pour le niveau': 'تغيير المادة للمستوى'
+Coefficient: معامل
+'Nbr. heures de cours': 'عدد ساعات الدروس'
+'Niveaux de formation': 'مستويات التدريب'
+'Gestion du programme d''étude': 'تجبير المناهج الدراسية'
+'Notes d''examen': 'درجات الامتحان'
+'Gestion des notes d''examens': 'تدبير درجات الامتحان'
+'Autres annexes': 'فروع أخرى'
+'Espace coran': 'منطقة القرآن الكريم'
+'Disposition classes': 'تخطيط الفصول'
+'Espace enseignant': 'منطقة المعلم(ة)'
+'Programme d''examen': 'برنامج الامتحان'
+'Aucun programme n''été enregistré pour le moment.': 'لم يتم تسجيل أي برنامج بعد.'
+'Programme de': 'برنامج ل'
+Niveaux: مستويات
+Dates: تواربخ
+'Heures début': 'بداية الحصة'
+'Heures fin': 'نهاية الحصة'
+'Enregistrement de groupe de composition': 'تسجيل مجموعة الطلاب في الامتحان'
+'Enregistrement du programme d''examen de la classe': 'تسجيل برنامج الامتحان على الفصل'
+Salles: القاعات
+'Enregistrement du programme de composition': 'تسجيل برنامج الامتحان'
+'Voir tous le programme d''examen de tous les niveaux': 'انظر جميع برنامج المتحان على كل المستويات'
+'Edition d''un nouveau programme': 'تغيير البرنامج الجديد'
+'Enregistrement de groupe de composition de la classe': 'تسجيل مجموعة الطلاب من الفصل في الامتحان'
+'Groupes de composition de': 'Groupes de composition de'
+'Programme de composition': 'برنامج الامتحان'
+'Programme par niveau': 'برنامج لكل مستوى'
+'Groupes de composition': 'مجموعة الامتحان'
+'Tous les programmes': 'جميع البرامج'
+'Liste des classes': 'قائمة الفصول'
+'Liste des groupes': 'قائمة المجموعات'
+'Enregistrement d''un nouveau programme': 'تسجيل البرنامج الجديد'
+'de l''année scolaire': 'للعام الجديد'
+Classes: فصول
+Groupes: مجموعات
+Surveillants: مراقبون
+'Aucune matière n''été enregistrée pour le moment.': 'لم يتم تسجيل أي مادة بعد.'
+'Enregistrement du programme d''examen du niveau': 'تسجيل برنامج الامتحان على المستوى'
+Programme: برنامج
+'Sexe Ar': 'جنس بالعربية'
+'Lieu de naissance': 'مكان الميلاد'
+'Lieu de naissance Ar': 'مكان الميلاد بالعربية'
+'Classe Ar': 'فصل بالعربية'
+'Contact Tuteur': 'جوال الولي'
+'': __
+Récipiendaires: الشهادات
+'Entrez le matricule de l''élève récipiendaire et appuyez sur la touche "Entrée"': '"أدخل رقم سير الطالب المستلم واضغط مفتاح  "إنتر'
+'Modification dniveau de': 'تغيير المستوى ل'
+'Liste des récipiendaires -': 'قائمة المستلمين -'
+'Ajouter récipiendaire': 'لإضافة المستلم'
+Mention: تقدير
+Numero: رقم
+'Date délivrance': 'تاريخ التسليم'
+'Mise à jour de l''année scolaire': 'تحديث العام الدراسي'
+'Editer l''année': 'تغيير العام'
+'Programme de l''année': 'البرنامج السنوي'
+'Ajouter un programme': 'لإضافة برنامج'
+'Imprimer le programme annuel': 'لطباعة البرنامج السنوي'
+'Pas de programme pour le moment': 'لم يتم أي برنامج الآن'
+'Programme annuel': 'برنامج سنوي'
+'Choix d''annexe': 'اختيار الفرع'
+Annexes: فروع
+'Rapport des absences enregistrées pour la classe': 'تقرير الغيابات المسجلة على الفصل'
+'Mise à jour d''appel de l''élève': 'تحديث تحضير الطالب'
+'Voir les heures d''absence au cours enregistrées': 'انظر حصص الغيابات المسجلة على الدروس'
+'Rapport des absences au cours': 'تقرير الغيابات في الدروس'
+'Rapport des absences en coran': 'تقرير الغيابات في الحلقة'
+'Rapport des absences de l''élève': 'تقرير غيابات الطالب'
+'Voir les heures d''absence enregistrées en coran': 'انظر حصص الغيابات المسجلة على الحلقات'
+'Pas de halaqaq pour le moment': 'لم يتم أي حلقة بعد'
+'Progression       : ': 'منهج       : '
+'Voir le programme': 'انظر برنامج'
+'Mise à jour d''un examen': 'تحديث امتحان'
+'Nom & Prénom :': 'لقب واسم :'
+'Mois de :': 'شهر من :'
+'Somme :': 'مبلغ :'
+'Home Panel Admin': 'لوحة استقبال المشرفين'
+'Direction des études': 'إدارة التعليمية'
+Internat: سكن داخلي
+Organisation: إدارة الشؤون الدعوية والاجتماعية
+Utilisateurs: مستخدمون
+'Agents de l''Institut': 'عمال المركز'
+'Progression :': 'منهج :'

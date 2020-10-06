@@ -1,5 +1,10 @@
 
 {% extends "ISIBundle:Examen:base-bulletin.html.twig" %}
+
+
+{% block title %}Impression du bulletin de {{ moyenne.eleve.nom }} de {{examen.libelleFr}} {{ annee.libelle }} {% endblock %}
+
+
 {% block body %}
     <!-------------------------    Début tableau des notes  ---------------------------->
     <table class="les-notes" align="center">
@@ -17,7 +22,7 @@
         {% set numero = 0 %}
         {% for note in notes %}
             {% for item in ens %}
-                {% if item.matiere.id == note.matiere.id %}
+                {% if item.matiere == note.matiere %}
                     {% set moyCoeff = note.getNote * item.coefficient %}
                     {% if (numero % 2) == 0 %}
                         {% set color = 'white' %}
@@ -29,7 +34,13 @@
                         <td class="valeur-note" with="10%" align="center">{{ note.getNote }}</td>
                         <td class="valeur-note" with="10%" align="center">{{ item.coefficient }}</td>
                         <td class="valeur-note" with="10%" align="center">{{ moyCoeff }}</td>
-                        <td class=""></td>
+                        <td class="">
+                            {% set enseignant = "" %}
+                            {% for crs in cours if crs.matiere == item.matiere %}
+                                {% set enseignant = crs.anneeContrat.contrat.enseignant %}
+                            {% endfor %}
+                            {% if item.matiere.id == 1 and regime == "A" %}{{ enseignantCoran }}{% elseif enseignant != "" %}{{ enseignant.pnomAr }} {{ enseignant.nomAr }}{% endif %}
+                        </td>
                         <td class="">&nbsp;&nbsp;{{ note.getAppreciation.getAppreciationAr }}</td>
                         <td class=""></td>
                     </tr>
@@ -47,7 +58,23 @@
             <td><span class="titre-info-moyenne">المجموع :&nbsp;&nbsp;</span><span class="info-moyenne">{{ moyenne.getTotalPoints }}</span></td>
             <td><span class="titre-info-moyenne">المعدل :&nbsp;&nbsp;</span><span class="info-moyenne">{{ moyenne.getMoyenne|number_format(2) }}</span></td>
             <td><span class="titre-info-moyenne">الترتيب :&nbsp;&nbsp;</span><span class="info-moyenne">{{ moyenne.getRang }}</span></td>
-        <tr/>
+        </tr>
+    </table>
+    <table class="la-moyenne" align="center">
+        <tr>
+            <th class="titre-info-moyenne" style="line-height: 30px">
+                مجموع ساعات الغياب <br>
+                <span>{{ heuresAbsence.totalHeuresAbsences }}</span>
+            </th>
+            <th class="titre-info-moyenne" style="line-height: 30px">
+                مجموع ساعات الغياب المبرر <br>
+                <span>{{ heuresAbsence.totalHeuresJustifiees }}</span>
+            </th>
+            <th class="titre-info-moyenne" style="line-height: 30px">
+                مجموع ساعات الغياب الغير مبرر <br>
+                <span style="color: red; font-weight: bold">{{ heuresAbsence.totalHeuresAbsences - heuresAbsence.totalHeuresJustifiees }}</span>
+            </th>
+        </tr>
     </table>
     <!-- Fin de la boucle sur les moyennes, sur les élèves donc -->
 {% endblock %}

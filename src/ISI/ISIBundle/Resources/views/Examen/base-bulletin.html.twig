@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>Impression des bulletins | {{classe.libelleFr}} </title>
+    <title>{% block title %}Impression des bulletins | {{classe.libelleFr}}{% endblock %}</title>
     {% block stylesheets %}{% endblock %}
 
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />

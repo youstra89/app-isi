@@ -92,7 +92,7 @@
                       <a href="{{path('emploi_du_temps_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}"  data-tooltip="Voir l'emploi du temps de la classe">
                         <i class="time green icon"></i>
                       </a>
-                      {% if is_granted('ROLE_DIRECTION_ENSEIGNANT') %}
+                      {% if is_granted('ROLE_SUPER_ADMIN') %}
                         &nbsp;&nbsp;&nbsp;
                         <a href="{{path('ens_editer_cours_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'classeId': classe.id})}}"  data-tooltip="Editer les cours de la classe">
                           <i class="edit positive icon"></i>

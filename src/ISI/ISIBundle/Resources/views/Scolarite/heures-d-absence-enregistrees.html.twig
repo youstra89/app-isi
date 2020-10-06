@@ -24,12 +24,14 @@
 						</a>
 					</th>
 				{% endfor %}
+				<th>Total</th>
 			</tr>
 		</thead>
 		<tbody>
 			{% set numero = 0 %}
 			{% set color = '' %}
 			{% for eleve in eleves %}
+				{% set totalHeuresAbsence = 0 %}
 				{# Ce code me permet d'alterner la couleur des lignes du tableau #}
 				{% if (numero % 2) == 0 %}
 					{% set color = 'white' %}
@@ -58,10 +60,12 @@
 								{% else %}
 									{% set heuresAbsences = absEleve.getHeureCoran %}
 								{% endif %}
-								<td align="right" data-tooltip="{{ abs.getMois.getMois}}">{{ heuresAbsences }}</td>
+								{% set totalHeuresAbsence = totalHeuresAbsence + heuresAbsences %}
+								<td align="center" data-tooltip="{{ abs.getMois.getMois}}">{{ heuresAbsences }}</td>
 							{% endif %}
 						{% endfor %}
 					{% endfor %}
+					<td align="center">{{totalHeuresAbsence}}</td>
                 </tr>
 			{% endfor %}
 		</tbody>

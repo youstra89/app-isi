@@ -1,0 +1,117 @@
+{# Page d'ajout d'un nouvel examen #}
+
+{% extends "ISIBundle:Examen:index.html.twig" %}
+
+{% block title %}
+	Mise à jour des notes de {{ matiere.libelle }} en {{ classe.libelleFr }}
+{% endblock %}
+
+
+{% block contextual_menu %}
+  {{ include("ISIBundle:Examen:contextual-menu-notes-exam.html.twig") }}
+{% endblock %}
+
+
+
+{% block body %}
+	<div class="ui info message" style="">
+		<center>
+			<h2>{{ 'Mise à jour des notes de'|trans }} {{classe.libelleFr}} en {{matiere.libelle}}</h2>
+			<h3>{{ 'Session'|trans }} {{ examen.session }} : {{ examen.annee.libelle }}</h3>
+		</center>
+	</div>
+	<form action="" method="post" class="ui mini form">
+		<table class="ui selectable celled striped table">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Matricule</th>
+					<th>Nom & Prénoms</th>
+					<th>Photo</th>
+					{% for item in matieresFr %}
+						<th width="10%">{{ item.matiere.libelle }}</th>
+					{% endfor %}
+					<th>Moyenne</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% set numero = 0 %}
+				{% for eleve in eleves %}
+					{% set numero = numero + 1 %}
+					{% set image = "" %}
+					{% if eleve.sexe == 1 %}
+						{% set image = "images/mark.png" %}
+					{% else %}
+						{% set image = "images/molly.png" %}
+					{% endif %}
+					<tr>
+						<td>{{ numero }}</td>
+						<td>{{ eleve.matricule }}</td>
+						<td>{{ eleve.nom }}</td>
+						<td>
+							{% if eleve.photo %}
+								<img class="ui avatar image" src="{{ asset('photos/eleves/' ~ eleve.photo) }}">
+							{% else %}
+								<img class="ui avatar image" src="{{asset(image)}}">
+							{% endif %}
+						</td>
+						{% for item in matieresFr %}
+							{% set note = "" %}
+							{% for noteF in notesFrancais if noteF.matiere == item.matiere and noteF.eleve == eleve %}
+								{% set note = noteF %}
+							{% endfor %}
+							<td><input type="text" class="note eleve{{ eleve.id }}" data-eleveId="{{ eleve.id }}" id="notes{{ eleve.id }}[{{ item.matiere.id }}]" name="notes{{ eleve.id }}[{{ item.matiere.id }}]" size="10" value="{{ note.note }}"></td>
+						{% endfor %}
+						{% set moyenne = "" %}
+						{% for item in notes if item.eleve == eleve %}
+							{% set moyenne = item %}
+						{% endfor %}
+						<td><input type="text" id="total{{ eleve.id }}" name="total[{{ eleve.id }}]" value="{{ moyenne.note }}" readonly></td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<div>
+			<input type="hidden" id="nombreMatieres" name="nombreMatieres" value="{{ matieresFr|length }}">
+			<input type="submit" class="ui primary button" value="   Enregistrer les notes   " name="submit">
+		</div>
+	</form><br><br>
+{% endblock %}
+
+
+{% block javascripts %}
+	<script>
+		$(document).ready(function(){
+			var nombreMatieres = $("#nombreMatieres").val();
+			$(".note").on("keyup", function(){
+				// var id = $(this).attr("id");
+				var eleveId = $(this).attr("data-eleveId");
+				var note = parseFloat($(this).val());
+				var total = parseFloat($("#total" + eleveId).val());
+				console.log(eleveId, note, total);
+				if(note < 0 || note > 10){
+					alert('La note doit être comprise en 0 et 10');
+					$(this).val("");
+					$(this).focus();
+					$(this).select();
+				}
+
+				$("#total" + eleveId).val($.fn.calculMoyenne(eleveId));
+			})
+
+			$.fn.calculMoyenne = function(eleveId)
+			{
+				var notes_d_un_eleve = $('.eleve' + eleveId);
+				var total = 0;
+				// console.log(eleveId, notes_d_un_eleve);
+				for (let i = 0; i < notes_d_un_eleve.length; i++) {
+					const element = notes_d_un_eleve[i];
+					if(element.value != undefined && element.value != NaN && element.value != 0){
+						total += parseFloat(element.value)
+					}
+				}
+				return total / nombreMatieres;
+			}
+		});
+	</script>
+{% endblock %}

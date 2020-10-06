@@ -1,0 +1,112 @@
+<?php
+
+namespace ISI\ISIBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * NoteFrancais
+ *
+ * @ORM\Table(name="note", uniqueConstraints={@ORM\UniqueConstraint(name="note", columns={"eleve_id", "matiere_id", "examen_id"})}, indexes={@ORM\Index(name="examen_id", columns={"examen_id"}), @ORM\Index(name="matiere_id", columns={"matiere_id"}), @ORM\Index(name="eleve_id", columns={"eleve_id"})})
+ * @ORM\Entity(repositoryClass="ISI\ISIBundle\Repository\NoteFrancaisRepository")
+ */
+class NoteFrancais
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="note", type="float", nullable=true)
+     */
+    private $note;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="participation", type="boolean")
+     */
+    private $participation;
+
+    /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $createdBy;
+
+    /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="updated_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $updatedBy;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
+     */
+    private $createdAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     */
+    private $updatedAt;
+
+    /**
+     * @var \Examen
+     *
+     * @ORM\ManyToOne(targetEntity="Examen")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="examen_id", referencedColumnName="id")
+     * })
+     */
+    private $examen;
+
+    /**
+     * @var \Eleve
+     *
+     * @ORM\ManyToOne(targetEntity="Eleve")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="eleve_id", referencedColumnName="id")
+     * })
+     */
+    private $eleve;
+
+    /**
+     * @var \Matiere
+     *
+     * @ORM\ManyToOne(targetEntity="Matiere")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="matiere_id", referencedColumnName="id")
+     * })
+     */
+    private $matiere;
+
+    /**
+     * @var \Appreciation
+     *
+     * @ORM\ManyToOne(targetEntity="Appreciation")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="appreciation_id", referencedColumnName="id")
+     * })
+     */
+    private $appreciation;
+
+}

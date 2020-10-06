@@ -1,167 +1,196 @@
-Retards: __Retards
-'Voir les retards': '__Voir les retards'
-'Modifier les retards': '__Modifier les retards'
-'Enregistrement d''absences des enseignants': '__Enregistrement d''absences des enseignants'
-'Retards enregistrés': '__Retards enregistrés'
-Attention: __Attention
-Notification: __Notification
-'Saisie des retards du': '__Saisie des retards du'
-'Il n y a auccun enseignant enregistré pour le moment': '__Il n y a auccun enseignant enregistré pour le moment'
-'Retards (en min)': '__Retards (en min)'
-Matricule: __Matricule
-'Nom & prénoms des enseignants': '__Nom & prénoms des enseignants'
-minutes: __minutes
-'Gestion des fonctions': '__Gestion des fonctions'
-'Prise de fonction': '__Prise de fonction'
-'Arrêt des fonctions': '__Arrêt des fonctions'
-'Enseignants de l''année': '__Enseignants de l''année'
-'Ajouter un enseignant': '__Ajouter un enseignant'
-'Liste des enseignants': '__Liste des enseignants'
-'Enregistrement d''un nouvel enseignant': '__Enregistrement d''un nouvel enseignant'
-'Le matricule': '__Le matricule'
-'Mise à jour des informations': '__Mise à jour des informations'
-N°: __N°
-Sexe: __Sexe
-Cours: __Cours
-Coran: __Coran
-Samedi: __Samedi
-Actions: __Actions
-'Fonctions en cours': '__Fonctions en cours'
-'Aucune fonction en cours pour le moment': '__Aucune fonction en cours pour le moment'
-'Date de naissance': '__Date de naissance'
-'Gestion des élèves': '__Gestion des élèves'
-Elèves: __Elèves
-'Aucun enseignant n''a encore été inscrit': '__Aucun enseignant n''a encore été inscrit'
-'Identification personnelle': '__Identification personnelle'
-Nom: __Nom
-Prénom: __Prénom
-Homme: __Homme
-Femme: __Femme
-'Référence extrait de naissance': '__Référence extrait de naissance'
-Nationalité: __Nationalité
-Résidence: __Résidence
-'Etablissement d''origine': '__Etablissement d''origine'
-Contact: __Contact
-'Identification des parents': '__Identification des parents'
-Scolarité: __Scolarité
-Conduite: __Conduite
-'Nouvelle prise de fonction': '__Nouvelle prise de fonction'
-'Entrez le matricule de l''enseignant': '__Entrez le matricule de l''enseignant'
-Valider: __Valider
-Accueil: __Accueil
-'Ajouter enseignant': '__Ajouter enseignant'
-Fonctions: __Fonctions
-Contrôle: __Contrôle
-Absences: __Absences
-Discipline: __Discipline
-Convocations: __Convocations
-Conduites: __Conduites
-Sanctions: __Sanctions
-'Mon compte perso': '__Mon compte perso'
-'Modifier mon profil': '__Modifier mon profil'
-'Changer la langue': '__Changer la langue'
-Déconnexion: __Déconnexion
-'Année scolaire': '__Année scolaire'
-Admin: __Admin
-Utilisateur: __Utilisateur
-'GESTION DES ENSEIGNANTS': '__GESTION DES ENSEIGNANTS'
-'Enregistrement pour le programme d''enseignement': '__Enregistrement pour le programme d''enseignement'
-'Prise de fonction pour l''enseignant(e)': '__Prise de fonction pour l''enseignant(e)'
-'Voir les absences': '__Voir les absences'
-'Enregistrement d''absence pour l''enseignant:': '__Enregistrement d''absence pour l''enseignant:'
-'Enregistrement des retards des enseignants': '__Enregistrement des retards des enseignants'
-'Retards enregistrés pour le mois de': '__Retards enregistrés pour le mois de'
-Durée: __Durée
-'Discipline - Conduites': '__Discipline - Conduites'
-'Audition et Verdict': '__Audition et Verdict'
-Audition: __Audition
-Verdict: __Verdict
-'Gestion des convocations': '__Gestion des convocations'
-'Accueil des convocation': '__Accueil des convocation'
-'Convoquer des enseignants': '__Convoquer des enseignants'
-'Discipline - Convocation': '__Discipline - Convocation'
-'Sélection d''enseignants pour enregistrement de convocation': '__Sélection d''enseignants pour enregistrement de convocation'
-'Enregistrement de conduite pour l''enseignant(e)': '__Enregistrement de conduite pour l''enseignant(e)'
-'Discipline - Sanction': '__Discipline - Sanction'
-'Enregistrement de sanction': '__Enregistrement de sanction'
-'Enregistrement de conduite pour un enseignant': '__Enregistrement de conduite pour un enseignant'
-Voir: __Voir
-Ajouter: __Ajouter
-'Liste des convocations de l''année': '__Liste des convocations de l''année'
-Enseignants: __Enseignants
-'Date de convocation': '__Date de convocation'
-Instance: __Instance
-'Motif de la convocation': '__Motif de la convocation'
-'Aucun contrat n''a encore été enregistrée': '__Aucun contrat n''a encore été enregistrée'
-'Nombre de sanctions': '__Nombre de sanctions'
-Action: __Action
-'Enregistrement d''une nouvelle convocation': '__Enregistrement d''une nouvelle convocation'
-'Les conduites de': '__Les conduites de'
-'Référence de la CNI': '__Référence de la CNI'
-'Rien à signaler': '__Rien à signaler'
-'Arrêt de fonction pour l''enseignant(e)': '__Arrêt de fonction pour l''enseignant(e)'
-'Arrêter les fonctions de': '__Arrêter les fonctions de'
-'Date de fin': '__Date de fin'
-'Motif de fin de contrat': '__Motif de fin de contrat'
-'Inscrivez d''abord des enseignants.': '__Inscrivez d''abord des enseignants.'
-'Autres modules': '__Autres modules'
-'Programmes d''étude': '__Programmes d''étude'
-Programme: __Programme
-'Arrêt de fonction': '__Arrêt de fonction'
-Rencontres: __Rencontres
-'Enregistrement d''une nouvelle rencontre': '__Enregistrement d''une nouvelle rencontre'
-'Gestion des rencontres': '__Gestion des rencontres'
-'Ajouter une rencontre': '__Ajouter une rencontre'
-'Mise à jours des informations de la rencontre': '__Mise à jours des informations de la rencontre'
-'Sélection d''enseignants aynat participé à la rencontre:': '__Sélection d''enseignants aynat participé à la rencontre:'
-'Rencontres de l''année': '__Rencontres de l''année'
-'Aucune rencontre n''a encore été enregistrée': '__Aucune rencontre n''a encore été enregistrée'
-'Type de la rencontre': '__Type de la rencontre'
-Date: __Date
-Thème: __Thème
-'Liste des enseignants aynat participé à la rencontre:': '__Liste des enseignants aynat participé à la rencontre:'
-'Sanctions enregistrées au compte de': '__Sanctions enregistrées au compte de'
-'Aucune sanction n''a encore été enregistrée pour cet enseignant': '__Aucune sanction n''a encore été enregistrée pour cet enseignant'
-Type: __Type
-Description: __Description
-'Ajouter un agent': '__Ajouter un agent'
-Matière: __Matière
-Classe: __Classe
-Numéro: __Numéro
-Jour: __Jour
-Heure: __Heure
-Académie: __Académie
-'Centre de formation': '__Centre de formation'
-Messages: __Messages
-'Gestion des enseignants': '__Gestion des enseignants'
-'Affectation des enseignants': '__Affectation des enseignants'
-'Pour les cours de français': '__Pour les cours de français'
-'Pour les cours de Qur''an': '__Pour les cours de Qur''an'
-'Volume horaire': '__Volume horaire'
-'Nombre heures cours': '__Nombre heures cours'
-'Espace enseignant': '__Espace enseignant'
-'Mise à jour du programme d''enseignement de': '__Mise à jour du programme d''enseignement de'
-'Enregistrement d''un nouvel agent': '__Enregistrement d''un nouvel agent'
-Arabe: __Arabe
-Français: __Français
-Total: __Total
-'Gestion des cours': '__Gestion des cours'
-'Cours enregistrés au': '__Cours enregistrés au'
-'Il n y a aucun cours pour cette classe': '__Il n y a aucun cours pour cette classe'
-Enseignant: __Enseignant
-Coefficient: __Coefficient
-Jours: __Jours
-Heures: __Heures
-'Enregistrement des cours de la classe': '__Enregistrement des cours de la classe'
-'Il n y a aucune matière pour ce niveau': '__Il n y a aucune matière pour ce niveau'
-'Enregistrement des cours de français de la classe': '__Enregistrement des cours de français de la classe'
-'Affectation des enseignants pour les cours': '__Affectation des enseignants pour les cours'
-'Pas de classes pour le moment': '__Pas de classes pour le moment'
-'Affectation des enseignants pour les cours de français': '__Affectation des enseignants pour les cours de français'
-'Nombre heure de cours des enseignants': '__Nombre heure de cours des enseignants'
-'Pas de données disponibles pour l''heure': '__Pas de données disponibles pour l''heure'
-'Nombre heure de cours de l''enseignant': '__Nombre heure de cours de l''enseignant'
-'Affectation des enseignants dans les halaqas': '__Affectation des enseignants dans les halaqas'
-'Aucune classe n''a encore été enregistrée': '__Aucune classe n''a encore été enregistrée'
-'Appliquer les changements': '__Appliquer les changements'
-'Edition des cours de la classe': '__Edition des cours de la classe'
+Retards: التأخير
+'Voir les retards': 'انظر التأخير'
+'Modifier les retards': 'تغيير التأخير'
+'Enregistrement d''absences des enseignants': 'تسجيل تأخير المدرسين'
+'Retards enregistrés': 'التأخير المسجلة'
+Attention: تنبيه
+Notification: الإشعار
+'Saisie des retards du': 'كتابة التأخير من'
+'Il n y a auccun enseignant enregistré pour le moment': 'لم يتم تسجيل أي معلم(ة) بعد'
+'Retards (en min)': 'التأخير(إن دقائق)'
+Matricule: 'الرقم السير'
+'Nom & prénoms des enseignants': 'لقب واسم المعلمين'
+minutes: الدقائق
+'Gestion des fonctions': 'تدبير الوظائف'
+'Prise de fonction': 'بداية الوظيفة'
+'Arrêt des fonctions': 'توقف الوظيفة'
+'Enseignants de l''année': 'المعلممن في السنة'
+'Ajouter un enseignant': 'لإضافة معلم(ة)'
+'Liste des enseignants': 'قائمة المعلمين'
+'Enregistrement d''un nouvel enseignant': 'تسجيل المعلم(ة) الجديد(ة)'
+'Le matricule': 'الرقم السير'
+'Mise à jour des informations': 'تحديث المعلومات'
+N°: 'الرقم التسلسلي'
+Sexe: الجنس
+Cours: الدروس
+Coran: 'القرآن الكريم'
+Samedi: السبت
+Actions: الإجراءات
+'Fonctions en cours': 'الوظائف المستمرة'
+'Aucune fonction en cours pour le moment': 'لا أي وظيفة مستمرة الآن'
+'Date de naissance': 'تاريخ الميلاد'
+'Gestion des élèves': 'تدبير الطلاب'
+Elèves: الطلاب
+'Aucun enseignant n''a encore été inscrit': 'لم يتم تسجيل أي معلم(ة) بعد'
+'Identification personnelle': 'التعريف الشخصي'
+Nom: اللقب
+Prénom: الاسم
+Homme: رجل
+Femme: امرأة
+'Référence extrait de naissance': 'رقم الشهادة الميلاد'
+Nationalité: الجتسية
+Résidence: المسكن
+'Etablissement d''origine': 'المؤسسة الأصلية'
+Contact: 'اتصال إلى'
+'Identification des parents': 'تعريف الوالدين'
+Scolarité: الدراسة
+Conduite: الخلق
+'Nouvelle prise de fonction': 'وظيفة مأخذ جديدة'
+'Entrez le matricule de l''enseignant': 'أدخل رقم سير المعلم(ة)'
+Valider: تم
+Accueil: 'ورقة الاستقبال'
+'Ajouter enseignant': 'لإضافة المعلم(ة)'
+Fonctions: الوظائف
+Contrôle: المراقبة
+Absences: التأخير
+Discipline: الانضباط
+Convocations: الدعوات
+Conduites: الأخلاق
+Sanctions: العقوبات
+'Mon compte perso': 'الحساب الشخصي'
+'Modifier mon profil': 'تحرير ملف التعريف الخاص بي'
+'Changer la langue': 'تغيير اللغة'
+Déconnexion: خروج
+'Année scolaire': 'الستة الدراسية'
+Admin: مشرف
+Utilisateur: المستخدمين
+'GESTION DES ENSEIGNANTS': 'تدبير المعلمين'
+'Enregistrement pour le programme d''enseignement': 'تسجيل برنامج الدراسة'
+'Prise de fonction pour l''enseignant(e)': 'مأخذ وظيفة المعلم(ة)'
+'Voir les absences': 'انظر التأخير'
+'Enregistrement d''absence pour l''enseignant                                  : ': 'تسجيل غياب المعلم(ة)                                     : '
+'Enregistrement des retards des enseignants': 'تسجيل تأخير المعلمين'
+'Retards enregistrés pour le mois de': 'التأخير المسجلة من الشهر'
+Durée: المدة
+'Discipline - Conduites': 'الانضباط - الأخلاق'
+'Audition et Verdict': 'سمع وحكم'
+Audition: سمع
+Verdict: حكم
+'Gestion des convocations': 'تدبير الدعوات'
+'Accueil des convocation': 'استقبال الدعوات'
+'Convoquer des enseignants': 'دعوة معلمين'
+'Discipline - Convocation': 'الانضباط - الدعوات'
+'Sélection d''enseignants pour enregistrement de convocation': 'اختيار معلمين لتسجيل دعوة'
+'Enregistrement de conduite pour l''enseignant(e)': 'تسجيل خلق المعلم(ة)'
+'Discipline - Sanction': 'الانضباط - العقوبة'
+'Enregistrement de sanction': 'تسجيل عقوبة'
+'Enregistrement de conduite pour un enseignant': 'تسجيل خلق المعلم(ة)'
+Voir: انظر
+Ajouter: إضافة
+'Liste des convocations de l''année': 'قائمة الدعوات في السنة'
+Enseignants: المعلمون
+'Date de convocation': 'تاريخ الدعوة'
+Instance: اللجنة
+'Motif de la convocation': 'سبب الدعوة'
+'Aucun contrat n''a encore été enregistrée': 'لم يتم تسجيل أي عقد بعد'
+'Nombre de sanctions': 'عدد العقوبات'
+Action: الإجراء
+'Enregistrement d''une nouvelle convocation': 'تسجيل دعوة جديدة'
+'Les conduites de': 'الأخلاق ل'
+'Référence de la CNI': 'رقم البطاقة الشخصية'
+'Rien à signaler': 'لا شيء للإبلاغ'
+'Arrêt de fonction pour l''enseignant(e)': 'توقف وظيفة المعلم(ة)'
+'Arrêter les fonctions de': 'توقف وظائف من'
+'Date de fin': 'تاريخ النهاية'
+'Motif de fin de contrat': 'سبب نهاية العقد'
+'Inscrivez d''abord des enseignants.': 'سجلوا المعلمين أولا.'
+'Autres modules': 'وحدات إخرى'
+'Programmes d''étude': 'برامج الدراسة'
+Programme: برنامج
+'Arrêt de fonction': 'توقف وظيفة'
+Rencontres: الاجتماعات
+'Enregistrement d''une nouvelle rencontre': 'تسجيل اجتماع جديد'
+'Gestion des rencontres': 'تدبير الاجتماعات'
+'Ajouter une rencontre': 'لإضافة الاجتماع'
+'Mise à jours des informations de la rencontre': 'تحديث معلومات الاجتماع'
+'Sélection d''enseignants aynat participé à la rencontre                       : ': 'اختيار المعلمين الموجودين في الاجتماع                    : '
+'Rencontres de l''année': 'الاجتماعات في السنة'
+'Aucune rencontre n''a encore été enregistrée': 'لم يتم تسجيل أي اجتماع بعد'
+'Type de la rencontre': 'نوع الاجتماع'
+Date: التاريخ
+Thème: الموضوع
+'Liste des enseignants aynat participé à la rencontre                          : ': 'قائمة المعلمين الموجودين في الاجتماع                     : '
+'Sanctions enregistrées au compte de': 'العقوبات المسجلة على'
+'Aucune sanction n''a encore été enregistrée pour cet enseignant': 'لم يتم تسجيل أي عقوبة على هذا/هذه المعلم(ة)'
+Type: النوع
+Description: الوصف
+'Ajouter un agent': 'لإضافة عامل'
+Matière: المادة
+Classe: الفصل
+Numéro: الرقم
+Jour: اليوم
+Heure: الساعة
+Académie: الأكاديمي
+'Centre de formation': التكوين
+Messages: الرسائل
+'Gestion des enseignants': 'تدبير المعلمين'
+'Affectation des enseignants': 'تعيين المعلمين'
+'Pour les cours de français': 'لدروس الفرنسية'
+'Pour les cours de Qur''an': 'لدروس القرآنية'
+'Volume horaire': 'عدد حصص'
+'Nombre heures cours': 'عدد حصص الدروس'
+'Espace enseignant': 'منطقة المعلم(ة)'
+'Mise à jour du programme d''enseignement de': 'تحديث برنامج الدراسية من'
+'Enregistrement d''un nouvel agent': 'تسجيل عامل جديد'
+Arabe: العربية
+Français: الفرنسية
+Total: المجموع
+'Gestion des cours': 'تدبير الدروس'
+'Cours enregistrés au': 'الدروس المسجلة على'
+'Il n y a aucun cours pour cette classe': 'لم يتم أي درس لهذا الفصل'
+Enseignant: المعلم(ة)
+Coefficient: الوحدة
+Jours: الأيام
+Heures: الساعات
+'Enregistrement des cours de la classe': 'تسجيل دروس الفصل'
+'Il n y a aucune matière pour ce niveau': 'لم يتم أي مادة لهذا المستوى '
+'Enregistrement des cours de français de la classe': 'تسجيل دروس الفرنسية على الفصل'
+'Affectation des enseignants pour les cours': 'تعيين المعلمين للدروس'
+'Pas de classes pour le moment': 'لا فصول الآن'
+'Affectation des enseignants pour les cours de français': 'تعيين المعلمين للدروس الفرنسية'
+'Nombre heure de cours des enseignants': 'عدد حصص المعلمين'
+'Pas de données disponibles pour l''heure': 'لا معلومات جاهزة الآن'
+'Nombre heure de cours de l''enseignant': 'عدد حصص المعلم(ة)'
+'Affectation des enseignants dans les halaqas': 'تعيين المعلمين على الحلقات'
+'Aucune classe n''a encore été enregistrée': 'لم يتم تسجيل أي فصل بعد'
+'Appliquer les changements': 'تطبيق التغييرات'
+'Edition des cours de la classe': 'تغيير دروس الفصل'
+Examens: الامتحانات
+'Aucune examen n''a encore été enregistré': 'لم يتم تسجيل أي امتحان بعد'
+'Programme de surveillance de l''examen': 'برنامج مراقبة الامتحان'
+'Aucun programme de surveillance n''a été enregistré pour vous': 'لم يتم تسجيل أي برنامج المراقبة لكم بعد'
+'Le programme n''a pas encore été publié. Vueillez patienter s''il vous plaît.': 'لم ينشر البرنامج بعد. يرجى الانتظار من فضلكم.'
+Appel: Appel
+'Nom & prénoms des élèves': 'لقب وأسماء الطلاب'
+'Programme d''examen': 'برنامج الامتحان'
+Salle: قاعة
+'Enregistrement des heures de travail au bureau': 'تسجيل أوقات العمل في الإدارة'
+heures: حصص
+'Agents en fonction': 'العمال في وظيفة'
+'Heures de travail des agents': 'حصص عمل مؤظفين'
+'Heures de travail': 'حصص العمل'
+'Agents de l''institut': 'عمال المركز'
+Administrateur: مشرف
+Autre: أخرى
+Annexe: فرع
+'Utiliser enseignant': 'لاستخدام المعلم(ة)'
+'Emploi du temps de': 'جدول ل'
+'Rapport des absences en coran': 'تقرير الغيابات في الحلقة'
+'Tous les cours enregistrés': 'جميع دروس مسجلة'
+'Voir les heures d''absence au cours enregistrées': 'انظر حصص الغياب على الدروس'
+'Sélection d''enseignants aynat participé à la rencontre: ': 'اختيار المعلمين الموجودين في الاجتماع: '
+'Rapport de la rencontre': 'تقرير الاجتماع'
+'Liste des enseignants aynat participé à la rencontre   : ': 'قائمة المعلمين الموجودين في الاجتماع   : '
+'Enregistrement d''absence pour l''enseignant:': 'تسجيل غياب على المعلم(ة):'
+'Sélection d''enseignants aynat participé à la rencontre:': 'اختيار المعلمين الموجودين في الاجتماع:'
+'Liste des enseignants aynat participé à la rencontre:': 'قائمة المعلمين الموجودين في الاجتماع:'

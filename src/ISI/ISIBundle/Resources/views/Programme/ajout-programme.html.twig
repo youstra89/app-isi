@@ -1,0 +1,51 @@
+{% extends "ISIBundle:Programme:index.html.twig" %}
+
+{% block title %}
+  Enregistrement de programme
+{% endblock %}
+
+
+{% block body %}
+  <h2>{{ 'Enregistrement d\'un nouveau programme'|trans }}</h2>
+  <div class="form-group">
+    <form action="" method="post" class="ui form">
+      <div class="fields">
+        <div class="six wide field">
+          <label for="description">Description</label>
+          <input type="text" name="description" id="description">
+        </div>
+        <div class="field">
+          <label for="debut">Début</label>
+          <input type="date" name="debut" id="debut" />
+        </div>
+        <div class="field">
+          <label for="fin">Fin</label>
+          <input type="date" name="fin" id="fin" />
+        </div>
+        <div class="field"><br>
+          <div class="ui toggle checkbox">
+            <input type="checkbox" name="periodeDeCours" id="periodeDeCours">
+            <label for="periodeDeCours">Période de cours</label>
+          </div>
+        </div>
+      </div>
+      <div class="twelve wide field">
+        <label for="commentaire">Commentaire</label>
+        <textarea name="commentaire" id="commentaire"></textarea>
+      </div>
+      <br>
+      <button class="ui positive button">Enregistrer</button>
+    </form><br><br>
+  </div>
+{% endblock %}
+
+
+{% block javascripts %}
+  <script src="https://cdn.ckeditor.com/4.11.1/standard/ckeditor.js"></script>
+  <script>
+    CKEDITOR.replace( 'commentaire', {
+      language: 'fr',
+      uiColor: '#9AB8F3',
+    });
+  </script>
+{% endblock %}

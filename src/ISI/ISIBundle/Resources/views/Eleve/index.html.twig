@@ -3,9 +3,31 @@
 
 {% block stylesheets %}
   <link rel="stylesheet" href="http://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
-  <link rel="stylesheet" type="text/css" href="{{ asset('semantic/ui/dist/semantic.min.css') }}" />
   <link rel="stylesheet" type="text/css" href="{{ asset('DataTables/datatables.min.css') }}">
-  <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" />
+  <style>
+    .small-col {
+      width: 5px !important;
+      text-align: left;
+    }
+
+    .matricule {
+      width: 90px !important;
+      text-align: left;
+    }
+
+    .md-col {
+      width: 75px !important;
+      text-align: left;
+    }
+
+    .big-col {
+      width: 300px !important;
+      text-align: left;
+    }
+    table#example{
+      table-layout:fixed;
+    }
+  </style>
 {% endblock %}
 
 
@@ -40,43 +62,40 @@
   {% if eleves is not defined %}
     Aucun élève inscrit
   {% else %}
-    {% if regime is same as('A') %}
-      <a href="{{ path('isi_preinscription', {'as': asec, 'annexeId': annexe.id, 'regime': 'A'}) }}">
+    {% if is_granted("ROLE_DIRECTEUR_ANNEXE") %}
     {% else %}
-      <a href="{{ path('isi_preinscription', {'as': asec, 'annexeId': annexe.id, 'regime': 'F'}) }}">
+      <a href="{{ path('isi_preinscription', {'as': asec, 'annexeId': annexe.id, 'regime': regime}) }}" class="positive ui button">
+        <i class="plus icon"></i>{{ 'Préinscrire un nouvel élève'|trans }}
+      </a><br><br>
     {% endif %}
-      <button class="positive ui button">
-        <i class="plus icon"></i>
-        {{ 'Préinscrire un nouvel élève'|trans }}
-      </button>
-    </a><br><br>
-    <table id="example" class="display nowrap" style="width:100%">
-      <thead>
-        <tr>
-          <th align="center" width="5px">N°</th>
-          <th>{{ 'Matricule'|trans }}</th>
-          <th>Nom & Prénom</th>
-          <th>الإسم و اللقب</th>
-          <th>{{ 'Sexe'|trans }}</th>
-          <th>{{ 'Date de naissance'|trans }}</th>
-          <th>{{ 'Actions'|trans }}</th>
-        </tr>
-      </thead>
-      <tbody>
-      {% set numero = 0 %}
-      {% for eleve in eleves %}
-        {% set color = '' %}
-        {% set numero = numero + 1 %}
-        {% if eleve.renvoye == 1 %}
-          {% set color = 'red' %}
-        {% endif %}
-        <tr>
-          <td align="center"><font color={{ color }}>{{ numero }}</font></td>
-          <td><font color={{ color }}>{{ eleve.matricule }}</font></td>
-          <td><font color={{ color }}>{{ eleve.nomFr }} {{ eleve.pnomFr }}</font></td>
-          <td><font color={{ color }}>{{ eleve.pnomAr }} {{ eleve.nomAr }}</font></td>
-          <td>
-            <font color={{ color }}>
+    <div style="width: 90%">
+      <table id="example" class="display cell-border" style="width:100%">
+        <thead>
+          <tr>
+            <th align="center" class="small-col">N°</th>
+            <th class="matricule">{{ 'Matricule'|trans }}</th>
+            <th class="big-col">Nom & Prénom</th>
+            <th class="big-col">الإسم و اللقب</th>
+            <th class="md-col">{{ 'Sexe'|trans }}</th>
+            <th class="md-col">{{ 'Date de naissance'|trans }}</th>
+            <th class="md-col">{{ 'Lieu de naissance'|trans }}</th>
+            <th>{{ 'Actions'|trans }}</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% set numero = 0 %}
+        {% for eleve in eleves %}
+          {% set color = '' %}
+          {% set numero = numero + 1 %}
+          {% if eleve.renvoye == 1 %}
+            {% set color = 'red' %}
+          {% endif %}
+          <tr style="color: {{ color }}">
+            <td align="center"><font color={{ color }}>{{ numero }}</font></td>
+            <td>{{ eleve.matricule }}</td>
+            <td>{{ eleve.nomFr }} {{ eleve.pnomFr }}</td>
+            <td>{{ eleve.pnomAr }} {{ eleve.nomAr }}</td>
+            <td>
               <div class="home-eleve" data-tooltip="{{ eleve.nomFr }} {{ eleve.pnomFr }} est de sexe ">
                 {% if eleve.sexe == 1 %}
                   {{ 'ذكر' }}
@@ -84,66 +103,66 @@
                   {{ 'أنثى' }}
                 {% endif %}
               </div>
-            </font>
-          </td>
-          <td><font color={{ color }}>{{ eleve.dateNaissance|date("d-m-Y") }}</font></td>
-          <td>
-            <font color={{ color }}>
-              <div class="ui grid">
-                <div class="wide column" data-tooltip="Modifier les information de l'élève">
-                  <a href="{{ path('isi_edit_eleve', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'eleveId': eleve.id}) }}"><i class="edit icon"></i></a>
-                </div>
-                <div class="wide column" data-tooltip="Voir les informations de l'élève">
-                  <a href="{{ path('isi_info_eleve', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'eleveId': eleve.id}) }}"><i class="info circle icon"></i></a>
-                </div>
-                <div class="wide column" data-tooltip="Enregistrer une conduite de l'élève">
-                  <a href="{{ path('isi_enregistrer_conduite', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'eleveId': eleve.id}) }}"><i class="certificate icon"></i></a>
-                </div>
-                {% for eleveI in elevesI %}
-                    {% if eleve.id == eleveI.getId %}
-                        <div class="wide column" data-tooltip="Inscrit(e) à l'internat">
-                          <i class="bed icon"></i>
-                        </div>
-                    {% endif %}
-                {% endfor %}
-              </div>
-            </font>
-          </td>
-        </tr> 
-       {% endfor %}
-      </tbody>
-      <tfoot>
-        <tr>
-          <th align="center" width="5px">N°</th>
-          <th>{{ 'Matricule'|trans }}</th>
-          <th>Nom & Prénom</th>
-          <th>الإسم و اللقب</th>
-          <th>{{ 'Sexe'|trans }}</th>
-          <th>{{ 'Date de naissance'|trans }}</th>
-          <th>{{ 'Actions'|trans }}</th>
-        </tr>
-      </tfoot>
-    </table>
+            </td>
+            <td>{{ eleve.dateNaissance|date("d-m-Y") }}</td>
+            <td>{{ eleve.lieuNaissance }}</td>
+            <td>
+              {% if is_granted("ROLE_DIRECTEUR_ANNEXE") %}
+                
+              {% else %}
+                <a href="{{ path('isi_edit_eleve', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'eleveId': eleve.id}) }}" data-tooltip="Modifier les information de l'élève"><i class="edit icon"></i></a>
+              {% endif %}
 
+              <a href="{{ path('isi_info_eleve', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'eleveId': eleve.id}) }}" data-tooltip="Voir les informations de l'élève"><i class="info circle icon"></i></a>
+              <a href="{{ path('isi_enregistrer_conduite', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'eleveId': eleve.id}) }}" data-tooltip="Enregistrer une conduite de l'élève"><i class="certificate icon"></i></a>
+              {% for eleveI in elevesI if eleve.id == eleveI.getEleve.getId %}
+                <i class="green bed icon"></i>Interné(e) chez {{ eleveI.chambre.batiment.responsable }}
+              {% endfor %}
+            </td>
+          </tr> 
+        {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr>
+            <th align="center" width="5px">N°</th>
+            <th>{{ 'Matricule'|trans }}</th>
+            <th>Nom & Prénom</th>
+            <th>الإسم و اللقب</th>
+            <th>{{ 'Sexe'|trans }}</th>
+            <th>{{ 'Date de naissance'|trans }}</th>
+            <th>{{ 'Lieu de naissance'|trans }}</th>
+            <th>{{ 'Actions'|trans }}</th>
+          </tr>
+        </tfoot>
+      </table>
     </div>
+    <br><br><br>
   {% endif %}
 {% endblock %}
 
 
 {% block javascripts %}
-  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
-  <script src="{{ asset('Highcharts-6.1.0/code/highcharts.js') }}"></script>
   <script src="{{ asset('DataTables/datatables.min.js') }}"></script>
   <script>
     $(document).ready(function() {
       // Setup - add a text input to each footer cell
+      var i = 0;
+      var size = 0;
       $('#example tfoot th').each( function () {
+        size = 7;
+        i++;
         var title = $(this).text();
-        $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
-      } );
+        if(i == 3 || i == 4 || i == 8){
+          size = 35;
+        }
+        if (i != 1) {
+          $(this).html( '<input type="text" placeholder="'+title+'" size="'+size+'" />' );
+        }
+      });
     
       // DataTable
       var table = $('#example').DataTable();
+      
     
       // Apply the search
       table.columns().every( function () {

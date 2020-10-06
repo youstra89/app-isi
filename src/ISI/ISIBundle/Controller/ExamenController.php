@@ -2,17 +2,18 @@
 
 namespace ISI\ISIBundle\Controller;
 
-use ISI\ISIBundle\Entity\Eleve;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
-
 use ISI\ISIBundle\Entity\Note;
+use ISI\ISIBundle\Entity\Eleve;
 use ISI\ISIBundle\Entity\Moyenne;
-use ISI\ISIBundle\Entity\Moyenneclasse;
+use ISI\ISIBundle\Entity\NoteFrancais;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use ISI\ISIBundle\Entity\Moyenneclasse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class ExamenController extends Controller
 {
@@ -21,16 +22,15 @@ class ExamenController extends Controller
   // Cette fonction servira à afficher les classes pour pouvoir ensuite tirer (imprimer) les fiches de notes
   /**
    * @Security("has_role('ROLE_DIRECTION_ETUDE')")
-   * @Route("/examen/tirer-fiches-de-notes-{as}-{regime}", name="isi_afficher_fiches_de_notes")
+   * @Route("/examen/tirer-fiches-de-notes-{as}-{regime}-{annexeId}", name="isi_afficher_fiches_de_notes")
    */
-  public function afficherLesClassesPourTirerLesFichesDeNotesAction(Request $request, int $as, $regime)
+  public function afficherLesClassesPourTirerLesFichesDeNotesAction(Request $request, int $as, $regime, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoNiveau = $em->getRepository('ISIBundle:Niveau');
     $repoClasse = $em->getRepository('ISIBundle:Classe');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -54,18 +54,16 @@ class ExamenController extends Controller
   // pouvoir tirer la fiche de note pour la matière qu'on désire
   /**
    * @Security("has_role('ROLE_NOTE' or 'ROLE_ETUDE')")
-   * @Route("/examen/les-fiches-de-notes-de-la-classe-{as}-{regime}-{classeId}", name="isi_tirer_fiches_de_notes")
+   * @Route("/examen/les-fiches-de-notes-de-la-classe-{as}-{regime}-{classeId}-{annexeId}", name="isi_tirer_fiches_de_notes")
    */
-  public function lesFichesDeNotesDeLaClasseAction(Request $request, int $as, $regime, int $classeId)
+  public function lesFichesDeNotesDeLaClasseAction(Request $request, int $as, $regime, int $classeId, int $annexeId)
   {
-    $em = $this->getDoctrine()->getManager();
-    $repoEleve   = $em->getRepository('ISIBundle:Eleve');
+    $em          = $this->getDoctrine()->getManager();
     $repoClasse  = $em->getRepository('ISIBundle:Classe');
     $repoMatiere = $em->getRepository('ISIBundle:Matiere');
-    $repoAnnee = $em->getRepository('ISIBundle:Annee');
-    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
-    $annexe = $repoAnnexe->find($annexeId);
+    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
+    $repoAnnexe  = $em->getRepository('ISIBundle:Annexe');
+    $annexe      = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
       return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
@@ -74,9 +72,6 @@ class ExamenController extends Controller
     // Sélection de l'année scolaire
     $annee  = $repoAnnee->find($as);
 
-    // La liste des élèves de la classe
-    $eleves = $repoEleve->lesElevesDeLaClasse($as, $annexeId, $classeId);
-
     // On sélectionne l'id du niveau en fonction de l'id de la classe pour la transmettre en paramètre
     // pour la sélection des matières du niveau
     $classe = $repoClasse->find($classeId);
@@ -84,11 +79,14 @@ class ExamenController extends Controller
     $niveauId = $classe->getNiveau()->getId();
 
     // Les matières de la classe
-    $matieres = $repoMatiere->lesMatieresDuNiveau($as, $niveauId);
+    // $matieres = $repoMatiere->lesMatieresDuNiveau($as, $niveauId);
+    $matieres = $repoMatiere->lesMatieresDeCompositionDuNiveau($as, $niveauId);
+
     return $this->render('ISIBundle:Examen:fiche-de-notes-de-la-classe.html.twig', [
       'asec'     => $as,
       'regime'   => $regime,
-      'annee'   => $annee, 'annexe'   => $annexe,
+      'annee'    => $annee, 
+      'annexe'   => $annexe,
       'classe'   => $classe,
       'matieres' => $matieres
     ]);
@@ -97,41 +95,71 @@ class ExamenController extends Controller
   // Affichage de la vue pdf
   /**
    * @Security("has_role('ROLE_NOTE' or 'ROLE_ETUDE')")
-   * @Route("/examen/la-fiche-de-notes-de-la-classe-pour-une-matiere-{as}-{regime}-{classeId}-{matiereId}", name="isi_fiche_de_notes_d_une_matiere")
+   * @Route("/examen/la-fiche-de-notes-de-la-classe-pour-une-matiere-{as}-{regime}-{classeId}-{matiereId}-{annexeId}", name="isi_fiche_de_notes_d_une_matiere")
    */
-  public function laFichesDeNotesDeLaClassePourUneMatiereAction(Request $request, int $as, $regime, int $classeId, int $matiereId)
+  public function laFichesDeNotesDeLaClassePourUneMatiereAction(Request $request, int $as, $regime, int $classeId, int $matiereId, int $annexeId)
   {
-    $em = $this->getDoctrine()->getManager();
-    $repoAnnee   = $em->getRepository('ISIBundle:Annee');
-    $repoEleve   = $em->getRepository('ISIBundle:Eleve');
-    $repoClasse  = $em->getRepository('ISIBundle:Classe');
-    $repoMatiere = $em->getRepository('ISIBundle:Matiere');
-    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
-    $annexe = $repoAnnexe->find($annexeId);
+    $em               = $this->getDoctrine()->getManager();
+    $repoAnnee        = $em->getRepository('ISIBundle:Annee');
+    $repoEleve        = $em->getRepository('ISIBundle:Eleve');
+    $repoClasse       = $em->getRepository('ISIBundle:Classe');
+    $repoMatiere      = $em->getRepository('ISIBundle:Matiere');
+    $repoAnnexe       = $em->getRepository('ISIBundle:Annexe');
+    $repoExamen       = $em->getRepository('ISIBundle:Examen');
+    $repoCorrection   = $em->getRepository('ISIBundle:Correction');
+    $repoEnseignement = $em->getRepository('ISIBundle:Enseignement');
+    $annexe           = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
       return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
     }
 
-    $annee   = $repoAnnee->find($as);
-    $classe  = $repoClasse->find($classeId);
-    $matiere = $repoMatiere->find($matiereId);
-    $eleves  = $repoEleve->lesElevesDeLaClasse($as, $annexeId, $classeId);
+    $annee       = $repoAnnee->find($as);
+    $examen      = $repoExamen->dernierExamen($as);
+    $classe      = $repoClasse->find($classeId);
+    $niveauId    = $classe->getNiveau()->getId();
+    $examenId   = $examen->getId();
 
+    $corrections = $repoCorrection->findBy(["classe" => $classeId, "examen" => $examenId, "matiere" => $matiereId, "disabled" => false]);
+    // $corrections = $repoCorrection->findBy(["niveau" => $niveauId, "annee" => $as, "matiere" => $matiereId]);
+    
+    $eleves  = $repoEleve->lesElevesDeLaClasse($as, $annexeId, $classeId);
+    
+    $matiere    = $repoMatiere->find($matiereId);
     $snappy = $this->get("knp_snappy.pdf");
     $snappy->setOption("encoding", "UTF-8");
     $filename = "fiche-de-note-de-".$classe->getLibelleFr()."-".$matiere->getLibelle();
 
-    $html = $this->renderView('ISIBundle:Examen:fiche-de-notes-pour-une-matiere.html.twig', [
-      "as"      => $as,
-      "classe"  => $classe,
-      'annee'   => $annee, 'annexe'   => $annexe,
-      "eleves"  => $eleves,
-      "regime"  => $regime,
-      "matiere" => $matiere,
-      'server'   => $_SERVER["DOCUMENT_ROOT"],   
+    if(count($matiere->getMatiereEnfants()) != 0){
+      $matieresFr = $repoEnseignement->enseignementDuNiveau($as, $niveauId, true);
+
+      $html = $this->renderView('ISIBundle:Examen:fiche-de-notes-francais.html.twig', [
+        "as"          => $as,
+        "classe"      => $classe,
+        'annee'       => $annee, 
+        'annexe'      => $annexe,
+        "eleves"      => $eleves,
+        "regime"      => $regime,
+        "matiere"     => $matiere,
+        "corrections" => $corrections,
+        "matieresFr"  => $matieresFr,
+        'server'      => $_SERVER["DOCUMENT_ROOT"],   
       ]);
+    }
+    else{
+      $html = $this->renderView('ISIBundle:Examen:fiche-de-notes-pour-une-matiere.html.twig', [
+        "as"      => $as,
+        "classe"  => $classe,
+        'annee'   => $annee, 
+        'annexe'  => $annexe,
+        "eleves"  => $eleves,
+        "regime"  => $regime,
+        "matiere" => $matiere,
+        "corrections" => $corrections,
+        'server'  => $_SERVER["DOCUMENT_ROOT"],   
+      ]);
+    }
+
 
 
     // Je mets knp en commentaire pour pouvoir utiliser dom KNP
@@ -157,9 +185,9 @@ class ExamenController extends Controller
   // Page d'accueil pour la saisie des notes
   /**
    * @Security("has_role('ROLE_NOTE' or 'ROLE_ETUDE')")
-   * @Route("/accueil-saisie-de-notes-{as}-{regime}", name="isi_saisie_de_notes")
+   * @Route("/accueil-saisie-de-notes-{as}-{regime}-{annexeId}", name="isi_saisie_de_notes")
    */
-  public function accueilSaisieDeNoteAction(Request $request, $as, $regime)
+  public function accueilSaisieDeNote(Request $request, $as, $regime, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
@@ -167,7 +195,6 @@ class ExamenController extends Controller
     $repoClasse = $em->getRepository('ISIBundle:Classe');
     $repoExamen = $em->getRepository('ISIBundle:Examen');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -201,9 +228,9 @@ class ExamenController extends Controller
 
   /**
    * @Security("has_role('ROLE_ETUDE')")
-   * @Route("/examen/liste-des-matieres-pour-la-saisie-des-notes-de-la-classe-{as}-{regime}-{classeId}-{examenId}", name="isi_saisie_de_notes_de_la_classe")
+   * @Route("/examen/liste-des-matieres-pour-la-saisie-des-notes-de-la-classe-{as}-{regime}-{classeId}-{examenId}-{annexeId}", name="isi_saisie_de_notes_de_la_classe")
    */
-  public function saisieDesNotesDeLaClasseAction(Request $request, int $as, $regime, int $classeId, int $examenId)
+  public function saisieDesNotesDeLaClasse(Request $request, int $as, $regime, int $classeId, int $examenId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
@@ -212,8 +239,7 @@ class ExamenController extends Controller
     $repoExamen  = $em->getRepository('ISIBundle:Examen');
     $repoClasse  = $em->getRepository('ISIBundle:Classe');
     $repoMatiere = $em->getRepository('ISIBundle:Matiere');
-    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
+    $repoAnnexe  = $em->getRepository('ISIBundle:Annexe');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -237,6 +263,7 @@ class ExamenController extends Controller
 
     // Les matières de la classe
     $matieres = $repoMatiere->lesMatieresDuNiveau($as, $niveauId);
+    $matieres = $repoMatiere->lesMatieresDeCompositionDuNiveau($as, $niveauId);
     $idsMatieres = [];
     foreach ($matieres as $mat) {
       $idsMatieres[] = $mat->getId();
@@ -268,7 +295,8 @@ class ExamenController extends Controller
     return $this->render('ISIBundle:Examen:liste-des-matieres-pour-la-saisie-des-notes.html.twig', [
       'asec'            => $as,
       'regime'          => $regime,
-      'annee'   => $annee, 'annexe'   => $annexe,
+      'annee'           => $annee, 
+      'annexe'          => $annexe,
       'classe'          => $classe,
       'examen'          => $examen,
       'matieres'        => $matieres,
@@ -286,7 +314,7 @@ class ExamenController extends Controller
     $classeId = $classe->getId();
     $admis   = 0;
     $recales = 0;
-    foreach($eleves as $key => $value)
+    foreach($eleves as $value)
     {
       $eleveId = $value instanceof Eleve ? $value->getId() : $value["id"];
       $eleve = $repoEleve->find($eleveId);
@@ -310,7 +338,7 @@ class ExamenController extends Controller
         $moyenne->setUpdatedAt(new \Datetime());
       }
       $moyennesDeTousLesEleves[$eleveId] = $moyenne;
-      if($moy >= 5.5)
+      if($moy["moyenne"] >= 5.5)
         $admis++;
       else
         $recales++;
@@ -560,11 +588,12 @@ class ExamenController extends Controller
 
     return $appreciation;
   }
+
   /**
    * @Security("has_role('ROLE_ETUDE')")
-   * @Route("/examen/saisie-des-notes-sauvegarde-en-db-{as}-{regime}-{classeId}-{examenId}-{matiereId}", name="isi_saisie_de_notes_de_la_classe_pour_une_matiere")
+   * @Route("/examen/saisie-des-notes-sauvegarde-en-db-{as}-{regime}-{classeId}-{examenId}-{matiereId}-{annexeId}", name="isi_saisie_de_notes_de_la_classe_pour_une_matiere")
    */
-  public function enregistrerNotesAction(Request $request, $as, $regime, $classeId, $examenId, $matiereId)
+  public function enregistrerNotes(Request $request, $as, $regime, $classeId, $examenId, $matiereId, int $annexeId)
   {
     $em               = $this->getDoctrine()->getManager();
     $repoAnnee        = $em->getRepository('ISIBundle:Annee');
@@ -575,23 +604,26 @@ class ExamenController extends Controller
     $repoAppreciation = $em->getRepository('ISIBundle:Appreciation');
     $repoEnseignement = $em->getRepository('ISIBundle:Enseignement');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
       return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
     }
 
-    $annee         = $repoAnnee->find($as);
-    $eleves        = $repoEleve->elevesDeLaClasse($as, $annexeId, $classeId);
-    $examen        = $repoExamen->findOneBy(['id'     => $examenId]);
-    $matiere       = $repoMatiere->findOneBy(['id'    => $matiereId]);
-    $classe        = $repoClasse->findOneBy(['id'     => $classeId]);
-    $elevesIds     = $this->recupererLesIdsDesEleves($eleves);
-    $niveauId      = $classe->getNiveau()->getId();
-    $enseignements = $repoEnseignement->findBy(['annee' => $as, 'niveau' => $niveauId]);
+    $annee    = $repoAnnee->find($as);
+    $eleves   = $repoEleve->elevesDeLaClasse($as, $annexeId, $classeId);
+    $examen   = $repoExamen->find($examenId);
+    $matiere  = $repoMatiere->find($matiereId);
+    $classe   = $repoClasse->find($classeId);
+    $niveauId = $classe->getNiveau()->getId();
+    // $enseignements = $repoEnseignement->findBy(['annee' => $as, 'niveau' => $niveauId, 'matiereExamen' => true]);
+    $enseignements = $repoEnseignement->matieresDeCompositionDuNiveau($as, $niveauId);
+    // dump($enseignements);
 
-    // Quand on soumet le formulaire
+    if(count($matiere->getMatiereEnfants()) != 0){
+      return $this->redirect($this->generateUrl('saisie_des_notes_francais', ['as' => $as, 'regime' => $regime, 'classeId' => $classeId, 'examenId' => $examenId, 'matiereId' => $matiereId, 'annexeId' => $annexeId]));
+    }
+
     if($request->isMethod('post')){
       $em = $this->getDoctrine()->getManager();
       $data = $request->request->all();
@@ -613,7 +645,7 @@ class ExamenController extends Controller
         $note->setCreatedAt(new \Datetime());
         // On va déterminer l'appréciation de la note obtenue
         $appreciationId = $this->findAppreciation($noteEleve, 10);
-        $appreciation = $repoAppreciation->find($appreciationId);
+        $appreciation   = $repoAppreciation->find($appreciationId);
         $note->setAppreciation($appreciation);
         
         // Cette condition me permet de savoir si l'élève à composé dans la matière ou non
@@ -632,8 +664,6 @@ class ExamenController extends Controller
           $note->setNote(0);
           $note->setParticipation(FALSE);
         }
-        $note->setCreatedBy($this->getUser());
-        $note->setCreatedAt(new \Datetime());
         // return new Response("C'est OK");
         $em->persist($note);
       } // Fin foreach $data['note']
@@ -662,20 +692,20 @@ class ExamenController extends Controller
     return $this->render('ISIBundle:Examen:formulaire-de-saisie-de-notes.html.twig', [
       'asec'      => $as,
       'regime'    => $regime,
-      'annee'     => $annee, 'annexe'   => $annexe,
+      'annee'     => $annee, 
+      'annexe'    => $annexe,
       'classe'    => $classe,
       'eleves'    => $eleves,
       'matiere'   => $matiere,
       'examen'    => $examen,
-      // 'form'      => $form->createView(),
     ]);
   }
 
   /**
    * @Security("has_role('ROLE_ETUDE')")
-   * @Route("/examen/edition-des-notes-sauvegarde-en-db-{as}-{regime}-{classeId}-{examenId}-{matiereId}", name="isi_edition_des_notes")
+   * @Route("/examen/edition-des-notes-sauvegarde-en-db-{as}-{regime}-{classeId}-{examenId}-{matiereId}-{annexeId}", name="isi_edition_des_notes")
    */
-  public function editerNotesAction(Request $request, $as, $regime, $classeId, $examenId, $matiereId)
+  public function editerNotesAction(Request $request, $as, $regime, $classeId, $examenId, $matiereId, int $annexeId)
   {
     $em                = $this->getDoctrine()->getManager();
     $repoAppreciation  = $em->getRepository('ISIBundle:Appreciation');
@@ -687,7 +717,6 @@ class ExamenController extends Controller
     $repoNote          = $em->getRepository('ISIBundle:Note');
     $repoEnseignement  = $em->getRepository('ISIBundle:Enseignement');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -700,16 +729,20 @@ class ExamenController extends Controller
     $matiere       = $repoMatiere->find($matiereId);
     $classe        = $repoClasse->find($classeId);
     $niveauId      = $classe->getNiveau()->getId();
-    $enseignements = $repoEnseignement->findBy(['annee' => $as, 'niveau' => $niveauId]);
+    $enseignements = $repoEnseignement->matieresDeCompositionDuNiveau($as, $niveauId);
 
     /**
      * Quand l'année scolaire est finie, on doit plus faire de
      * mofication au niveau des notes
      **/
-    if($annee->getAchevee() == TRUE)
+    if($annee->getAchevee() == true)
     {
       $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des notes car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
       return $this->redirect($this->generateUrl('isi_saisie_de_notes', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $regime]));
+    }
+
+    if(count($matiere->getMatiereEnfants()) != 0){
+      return $this->redirect($this->generateUrl('mise_a_jour_des_notes_francais', ['as' => $as, 'regime' => $regime, 'classeId' => $classeId, 'examenId' => $examenId, 'matiereId' => $matiereId, 'annexeId' => $annexeId]));
     }
 
 
@@ -761,17 +794,17 @@ class ExamenController extends Controller
               if($noteEleve == 0 && strlen($noteEleve) <= 1)
               {
                 $note->setNote(0);
-                $note->setParticipation(TRUE);
+                $note->setParticipation(true);
               }
               elseif($noteEleve > 0 && $noteEleve <= 10)
               {
                 $note->setNote($noteEleve);
-                $note->setParticipation(TRUE);
+                $note->setParticipation(true);
               }
               elseif(empty($noteEleve))
               {
                 $note->setNote(0);
-                $note->setParticipation(FALSE);
+                $note->setParticipation(false);
               }
               $em->persist($note);
             }
@@ -791,17 +824,17 @@ class ExamenController extends Controller
               if($noteEleve == 0 && strlen($noteEleve) == 1)
               {
                 $note->setNote(0);
-                $note->setParticipation(TRUE);
+                $note->setParticipation(true);
               }
               elseif($noteEleve > 0 && $noteEleve <= 10)
               {
                 $note->setNote($noteEleve);
-                $note->setParticipation(TRUE);
+                $note->setParticipation(true);
               }
               elseif(empty($noteEleve))
               {
                 $note->setNote(0);
-                $note->setParticipation(FALSE);
+                $note->setParticipation(false);
               }
               $note->setUpdatedBy($this->getUser());
               $note->setUpdatedAt(new \Datetime());
@@ -809,9 +842,9 @@ class ExamenController extends Controller
           }
         }
       }
+      $this->calculMoyenneExamen($eleves, $examen, $classe, $enseignements);
       try{
         $em->flush();
-        $res = $this->calculMoyenneExamen($eleves, $examen, $classe, $enseignements);
       } 
       catch(\Doctrine\ORM\ORMException $e){
         $this->addFlash('error', $e->getMessage());
@@ -833,7 +866,8 @@ class ExamenController extends Controller
 
       return $this->redirect($this->generateUrl('isi_saisie_de_notes_de_la_classe', [
         'as'       => $as,
-        'regime'   => $regime, 'annexeId' => $annexeId,
+        'regime'   => $regime, 
+        'annexeId' => $annexeId,
         'notes'    => $notes,
         'classeId' => $classeId,
         'examenId' => $examenId
@@ -844,12 +878,322 @@ class ExamenController extends Controller
     return $this->render('ISIBundle:Examen:formulaire-d-edition-de-notes.html.twig', [
       'asec'      => $as,
       'regime'    => $regime,
-      'annee'     => $annee, 'annexe'   => $annexe,
+      'annee'     => $annee, 
+      'annexe'    => $annexe,
       'classe'    => $classe,
       'eleves'    => $eleves,
       'matiere'   => $matiere,
       'examen'    => $examen,
       'notes'     => $notes
+    ]);
+  }
+
+  /**
+   * @Security("has_role('ROLE_ETUDE')")
+   * @Route("/examen/saisie-des-notes-de-francais-{as}-{regime}-{classeId}-{examenId}-{matiereId}-{annexeId}", name="saisie_des_notes_francais")
+   */
+  public function saisie_des_notes_francais(Request $request, $as, $regime, $classeId, $examenId, $matiereId, int $annexeId)
+  {
+    $em               = $this->getDoctrine()->getManager();
+    $repoAnnee        = $em->getRepository('ISIBundle:Annee');
+    $repoEleve        = $em->getRepository('ISIBundle:Eleve');
+    $repoExamen       = $em->getRepository('ISIBundle:Examen');
+    $repoClasse       = $em->getRepository('ISIBundle:Classe');
+    $repoMatiere      = $em->getRepository('ISIBundle:Matiere');
+    $repoAppreciation = $em->getRepository('ISIBundle:Appreciation');
+    $repoEnseignement = $em->getRepository('ISIBundle:Enseignement');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
+
+    $annee    = $repoAnnee->find($as);
+    $eleves   = $repoEleve->elevesDeLaClasse($as, $annexeId, $classeId);
+    $examen   = $repoExamen->find($examenId);
+    $matiere  = $repoMatiere->find($matiereId);
+    $classe   = $repoClasse->find($classeId);
+    $niveauId = $classe->getNiveau()->getId();
+    $matieresFr = $repoEnseignement->enseignementDuNiveau($as, $niveauId, true);
+    $enseignements = $repoEnseignement->matieresDeCompositionDuNiveau($as, $niveauId);
+    // dump($enseignements);
+
+    if($request->isMethod('post')){
+      $em = $this->getDoctrine()->getManager();
+      $data = $request->request->all();
+      foreach ($eleves as $eleve) {
+        $eleveId = $eleve->getId();
+        $notes = $data['notes'.$eleveId];
+        $total = 0;
+        foreach($notes as $key => $noteEleve)
+        {
+          $noteEleve = (float) $noteEleve;
+          // On vérifie qu'aucune des notes saisies n'est pas supérieures à 10.
+          if($noteEleve > 10)
+          {
+            $request->getSession()->getFlashBag()->add('error', 'Vérifiez bien les notes saisies. Aucune note ne doit être supérieur à 10');
+            return new Response('La note de cet élève est supérieur à 10: '.$noteEleve);
+          }
+          $matiereFrancais  = $repoMatiere->find($key);
+          $total = $total + $noteEleve;
+  
+          $noteF = new NoteFrancais();
+          $noteF->setExamen($examen);
+          $noteF->setEleve($eleve);
+          $noteF->setMatiere($matiereFrancais);
+          $noteF->setCreatedBy($this->getUser());
+          $noteF->setCreatedAt(new \Datetime());
+          // On va déterminer l'appréciation de la note obtenue
+          $appreciationId = $this->findAppreciation($noteEleve, 10);
+          $appreciation   = $repoAppreciation->find($appreciationId);
+          $noteF->setAppreciation($appreciation);
+          
+          // Cette condition me permet de savoir si l'élève à composé dans la matière ou non
+          $participation = 0;
+          if($noteEleve == 0 && strlen($noteEleve) <= 1)
+          {
+            $noteF->setNote(0);
+            $noteF->setParticipation(TRUE);
+            $participation++;
+          }
+          elseif($noteEleve > 0 && $noteEleve <= 10)
+          {
+            $noteF->setNote($noteEleve);
+            $noteF->setParticipation(TRUE);
+            $participation++;
+          }
+          elseif(empty($noteEleve))
+          {
+            $noteF->setNote(0);
+            $noteF->setParticipation(FALSE);
+          }
+          $noteF->setCreatedBy($this->getUser());
+          $noteF->setCreatedAt(new \Datetime());
+          // return new Response("C'est OK");
+          $em->persist($noteF);
+        } // Fin foreach $data['note']
+
+
+        $moyenne = $total / count($matieresFr);
+        $note = new Note();
+        $note->setExamen($examen);
+        $note->setEleve($eleve);
+        $note->setMatiere($matiere);
+        $note->setCreatedBy($this->getUser());
+        $note->setCreatedAt(new \Datetime());
+        // On va déterminer l'appréciation de la note obtenue
+        $appreciationId = $this->findAppreciation($moyenne, 10);
+        $appreciation   = $repoAppreciation->find($appreciationId);
+        $note->setAppreciation($appreciation);
+        $note->setNote($moyenne);
+        // Cette condition me permet de savoir si l'élève à composé dans la matière ou non
+        $participation == 0 ? $note->setParticipation(false) : $note->setParticipation(true);
+
+        $note->setCreatedBy($this->getUser());
+        $note->setCreatedAt(new \Datetime());
+        $em->persist($note);
+
+        // dump($notes, $total);
+        // die();
+      }
+      
+      try{
+        $em->flush();
+        $this->calculMoyenneExamen($eleves, $examen, $classe, $enseignements);
+        $request->getSession()->getFlashBag()->add('info', 'Les notes  des élèves de <strong>'.$classe->getLibelleFr().'</strong> en <strong>'.$matiere->getLibelle().'</strong> ont été bien enregistrées.');
+      } 
+      catch(\Doctrine\ORM\ORMException $e){
+        $this->addFlash('error', $e->getMessage());
+        $this->get('logger')->error($e->getMessage());
+      } 
+      catch(\Exception $e){
+        $this->addFlash('error', $e->getMessage());
+      }
+      return $this->redirect($this->generateUrl('isi_saisie_de_notes_de_la_classe', [
+        'as'       => $as,
+        'regime'   => $regime,
+        'annexeId' => $annexeId,
+        'classeId' => $classeId,
+        'matiereId' => $matiereId,
+        'examenId' => $examenId
+      ]));
+    }
+
+    return $this->render('ISIBundle:Examen:formulaire-de-saisie-des-notes-francais.html.twig', [
+      'asec'       => $as,
+      'regime'     => $regime,
+      'annee'      => $annee, 
+      'annexe'     => $annexe,
+      'classe'     => $classe,
+      'eleves'     => $eleves,
+      'matiere'    => $matiere,
+      'matieresFr' => $matieresFr,
+      'examen'     => $examen,
+    ]);
+  }
+
+  /**
+   * @Security("has_role('ROLE_ETUDE')")
+   * @Route("/examen/mise-a-jour-des-notes-de-francais-{as}-{regime}-{classeId}-{examenId}-{matiereId}-{annexeId}", name="mise_a_jour_des_notes_francais")
+   */
+  public function mise_a_jour_des_notes_francais(Request $request, $as, $regime, $classeId, $examenId, $matiereId, int $annexeId)
+  {
+    $em               = $this->getDoctrine()->getManager();
+    $repoAnnee        = $em->getRepository('ISIBundle:Annee');
+    $repoEleve        = $em->getRepository('ISIBundle:Eleve');
+    $repoNote         = $em->getRepository('ISIBundle:Note');
+    $repoNoteF        = $em->getRepository('ISIBundle:NoteFrancais');
+    $repoExamen       = $em->getRepository('ISIBundle:Examen');
+    $repoClasse       = $em->getRepository('ISIBundle:Classe');
+    $repoMatiere      = $em->getRepository('ISIBundle:Matiere');
+    $repoAppreciation = $em->getRepository('ISIBundle:Appreciation');
+    $repoEnseignement = $em->getRepository('ISIBundle:Enseignement');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
+
+    $annee    = $repoAnnee->find($as);
+    $eleves   = $repoEleve->elevesDeLaClasse($as, $annexeId, $classeId);
+    $examen   = $repoExamen->find($examenId);
+    $matiere  = $repoMatiere->find($matiereId);
+    $classe   = $repoClasse->find($classeId);
+    $niveauId = $classe->getNiveau()->getId();
+    $matieresFr = $repoEnseignement->enseignementDuNiveau($as, $niveauId, true);
+    $enseignements = $repoEnseignement->matieresDeCompositionDuNiveau($as, $niveauId);
+    // $notes = $repoNote->notesDesElevesDeLaClasseDansUneMatiere($examenId, $matiereId, $classeId);notesEnEdition($examenId, $matiereId, $elevesIds);
+    $elevesIds = $this->recupererLesIdsDesEleves($eleves);
+    $notes = $repoNote->notesEnEdition($examenId, $matiereId, $elevesIds);
+    $notesFrancais = $repoNoteF->notesEnEdition($examenId, $matiereId, $elevesIds);
+
+
+    if($request->isMethod('post')){
+      $em = $this->getDoctrine()->getManager();
+      $data = $request->request->all();
+      foreach ($eleves as $eleve) {
+        $eleveId = $eleve->getId();
+        $notes = $data['notes'.$eleveId];
+        $total = 0;
+        foreach($notes as $key => $noteEleve)
+        {
+          $noteEleve = (float) $noteEleve;
+          // On vérifie qu'aucune des notes saisies n'est pas supérieures à 10.
+          if($noteEleve > 10)
+          {
+            $request->getSession()->getFlashBag()->add('error', 'Vérifiez bien les notes saisies. Aucune note ne doit être supérieur à 10');
+            return new Response('La note de cet élève est supérieur à 10: '.$noteEleve);
+          }
+          $matiereFrancais  = $repoMatiere->find($key);
+          $total = $total + $noteEleve;
+  
+          $noteF = $repoNoteF->findOneBy(["eleve" => $eleveId, "matiere" => $key, "examen" => $examenId]);
+          if(empty($noteF)){
+            $noteF = new NoteFrancais();
+            $noteF->setExamen($examen);
+            $noteF->setEleve($eleve);
+            $noteF->setMatiere($matiereFrancais);
+            $noteF->setCreatedBy($this->getUser());
+            $noteF->setCreatedAt(new \Datetime());
+            $em->persist($noteF);
+          }
+          else{
+            $noteF->setUpdatedBy($this->getUser());
+            $noteF->setUpdatedAt(new \Datetime());
+          }
+          // On va déterminer l'appréciation de la note obtenue
+          $appreciationId = $this->findAppreciation($noteEleve, 10);
+          $appreciation   = $repoAppreciation->find($appreciationId);
+          $noteF->setAppreciation($appreciation);
+          
+          // Cette condition me permet de savoir si l'élève à composé dans la matière ou non
+          $participation = 0;
+          if($noteEleve == 0 && strlen($noteEleve) <= 1)
+          {
+            $noteF->setNote(0);
+            $noteF->setParticipation(TRUE);
+            $participation++;
+          }
+          elseif($noteEleve > 0 && $noteEleve <= 10)
+          {
+            $noteF->setNote($noteEleve);
+            $noteF->setParticipation(TRUE);
+            $participation++;
+          }
+          elseif(empty($noteEleve))
+          {
+            $noteF->setNote(0);
+            $noteF->setParticipation(FALSE);
+          }
+        } // Fin foreach $data['note']
+
+
+        $moyenne = $total / count($matieresFr);
+        $note = $repoNote->findOneBy(["eleve" => $eleveId, "matiere" => $matiereId, "examen" => $examenId]);
+        if(empty($note)){
+          dump($note);
+          die();
+          $note = new Note();
+          $note->setExamen($examen);
+          $note->setEleve($eleve);
+          $note->setMatiere($matiere);
+          $note->setCreatedBy($this->getUser());
+          $note->setCreatedAt(new \Datetime());
+          $em->persist($note);
+        }
+        else{
+          $note->setUpdatedBy($this->getUser());
+          $note->setUpdatedAt(new \Datetime());
+        }
+        // On va déterminer l'appréciation de la note obtenue
+        $appreciationId = $this->findAppreciation($moyenne, 10);
+        $appreciation   = $repoAppreciation->find($appreciationId);
+        $note->setAppreciation($appreciation);
+        $note->setNote($moyenne);
+        // Cette condition me permet de savoir si l'élève à composé dans la matière ou non
+        $participation == 0 ? $note->setParticipation(false) : $note->setParticipation(true);
+
+
+        // dump($notes, $total);
+        // die();
+      }
+      
+      try{
+        $em->flush();
+        $this->calculMoyenneExamen($eleves, $examen, $classe, $enseignements);
+        $request->getSession()->getFlashBag()->add('info', 'Les notes  des élèves de <strong>'.$classe->getLibelleFr().'</strong> en <strong>'.$matiere->getLibelle().'</strong> ont été bien enregistrées.');
+      } 
+      catch(\Doctrine\ORM\ORMException $e){
+        $this->addFlash('error', $e->getMessage());
+        $this->get('logger')->error($e->getMessage());
+      } 
+      catch(\Exception $e){
+        $this->addFlash('error', $e->getMessage());
+      }
+      return $this->redirect($this->generateUrl('isi_saisie_de_notes_de_la_classe', [
+        'as'       => $as,
+        'regime'   => $regime,
+        'annexeId' => $annexeId,
+        'classeId' => $classeId,
+        'matiereId' => $matiereId,
+        'examenId' => $examenId
+      ]));
+    }
+    // dump($notes);
+    return $this->render('ISIBundle:Examen:formulaire-de-mise-a-jour-des-notes-francais.html.twig', [
+      'asec'          => $as,
+      'regime'        => $regime,
+      'annee'         => $annee, 
+      'annexe'        => $annexe,
+      'classe'        => $classe,
+      'eleves'        => $eleves,
+      'notes'         => $notes,
+      'notesFrancais' => $notesFrancais,
+      'matiere'       => $matiere,
+      'matieresFr'    => $matieresFr,
+      'examen'        => $examen,
     ]);
   }
 
@@ -888,16 +1232,15 @@ class ExamenController extends Controller
   // On va se permettre d'afficher quelques données statistiques d'examen
   /**
    * @Security("has_role('ROLE_ETUDE')")
-   * @Route("/examen/donnees-statistiques-examen-{as}-{regime}", name="isi_statiqtiques")
+   * @Route("/examen/donnees-statistiques-examen-{as}-{regime}-{annexeId}", name="isi_statiqtiques")
    */
-  public function statistiquesAction(Request $request, $as, $regime)
+  public function statistiquesAction(Request $request, $as, $regime, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoNiveau = $em->getRepository('ISIBundle:Niveau');
     $repoExamen = $em->getRepository('ISIBundle:Examen');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -933,9 +1276,9 @@ class ExamenController extends Controller
   // On va se permettre d'afficher quelques données statistiques d'examen
   /**
    * @Security("has_role('ROLE_ETUDE' or 'ROLE_SCOLARITE')")
-   * @Route("/examen/resultats-annuels/{as}-{regime}", name="isi_resultats_annuels")
+   * @Route("/examen/resultats-annuels/{as}-{regime}-{annexeId}", name="isi_resultats_annuels")
    */
-  public function resultatsAnnuelsAction(Request $request, $as, $regime)
+  public function resultatsAnnuelsAction(Request $request, $as, $regime, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
@@ -944,7 +1287,6 @@ class ExamenController extends Controller
     $repoExamen = $em->getRepository('ISIBundle:Examen');
     $repoMoyenneclasse = $em->getRepository('ISIBundle:Moyenneclasse');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -1029,9 +1371,9 @@ class ExamenController extends Controller
   // Page d'accueil des résultats annuels d'une seule classe
   /**
    * @Security("has_role('ROLE_ETUDE' or 'ROLE_SCOLARITE')")
-   * @Route("/examen/resultats-annuels-de-la-classe-{as}-{regime}-{classeId}", name="isi_resultats_annuels_d_une_classe")
+   * @Route("/examen/resultats-annuels-de-la-classe-{as}-{regime}-{classeId}-{annexeId}", name="isi_resultats_annuels_d_une_classe")
    */
-  public function resultatsAnnuelsDUneClasseAction(Request $request, $as, $regime, $classeId)
+  public function resultatsAnnuelsDUneClasseAction(Request $request, $as, $regime, $classeId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoClasse  = $em->getRepository('ISIBundle:Classe');
@@ -1040,7 +1382,6 @@ class ExamenController extends Controller
     $repoNote    = $em->getRepository('ISIBundle:Note');
     $repoEnseignement = $em->getRepository('ISIBundle:Enseignement');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -1139,9 +1480,9 @@ class ExamenController extends Controller
   // Calcul des moyennes annuelles et classement annuels
   /**
    * @Security("has_role('ROLE_ETUDE' or 'ROLE_SCOLARITE')")
-   * @Route("/examen/calcul-moyennes-annuelles-et-classement-annuel-{as}-{regime}-{classeId}", name="isi_classement_annuel")
+   * @Route("/examen/calcul-moyennes-annuelles-et-classement-annuel-{as}-{regime}-{classeId}-{annexeId}", name="isi_classement_annuel")
    */
-  public function moyennesClassementAnnuelAction(Request $request, int $as, $regime, int $classeId)
+  public function moyennesClassementAnnuelAction(Request $request, int $as, $regime, int $classeId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
@@ -1152,7 +1493,6 @@ class ExamenController extends Controller
     $repoNote    = $em->getRepository('ISIBundle:Note');
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -1457,9 +1797,9 @@ class ExamenController extends Controller
   // On pourra afficher toutes les notes des élèves de la classe au cours d'une année
   /**
    * @Security("has_role('ROLE_ETUDE')")
-   * @Route("/examen/notes-de-tous-les-examens/{as}-{regime}-{classeId}", name="isi_notes_des_deux_examens")
+   * @Route("/examen/notes-de-tous-les-examens/{as}-{regime}-{classeId}-{annexeId}", name="isi_notes_des_deux_examens")
    */
-  public function notesTousLesExamensAction(Request $request, int $as, $regime, int $classeId)
+  public function notesTousLesExamensAction(Request $request, int $as, $regime, int $classeId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
@@ -1469,7 +1809,6 @@ class ExamenController extends Controller
     $repoEleve   = $em->getRepository('ISIBundle:Eleve');
     $repoNote    = $em->getRepository('ISIBundle:Note');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -1547,9 +1886,9 @@ class ExamenController extends Controller
   // Les données  stiques obtenues pour toute l'année
   /**
    * @Security("has_role('ROLE_ETUDE' or 'ROLE_SCOLARITE')")
-   * @Route("/examen/statistiques-annuelles-de-la-classe-{as}-{regime}-{classeId}", name="isi_statistiques_annuelles")
+   * @Route("/examen/statistiques-annuelles-de-la-classe-{as}-{regime}-{classeId}-{annexeId}", name="isi_statistiques_annuelles")
    */
-  public function statistiquesAnnuellesDUneClasseAction(Request $request, int $as, $regime, int $classeId)
+  public function statistiquesAnnuellesDUneClasseAction(Request $request, int $as, $regime, int $classeId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
@@ -1560,7 +1899,6 @@ class ExamenController extends Controller
     $repoExamen  = $em->getRepository('ISIBundle:Examen');
     $repoFrequenter  = $em->getRepository('ISIBundle:Frequenter');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -1619,9 +1957,9 @@ class ExamenController extends Controller
   // Bulletin affichant les résultats annuels
   /**
    * @Security("has_role('ROLE_ETUDE')")
-   * @Route("/examen/bulletins-moyennes-annuelles/{as}-{regime}-{classeId}", name="isi_bulletins_moyennes_annuelles")
+   * @Route("/examen/bulletins-moyennes-annuelles/{as}-{regime}-{classeId}-{annexeId}", name="isi_bulletins_moyennes_annuelles")
    */
-  public function bulletinsMoyennesAnnuellesAction(Request $request, $as, $regime, $classeId)
+  public function bulletinsMoyennesAnnuellesAction(Request $request, $as, $regime, $classeId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoNote    = $em->getRepository('ISIBundle:Note');
@@ -1634,7 +1972,6 @@ class ExamenController extends Controller
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
     $repoEnseignement = $em->getRepository('ISIBundle:Enseignement');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -1721,7 +2058,8 @@ class ExamenController extends Controller
       'asec'       => $as,
       'regime'     => $regime,
       'examen'     => $examens[1],
-      'annee'   => $annee, 'annexe'   => $annexe,
+      'annee'      => $annee, 
+      'annexe'     => $annexe,
       'notes1'     => $notes1,
       'notes2'     => $notes2,
       'classe'     => $classe,
@@ -1729,7 +2067,7 @@ class ExamenController extends Controller
       'matieres'   => $matieres,
       'effectif'   => $effectif,
       'frequenter' => $frequenter,
-      'server'   => $_SERVER["DOCUMENT_ROOT"],   
+      'server'     => $_SERVER["DOCUMENT_ROOT"],   
       ]);
 
     // Tcpdf
@@ -1749,9 +2087,9 @@ class ExamenController extends Controller
   // Bulletin affichant les résultats annuels
   /**
    * @Security("has_role('ROLE_ETUDE')")
-   * @Route("/examen/resultats-annuels-d-un-eleve-{as}-{regime}-{classeId}-{eleveId}", name="isi_bulletin_annuel_individuel")
+   * @Route("/examen/resultats-annuels-d-un-eleve-{as}-{regime}-{classeId}-{eleveId}-{annexeId}", name="isi_bulletin_annuel_individuel")
    */
-  public function bulletinAnnuelIndividuelAction(Request $request, int $as, $regime, int $classeId, int $eleveId)
+  public function bulletinAnnuelIndividuelAction(Request $request, int $as, $regime, int $classeId, int $eleveId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoNote    = $em->getRepository('ISIBundle:Note');
@@ -1764,7 +2102,6 @@ class ExamenController extends Controller
     $repoMoyenneclasse = $em->getRepository('ISIBundle:Moyenneclasse');
     $repoEnseignement = $em->getRepository('ISIBundle:Enseignement');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -1833,9 +2170,9 @@ class ExamenController extends Controller
    */
   /**
    * @Security("has_role('ROLE_ETUDE')")
-   * @Route("/examen/donnees-statistiques-examen-{as}-{regime}-{examenId}", name="isi_generation_donnees_statiqtiques")
+   * @Route("/examen/donnees-statistiques-examen-{as}-{regime}-{examenId}-{annexeId}", name="isi_generation_donnees_statiqtiques")
    */
-  public function generationDonneesStatistiquesAction(Request $request, $as, $regime, $examenId)
+  public function generationDonneesStatistiquesAction(Request $request, $as, $regime, $examenId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
@@ -1844,7 +2181,6 @@ class ExamenController extends Controller
     $repoExamen  = $em->getRepository('ISIBundle:Examen');
     $repoMoyenneclasse = $em->getRepository('ISIBundle:Moyenneclasse');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -1867,7 +2203,8 @@ class ExamenController extends Controller
     return $this->render('ISIBundle:Examen:statistiques-examen.html.twig', [
       'asec'            => $as,
       'regime'          => $regime,
-      'annee'   => $annee, 'annexe'   => $annexe,
+      'annee'           => $annee, 
+      'annexe'          => $annexe,
       'niveaux'         => $niveaux,
       'examen'          => $examen,
       'moyennesClasses' => $moyennesClasses
@@ -1876,9 +2213,9 @@ class ExamenController extends Controller
 
   /**
    * @Security("has_role('ROLE_ETUDE' or 'ROLE_NOTE')")
-   * @Route("/examen/resultats-de-la-classe-{as}-{regime}-{classeId}-{examenId}", name="isi_resultats_de_la_classe")
+   * @Route("/examen/resultats-de-la-classe-{as}-{regime}-{classeId}-{examenId}-{annexeId}", name="isi_resultats_de_la_classe")
    */
-  public function resultatsDeLaClasseAction(Request $request, $as, $regime, $classeId, $examenId)
+  public function resultatsDeLaClasseAction(Request $request, int $as, $regime, int $classeId, int $examenId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
@@ -1889,7 +2226,6 @@ class ExamenController extends Controller
     $repoMoyenne = $em->getRepository('ISIBundle:Moyenne');
     $repoEnseignement = $em->getRepository('ISIBundle:Enseignement');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -1918,14 +2254,14 @@ class ExamenController extends Controller
      * Après cela, on va compter le nombre de matières dispensées dans le niveau ($ens).
      * Si $notesDUnEleve < $ens alors on refuse de les résultats.
     */
-    $ens           = $repoEnseignement->findBy(['annee' => $as, 'niveau' => $niveauId]);
+    $ens           = $repoEnseignement->matieresDeCompositionDuNiveau($as, $niveauId);//findBy(['annee' => $as, 'niveau' => $niveauId]);
     $notesDUnEleve = $repoNote->findBy(['examen' => $examenId, 'eleve' => $eleves[0]->getId()]);
     // return new Response(var_dump(count($notesDUnEleve), count($ens)));
     if(count($notesDUnEleve) < count($ens))
     {
       $request->getSession()->getFlashBag()->add('error', 'Vous ne pouvez pas voir les résultats. Toutes les notes de la session <strong>'.$examen->getSession().'</strong> n\'ont pas encore été saisies en <strong>'.$classe->getLibelleFr().'</strong>.');
       // return new Response(var_dump($tableNote, reset($eleves)['id'], $eleves[0]->getNomFr()));
-      return $this->redirect($this->generateUrl('isi_saisie_de_notes', ['as' => $as, 'regime' => $regime]));
+      return $this->redirect($this->generateUrl('isi_saisie_de_notes', ['as' => $as, 'regime' => $regime, 'annexeId' => $annexeId]));
     }
 
     if($examen->getSession() == 2)
@@ -1965,9 +2301,9 @@ class ExamenController extends Controller
   // On imprime (ou si vous voulez on affiche) le bulletin d'un seul élève de la classe
   /**
    * @Security("has_role('ROLE_ETUDE')")
-   * @Route("/examen/bulletin-d-un-eleve-{as}-{regime}-{classeId}-{examenId}-{eleveId}", name="isi_bulletin_unique")
+   * @Route("/examen/bulletin-d-un-eleve-{as}-{regime}-{classeId}-{examenId}-{eleveId}-{annexeId}", name="isi_bulletin_unique")
    */
-  public function bulletinUniqueAction(Request $request, $as, $regime, $classeId, $examenId, $eleveId)
+  public function bulletinUniqueAction(Request $request, $as, $regime, $classeId, $examenId, $eleveId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
@@ -1976,10 +2312,11 @@ class ExamenController extends Controller
     $repoNote    = $em->getRepository('ISIBundle:Note');
     $repoMoyenne = $em->getRepository('ISIBundle:Moyenne');
     $repoExamen  = $em->getRepository('ISIBundle:Examen');
+    $repoMemoriser  = $em->getRepository('ISIBundle:Memoriser');
+    $repoCours   = $em->getRepository('ENSBundle:AnneeContratClasse');
     $repoMoyenneclasse  = $em->getRepository('ISIBundle:Moyenneclasse');
     $repoEnseignement = $em->getRepository('ISIBundle:Enseignement');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -1996,6 +2333,22 @@ class ExamenController extends Controller
     $moyenne       = $repoMoyenne->findOneBy(['examen'       => $examenId, 'eleve'  => $eleveId]);
     $moyenneclasse = $repoMoyenneclasse->findOneBy(['examen' => $examenId, 'classe' => $classeId]);
     $effectif      = $moyenneclasse->getAdmis() + $moyenneclasse->getRecales();
+    $heuresAbsence = $this->total_des_heures_d_absence_d_un_eleve($eleveId, $as, $examenId);
+    $cours         = $repoCours->enseignant_de_la_classe($as, $annexeId, $classeId);
+    if($regime == "A"){
+      $memoriser     = $repoMemoriser->findOneBy(["annee" => $as, "eleve" => $eleveId]);
+      $halaqaId      = $memoriser->getHalaqa()->getId();
+      $coursCoran    = $repoCours->findOneByHalaqa($halaqaId);
+      $enseignantCoran = $coursCoran->getAnneeContrat()->getContrat()->getEnseignant()->getPnomAr()." ".$coursCoran->getAnneeContrat()->getContrat()->getEnseignant()->getNomAr();
+    }
+    else{
+      foreach ($cours as $value) {
+        if($value->getMatiere()->getId() == 1)
+          $enseignantCoran = $value->getAnneeContrat()->getContrat()->getEnseignant()->getPnomAr()." ".$value->getAnneeContrat()->getContrat()->getEnseignant()->getNomAr();
+      }
+    }
+    // dump($cours);
+    // die();
 
     $date = $examen->getDateProclamationResultats();
     $dt = strftime("%A %d %B %G", strtotime(date_format($date, 'd F Y')));
@@ -2006,33 +2359,38 @@ class ExamenController extends Controller
     $template = 'ISIBundle:Examen:bulletin.html.twig';
     if($as < 3)
       $template = 'ISIBundle:Examen:bulletin-old.html.twig';
+
     $html = $this->renderView($template, [
-      'dt'       => $dt,
-      'ens'      => $ens,
-      'asec'     => $as,
-      'regime'   => $regime,
-      'annee'   => $annee, 'annexe'   => $annexe,
-      'eleve'    => $eleve,
-      'classe'   => $classe,
-      'examen'   => $examen,
-      'notes'    => $notes,
-      'effectif' => $effectif,
-      'moyenne'  => $moyenne,
-      'server'   => $_SERVER["DOCUMENT_ROOT"],
+      'dt'              => $dt,
+      'ens'             => $ens,
+      'asec'            => $as,
+      'regime'          => $regime,
+      'annee'           => $annee, 
+      'cours'           => $cours, 
+      'enseignantCoran' => $enseignantCoran, 
+      'annexe'          => $annexe,
+      'eleve'           => $eleve,
+      'classe'          => $classe,
+      'examen'          => $examen,
+      'notes'           => $notes,
+      'effectif'        => $effectif,
+      'moyenne'         => $moyenne,
+      'server'          => $_SERVER["DOCUMENT_ROOT"],
+      'heuresAbsence'   => $heuresAbsence,
     ]);
 
 
     $snappy = $this->get("knp_snappy.pdf");
     $snappy->setOption("encoding", "UTF-8");
     // $snappy->setOption("orientation", "Landscape");
-    $filename = "bulletin-des-eleves-".$classe->getNiveau()->getLibelleFr()."-".$classe->getLibelleFr();
+    $filename = "bulletin-de-".strtolower($eleve->getNomFr())."-".strtolower($eleve->getNomFr())."de-".$examen->getLibelleFr();
 
     return new Response(
       $snappy->getOutputFromHtml($html),
       200,
       [
-          'Content-Type'        => 'application/pdf',
-          'Content-Disposition' => 'inline; filename="'.$filename.'.pdf"'
+        'Content-Type'        => 'application/pdf',
+        'Content-Disposition' => 'inline; filename="'.$filename.'.pdf"'
       ]
     );
   }
@@ -2040,9 +2398,9 @@ class ExamenController extends Controller
   // Page qui va afficher les bulletins (Mais ici la génération se fait individuellement)
   /**
    * @Security("has_role('ROLE_ETUDE')")
-   * @Route("/examen/impression-des-bulletins-{as}-{regime}-{classeId}-{examenId}", name="isi_bulletin_individuel")
+   * @Route("/examen/impression-des-bulletins-{as}-{regime}-{classeId}-{examenId}-{annexeId}", name="isi_bulletin_individuel")
    */
-  public function bulletinIndividuelAction(Request $request, $as, $regime, $classeId, $examenId)
+  public function bulletinIndividuelAction(Request $request, $as, $regime, $classeId, $examenId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
@@ -2053,7 +2411,6 @@ class ExamenController extends Controller
     $repoExamen  = $em->getRepository('ISIBundle:Examen');
     $repoEnseignement = $em->getRepository('ISIBundle:Enseignement');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -2127,9 +2484,9 @@ class ExamenController extends Controller
   // Les bulletins des élèves la de classe
   /**
    * @Security("has_role('ROLE_ETUDE')")
-   * @Route("/examen/impression-des-bulletins-d-une-classe-donnee-{as}-{regime}-{classeId}-{examenId}", name="isi_bulletin")
+   * @Route("/examen/impression-des-bulletins-d-une-classe-donnee-{as}-{regime}-{classeId}-{examenId}-{annexeId}", name="isi_bulletin")
    */
-  public function bulletinsAction(Request $request, $as, $regime, $classeId, $examenId)
+  public function bulletinsAction(Request $request, $as, $regime, $classeId, $examenId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
@@ -2141,7 +2498,6 @@ class ExamenController extends Controller
     $repoExamen  = $em->getRepository('ISIBundle:Examen');
     $repoEnseignement  = $em->getRepository('ISIBundle:Enseignement');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -2247,9 +2603,9 @@ class ExamenController extends Controller
   // Cette page affichera les résultas de façon générale
   /**
    * @Security("has_role('ROLE_ETUDE')")
-   * @Route("/examen/resultats-generaux-des-eleves-de-la-classe/{as}/{regime}/{classeId}/{examenId}", name="isi_resultats_generaux_une_classe")
+   * @Route("/examen/resultats-generaux-des-eleves-de-la-classe/{as}/{regime}/{classeId}/{examenId}-{annexeId}", name="isi_resultats_generaux_une_classe")
    */
-  public function resultatsgenerauxDUneClasseAction(Request $request, int $as, $regime, $classeId, $examenId)
+  public function resultatsgenerauxDUneClasseAction(Request $request, int $as, $regime, $classeId, $examenId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
@@ -2258,7 +2614,6 @@ class ExamenController extends Controller
     $repoMoyenne = $em->getRepository('ISIBundle:Moyenne');
     $repoExamen  = $em->getRepository('ISIBundle:Examen');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -2294,7 +2649,8 @@ class ExamenController extends Controller
     return $this->render('ISIBundle:Examen:resultats-generaux-des-eleves-de-la-classe.html.twig', [
       'asec'     => $as,
       'regime'   => $regime,
-      'annee'   => $annee, 'annexe'   => $annexe,
+      'annee'    => $annee, 
+      'annexe'   => $annexe,
       'classe'   => $classe,
       'examen'   => $examen,
       'moyennes' => $moyennes,
@@ -2304,9 +2660,9 @@ class ExamenController extends Controller
 
   /**
    * @Security("has_role('ROLE_ETUDE')")
-   * @Route("/examen/classement/{as}/{regime}/{classeId}/{examenId}", name="isi_classement")
+   * @Route("/examen/classement/{as}/{regime}/{classeId}/{examenId}-{annexeId}", name="isi_classement")
    */
-  public function classementAction(Request $request, int $as, $regime, $classeId, $examenId)
+  public function classementAction(Request $request, int $as, $regime, $classeId, $examenId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
@@ -2316,7 +2672,6 @@ class ExamenController extends Controller
     $repoExamen  = $em->getRepository('ISIBundle:Examen');
     $repoInformations = $em->getRepository('ISIBundle:Informations');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -2386,15 +2741,14 @@ class ExamenController extends Controller
   // Bilan annuel
   /**
    * @Security("has_role('ROLE_ETUDE')")
-   * @Route("/examen/bilan-annuel-{as}", name="isi_bilan_annuel_home")
+   * @Route("/examen/bilan-annuel-{as}-{annexeId}", name="isi_bilan_annuel_home")
    */
-  public function bilanAnnuelAction(Request $request, $as)
+  public function bilanAnnuelAction(Request $request, $as, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoExamen     = $em->getRepository('ISIBundle:Examen');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -2419,9 +2773,9 @@ class ExamenController extends Controller
   // Bilan annuel
   /**
    * @Security("has_role('ROLE_ETUDE')")
-   * @Route("/examen/bilan-annuel-de-regime-{as}-{regime}", name="isi_bilan_annuel_regime")
+   * @Route("/examen/bilan-annuel-de-regime-{as}-{regime}-{annexeId}", name="isi_bilan_annuel_regime")
    */
-  public function bilanAnnuelDUnRegimeAction(Request $request, $as, $regime)
+  public function bilanAnnuelDUnRegimeAction(Request $request, $as, $regime, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
@@ -2430,7 +2784,6 @@ class ExamenController extends Controller
     $repoExamen     = $em->getRepository('ISIBundle:Examen');
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -2604,9 +2957,9 @@ class ExamenController extends Controller
   // Cette page affichera les notes des élèves d'une classe donnée après les examens
   /**
    * @Security("has_role('ROLE_ETUDE')")
-   * @Route("/examen/notes-des-eleves-d-une-classe-donnee-{as}-{regime}-{classeId}-{examenId}", name="isi_notes_eleves_une_classe")
+   * @Route("/examen/notes-des-eleves-d-une-classe-donnee-{as}-{regime}-{classeId}-{examenId}-{annexeId}", name="isi_notes_eleves_une_classe")
    */
-  public function notesDesElevesDUneClasseAction(Request $request, $as, $regime, $classeId, $examenId)
+  public function notesDesElevesDUneClasseAction(Request $request, $as, $regime, $classeId, $examenId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
@@ -2615,8 +2968,7 @@ class ExamenController extends Controller
     $repoNote    = $em->getRepository('ISIBundle:Note');
     $repoMatiere = $em->getRepository('ISIBundle:Matiere');
     $repoExamen  = $em->getRepository('ISIBundle:Examen');
-    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
+    $repoAnnexe  = $em->getRepository('ISIBundle:Annexe');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -2629,7 +2981,7 @@ class ExamenController extends Controller
     $classe    = $repoClasse->find($classeId);
     $examen    = $repoExamen->find($examenId);
     $niveauId  = $classe->getNiveau()->getId();
-    $matieres  = $repoMatiere->lesMatieresDuNiveau($as, $niveauId);
+    $matieres  = $repoMatiere->lesMatieresDeCompositionDuNiveau($as, $niveauId);
 
     //On va récupérer les ids des élèves
     $elevesIds = $this->recupererLesIdsDesEleves($eleves);
@@ -2651,7 +3003,8 @@ class ExamenController extends Controller
     return $this->render('ISIBundle:Examen:notes-des-eleves-d-une-classe.html.twig', [
       'asec'     => $as,
       'regime'   => $regime,
-      'annee'   => $annee, 'annexe'   => $annexe,
+      'annee'    => $annee, 
+      'annexe'   => $annexe,
       'classe'   => $classe,
       'eleves'   => $eleves,
       'examen'   => $examen,
@@ -2679,10 +3032,68 @@ class ExamenController extends Controller
   }
   /************** - elle finie ici */
 
+  public function total_des_heures_d_absence_d_un_eleve(int $eleveId, int $anneeId, int $examenId)
+  {
+    $em             = $this->getDoctrine()->getManager();
+    $repoAnnee      = $em->getRepository('ISIBundle:Annee');
+    $repoExamen     = $em->getRepository('ISIBundle:Examen');
+    $repoPresence   = $em->getRepository('ISIBundle:Presence');
+    $repoPermission = $em->getRepository('ISIBundle:Permission');
+    $examen         = $repoExamen->find($examenId);
+    $annee          = $repoAnnee->find($anneeId);
+    $debut          = $examen->getSession()        == 1 ? $annee->getDebutPremierSemestre(): $annee->getDebutSecondSemestre();
+    $fin            = $examen->getSession()        == 1 ? $annee->getFinPremierSemestre()  : $annee->getFinSecondSemestre();
+    $presences      = $repoPresence->absence_eleve_periode($eleveId, $debut, $fin);
+    $permissions    = $repoPermission->permission_eleve_periode($eleveId, $debut, $fin);
+    $totalHeuresAbsences    = 0;
+    $totalHeuresJustifiees = 0;
+    foreach ($presences as $value) {
+      if($value->getHeure1() == true)
+        $totalHeuresAbsences++;
+      if($value->getHeure2() == true)
+        $totalHeuresAbsences++;
+      if($value->getHeure3() == true)
+        $totalHeuresAbsences++;
+      if($value->getHeure4() == true)
+        $totalHeuresAbsences++;
+      if($value->getHeure5() == true)
+        $totalHeuresAbsences++;
+      if($value->getHeure6() == true)
+        $totalHeuresAbsences++;
+      if($value->getHeure7() == true)
+        $totalHeuresAbsences++;
+      if($value->getHeure8() == true)
+        $totalHeuresAbsences++;
+
+      foreach ($permissions as $permission) {
+        if($value->getDate() >= $permission->getDepart() and $value->getDate() < $permission->getRetour()){
+          if($value->getHeure1() == true)
+            $totalHeuresJustifiees++;
+          if($value->getHeure2() == true)
+            $totalHeuresJustifiees++;
+          if($value->getHeure3() == true)
+            $totalHeuresJustifiees++;
+          if($value->getHeure4() == true)
+            $totalHeuresJustifiees++;
+          if($value->getHeure5() == true)
+            $totalHeuresJustifiees++;
+          if($value->getHeure6() == true)
+            $totalHeuresJustifiees++;
+          if($value->getHeure7() == true)
+            $totalHeuresJustifiees++;
+          if($value->getHeure8() == true)
+            $totalHeuresJustifiees++;
+        }
+      }
+    }
+
+    return ["totalHeuresAbsences" => $totalHeuresAbsences, "totalHeuresJustifiees" => $totalHeuresJustifiees];
+  }
+
   public function calculMoyenneDUnEleve(int $eleveId, int $examenId, $enseignements)
   {
-    $em               = $this->getDoctrine()->getManager();
-    $repoNote         = $em->getRepository('ISIBundle:Note');
+    $em       = $this->getDoctrine()->getManager();
+    $repoNote = $em->getRepository('ISIBundle: Note');
     // Séquence 1:
     // On sélectionne ensuite les notes (toutes les notes) de l'élève en cours, c'est-à-dire dans la boucle
     $notes = $repoNote->findBy(['examen' => $examenId, 'eleve' => $eleveId]);
@@ -2696,7 +3107,7 @@ class ExamenController extends Controller
       $totalNote = 0;
       $totalcoeff = 0;
       foreach ($notes as $note) {
-        foreach($enseignements as $key => $value){
+        foreach($enseignements as $value){
           if($note->getMatiere()->getId() == $value->getMatiere()->getId()){
             $totalcoeff = $totalcoeff + $value->getCoefficient();
             $totalNote = $totalNote + $note->getNote() * $value->getCoefficient();
@@ -2711,7 +3122,7 @@ class ExamenController extends Controller
     }
     else{
       $moy       = null;
-      $totalNote =  null;
+      $totalNote = null;
     }
     return ["moyenne" => $moy, "totalPoints" => $totalNote];
   }

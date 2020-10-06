@@ -72,13 +72,13 @@
         <td>
           <div class="ui grid">
             <div class="wide column" data-tooltip="Modifier les information de l'élève">
-              <a href="{{ path('isi_edit_eleve', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'eleveId': eleve.getEleve.getId}) }}"><i class="edit icon"></i></a>
+              <a href="{{ path('isi_edit_eleve', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'eleveId': eleve.getEleve.getId, origine: 'eleves-inscrits'}) }}"><i class="edit icon"></i></a>
             </div>
             <div class="wide column" data-tooltip="Voir les informations de l'élève">
               <a href="{{ path('isi_info_eleve', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'eleveId': eleve.getEleve.getId}) }}"><i class="info circle icon"></i></a>
             </div>
             <div class="wide column" data-tooltip="Enregistrer une conduite de l'élève">
-              <a href="{{ path('isi_enregistrer_conduite', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'eleveId': eleve.getEleve.getId}) }}"><i class="certificate{{ ''|trans }} icon"></i></a>
+              <a href="{{ path('isi_enregistrer_conduite', {'as': asec, 'annexeId': annexe.id, 'regime': regime, 'eleveId': eleve.getEleve.getId, origine: 'eleves-inscrits'}) }}"><i class="certificate{{ ''|trans }} icon"></i></a>
             </div>
             
           </div>

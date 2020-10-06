@@ -10,9 +10,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class AccountController extends Controller
 {
   /**
-   * @Route("/account/{as}/profile", name="isi_account")
+   * @Route("/account/{as}/profile-{annexeId}", name="isi_account")
    */
-  public function indexAction(Request $request, $as)
+  public function indexAction(Request $request, $as, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee = $this->getDoctrine()->getManager()->getRepository('ISIBundle:Annee');
@@ -20,7 +20,6 @@ class AccountController extends Controller
 
     $userType = $request->query->get('userType');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');

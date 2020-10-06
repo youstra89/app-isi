@@ -20,10 +20,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class ParametresController extends Controller
 {
   /**
-   * @Security("has_role('ROLE_SCOLARITE')")
-   * @Route("/parametres-scolarite/{as}", name="isi_parametres")
+   * @Security("has_role('ROLE_SCOLARITE') or has_role('ROLE_SCOLARITE_ANNEXE')")
+   * @Route("/parametres-scolarite/{as}-{annexeId}", name="isi_parametres")
    */
-  public function indexAction(Request $request, int $as)
+  public function index(Request $request, int $as, int $annexeId)
   {
     // // On vérifie que l'utilisateur dispose bien du rôle ROLE_AUTEUR
     // if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
@@ -32,7 +32,6 @@ class ParametresController extends Controller
     // }
     $em = $this->getDoctrine()->getManager();
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -53,16 +52,15 @@ class ParametresController extends Controller
   }
 
   /**
-   * @Security("has_role('ROLE_SCOLARITE')")
-   * @Route("/nouvelle-annnee-scolaire-{as}", name="isi_nouvelle_annee")
+   * @Security("has_role('ROLE_SUPER_ADMIN')")
+   * @Route("/nouvelle-annnee-scolaire-{as}-{annexeId}", name="isi_nouvelle_annee")
    */
-  public function nouvelleAnneeAction(Request $request, $as)
+  public function nouvelleAnneeAction(Request $request, $as, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoFrequenter = $em->getRepository('ISIBundle:Frequenter');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -129,7 +127,7 @@ class ParametresController extends Controller
       $annee->setUpdatedAt(new \Datetime());
       $em->flush();
 
-      $request->getSession()->getFlashBag()->add('info', 'La nouvelle année scolaire a été bien enrégistrée.');
+      $request->getSession()->getFlashBag()->add('info', 'La nouvelle année scolaire <strong>'.$nouvelleAnnee->getLibelle().'</strong> a été bien enrégistrée.');
 
       // On redirige l'utilisateur vers index paramèTraversable
       return $this->redirect($this->generateUrl('isi_parametres',[
@@ -138,27 +136,80 @@ class ParametresController extends Controller
       ]));
   	}
 
-  	return $this->render('ISIBundle:Parametres:addAnnee.html.twig', array(
+  	return $this->render('ISIBundle:Parametres:add-annee.html.twig', array(
         'asec'   => $as,
         'annee'  => $annee, 
         'annexe' => $annexe,
-  			'form'      => $form->createView()
+  			'form'   => $form->createView()
+  	));
+  }
+
+  /**
+   * @Security("has_role('ROLE_SUPER_ADMIN')")
+   * @Route("/mise-a-jour-de-l-annnee-scolaire-{as}-{annexeId}", name="edit_annee")
+   */
+  public function edit_annee(Request $request, int $as, int $annexeId)
+  {
+    $em = $this->getDoctrine()->getManager();
+    $repoAnnee      = $em->getRepository('ISIBundle:Annee');
+    $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
+    $annexe = $repoAnnexe->find($annexeId);
+    if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
+      $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
+      return $this->redirect($this->generateUrl('annexes_homepage', ['as' => $as]));
+    }
+    $annee = $repoAnnee->find($as);
+
+    if($annee->getAchevee() == TRUE)
+    {
+       $request->getSession()->getFlashBag()->add('error', 'Impossible de faire la mise à jour des classes car l\'année scolaire <strong>'.$annee->getLibelle().'</strong> est achevée.');
+       return $this->redirect($this->generateUrl('isi_annees_precedentes', ['as' => $as, 'annexeId' => $annexeId]));
+    }
+
+  	if($request->isMethod('post'))
+  	{
+      $data  = $request->request->all();
+      $debut_semestre_1 = new \DateTime($data['debut_semestre_1']);
+      $fin_semestre_1   = new \DateTime($data['fin_semestre_1']);
+      $debut_semestre_2 = new \DateTime($data['debut_semestre_2']);
+      $fin_semestre_2   = new \DateTime($data['fin_semestre_2']);
+
+      $annee->setDebutPremierSemestre($debut_semestre_1);
+      $annee->setFinPremierSemestre($fin_semestre_1);
+      $annee->setDebutSecondSemestre($debut_semestre_2);
+      $annee->setFinSecondSemestre($fin_semestre_2);
+      $annee->setUpdatedAt(new \DateTime());
+      $annee->setUpdatedAt($this->getUser());
+      $em->flush();
+
+      $request->getSession()->getFlashBag()->add('info', 'L\'année scolaire <strong>'.$annee->getLibelle().'</strong> a été mise à jour avec succès.');
+
+      // On redirige l'utilisateur vers index paramèTraversable
+      return $this->redirect($this->generateUrl('isi_annees_precedentes',[
+        'as'       => $annee->getId(), 
+        'annexeId' => $annexeId
+      ]));
+  	}
+
+  	return $this->render('ISIBundle:Parametres:edit-annee.html.twig', array(
+        'asec'   => $as,
+        'annee'  => $annee, 
+        'annexe' => $annexe,
   	));
   }
 
   // Pour voir les années précédentes d'activité
   /**
    * @Security("has_role('ROLE_USER')")
-   * @Route("/les-annnees-scolaires-precedentes-{as}", name="isi_annees_precedentes")
+   * @Route("/les-annnees-scolaires-precedentes-{as}-{annexeId}", name="isi_annees_precedentes")
    */
-  public function anneesPrecedentesAction(Request $request, $as)
+  public function anneesPrecedentesAction(Request $request, $as, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee = $em->getRepository("ISIBundle:Annee");
     $annee = $repoAnnee->find($as);
     $annees = $repoAnnee->toutesLesAnnees();
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -199,15 +250,14 @@ class ParametresController extends Controller
   //Edition de Classe
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
-   * @Route("/edition-de-classe-{as}-{classeId}-{regime}", name="isi_edit_classe")
+   * @Route("/edition-de-classe-{as}-{classeId}-{regime}-{annexeId}", name="isi_edit_classe")
    */
-  public function editClasseAction(Request $request, $as, $classeId, $regime)
+  public function editClasseAction(Request $request, $as, $classeId, $regime, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoClasse = $em->getRepository('ISIBundle:Classe');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -255,15 +305,14 @@ class ParametresController extends Controller
   //Edition de Halaqa
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
-   * @Route("/edition-de-halaqa-{as}-{halaqaId}-{regime}", name="isi_edit_halaqa")
+   * @Route("/edition-de-halaqa-{as}-{halaqaId}-{regime}-{annexeId}", name="isi_edit_halaqa")
    */
-  public function editHalaqaAction(Request $request, $as, $halaqaId, $regime)
+  public function editHalaqaAction(Request $request, $as, $halaqaId, $regime, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoHalaqa = $em->getRepository('ISIBundle:Halaqa');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -309,17 +358,16 @@ class ParametresController extends Controller
 
   //Action pour l'affichage des classes
   /**
-   * @Security("has_role('ROLE_SCOLARITE')")
-   * @Route("/gestion-des-classes-{as}-{regime}", name="isi_gestion_classes")
+   * @Security("has_role('ROLE_SCOLARITE') or has_role('ROLE_SCOLARITE_ANNEXE')")
+   * @Route("/gestion-des-classes-{as}-{regime}-{annexeId}", name="isi_gestion_classes")
    */
-  public function lesClassesAction(Request $request, int $as, $regime)
+  public function lesClassesAction(Request $request, int $as, $regime, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoClasse = $em->getRepository('ISIBundle:Classe');
     $repoNiveau = $em->getRepository('ISIBundle:Niveau');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
 
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
@@ -344,16 +392,15 @@ class ParametresController extends Controller
 
   //Action pour l'affichage des classes
   /**
-   * @Security("has_role('ROLE_SCOLARITE')")
-   * @Route("/gestion-des-halaqas-{as}-{regime}", name="isi_gestion_halaqas")
+   * @Security("has_role('ROLE_SCOLARITE') or has_role('ROLE_SCOLARITE_ANNEXE')")
+   * @Route("/gestion-des-halaqas-{as}-{regime}-{annexeId}", name="isi_gestion_halaqas")
    */
-  public function lesHalaqasAction(Request $request, int $as, $regime)
+  public function lesHalaqasAction(Request $request, int $as, $regime, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoHalaqa = $em->getRepository('ISIBundle:Halaqa');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -376,15 +423,14 @@ class ParametresController extends Controller
   //Action d'ajout d'une nouvelle classe
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
-   * @Route("/ajout-de-classe-{as}-{regime}", name="isi_nouvelle_classe")
+   * @Route("/ajout-de-classe-{as}-{regime}-{annexeId}", name="isi_nouvelle_classe")
    */
-  public function addClasseAction(Request $request, $as, $regime)
+  public function addClasseAction(Request $request, $as, $regime, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoNiveau = $em->getRepository('ISIBundle:Niveau');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -439,14 +485,13 @@ class ParametresController extends Controller
   //Action d'ajout d'une nouvelle halaqa
   /**
    * @Security("has_role('ROLE_SCOLARITE')")
-   * @Route("/ajout-de-halaqa-{as}-{regime}", name="isi_nouvelle_halaqa")
+   * @Route("/ajout-de-halaqa-{as}-{regime}-{annexeId}", name="isi_nouvelle_halaqa")
    */
-  public function addHalaqaAction(Request $request, $as, $regime)
+  public function addHalaqaAction(Request $request, $as, $regime, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee  = $em->getRepository('ISIBundle:Annee');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -495,16 +540,15 @@ class ParametresController extends Controller
 
   //Page d'accueil pour la liaison entre les classes et les matières pour une année scolaire donnée
   /**
-   * @Security("has_role('ROLE_SCOLARITE')")
-   * @Route("/niveaux-matieres-{as}-{regime}", name="isi_niveaux_matieres")
+   * @Security("has_role('ROLE_SCOLARITE') or has_role('ROLE_SCOLARITE_ANNEXE')")
+   * @Route("/niveaux-matieres-{as}-{regime}-{annexeId}", name="isi_niveaux_matieres")
    */
-  public function niveauxMatieresAction(Request $request, int $as, $regime)
+  public function niveauxMatieresAction(Request $request, int $as, $regime, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoNiveau  = $em->getRepository('ISIBundle:Niveau');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -525,10 +569,10 @@ class ParametresController extends Controller
 
   // Pour voir la liste des matières d'un niveau de formation donné
   /**
-   * @Security("has_role('ROLE_SCOLARITE')")
-   * @Route("/voir-liste-des-matieres-du-niveaux-{as}-{niveauId}-{regime}", name="isi_liste_niveaux_matieres")
+   * @Security("has_role('ROLE_SCOLARITE') or has_role('ROLE_SCOLARITE_ANNEXE')")
+   * @Route("/voir-liste-des-matieres-du-niveaux-{as}-{niveauId}-{regime}-{annexeId}", name="isi_liste_niveaux_matieres")
    */
-  public function listeMatieresNiveauxAction(Request $request, $as, $regime, $niveauId)
+  public function listeMatieresNiveauxAction(Request $request, $as, $regime, $niveauId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
@@ -536,7 +580,6 @@ class ParametresController extends Controller
     $repoMatiere = $em->getRepository('ISIBundle:Matiere');
     $repoNiveau  = $em->getRepository('ISIBundle:Niveau');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');

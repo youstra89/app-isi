@@ -75,6 +75,7 @@
                 <h4 class="ui image header">{{ genre }}</h4>
               </td>
               {% for i in 6..8 %}
+                {% set coursId = 0 %}
                 {% set nieme = '' %}
                 {% if i == 1 %}
                   {% set nieme = 'ère' %}
@@ -84,9 +85,15 @@
                 {% set enseignant = "" %}
                 {% if halaqa.anneeContratClasse|length != 0 %}
                   {% set enseignant = halaqa.anneeContratClasse[0].anneeContrat.contrat.enseignant.nom %}
+                  {% set coursId = halaqa.anneeContratClasse[0].id %}
                 {% endif %}
+                {% set coursId = 0 %}
+                {% for item in cours if item.halaqa == halaqa and item.heure == i %}
+                  {% set coursId = item.id %}
+                  {% set title_text = item.anneeContrat.contrat.enseignant.nom ~ ' ' ~ item.matiere.libelle %}
+                {% endfor %}
                 <td data-tooltip="{{i}}{{nieme}} heure {{ enseignant }}">
-                  {% set checked = false %}
+                    {% set checked = false %}
                     {% for item in taches if halaqa == item.cours.halaqa and i == item.cours.heure %}
                       {% set checked = true %}
                       {# <i class="cheched icon"></i> #}
@@ -94,7 +101,13 @@
                     {% if checked == true %}
                       <i class="green checkmark icon"></i>
                     {% else %}
-                      <i class="red delete icon"></i>
+                      {% if is_granted('ROLE_SCOLARITE') and 'now'|date('Y-m-d') == date|date('Y-m-d') %}
+                        <a href="{{ path('faire_appel_halaqa', {as: asec, annexeId: annexe.id, coursId: coursId, origine: 'scolarite'}) }}">
+                          <i class="orange delete icon"></i>
+                        </a>
+                      {% else %}
+                        <i class="red delete icon"></i>
+                      {% endif %}
                     {% endif %}
                 </td>
               {% endfor %}

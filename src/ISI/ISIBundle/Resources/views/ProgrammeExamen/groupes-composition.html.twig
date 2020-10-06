@@ -1,0 +1,100 @@
+{% extends 'ISIBundle:ProgrammeExamen:index.html.twig' %}
+
+{% block title %}
+    Groupes de composition de {{ examen.libelleFr }} de l'année scolaire {{ examen.annee.libelle }}
+{% endblock %}
+
+
+{% block body %}
+  {% set grp = '' %}
+  {% if regime is same as('A') %}
+    {% set grp = 'Académie' %}
+  {% else %}
+    {% set grp = 'Formation' %}
+  {% endif %}
+  <h3>{{ 'Groupes de composition de '|trans }} {{ examen.libelleFr }} de l'année scolaire {{ examen.annee.libelle }} - <span style="color: darkgreen">{{ grp }}</span></h3>
+  <div class="column" style="width:85%">
+    <table class="ui selectable very basic table" id="groupes">
+      <thead>
+        <tr>
+          <th style="width: 5%; text-align: center">N°</th>
+          <th>Niveaux</th>
+          <th>Classses</th>
+          <th>Groupe</th>
+          <th>Nombre d'élèves</th>
+          <th>Genre</th>
+          <th class="two wide">{{ 'Actions'|trans }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% set numero = 0 %}
+        {% for groupe in groupes %} 
+          {% if groupe.classe.niveau.groupeFormation.reference is same as(regime) %}
+            {% set numero = numero + 1 %}
+            {% set genre = '' %}
+            {% if groupe.classe.genre == 'H' %}
+              {% set genre = 'Homme' %}
+            {% elseif groupe.classe.genre == 'F' %}
+              {% set genre = 'Femme' %}
+            {% else %}
+              {% set genre = 'Mixte' %}
+            {% endif %}
+            <tr>
+              <td style="width: 5%; text-align: center">{{ numero }}</td>
+              <td>{{ groupe.classe.getNiveau.getLibelleFr }}</td>
+              <td>{{ groupe.classe.libellefr }}</td>
+              <td>{{ groupe.libelle }}</td>
+              <td>{{ groupe.elevegroupecomposition|length }}</td>
+              <td>{{ groupe.classe.genre }}</td>
+              <td>
+                <a href="{{path('fiche_de_controle_de_presence_examen', {'as': asec, 'annexeId': annexe.id, 'examenId': examen.id, examenId: examen.id, 'groupeId': groupe.id})}}" data-tooltip="Imprimer la fiche de contrôle de présence (toutes les matières)">
+                  <i class="print icon"></i>
+                </a>&nbsp;&nbsp;
+                <a href="{{path('fiche_de_controle_de_presence_examen', {'as': asec, 'annexeId': annexe.id, 'examenId': examen.id, examenId: examen.id, 'groupeId': groupe.id, 'matiereSelectionnes': 'ar'})}}" data-tooltip="Imprimer la fiche de contrôle de présence (Ar)">
+                  <i class="green print icon"></i>
+                </a>&nbsp;&nbsp;
+                <a href="{{path('fiche_de_controle_de_presence_examen', {'as': asec, 'annexeId': annexe.id, 'examenId': examen.id, examenId: examen.id, 'groupeId': groupe.id, 'matiereSelectionnes': 'fr'})}}" data-tooltip="Imprimer la fiche de contrôle de présence (Fr)">
+                  <i class="red print icon"></i>
+                </a>
+              </td>
+            </tr>
+          {% endif %} 
+        {% endfor %}
+      </tbody>
+    </table>
+    <hr width="75%">
+  </div><br><br>
+{% endblock %}
+
+
+{% block javascripts %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: 'TableFilter/dist/tablefilter/',
+      col_0: "none",
+      col_1: 'select',
+      col_3: 'select',
+      col_5: 'select',
+      col_6: 'none',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string', 'string'
+      ],
+      col_widths: [
+          // '20px', , , '200px', , , '300px'
+      ],
+      extensions: [{ name: 'sort' }]
+    };
+
+    var tf = new TableFilter('groupes', filtersConfig);
+    tf.init();
+  </script>
+{% endblock %}

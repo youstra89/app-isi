@@ -120,8 +120,11 @@
                 <td>{{ interne.getChambre.getBatiment.responsable }}</td>
                 <td>
                   <div class="ui grid">
-                    <div class="home-eleve wide column" data-tooltip="Modifier les informations de l'élève">
+                    <div class="home-eleve wide column" data-tooltip="Voir les informations de l'élève">
                       <a href="{{ path('internat_info_eleve', {'as': asec, 'annexeId': annexe.id, 'id':interne.getEleve.getId}) }}"><i class="info circle icon"></i></a>
+                    </div>
+                    <div class="home-eleve wide column" data-tooltip="Modifier les informations de l'élève">
+                      <a href="{{ path('modifier_inscription_internat', {'as': asec, 'annexeId': annexe.id, 'internerId':interne.getId}) }}"><i class="teal edit icon"></i></a>
                     </div>
                   </div>
                 </td>

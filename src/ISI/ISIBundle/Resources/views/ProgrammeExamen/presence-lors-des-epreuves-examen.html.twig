@@ -1,0 +1,108 @@
+{# Accueil pour l'édition des listes de classe' #}
+
+{% extends 'ISIBundle:ProgrammeExamen:index.html.twig' %}
+
+{% block title %}
+  Présence des élèves  {{ classe.libelleFr }}
+{% endblock %}
+
+
+{% block section %}
+  <i class="settings icon"></i>{{ 'Programme d\'examen '|trans }}
+{% endblock %}
+
+
+{% block body %}
+  {% if eleves is empty %}
+    <p>{{ 'Inscrivez d\'abord des élèves dans cette classe.'|trans }}</p>
+  {% else %}
+    <div class="titre-document">
+      <h3>{{ 'Présence des élèves '|trans }} {{ classe.libelleFr }}</h3>
+    </div>
+    <br />
+    <table class="ui selectable celled table mini form" width="100%" align="center" id="eleves">
+      <thead>
+          <tr class="">
+              <th width="25px" align="center" class="table-header">N°</th>
+              <th width="110px" align="center" class="matricule-ar">الرقم التسلسلي</th>
+              <th width="180px" class="nomAr table-header">الاسم و اللقب</th>
+              <th width="200px" align="right" class="nomFr table-header">{{ 'Nom & Prénom'|trans }}</th>
+              <th width="30px" align="center" class="nomAr table-header"><span class="sexe-ar">الجنس</span></th>
+              {% for item in programmesNiveau %}
+                  {% set matiere = item.matiere %}
+                  <th width="" class="table-header">{{ matiere.libelle }}</th>
+              {% endfor %}
+          </tr>
+      </thead>
+      <tbody>
+          {% set numero = 0 %}
+          {% set color = '' %}
+          {% for eleve in eleves %}
+              {% if (numero % 2) == 0 %}
+                  {% set color = 'white' %}
+              {% else %}
+                  {% set color = '#efefef' %}
+              {% endif %}
+              {% if eleve.sexe == 1 %}
+                  {% set sexe = 'ذكر' %}
+              {% else %}
+                  {% set sexe = 'أنثى' %}
+              {% endif %}
+              {% set numero = numero + 1 %}
+              <tr class="line-table" bgcolor={{color}}>
+                  <td align="center">{{ numero }}</td>
+                  <td align="right" class="matricule">{{ eleve.matricule }}</td>
+                  <td align="right" class="nomEleveAr">{{ eleve.pnomAr }} {{ eleve.nomAr }}</td>
+                  <td align="right" class="nomEleveFr">{{ eleve.nomFr  }} {{  eleve.pnomFr }}</td>
+                  <td align="center">{{ sexe }}</td>
+                  {% for item in programmesNiveau %}
+                    {% set matiere = item.matiere %}
+                    {% set presence = null %}
+                    {% for appel in appels %}
+                      {% if appel.eleve.id == eleve.id and appel.matiere == matiere %}
+                        {% set presence = appel %}
+                      {% endif %}
+                    {% endfor %}
+                    <td align="right">
+                      {% if presence != null and presence.participation == 1 %}<i class="green checkmark icon"></i>{% elseif presence != null and presence.participation == 0 %}<i class="red delete icon"></i>{% else %}{{ presence }}{% endif %}
+                    </td>
+                  {% endfor %}
+              </tr>
+          <!-- On divise le tableau pour mieux afficher la suite de la liste -->
+          {% endfor %}
+      </tbody>
+    </table>
+    <br><br>
+  {% endif %}
+
+{% endblock %}
+
+
+{% block javascripts %}
+<script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: 'TableFilter/dist/tablefilter/',
+      col_0: "none",
+      col_4: 'select',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string', 'string'
+      ],
+      col_widths: [
+          // '20px', , , '200px', , , '300px'
+      ],
+      extensions: [{ name: 'sort' }]
+    };
+
+    var tf = new TableFilter('eleves', filtersConfig);
+    tf.init();
+  </script>
+{% endblock %}

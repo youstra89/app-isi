@@ -12,12 +12,14 @@
 
 {% block body %}
   <h3>Accueil de la gestion des chambres</h3>
-  <a href="{{ path('internat_add_chambre', {'as': asec}) }}" class="ui positive button" type="button" name="button">{{ 'Ajouter une chambre'|trans }}</a>
+  <a href="{{ path('internat_add_chambre', {'as': asec, annexeId: annexe.id}) }}" class="ui positive button" type="button" name="button">{{ 'Ajouter une chambre'|trans }}</a>
   <br />
-  <table id="table1" cellspacing="0" class="mytable filterable ui very basic table">
+  <table id="chambres" cellspacing="0" class="mytable filterable ui very basic table">
     <thead>
       <tr>
         <th align="center">{{ 'N°'|trans }}</th>
+        <th>{{ 'Bâtiment'|trans }}</th>
+        <th>{{ 'Responsable'|trans }}</th>
         <th>{{ 'Libellé chambre'|trans }}</th>
         <th>{{ 'Genre'|trans }}</th>
         <th>{{ 'Nombre de places'|trans }}</th>
@@ -35,7 +37,9 @@
         {% endif %}
         <tr bgcolor="{{ color }}">
           <td>{{ n }}</td>
-          <td>{{ chambre.batiment.nom }} - {{ chambre.libelle }}</td>
+          <td>{{ chambre.batiment.nom }}</td>
+          <td>{{ chambre.batiment.responsable }}</td>
+          <td>{{ chambre.libelle }}</td>
           <td>
             {% if chambre.genre == 1 %}
               Garçon
@@ -52,4 +56,39 @@
       {% endfor %}
     </tbody>
   </table>
+{% endblock %}
+
+
+{% block javascripts %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script src="{{ asset('Highcharts-6.1.0/code/highcharts.js') }}"></script>
+  <script src="{{ asset('DataTables/datatables.min.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: 'TableFilter/dist/tablefilter/',
+      col_0: "none",
+      col_2: 'select',
+      col_4: 'select',
+      col_7: 'none',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string',
+        'string', 'string', 'string',
+        'string', 'none'
+      ],
+      col_widths: [
+      ],
+      extensions: [{ name: 'sort' }]
+    };
+
+    var tf = new TableFilter('chambres', filtersConfig);
+    tf.init();
+  </script>
 {% endblock %}

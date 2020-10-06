@@ -16,15 +16,14 @@ class AdminController extends Controller
 {
     /**
      * @Security("has_role('ROLE_SUPER_ADMIN' or 'ROLE_ADMIN_ANNEXE')")
-     * @Route("/admin-{as}", name="admin_home")
+     * @Route("/admin-{as}-{annexeId}", name="admin_home")
      */
-    public function indexAction(Request $request, int $as)
+    public function index(Request $request, int $as, int $annexeId)
     {
         $em = $this->getDoctrine()->getManager();
         $repoAnnee = $em->getRepository('ISIBundle:Annee');
         $annee = $repoAnnee->find($as);
         $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-        $annexeId = $request->get('annexeId');
         $annexe = $repoAnnexe->find($annexeId);
         if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
             $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -41,15 +40,14 @@ class AdminController extends Controller
 
     /**
      * @Security("has_role('ROLE_SUPER_ADMIN')")
-     * @Route("/admin/user/index-management/{as}", name="isi_user")
+     * @Route("/admin/user/index-management/{as}-{annexeId}", name="isi_user")
      */
-    public function indexUsersAction(Request $request, $as)
+    public function indexUsers(Request $request, $as, int $annexeId)
     {
         $em = $this->getDoctrine()->getManager();
         $repoAnnee = $em->getRepository('ISIBundle:Annee');
         $annee = $repoAnnee->find($as);
         $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-        $annexeId = $request->get('annexeId');
         $annexe = $repoAnnexe->find($annexeId);
 
         // Pour récupérer le service UserManager du bundle
@@ -79,9 +77,9 @@ class AdminController extends Controller
 
     /**
      * @Security("has_role('ROLE_SUPER_ADMIN')")
-     * @Route("/admin/user/{as}/{userId}/add-roles-user", name="add_roles_user")
+     * @Route("/admin/user/{as}/{userId}/add-roles-user-{annexeId}", name="add_roles_user")
      */
-    public function addRolesUserAction(Request $request, $as, $userId)
+    public function addRolesUserAction(Request $request, $as, $userId, int $annexeId)
     {
         $em         = $this->getDoctrine()->getManager();
         $repoAnnee  = $em->getRepository('ISIBundle:Annee');
@@ -90,7 +88,6 @@ class AdminController extends Controller
         $annexes    = $repoAnnexe->findAll();
         $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
         $repoUserAnnexe = $em->getRepository('ISIBundle:UserAnnexe');
-        $annexeId = $request->get('annexeId');
         $annexe = $repoAnnexe->find($annexeId);
 
         $roles = [
@@ -103,6 +100,8 @@ class AdminController extends Controller
             'ROLE_ORGANISATION', 
             'ROLE_ENSEIGNANT', 
             'ROLE_ADMIN_ANNEXE', 
+            'ROLE_DIRECTEUR_ANNEXE', 
+            'ROLE_SCOLARITE_ANNEXE',
             'ROLE_ETUDE', 
             'ROLE_DIRECTION_ETUDE', 
             'ROLE_NOTE', 

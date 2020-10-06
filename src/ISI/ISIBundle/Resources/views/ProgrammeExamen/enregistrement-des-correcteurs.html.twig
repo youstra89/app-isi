@@ -1,0 +1,79 @@
+{# Accueil pour l'édition des listes de classe' #}
+
+{% extends 'ISIBundle:ProgrammeExamen:index.html.twig' %}
+
+{% block title %}
+  Enregistrement des correcteurs de la classe {{ classe.libelleFr }}
+{% endblock %}
+
+
+{% block stylesheets %}
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+  <link href="{{ asset('css/select2.min.css') }}" rel="stylesheet" />
+{% endblock %}
+
+
+{% block section %}
+  <i class="settings icon"></i>{{ 'Programme d\'examen '|trans }}
+{% endblock %}
+
+
+{% block body %}
+  {% if matieres is empty %}
+    <p>{{ 'les matières n\'ont pas encore été enregistrées.'|trans }}</p>
+  {% else %}
+    <div class="titre-document">
+      <h3>{{ 'Enregistrement des correcteurs'|trans }} <span style="color: blue">{{ classe.libelleFr }}</span></h3>
+    </div>
+    <br />
+    <form action="" class="ui form" method="post">
+      <table width="100%" class="ui celled selectable table" align="center">
+        <thead>
+          <tr class="table-header" bgcolor="">
+            <th width="2%">N°</th>
+            <th width="10%">Matières</th>
+            <th width="">Surveillants</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% set numero = 0 %}
+          {% for matiere in matieres %}
+            {% set numero = numero + 1 %}
+            <tr>
+              <td>{{ numero }}</td>
+              <td>{{ matiere.libelle }}</td>
+              <td>
+                <select class="js-example-basic-multiple" id="correcteurs[{{matiere.id}}]" name="correcteurs[{{matiere.id}}][]" multiple="multiple">
+                  <option value="">Sélectionnez un ou des correcteurs</option>
+                  {% for item in anneeContrats %}
+                    <option value="{{ item.id }}"
+                        {% for correction in corrections %}
+                          {% if correction.anneeContrat == item and matiere == correction.matiere and correction.disabled == false %}selected{% endif %}
+                        {% endfor %}
+                    >
+                      {{ item.contrat.enseignant.matricule }} --- {{ item.contrat.enseignant.nom }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <br><br>
+      <button class="ui large primary button">Valider les modifications</button>
+    </form>
+    <br><br>
+  {% endif %}
+{% endblock %}
+
+
+{% block javascripts %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('.js-example-basic-single').select2();
+      $('.js-example-basic-multiple').select2();
+    });
+  </script>
+{% endblock %}

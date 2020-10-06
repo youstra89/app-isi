@@ -1,0 +1,113 @@
+<?php
+
+namespace ISI\ISIBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
+/**
+ * EleveGroupeComposition
+ *
+ * @ORM\Entity(repositoryClass="ISI\ISIBundle\Repository\EleveGroupeCompositionRepository")
+ */
+class EleveGroupeComposition
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_deleted", type="boolean", nullable=false)
+     */
+    private $isDeleted;
+
+    /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $createdBy;
+
+    /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="updated_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $updatedBy;
+    
+    /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="deleted_by", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $deletedBy;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
+     */
+    private $createdAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     */
+    private $updatedAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="deleted_at", type="datetime", nullable=true)
+     */
+    private $deletedAt;
+
+    /**
+     * @var \Eleve
+     *
+     * @ORM\ManyToOne(targetEntity="ISI\ISIBundle\Entity\Eleve", inversedBy="elevegroupecomposition")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="eleve_id", referencedColumnName="id")
+     * })
+     */
+    private $eleve;
+
+    /**
+     * @var \GoupeComposition
+     *
+     * @ORM\ManyToOne(targetEntity="GoupeComposition")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="groupe_composition_id", referencedColumnName="id")
+     * })
+     */
+    private $groupeComposition;
+
+
+
+    public function __construct()
+    {
+        $this->isDeleted = false;
+    }
+
+
+
+    
+}

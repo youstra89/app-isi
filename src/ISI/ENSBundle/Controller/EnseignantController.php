@@ -14,13 +14,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class EnseignantController extends Controller
 {
     /**
-     * @Route("/{as}", name="enseignant_home")
-     *
-     * @param Request $request
-     * @param integer $as
-     * @return void
+     * @Route("/{as}-{annexeId}", name="enseignant_home")
      */
-    public function index(Request $request, int $as)
+    public function index(Request $request, int $as, int $annexeId)
     {
         $em             = $this->getDoctrine()->getManager();
         $repoEnseignant = $em->getRepository('ENSBundle:Enseignant');
@@ -34,7 +30,6 @@ class EnseignantController extends Controller
         $cours          = $repoCours->lesCoursDeLEnseignant($as, $enseignantId);
         
         $repoAnnexe     = $em->getRepository('ISIBundle:Annexe');
-        $annexeId       = $request->get('annexeId');
         $annexe         = $repoAnnexe->find($annexeId);
         // if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
         //     $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -58,9 +53,9 @@ class EnseignantController extends Controller
     }
 
     /**
-     * @Route("appel-cours/{as}/{coursId}", name="faire_appel_cours")
+     * @Route("/appel-cours/{as}/{coursId}-{annexeId}", name="faire_appel_cours")
      */
-    public function faire_appel_cours(Request $request, int $as, int $coursId)
+    public function faire_appel_cours(Request $request, int $as, int $coursId, int $annexeId)
     {
         $em             = $this->getDoctrine()->getManager();
         $repoEleve      = $em->getRepository('ISIBundle:Eleve');
@@ -71,7 +66,6 @@ class EnseignantController extends Controller
         $cours          = $repoCours->find($coursId);
         $classeId       = $cours->getClasse()->getId();
         $repoAnnexe     = $em->getRepository('ISIBundle:Annexe');
-        $annexeId       = $request->get('annexeId');
         $annexe         = $repoAnnexe->find($annexeId);
         $enseignantAnnexeId = $cours->getAnneeContrat()->getContrat()->getEnseignant()->getAnnexe()->getId();
         $eleves         = $repoEleve->lesElevesDeLaClasse($as, $enseignantAnnexeId, $classeId);
@@ -84,8 +78,21 @@ class EnseignantController extends Controller
         $heure_du_cours = $cours->getHeure();
         $origine        = $request->get('origine');
         $continious     = $this->permettre_appel($heure_du_cours, $lycee, $origine);
+        $periodeDeCours = $this->verification_de_la_periode_de_cours($em, $annee);
+
+        $problemesRencontres = false;
+
         if($continious == false){
-            $this->addFlash('error', "Désolé!!! Vous ne pouvez faire l'appel car l'heure du cours sélectionné est soit passée, soit à venir.");
+            $problemesRencontres = true;
+            $this->addFlash('error', "Vous ne pouvez faire l'appel car l'heure du cours sélectionné est soit passée, soit à venir.");
+        }
+        if($periodeDeCours == false){
+            $problemesRencontres = true;
+            $this->addFlash('error', "Impossible de continuer. La date du jour n'est pas incluse dans une période de cours.");
+        }
+
+        if($problemesRencontres == true)
+        {
             if('all-courses' == $origine){
                 return $this->redirectToRoute('tous_les_cours', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $cours->getClasse()->getNiveau()->getGroupeFormation()->getReference()]);
             }
@@ -96,10 +103,10 @@ class EnseignantController extends Controller
         }
 
         if($request->isMethod("post")){
-            $data = $request->request->all();
-            $date = new \DateTime($data["date"]);
-            $numero_du_jour = date("w", strtotime($data["date"]));
-            $jour_du_cours = $cours->getJour();
+            $data                  = $request->request->all();
+            $date                  = new \DateTime($data["date"]);
+            $numero_du_jour        = date("w", strtotime($data["date"]));
+            $jour_du_cours         = $cours->getJour();
             $nouvel_enregistrement = false;
             // Contrainte : Il faut que le jour sélectionné corresponde au jour du cours
             if(
@@ -162,13 +169,6 @@ class EnseignantController extends Controller
                 try{
                     $em->flush();
                     $this->addFlash('info', 'Appel du cours de <strong>'.$cours->getMatiere()->getLibelle().'</strong> en <strong>'.$label.'</strong> le <strong>'.$cours->jourdecours().'</strong> à la <strong>'.$cours->getHeure().' heure</strong> enregistré avec succès.');
-                    if('all-courses' == $origine){
-                        return $this->redirectToRoute('tous_les_cours', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $cours->getClasse()->getNiveau()->getGroupeFormation()->getReference()]);
-                    }
-                    elseif('scolarite' == $origine){
-                        return $this->redirectToRoute('rapport_absence_cours_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $cours->getClasse()->getNiveau()->getGroupeFormation()->getReference()]);
-                    }
-                    return $this->redirectToRoute('enseignant_home', ['as' => $as, 'annexeId' => $annexeId]);
                 } 
                 catch(\Doctrine\ORM\ORMException $e){
                     $this->addFlash('error', $e->getMessage());
@@ -177,25 +177,19 @@ class EnseignantController extends Controller
                 catch(\Exception $e){
                     $this->addFlash('error', $e->getMessage());
                 }
-                if('all-courses' == $origine){
-                    return $this->redirectToRoute('tous_les_cours', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $cours->getClasse()->getNiveau()->getGroupeFormation()->getReference()]);
-                }
-                elseif('scolarite' == $origine){
-                    return $this->redirectToRoute('rapport_absence_cours_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $cours->getClasse()->getNiveau()->getGroupeFormation()->getReference()]);
-                }
-                return $this->redirectToRoute('faire_appel_cours', ['as' => $as, 'annexeId' => $annexeId, 'coursId' => $coursId]);
             }
             else{
                 $jour = $this->dateToFrench(date("l", strtotime($data["date"])));
                 $this->addFlash('error', "Désolé!!! Le jour selectionné (<strong>".$jour."</strong>) ne corespond pas au jour du cours (<strong>".$cours->jourdecours()."</strong>).");
-                if('all-courses' == $origine){
-                    return $this->redirectToRoute('tous_les_cours', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $cours->getClasse()->getNiveau()->getGroupeFormation()->getReference()]);
-                }
-                elseif('scolarite' == $origine){
-                    return $this->redirectToRoute('rapport_absence_cours_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $cours->getClasse()->getNiveau()->getGroupeFormation()->getReference()]);
-                }
-                return $this->redirectToRoute('enseignant_home', ['as' => $as, 'annexeId' => $annexeId]);
             }
+
+            if('all-courses' == $origine){
+                return $this->redirectToRoute('tous_les_cours', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $cours->getClasse()->getNiveau()->getGroupeFormation()->getReference()]);
+            }
+            elseif('scolarite' == $origine){
+                return $this->redirectToRoute('rapport_absence_cours_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $cours->getClasse()->getNiveau()->getGroupeFormation()->getReference()]);
+            }
+            return $this->redirectToRoute('enseignant_home', ['as' => $as, 'annexeId' => $annexeId]);
         }
         return $this->render('ENSBundle:Enseignant:faire-appel.html.twig', [
             'asec'    => $as,
@@ -212,7 +206,7 @@ class EnseignantController extends Controller
         $heure_actuelle = time();
         $continious     = false;
         if($origine == "scolarite"){
-            if(strtotime((new \DateTime())->format("Y-m-d 19:00")) >= $heure_actuelle){
+            if(strtotime((new \DateTime())->format("Y-m-d 20:00")) >= $heure_actuelle){
                 if (
                     ($heure_du_cours == 1 and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 08:10")) and $lycee == false) or
                     ($heure_du_cours == 2 and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 08:50")) and $lycee == false) or
@@ -229,7 +223,7 @@ class EnseignantController extends Controller
                     ($heure_du_cours == 5 and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 12:15")) and $lycee ==  true) or
                     ($heure_du_cours == 6 and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 13:15")) and $lycee ==  true)
                 ) {
-                    # code...
+                    $continious = true;
                 }
                 else{
                     $continious = true;
@@ -330,9 +324,9 @@ class EnseignantController extends Controller
     }
 
     /**
-     * @Route("appel-halaqa/{as}/{coursId}", name="faire_appel_halaqa")
+     * @Route("/appel-halaqa/{as}/{coursId}-{annexeId}", name="faire_appel_halaqa")
      */
-    public function faire_appel_halaqa(Request $request, int $as, int $coursId)
+    public function faire_appel_halaqa(Request $request, int $as, int $coursId, int $annexeId)
     {
         $em             = $this->getDoctrine()->getManager();
         $repoEleve      = $em->getRepository('ISIBundle:Eleve');
@@ -344,7 +338,6 @@ class EnseignantController extends Controller
         $cours          = $repoCours->find($coursId);
         $halaqaId       = $cours->getHalaqa()->getId();
         $repoAnnexe     = $em->getRepository('ISIBundle:Annexe');
-        $annexeId       = $request->get('annexeId');
         $annexe         = $repoAnnexe->find($annexeId);
         $memoriser      = $repoMemoriser->findByHalaqa($halaqaId);
         foreach ($memoriser as $key => $memo) {
@@ -359,11 +352,37 @@ class EnseignantController extends Controller
         }
         $continious     = false;
         $heure_actuelle = time();
+
+        $heure_du_cours = $cours->getHeure();
+        $origine        = $request->get('origine');
+
         if(strtotime((new \DateTime())->format("Y-m-d 11:15")) <= $heure_actuelle and $heure_actuelle <= strtotime((new \DateTime())->format("Y-m-d 13:15"))){
             $continious = true;
         }
+
+        
+        $continious     = $this->permettre_appel($heure_du_cours, false, $origine);
+        $periodeDeCours = $this->verification_de_la_periode_de_cours($em, $annee);
+
+        $problemesRencontres = false;
+
         if($continious == false){
-            $this->addFlash('error', "Désolé!!! Vous ne pouvez faire l'appel car l'heure du cours sélectionné est soit passée, soit à venir.");
+            $problemesRencontres = true;
+            $this->addFlash('error', "Vous ne pouvez faire l'appel car l'heure du cours sélectionné est soit passée, soit à venir.");
+        }
+        if($periodeDeCours == false){
+            $problemesRencontres = true;
+            $this->addFlash('error', "Impossible de continuer. La date du jour n'est pas incluse dans une période de cours.");
+        }
+
+        if($problemesRencontres == true)
+        {
+            if('all-courses' == $origine){
+                return $this->redirectToRoute('tous_les_cours', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $cours->getClasse()->getNiveau()->getGroupeFormation()->getReference()]);
+            }
+            elseif('scolarite' == $origine){
+                return $this->redirectToRoute('rapport_absence_coran_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => $cours->getClasse()->getNiveau()->getGroupeFormation()->getReference()]);
+            }
             return $this->redirectToRoute('enseignant_home', ['as' => $as, 'annexeId' => $annexeId]);
         }
 
@@ -372,7 +391,6 @@ class EnseignantController extends Controller
             $date = new \DateTime($data["date"]);
             $numero_du_jour = date("w", strtotime($data["date"]));
             $jour_du_cours = $cours->getJour();
-            $nouvel_enregistrement = false;
             // Contrainte : Il faut que le jour sélectionné corresponde au jour du cours
             if(
                 $jour_du_cours == 1 and $numero_du_jour == 6 or
@@ -435,7 +453,7 @@ class EnseignantController extends Controller
                 try{
                     $em->flush();
                     $this->addFlash('info', 'Appel du cours de <strong>'.$cours->getMatiere()->getLibelle().'</strong> en <strong>'.$cours->getHalaqa()->getLibelle().'</strong> le <strong>'.$cours->jourdecours().'</strong> à la <strong>'.$cours->getHeure().' heure</strong> enregistré avec succès.');
-                    return $this->redirectToRoute('enseignant_home', ['as' => $as, 'annexeId' => $annexeId]);
+                    // return $this->redirectToRoute('enseignant_home', ['as' => $as, 'annexeId' => $annexeId]);
                 } 
                 catch(\Doctrine\ORM\ORMException $e){
                     $this->addFlash('error', $e->getMessage());
@@ -444,13 +462,21 @@ class EnseignantController extends Controller
                 catch(\Exception $e){
                     $this->addFlash('error', $e->getMessage());
                 }
-                return $this->redirectToRoute('faire_appel_halaqa', ['as' => $as, 'annexeId' => $annexeId, 'coursId' => $coursId]);
+                // return $this->redirectToRoute('faire_appel_halaqa', ['as' => $as, 'annexeId' => $annexeId, 'coursId' => $coursId]);
             }
             else{
                 $jour = $this->dateToFrench(date("l", strtotime($data["date"])));
                 $this->addFlash('error', "Désolé!!! Le jour selectionné (<strong>".$jour."</strong>) ne corespond pas au jour du cours (<strong>".$cours->jourdecours()."</strong>).");
-                return $this->redirectToRoute('enseignant_home', ['as' => $as, 'annexeId' => $annexeId]);
+                // return $this->redirectToRoute('enseignant_home', ['as' => $as, 'annexeId' => $annexeId]);
             }
+            
+            if('all-courses' == $origine){
+                return $this->redirectToRoute('tous_les_cours', ['as' => $as, 'annexeId' => $annexeId, 'regime' => "A"]);
+            }
+            elseif('scolarite' == $origine){
+                return $this->redirectToRoute('rapport_absence_coran_home', ['as' => $as, 'annexeId' => $annexeId, 'regime' => "A"]);
+            }
+            return $this->redirectToRoute('enseignant_home', ['as' => $as, 'annexeId' => $annexeId]);
         }
         return $this->render('ENSBundle:Enseignant:faire-appel-halaqa.html.twig', [
             'asec'      => $as,
@@ -502,6 +528,25 @@ class EnseignantController extends Controller
                 }
                 break;
         }
+    }
+
+    public function verification_de_la_periode_de_cours($em, $annee)
+    {
+        $permettreAppel = false;
+        $date           = (new \DateTime())->format("Y-m-d");
+        $repoProgramme  = $em->getRepository('ISIBundle:Programme');
+        $programme      = $repoProgramme->dateDansPeriodeDeCours($date);
+
+        $debutPremierSemestre = $annee->getDebutPremierSemestre()->format("Y-m-d");
+        $finPremierSemestre   = $annee->getFinPremierSemestre()->format("Y-m-d");
+        $debutSecondSemestre  = $annee->getDebutSecondSemestre()->format("Y-m-d");
+        $finSecondSemestre    = $annee->getFinSecondSemestre()->format("Y-m-d");
+
+
+        if((($debutPremierSemestre <= $date and $date <= $finPremierSemestre) or ($debutSecondSemestre <= $date and $date <= $finSecondSemestre)) and empty($programme)){
+            $permettreAppel = true;
+        }
+        return $permettreAppel;
     }
 
     public function dateToFrench($english) 

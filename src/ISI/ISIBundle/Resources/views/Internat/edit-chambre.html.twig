@@ -7,44 +7,40 @@
 {% endblock %}
 
 {% block body %}
-	<div class="ui container">
+	<h3>Editer la chambre {{ chambre.libelle }} au {{ chambre.batiment.nom }} chez {{ chambre.batiment.responsable }}</h3>
 
-		<h3>{{ 'Ajout d\'une nouvelle chambre'|trans }}</h3>
+	<div class="form-group">
+		{{ form_start(form, {'attr': {'class': 'ui form'}}) }}
+		<div class="two fields">
+			<div class="field">
+				<label for="">
+					{{ form_label(form.batiment, "Dans quel bâtiment se trouve la chambre ?", {'label_attr': {'class': ''}}) }}
+					{{ form_errors(form.batiment) }}
+				</label> {{ form_widget(form.batiment) }}
+			</div>
+			<div class="field">
+				<label for="">
+					{{ form_label(form.genre, "La chambre des garçons ou des filles ?", {'label_attr': {'class': ''}}) }}
+					{{ form_errors(form.genre) }}
+				</label> {{ form_widget(form.genre, {'attr': {'class': 'nomFr', 'placeholder': ''}}) }}
+			</div>
+			</div>
+		<div class="two fields">
+			<div class="field">
+				<label for="">
+					{{ form_label(form.libelle, "Libelle de la chambre", {'label_attr': {'class': ''}}) }}
+					{{ form_errors(form.libelle) }}
+				</label> {{ form_widget(form.libelle, {'attr': {'class': 'nomFr', 'placeholder': 'Le nom de la chambre'}}) }}
+			</div>
+			<div class="field">
+				<label for="">
+					{{ form_label(form.nombreDePlaces, "Combien de places y a-t-il dans la chambre ?", {'label_attr': {'class': ''}}) }}
+					{{ form_errors(form.nombreDePlaces) }}
+				</label> {{ form_widget(form.nombreDePlaces, {'attr': {'class': 'nomFr', 'placeholder': ''}}) }}
+			</div>
+			</div>
 
-		<div class="form-group">
-			{{ form_start(form, {'attr': {'class': 'ui form'}}) }}
-			<div class="two fields">
-				<div class="field">
-					<label for="">
-						{{ form_label(form.batiment, "Dans quel bâtiment se trouve la chambre ?", {'label_attr': {'class': ''}}) }}
-						{{ form_errors(form.batiment) }}
-					</label> {{ form_widget(form.batiment) }}
-				</div>
-				<div class="field">
-					<label for="">
-						{{ form_label(form.genre, "La chambre des garçons ou des filles ?", {'label_attr': {'class': ''}}) }}
-						{{ form_errors(form.genre) }}
-					</label> {{ form_widget(form.genre, {'attr': {'class': 'nomFr', 'placeholder': ''}}) }}
-				</div>
-				</div>
-			<div class="two fields">
-				<div class="field">
-					<label for="">
-						{{ form_label(form.libelle, "Libelle de la chambre", {'label_attr': {'class': ''}}) }}
-						{{ form_errors(form.libelle) }}
-					</label> {{ form_widget(form.libelle, {'attr': {'class': 'nomFr', 'placeholder': 'Le nom de la chambre'}}) }}
-				</div>
-				<div class="field">
-					<label for="">
-						{{ form_label(form.nombreDePlaces, "Combien de places y a-t-il dans la chambre ?", {'label_attr': {'class': ''}}) }}
-						{{ form_errors(form.nombreDePlaces) }}
-					</label> {{ form_widget(form.nombreDePlaces, {'attr': {'class': 'nomFr', 'placeholder': ''}}) }}
-				</div>
-				</div>
-
-			{{ form_widget(form.save, {'attr': {'class': 'ui primary button'}}) }}
-		  {{ form_end(form) }}
-		</div>
+		{{ form_widget(form.save, {'attr': {'class': 'ui primary button'}}) }}
+		{{ form_end(form) }}
 	</div>
-
 {% endblock %}

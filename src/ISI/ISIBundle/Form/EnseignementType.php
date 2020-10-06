@@ -36,6 +36,7 @@ class EnseignementType extends AbstractType
         ->add('coefficient',     NumberType::class)
         ->add('nombre_heure_cours',     NumberType::class)
         ->add('statu',    CheckboxType::class, ['required' => false])
+        ->add('matiere_examen',    CheckboxType::class, ['required' => false])
         ->add('livre', EntityType::class, [
             'class'         => 'ISIBundle:Livre',
             'placeholder'   => 'Sélectionner un livre',

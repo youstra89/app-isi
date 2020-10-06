@@ -37,6 +37,13 @@ class Enseignement
     private $statu;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="matiere_examen", type="boolean", nullable=true)
+     */
+    private $matiereExamen;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="nombre_heure_cours", type="integer", nullable=true)
@@ -409,5 +416,29 @@ class Enseignement
     public function getNombreHeureCours()
     {
         return $this->nombreHeureCours;
+    }
+
+    /**
+     * Set matiereExamen
+     *
+     * @param boolean $matiereExamen
+     *
+     * @return Enseignement
+     */
+    public function setMatiereExamen($matiereExamen)
+    {
+        $this->matiereExamen = $matiereExamen;
+
+        return $this;
+    }
+
+    /**
+     * Get matiereExamen
+     *
+     * @return boolean
+     */
+    public function getMatiereExamen()
+    {
+        return $this->matiereExamen;
     }
 }

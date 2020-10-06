@@ -1,0 +1,6 @@
+<div class="header">{{ 'Programme de composition'|trans }}</div>
+<a class="item" href="{{ path('liste_des_niveaux_programme_examen', {as: asec, regime: regime, annexeId: annexe.id, examenId: examen.id}) }}">{{ 'Programme par niveau'|trans }}</a>
+<div class="header">{{ 'Groupes de composition'|trans }}</div>
+<a class="item" href="{{ path('accueil_programme_examen', {'as': asec, examenId: examen.id, regime: regime, 'annexeId': annexe.id}) }}">{{ 'Tous les programmes'|trans }}</a>
+<a class="item" href="{{ path('liste_des_classes_programme_examen', {as: asec, regime: regime, annexeId: annexe.id, examenId: examen.id}) }}">{{ 'Liste des classes'|trans }}</a>
+<a class="item" href="{{ path('groupes_composition', {'as': asec, regime: regime, examenId: examen.id, 'annexeId': annexe.id}) }}">{{ 'Liste des groupes'|trans }}</a>

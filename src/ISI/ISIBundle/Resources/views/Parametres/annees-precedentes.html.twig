@@ -37,8 +37,14 @@
 				<div class="extra content">
 					<div class="ui buttons">
 						<a href="{{ path('isi_homepage', {'as': item.id, 'annexeId': annexe.id}) }}">
-							<div class="ui basic green button">{{ 'Revenir en '|trans }}{{ item.libelle}} </div>
+							<div class="ui basic green button">{{ 'Revenir en '|trans }}<strong>{{ item.libelle}}</strong> </div>
 						</a>
+						{% if item.achevee == 0 and is_granted('ROLE_SUPER_ADMIN') %}
+							<a href="{{ path('edit_annee', {'as': item.id, 'annexeId': annexe.id}) }}">
+								<div class="ui basic primary button">{{ 'Editer l\'année'|trans }}</div>
+							</a>
+						{% endif %}
+						
 					</div>
 				</div>
 			</div>

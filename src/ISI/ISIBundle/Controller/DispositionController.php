@@ -18,15 +18,14 @@ class DispositionController extends Controller
 {
     /**
      * @Security("has_role('ROLE_SCOLARITE')")
-     * @Route("/index-{as}", name="disposition_home")
+     * @Route("/index-{as}-{annexeId}", name="disposition_home")
      */
-    public function indexAction(Request $request, int $as)
+    public function indexAction(Request $request, int $as, int $annexeId)
     {
       $em = $this->getDoctrine()->getManager();
       $repoAnnee = $em->getRepository('ISIBundle:Annee');
       $annee     = $repoAnnee->find($as);
       $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-      $annexeId = $request->get('annexeId');
       $annexe = $repoAnnexe->find($annexeId);
       if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
         $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -42,18 +41,16 @@ class DispositionController extends Controller
 
     /**
      * @Security("has_role('ROLE_SCOLARITE')")
-     * @Route("/gestions-des-batiments-{as}", name="batiment_home")
+     * @Route("/gestions-des-batiments-{as}-{annexeId}", name="batiment_home")
      */
-    public function gestionDesBatimentsAction(Request $request, int $as)
+    public function gestionDesBatimentsAction(Request $request, int $as, int $annexeId)
     {
       $em = $this->getDoctrine()->getManager();
       $repoAnnee    = $em->getRepository('ISIBundle:Annee');
       $repoBatiment = $em->getRepository('ISIBundle:Batiment');
       $annee     = $repoAnnee->find($as);
       $batiments = $repoBatiment->findBy(['utilisation' => 1]);
-
       $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-      $annexeId = $request->get('annexeId');
       $annexe = $repoAnnexe->find($annexeId);
       if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
         $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -70,15 +67,14 @@ class DispositionController extends Controller
 
     /**
      * @Security("has_role('ROLE_SCOLARITE')")
-     * @Route("/ajouter-un-batiment-{as}", name="batiment_add")
+     * @Route("/ajouter-un-batiment-{as}-{annexeId}", name="batiment_add")
      */
-    public function addBatimentAction(Request $request, int $as): Response
+    public function addBatimentAction(Request $request, int $as, int $annexeId): Response
     {
       $em = $this->getDoctrine()->getManager();
       $repoAnnee = $em->getRepository('ISIBundle:Annee');
       $annee     = $repoAnnee->find($as);
       $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-      $annexeId = $request->get('annexeId');
       $annexe = $repoAnnexe->find($annexeId);
       if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
         $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -113,15 +109,14 @@ class DispositionController extends Controller
     /**
      * @Security("has_role('ROLE_SCOLARITE')")
      * @param Batiment $batiment
-     * @Route("/editer-informations-batiment-{as}-{id}", name="batiment_edit")
+     * @Route("/editer-informations-batiment-{as}-{id}-{annexeId}", name="batiment_edit")
      */
-    public function editBatimentAction(Request $request, Batiment $batiment, int $as): Response
+    public function editBatimentAction(Request $request, Batiment $batiment, int $as, int $annexeId): Response
     {
       $em = $this->getDoctrine()->getManager();
       $repoAnnee   = $em->getRepository('ISIBundle:Annee');
       $annee       = $repoAnnee->find($as);
       $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-      $annexeId = $request->get('annexeId');
       $annexe = $repoAnnexe->find($annexeId);
       if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
         $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -152,15 +147,14 @@ class DispositionController extends Controller
 
     /**
      * @Security("has_role('ROLE_SCOLARITE')")
-     * @Route("/gestions-des-salles-{as}", name="salle_home")
+     * @Route("/gestions-des-salles-{as}-{annexeId}", name="salle_home")
      */
-    public function gestionDesSallesAction(Request $request, int $as)
+    public function gestionDesSallesAction(Request $request, int $as, int $annexeId)
     {
       $em = $this->getDoctrine()->getManager();
       $repoAnnee    = $em->getRepository('ISIBundle:Annee');
       $repoSalle = $em->getRepository('ISIBundle:Salle');
       $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-      $annexeId = $request->get('annexeId');
       $annexe = $repoAnnexe->find($annexeId);
       if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
         $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -172,22 +166,21 @@ class DispositionController extends Controller
       return $this->render('ISIBundle:Disposition:salles.html.twig', [
         'asec'   => $as,
         'annee'  => $annee,
-      'annexe'  => $annexe,
-      'salles' => $salles,
+        'annexe'  => $annexe,
+        'salles' => $salles,
       ]);
     }
 
     /**
      * @Security("has_role('ROLE_SCOLARITE')")
-     * @Route("/ajouter-un-salle-{as}", name="salle_add")
+     * @Route("/ajouter-un-salle-{as}-{annexeId}", name="salle_add")
      */
-    public function addSalleAction(Request $request, int $as): Response
+    public function addSalleAction(Request $request, int $as, int $annexeId): Response
     {
       $em = $this->getDoctrine()->getManager();
       $repoAnnee = $em->getRepository('ISIBundle:Annee');
       $annee     = $repoAnnee->find($as);
       $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-      $annexeId = $request->get('annexeId');
       $annexe = $repoAnnexe->find($annexeId);
       if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
         $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -217,15 +210,14 @@ class DispositionController extends Controller
     /**
      * @Security("has_role('ROLE_SCOLARITE')")
      * @param Salle $salle
-     * @Route("/editer-informations-salle-{as}-{id}", name="salle_edit")
+     * @Route("/editer-informations-salle-{as}-{id}-{annexeId}", name="salle_edit")
      */
-    public function editSalleAction(Request $request, int $as, Salle $salle): Response
+    public function editSalleAction(Request $request, int $as, Salle $salle, int $annexeId): Response
     {
       $em = $this->getDoctrine()->getManager();
       $repoAnnee = $em->getRepository('ISIBundle:Annee');
       $annee     = $repoAnnee->find($as);
       $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-      $annexeId = $request->get('annexeId');
       $annexe = $repoAnnexe->find($annexeId);
       if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
         $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -253,16 +245,15 @@ class DispositionController extends Controller
 
     /**
      * @Security("has_role('ROLE_SCOLARITE')")
-     * @Route("/disposition-des-classes-par-salles-{as}", name="disposition")
+     * @Route("/disposition-des-classes-par-salles-{as}-{annexeId}", name="disposition")
      */
-    public function dispositionAction(Request $request, int $as)
+    public function dispositionAction(Request $request, int $as, int $annexeId)
     {
       $em         = $this->getDoctrine()->getManager();
       $repoAnnee  = $em->getRepository('ISIBundle:Annee');
       $repoSalle  = $em->getRepository('ISIBundle:Salle');
       $repoSC     = $em->getRepository('ISIBundle:SalleClasse');
       $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-      $annexeId   = $request->get('annexeId');
       $annexe     = $repoAnnexe->find($annexeId);
       if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
         $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -297,9 +288,9 @@ class DispositionController extends Controller
     /**
      * @Security("has_role('ROLE_SCOLARITE')")
      * @param Salle $salle
-     * @Route("/disposition-de-classes-en-salle-{as}-{id}", name="disposition_add")
+     * @Route("/disposition-de-classes-en-salle-{as}-{id}-{annexeId}", name="disposition_add")
      */
-    public function dispositionDeClasseEnSalleAction(Request $request, int $as, Salle $salle, int $id): Response
+    public function dispositionDeClasseEnSalleAction(Request $request, int $as, Salle $salle, int $id, int $annexeId): Response
     {
       $em = $this->getDoctrine()->getManager();
       $enregistrement = false;
@@ -309,7 +300,6 @@ class DispositionController extends Controller
       $repoGrpF   = $em->getRepository('ISIBundle:Groupeformation');
       $annee      = $repoAnnee->find($as);
       $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-      $annexeId = $request->get('annexeId');
       $annexe = $repoAnnexe->find($annexeId);
       if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
         $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -417,9 +407,9 @@ class DispositionController extends Controller
     /**
      * @Security("has_role('ROLE_SCOLARITE')")
      * @param Salle $salle
-     * @Route("/editer-disposition-de-classes-en-salle-{as}-{id}", name="disposition_edit")
+     * @Route("/editer-disposition-de-classes-en-salle-{as}-{id}-{annexeId}", name="disposition_edit")
      */
-    public function editerDispositionDeClasseEnSalleAction(Request $request, int $as, Salle $salle, int $id): Response
+    public function editerDispositionDeClasseEnSalleAction(Request $request, int $as, Salle $salle, int $id, int $annexeId): Response
     {
       $em = $this->getDoctrine()->getManager();
       $enregistrement = false;
@@ -429,7 +419,6 @@ class DispositionController extends Controller
       $repoGrpF   = $em->getRepository('ISIBundle:Groupeformation');
       $annee      = $repoAnnee->find($as);
       $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-      $annexeId = $request->get('annexeId');
       $annexe = $repoAnnexe->find($annexeId);
       if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
         $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');

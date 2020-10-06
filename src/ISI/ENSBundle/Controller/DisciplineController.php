@@ -23,15 +23,14 @@ class DisciplineController extends Controller
 {
   /**
    * @Security("has_role('ROLE_DISCIPLINE_ENSEIGNANT')")
-   * @Route("/conduite-home-{as}", name="ens_conduite_home")
+   * @Route("/conduite-home-{as}-{annexeId}", name="ens_conduite_home")
    */
-  public function indexConduite(Request $request, $as)
+  public function indexConduite(Request $request, $as, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
       $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -64,15 +63,14 @@ class DisciplineController extends Controller
 
   /**
    * @Security("has_role('ROLE_DISCIPLINE_ENSEIGNANT')")
-   * @Route("/enregistrer-une-conduite-pour-un-enseignant-{as}-{contratId}", name="ens_enregistrement_conduite")
+   * @Route("/enregistrer-une-conduite-pour-un-enseignant-{as}-{contratId}-{annexeId}", name="ens_enregistrement_conduite")
    */
-  public function enregistrerConduite(Request $request, $as, $contratId)
+  public function enregistrerConduite(Request $request, $as, $contratId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoContrat = $em->getRepository('ENSBundle:Contrat');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
         $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -124,16 +122,15 @@ class DisciplineController extends Controller
 
   /**
    * @Security("has_role('ROLE_DISCIPLINE_ENSEIGNANT')")
-   * @Route("/voir-les-conduites-d-un-enseignant-{as}-{contratId}", name="ens_voir_conduite")
+   * @Route("/voir-les-conduites-d-un-enseignant-{as}-{contratId}-{annexeId}", name="ens_voir_conduite")
    */
-  public function voirConduite(Request $request, $as, $contratId)
+  public function voirConduite(Request $request, $as, $contratId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoContrat = $em->getRepository('ENSBundle:Contrat');
     $repoConduite = $em->getRepository('ENSBundle:AnneeContratConduite');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
         $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -155,15 +152,14 @@ class DisciplineController extends Controller
 
   /**
    * @Security("has_role('ROLE_DISCIPLINE_ENSEIGNANT')")
-   * @Route("/convocation-home-{as}", name="ens_convocation_home")
+   * @Route("/convocation-home-{as}-{annexeId}", name="ens_convocation_home")
    */
-  public function indexConvocation(Request $request, $as)
+  public function indexConvocation(Request $request, $as, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoAnneeConvocation = $em->getRepository('ENSBundle:AnneeContratConvocation');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
         $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -191,15 +187,14 @@ class DisciplineController extends Controller
 
   /**
    * @Security("has_role('ROLE_DISCIPLINE_ENSEIGNANT')")
-   * @Route("/convoquer-des-enseignants-{as}", name="ens_convoquer_enseignant")
+   * @Route("/convoquer-des-enseignants-{as}-{annexeId}", name="ens_convoquer_enseignant")
    */
-  public function convoquerHome(Request $request, $as)
+  public function convoquerHome(Request $request, $as, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee        = $em->getRepository('ISIBundle:Annee');
     $repoAnneeContrat = $em->getRepository('ENSBundle:AnneeContrat');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
         $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -236,15 +231,14 @@ class DisciplineController extends Controller
 
   /**
    * @Security("has_role('ROLE_DISCIPLINE_ENSEIGNANT')")
-   * @Route("/rempli-convocation-des-enseignants-{as}", name="ens_info_convocation")
+   * @Route("/rempli-convocation-des-enseignants-{as}-{annexeId}", name="ens_info_convocation")
    */
-  public function remplirConvocation(Request $request, $as)
+  public function remplirConvocation(Request $request, $as, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoContrat = $em->getRepository('ENSBundle:Contrat');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
         $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -312,15 +306,14 @@ class DisciplineController extends Controller
 
   /**
    * @Security("has_role('ROLE_DISCIPLINE_ENSEIGNANT')")
-   * @Route("/enregistrement-de-l-audition-et-du-verdict-pour-la-convocation-de-l-enseignant-{as}-{ensConvocationId}", name="ens_audition_et_verdict")
+   * @Route("/enregistrement-de-l-audition-et-du-verdict-pour-la-convocation-de-l-enseignant-{as}-{ensConvocationId}-{annexeId}", name="ens_audition_et_verdict")
    */
-  public function auditionEtVerdict(Request $request, $as, $ensConvocationId)
+  public function auditionEtVerdict(Request $request, $as, $ensConvocationId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee      = $em->getRepository('ISIBundle:Annee');
     $repoAnneeConvocation = $em->getRepository('ENSBundle:AnneeContratConvocation');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
         $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -364,14 +357,13 @@ class DisciplineController extends Controller
 
   /**
    * @Security("has_role('ROLE_DISCIPLINE_ENSEIGNANT')")
-   * @Route("/sanction-home-{as}", name="ens_sanction_home")
+   * @Route("/sanction-home-{as}-{annexeId}", name="ens_sanction_home")
    */
-  public function sanctionHome(Request $request, $as)
+  public function sanctionHome(Request $request, $as, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
         $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -399,16 +391,15 @@ class DisciplineController extends Controller
 
   /**
    * @Security("has_role('ROLE_DISCIPLINE_ENSEIGNANT')")
-   * @Route("/voir-les-sanctions-d-un-enseignant-{as}-{contratId}", name="ens_voir_sanction")
+   * @Route("/voir-les-sanctions-d-un-enseignant-{as}-{contratId}-{annexeId}", name="ens_voir_sanction")
    */
-  public function voirSanction(Request $request, $as, $contratId)
+  public function voirSanction(Request $request, $as, $contratId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee   = $em->getRepository('ISIBundle:Annee');
     $repoContrat = $em->getRepository('ENSBundle:Contrat');
     $repoSanction = $em->getRepository('ENSBundle:AnneeContratSanction');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
         $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');
@@ -433,15 +424,14 @@ class DisciplineController extends Controller
 
   /**
    * @Security("has_role('ROLE_DISCIPLINE_ENSEIGNANT')")
-   * @Route("/enregistrement-d-une-sanction-{as}-{contratId}", name="ens_add_sanction")
+   * @Route("/enregistrement-d-une-sanction-{as}-{contratId}-{annexeId}", name="ens_add_sanction")
    */
-  public function addSanction(Request $request, $as, $contratId)
+  public function addSanction(Request $request, $as, $contratId, int $annexeId)
   {
     $em = $this->getDoctrine()->getManager();
     $repoAnnee    = $em->getRepository('ISIBundle:Annee');
     $repoContrat  = $em->getRepository('ENSBundle:Contrat');
     $repoAnnexe = $em->getRepository('ISIBundle:Annexe');
-    $annexeId = $request->get('annexeId');
     $annexe = $repoAnnexe->find($annexeId);
     if(!in_array($annexeId, $this->getUser()->idsAnnexes()) or (in_array($annexeId, $this->getUser()->idsAnnexes()) and $this->getUser()->findAnnexe($annexeId)->getDisabled() == 1)){
         $request->getSession()->getFlashBag()->add('error', 'Vous n\'êtes pas autorisés à exploiter les données de l\'annexe <strong>'.$annexe->getLibelle().'</strong>.');

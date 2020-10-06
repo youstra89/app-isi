@@ -45,24 +45,12 @@
               {% set genre = 'Mixte' %}
             {% endif %}
             <tr>
-              <td style="width: 5%; text-align: center">
-                <h4 class="ui image header">{{ numero }}</h4>
-              </td>
-              <td>
-                <h4 class="ui image header">{{ classe.getNiveau.getLibelleFr }}</h4>
-              </td>
-              <td>
-                <h4 class="ui image header">{{ classe.libellefr }}</h4>
-              </td>
-              <td>
-                <h4 class="ui image header">{{ classe.getNiveau.getLibelleAr }}</h4>
-              </td>
-              <td>
-                <h4 class="ui image header">{{ classe.libellear }}</h4>
-              </td>
-              <td>
-                <h4 class="ui image header">{{ genre }}</h4>
-              </td>
+              <td style="width: 5%; text-align: center">{{ numero }}</td>
+              <td>{{ classe.getNiveau.getLibelleFr }}</td>
+              <td>{{ classe.libellefr }}</td>
+              <td>{{ classe.getNiveau.getLibelleAr }}</td>
+              <td>{{ classe.libellear }}</td>
+              <td>{{ genre }}</td>
               <td style="width: 20%; text-align: center">
                 {% set lien = '' %}
                 {% if regime == 'A' %}

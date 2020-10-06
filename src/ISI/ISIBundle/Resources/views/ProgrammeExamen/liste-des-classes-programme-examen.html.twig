@@ -1,0 +1,109 @@
+{# Accueil pour l'édition des listes de classe' #}
+
+{% extends 'ISIBundle:ProgrammeExamen:index.html.twig' %}
+
+{% block title %}
+  Enregistrement de groupe de composition
+{% endblock %}
+
+
+{% block body %}
+  {% set grp = '' %}
+  {% if regime is same as('A') %}
+    {% set grp = 'Académie' %}
+  {% else %}
+    {% set grp = 'Formation' %}
+  {% endif %}
+  <h3>{{ 'Enregistrement de groupe de composition'|trans }} : {{grp}}</h3>
+{% if classes is empty %}
+  <p>{{ 'Pas de classes pour le moment'|trans }}</p>
+{% else %}
+  <div class="column" style="width:85%">
+    <table class="ui selectable very basic table" id="classes">
+      <thead>
+        <tr>
+          <th style="width: 5%; text-align: center">N°</th>
+          <th>Niveaux</th>
+          <th>Classses</th>
+          <th>المستويات</th>
+          <th>الفصول</th>
+          <th>Genre</th>
+          <th class="two wide">{{ 'Actions'|trans }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% set numero = 0 %}
+        {% for classe in classes %} 
+          {% if classe.niveau.groupeFormation.reference is same as(regime) %}
+            {% set numero = numero + 1 %}
+            {% set genre = '' %}
+            {% if classe.genre == 'H' %}
+              {% set genre = 'Homme' %}
+            {% elseif classe.genre == 'F' %}
+              {% set genre = 'Femme' %}
+            {% else %}
+              {% set genre = 'Mixte' %}
+            {% endif %}
+            <tr>
+              <td style="width: 5%; text-align: center">{{ numero }}</td>
+              <td>{{ classe.getNiveau.getLibelleFr }}</td>
+              <td>{{ classe.libellefr }}</td>
+              <td>{{ classe.getNiveau.getLibelleAr }}</td>
+              <td>{{ classe.libellear }}</td>
+              <td>{{ genre }}</td>
+              <td style="font-size: 1.5em;">
+                <a href="{{path('enregistrement_de_groupe_de_composition', {'as': asec, 'annexeId': annexe.id, 'regime': regime, examenId: examen.id, 'classeId': classe.id})}}"  data-tooltip="Cliquer pour enregistrer ou modifier les groupes de composition">
+                  <i class="print icon"></i>
+                </a>
+                <a href="{{path('enregistrement_du_programme_d_examen_d_une_classe', {'as': asec, 'annexeId': annexe.id, 'regime': regime, examenId: examen.id, 'classeId': classe.id})}}"  data-tooltip="Pour enregistrer ou modifier le programme d'examen de la classe">
+                  <i class="teal tasks icon"></i>
+                </a>
+                <a href="{{path('enregistrement_des_correcteurs', {'as': asec, 'annexeId': annexe.id, 'regime': regime, examenId: examen.id, 'classeId': classe.id})}}"  data-tooltip="Pour enregistrer ou modifier les correcteurs">
+                  <i class="olive check icon"></i>
+                </a>
+                <a href="{{path('presence_des_eleves_lors_d_une_epreuve_a_l_examen', {'as': asec, 'annexeId': annexe.id, 'regime': regime, examenId: examen.id, 'classeId': classe.id})}}"  data-tooltip="Voir la présence des élèves lors des différentes épreuves">
+                  <i class="info braille icon"></i>
+                </a>
+              </td>
+            </tr>
+          {% endif %} 
+        {% endfor %}
+      </tbody>
+    </table>
+    <hr width="75%">
+  </div><br><br>
+{% endif %}
+{% endblock %}
+
+
+{% block javascripts %}
+  <script src="{{ asset('TableFilter/dist/tablefilter/tablefilter.js') }}"></script>
+  <script data-config>
+    var filtersConfig = {
+      base_path: 'TableFilter/dist/tablefilter/',
+      col_0: "none",
+      col_1: 'select',
+      col_3: 'select',
+      col_5: 'select',
+      col_6: 'none',
+      alternate_rows: true,
+      rows_counter: true,
+      btn_reset: true,
+      loader: true,
+      status_bar: true,
+      mark_active_columns: true,
+      highlight_keywords: true,
+      no_results_message: true,
+      col_types: [
+        'number', 'string', 'string', 'string'
+      ],
+      col_widths: [
+          // '20px', , , '200px', , , '300px'
+      ],
+      extensions: [{ name: 'sort' }]
+    };
+
+    var tf = new TableFilter('classes', filtersConfig);
+    tf.init();
+  </script>
+{% endblock %}

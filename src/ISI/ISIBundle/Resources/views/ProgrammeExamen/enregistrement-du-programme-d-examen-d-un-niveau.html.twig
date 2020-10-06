@@ -1,0 +1,73 @@
+{% extends 'ISIBundle:ProgrammeExamen:index.html.twig' %}
+
+{% block title %}
+  Enregistrement du programme d'examen au {{ niveau.libelleFr }}
+{% endblock %}
+
+
+{% block stylesheets %}
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+  <link href="{{ asset('css/select2.min.css') }}" rel="stylesheet" />
+{% endblock %}
+
+
+{% block section %}
+  <i class="settings icon"></i>{{ 'Programme d\'examen '|trans }}
+{% endblock %}
+
+
+{% block body %}
+    {% if matieres is empty %}
+        <p>{{ 'Aucune matière n\'été enregistrée pour le moment.'|trans }}</p>
+    {% else %}
+        <div class="titre-document">
+          <h3>{{ 'Enregistrement du programme d\'examen du niveau'|trans }} <span style="color: blue">{{ niveau.libelleFr }}</span></h3>
+        </div>
+        <br />
+        <form action="" class="ui form" method="post">
+          <table width="100%" class="ui celled selectable table" align="center">
+            <thead>
+              <tr class="table-header" bgcolor="">
+                <th width="2%">N°</th>
+                <th width="10%">Matières</th>
+                <th width="10%">Dates</th>
+                <th width="5%">Heures début</th>
+                <th width="5%">Heures fin</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% set numero = 0 %}
+              {% for item in matieres if item.matiere.matiereEnfants|length == 0 %}
+                {% set programmeEnregistre = null %}
+                {% set matiere = item.matiere %}
+                {% set numero = numero + 1 %}
+                {% for programme in programmes if programme.niveau == niveau and programme.matiere == matiere %}
+                  {% set programmeEnregistre = programme %}
+                {% endfor %}
+                <tr>
+                  <td>{{ numero }}</td>
+                  <td>{{ matiere.libelle }}</td>
+                  <td><input type="date" name="dates[{{matiere.id}}]"   {% if programmeEnregistre is not null %}value="{{ programmeEnregistre.date|date("Y-m-d") }}"{% endif %}></td>
+                  <td><input type="time" name="heuresD[{{matiere.id}}]" {% if programmeEnregistre is not null %}value="{{ programmeEnregistre.heureDebut|date("H:i") }}"{% endif %}></td>
+                  <td><input type="time" name="heuresF[{{matiere.id}}]" {% if programmeEnregistre is not null %}value="{{ programmeEnregistre.heureFin|date("H:i") }}"{% endif %}></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <br><br>
+          <button class="ui large primary button">Valider les modifications</button>
+        </form>
+        <br><br>
+    {% endif %}
+
+{% endblock %}
+
+
+{% block javascripts %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('.js-example-basic-single').select2();
+    });
+  </script>
+{% endblock %}

@@ -1,0 +1,37 @@
+{# Page d'ajout d'une nouvelle année scolaire #}
+
+{% extends "ISIBundle:Parametres:index.html.twig" %}
+
+{% block title %}
+	Mise à jour de l'année scolaire {{ annee.libelle }}
+{% endblock %}
+
+{% block body %}
+	<h3>{{ 'Mise à jour de l\'année scolaire '|trans }} {{ annee.libelle }}</h3>
+
+	<div class="well">
+		<form action="" method="post" class="ui form">
+			<div class="four fields">
+				<div class="field">
+					<label for="debut_semestre_1">Début des cours du premier semestre</label>
+					<input type="date" name="debut_semestre_1" id="debut_semestre_1" value="{% if annee.debutPremierSemestre %}{{ annee.debutPremierSemestre|date("Y-m-d") }}{% endif %}" required>
+				</div>
+				<div class="field">
+					<label for="fin_semestre_1">Fin des cours du premier semestre</label>
+					<input type="date" name="fin_semestre_1" id="fin_semestre_1" value="{% if annee.finPremierSemestre %}{{ annee.finPremierSemestre|date("Y-m-d") }}{% endif %}" required>
+				</div>
+				<div class="field">
+					<label for="debut_semestre_2">Début des cours du second semestre</label>
+					<input type="date" name="debut_semestre_2" id="debut_semestre_2" value="{% if annee.debutSecondSemestre %}{{ annee.debutSecondSemestre|date("Y-m-d") }}{% endif %}" required>
+				</div>
+				<div class="field">
+					<label for="fin_semestre_2">Fin des cours du second semestre</label>
+					<input type="date" name="fin_semestre_2" id="fin_semestre_2" value="{% if annee.finSecondSemestre %}{{ annee.finSecondSemestre|date("Y-m-d") }}{% endif %}" required>
+				</div>
+			</div>
+			<br><br>
+			<button class="ui primary button">Appliquer les changements</button>
+		</form>
+	</div>
+
+{% endblock %}

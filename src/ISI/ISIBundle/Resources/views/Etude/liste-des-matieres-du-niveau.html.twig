@@ -19,7 +19,7 @@
       <table class="ui selectable very basic table" align="center">
         <thead>
           <tr>
-            <th class="one wide">{{ 'N°'|trans }}</th>
+            <th style="text-align: center" class="one wide">{{ 'N°'|trans }}</th>
             <th>{{ 'Matière'|trans }}</th>
             <th>{{ 'Langue'|trans }}</th>
             <th>{{ 'Statut'|trans }}</th>
@@ -34,7 +34,7 @@
           {% for matiere in matieres %}
             {% set numero = numero + 1 %}
             <tr>
-              <td>
+              <td style="text-align: center">
                 {{ numero }}
               </td>
               <td>
@@ -81,12 +81,13 @@
         </tbody>
         <tfoot>
           <tr>
-            <td colspan="5">Nombre total des heures de cours au {{ niveau.libelleFr }}</td>
-            <td colspan="2">{{ totalHeuresDeCours }} h</td>
+            <th colspan="5">Nombre total des heures de cours au {{ niveau.libelleFr }}</th>
+            <th colspan="2">{{ totalHeuresDeCours }} h</th>
           </tr>
         </tfoot>
       </table>
     </div>
+    <br><br>
   {% endif %}
 
 {% endblock %}

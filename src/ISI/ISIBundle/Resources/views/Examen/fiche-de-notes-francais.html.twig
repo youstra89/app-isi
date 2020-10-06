@@ -1,0 +1,125 @@
+{# ISIBundle/Ressources/views/Scolarite #}
+{% extends "ISIBundle::pdf.html.twig" %}
+{% block title %}
+    Fiche de notes {{ classe.libelleFr }} - {{ matiere.libelle }}
+{% endblock %}
+
+
+{% block stylesheets %}
+    <style>
+        thead{
+            border: 1px solid black;
+        }
+
+        td {
+            border: 0.99px solid black;
+        }
+    </style>
+{% endblock %}
+
+
+{% block body %}
+    {% if eleves is empty %}
+        <p>{{ 'Inscrivez d\'abord des élèves dans cette classe'|trans }}</p>
+    {% else %}
+        <div class="titre-document" style="font-size: 2.5em">
+            <center>
+                <h1>Fiche de report de notes </h1>
+            </center>
+        </div>
+        <br />
+        <div class="id-fiche" style="font-size: 2.5em">
+            <div class="classe">
+                <span>الفصل : <strong>{{ classe.libelleAr }}</strong></span>
+            </div>
+            <div class="matiere">
+                <span>المادة: <strong>{{ matiere.libelle }}</strong></span>
+            </div>
+        </div>
+        <br />
+
+        <table width="100%" class="" align="center">
+            <thead>
+                <tr class="table-header" bgcolor="" style="font-size: 1.5em">
+                    <th style="border: 1px solid black;" align="center" width="3%">N°</th>
+                    <th style="border: 1px solid black;" align="center" width="12%">Matricule</th>
+                    <th style="border: 1px solid black;" align="left" width="30%">&nbsp;Nom & Prénom</th>
+                    <th style="border: 1px solid black;" align="left" width="3%">Sexe</th>
+                    {% for item in matieresFr if item.matiere.matiereMere == matiere %}
+                        <th style="border: 1px solid black;" width="">{{ item.matiere.libelle }}</th>
+                    {% endfor %}
+                    <th style="border: 1px solid black;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set numero = 0 %}
+                {% set color = '' %}
+                {% for eleve in eleves %}
+                    {# Ce code me permet d'alterner la couleur des lignes du tableau #}
+                    {% if (numero % 2) == 0 %}
+                         {% set color = 'white' %}
+                    {% else %}
+                         {% set color = '#DCDCDC' %}
+                    {% endif %}
+                    {# Pour le sexe #}
+                    {% if eleve.sexe == 1 %}
+                        {% set sexe = 'M' %}
+                    {% else %}
+                        {% set sexe = 'F' %}
+                    {% endif %}
+                    {% set numero = numero + 1 %}
+                    <tr class="line-table" bgcolor={{color}} style="font-size: 2em">
+                        <td align="center" style="border: 1px solid black;">{{ numero }}</td>
+                        <td align="left" style="border: 1px solid black;">{{ eleve.matricule }}</td>
+                        <td align="left" style="border: 1px solid black;" class="nomEleveFr">&nbsp;{{ eleve.nomFr }} {{ eleve.pnomFr }}</td>
+                        <td align="center" style="border: 1px solid black;">{{sexe}}</td>
+                        {% for item in 1..matieresFr|length %}
+                            <td align="left" style="border: 1px solid black;"></td>
+                        {% endfor %}
+                        <td style="border: 1px solid black;"></td>
+                    </tr>
+                    <!-- On divise le tableau pour mieux afficher la suite de la liste -->
+                    {% if numero == 25 or numero == 59 %}
+                    </tbody>
+                    </table>
+                    <br>
+                    <table width="100%" class="" align="center">
+                        <thead>
+                            <tr class="table-header" bgcolor="" style="font-size: 1.5em">
+                                <th style="border: 1px solid black;" align="center" width="3%">N°</th>
+                                <th style="border: 1px solid black;" align="center" width="12%">Matricule</th>
+                                <th style="border: 1px solid black;" align="left" width="30%">&nbsp;Nom & Prénom</th>
+                                <th style="border: 1px solid black;" align="left" width="3%">Sexe</th>
+                                {% for item in matieresFr if item.matiere.matiereMere == matiere %}
+                                    <th style="border: 1px solid black;" width="">{{ item.matiere.libelle }}</th>
+                                {% endfor %}
+                                <th style="border: 1px solid black;">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if (numero % 2) == 0 %} {% set color = 'white' %} {% else %} {% set color = '#DCDCDC' %} {% endif %} {# Pour le sexe #}
+                            {% if eleve.sexe == 1 %} {% set sexe = 'M' %} {% else %} {% set sexe = 'F' %}
+                            {% endif %} {% set numero = numero %}
+                            {% if loop.index == 25 or loop.index == 59 %}
+                                {% set code = 1 %}
+                            {% else %}
+                                <tr class="line-table" bgcolor={{color}} style="font-size: 2em">
+                                    <td align="center" style="border: 1px solid black;">{{ numero }}</td>
+                                    <td align="left" style="border: 1px solid black;">{{ eleve.matricule }}</td>
+                                    <td align="left" style="border: 1px solid black;" class="nomEleveFr">&nbsp;{{ eleve.nomFr }} {{ eleve.pnomFr }}</td>
+                                    <td align="center" style="border: 1px solid black;">{{sexe}}</td>
+                                    {% for item in 1..matieresFr|length %}
+                                        <td align="left" style="border: 1px solid black;"></td>
+                                    {% endfor %}
+                                    <td style="border: 1px solid black;"></td>
+                                </tr>
+                            {% endif %}
+                        {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        <br />
+        <center><span style="font-size: 2em">Effectif : {{ numero }}</span> </center>
+    {% endif %}
+
+{% endblock %}
